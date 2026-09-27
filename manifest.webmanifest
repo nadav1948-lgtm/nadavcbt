@@ -1,0 +1,13 @@
+{
+  "name": "CBT בבית הספר",
+  "short_name": "CBT",
+  "description": "ארגז הכלים של היועץ – מפות טיפול, תיקי תלמידים וכלים לילדים",
+  "lang": "he", "dir": "rtl",
+  "start_url": "./", "scope": "./",
+  "display": "standalone",
+  "background_color": "#f4f2ed", "theme_color": "#2f6f62",
+  "icons": [
+    {"src": "icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any maskable"},
+    {"src": "icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any maskable"}
+  ]
+}

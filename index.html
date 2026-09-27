@@ -1,0 +1,1445 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#2f6f62">
+<title>CBT בבית הספר</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='24' fill='%232f6f62'/><text x='50' y='68' font-size='56' text-anchor='middle'>🧠</text></svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#f4f2ed; --bg2:#ebe7de; --panel:#fff; --ink:#1c2230; --muted:#667085; --line:#e3dfd5;
+  --brand:#2f6f62; --brand-2:#4a9c8a; --brand-soft:#e2f0ec; --accent:#f2a93b; --danger:#c8423b; --ok:#2f9a5a;
+  --shadow:0 1px 2px rgba(20,30,40,.06),0 6px 18px rgba(20,30,40,.07);
+  --shadow-hi:0 4px 10px rgba(20,30,40,.08),0 18px 40px rgba(20,30,40,.14);
+  --r:16px; --soft-s:70%; --soft-l:94%; --sat:58%; --lt:42%;
+}
+@media (prefers-color-scheme: dark){ :root:not([data-theme="light"]){
+  --bg:#111418; --bg2:#191d23; --panel:#1b2027; --ink:#e8e6e1; --muted:#9aa3ae; --line:#2a3038;
+  --brand:#7cc9b6; --brand-2:#4a9c8a; --brand-soft:#1b322d; --shadow:0 1px 2px rgba(0,0,0,.3),0 6px 18px rgba(0,0,0,.25);
+  --shadow-hi:0 6px 14px rgba(0,0,0,.35),0 20px 44px rgba(0,0,0,.4); --soft-s:30%; --soft-l:19%; --lt:68%; } }
+:root[data-theme="dark"]{
+  --bg:#111418; --bg2:#191d23; --panel:#1b2027; --ink:#e8e6e1; --muted:#9aa3ae; --line:#2a3038;
+  --brand:#7cc9b6; --brand-2:#4a9c8a; --brand-soft:#1b322d; --shadow:0 1px 2px rgba(0,0,0,.3),0 6px 18px rgba(0,0,0,.25);
+  --shadow-hi:0 6px 14px rgba(0,0,0,.35),0 20px 44px rgba(0,0,0,.4); --soft-s:30%; --soft-l:19%; --lt:68%; }
+*{box-sizing:border-box}
+html,body{margin:0}
+body{background:var(--bg);color:var(--ink);font:16px/1.6 Rubik,"Segoe UI",Arial,sans-serif;-webkit-font-smoothing:antialiased}
+a{color:inherit}
+button,input,select,textarea{font:inherit;color:inherit}
+h1,h2,h3{line-height:1.3}
+
+/* layout */
+.shell{display:grid;grid-template-columns:250px 1fr;min-height:100vh}
+.side{position:sticky;top:0;height:100vh;padding:18px 14px;border-inline-end:1px solid var(--line);display:flex;flex-direction:column;gap:4px;background:var(--bg)}
+.brand{display:flex;align-items:center;gap:10px;font-weight:700;font-size:17px;padding:4px 8px 18px;text-decoration:none}
+.brand .mark{width:38px;height:38px;border-radius:12px;display:grid;place-items:center;background:linear-gradient(135deg,var(--brand-2),#2f6f62);color:#fff;font-size:20px}
+.brand small{display:block;font-weight:400;color:var(--muted);font-size:12px}
+.nav a{display:flex;align-items:center;gap:12px;padding:10px 12px;border-radius:12px;text-decoration:none;color:var(--muted);font-weight:500;transition:background .15s,color .15s}
+.nav a:hover{background:var(--bg2);color:var(--ink)}
+.nav a.on{background:var(--brand-soft);color:var(--brand)}
+.nav a .i{font-size:19px;width:24px;text-align:center}
+.side .foot{margin-top:auto;display:flex;flex-direction:column;gap:8px}
+.main{min-width:0;padding:0 28px 90px}
+.topbar{position:sticky;top:0;z-index:20;display:flex;align-items:center;gap:12px;height:66px;background:color-mix(in srgb,var(--bg) 85%,transparent);backdrop-filter:blur(10px)}
+.topbar .title{font-weight:700;font-size:19px;flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.who{display:flex;align-items:center;gap:8px;background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:4px 6px 4px 10px}
+.who select{border:0;background:none;max-width:170px;outline:none;cursor:pointer}
+.iconbtn{width:40px;height:40px;border-radius:12px;border:1px solid var(--line);background:var(--panel);cursor:pointer;display:grid;place-items:center;font-size:17px;flex:0 0 auto}
+.sync{display:flex;align-items:center;gap:8px;font-size:13px;color:var(--muted);padding:8px 10px;border-radius:10px;background:var(--bg2);cursor:pointer;border:0;text-align:start}
+.sync .dot{width:9px;height:9px;border-radius:50%;background:#aaa;flex:0 0 auto}
+.sync.ok .dot{background:var(--ok)} .sync.warn .dot{background:var(--accent)} .sync.err .dot{background:var(--danger)}
+.tabbar{display:none}
+
+/* common */
+.page{animation:rise .3s ease both}
+@keyframes rise{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+.hero{position:relative;overflow:hidden;border-radius:24px;padding:32px 34px;color:#fff;margin:6px 0 22px;
+  background:radial-gradient(900px 300px at 90% -30%,rgba(255,255,255,.2),transparent 60%),linear-gradient(125deg,#1f5a4f,#2f7a6a 50%,#4a9c8a)}
+.hero h1{margin:0 0 6px;font-size:clamp(24px,3.4vw,34px)}
+.hero p{margin:0;opacity:.92;max-width:640px}
+.hero .actions{margin-top:20px}
+.hero .btn{background:rgba(255,255,255,.16);border-color:rgba(255,255,255,.3);color:#fff}
+.hero .btn.primary{background:#fff;color:#1f5a4f;border-color:#fff}
+h2.sec{font-size:20px;margin:30px 0 12px;display:flex;align-items:center;gap:10px}
+h2.sec small{font-size:14px;color:var(--muted);font-weight:400}
+.muted{color:var(--muted)}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(240px,100%),1fr));gap:14px}
+.grid.wide{grid-template-columns:repeat(auto-fill,minmax(min(330px,100%),1fr))}
+.card{--h:160;position:relative;display:flex;flex-direction:column;gap:8px;text-decoration:none;background:var(--panel);border:1px solid var(--line);border-radius:18px;padding:18px;box-shadow:var(--shadow);transition:transform .18s,box-shadow .18s;cursor:pointer;overflow:hidden;min-width:0}
+.card.accent::before{content:"";position:absolute;inset:0 0 auto 0;height:5px;background:hsl(var(--h) var(--sat) var(--lt))}
+.card:hover{transform:translateY(-3px);box-shadow:var(--shadow-hi)}
+.card .emoji{width:48px;height:48px;border-radius:14px;display:grid;place-items:center;font-size:25px;background:hsl(var(--h) var(--soft-s) var(--soft-l))}
+.card .name{font-weight:600;font-size:16.5px}
+.card .sub{font-size:13.5px;color:var(--muted)}
+.card .row{display:flex;gap:6px;flex-wrap:wrap;margin-top:auto}
+.panel{background:var(--panel);border:1px solid var(--line);border-radius:18px;padding:20px;box-shadow:var(--shadow);min-width:0}
+.panel + .panel{margin-top:14px}
+.panel h3{margin:0 0 10px;font-size:17px;display:flex;align-items:center;gap:8px}
+.pill{font-size:12px;padding:3px 10px;border-radius:999px;background:var(--bg2);color:var(--muted);white-space:nowrap}
+.pill.brand{background:var(--brand-soft);color:var(--brand)}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:7px;border:1px solid var(--line);background:var(--panel);border-radius:11px;padding:8px 14px;font-size:14.5px;cursor:pointer;text-decoration:none;transition:transform .12s,border-color .12s,background .12s;white-space:nowrap}
+.btn:hover{border-color:var(--brand);transform:translateY(-1px)}
+.btn.primary{background:var(--brand);border-color:var(--brand);color:#fff;font-weight:500}
+:root[data-theme="dark"] .btn.primary{color:#0f221e}
+.btn.ghost{background:none;border-color:transparent}
+.btn.danger{color:var(--danger)}
+.btn.sm{padding:5px 10px;font-size:13px;border-radius:9px}
+.actions{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.chips{display:flex;gap:8px;flex-wrap:wrap;margin:0 0 16px}
+.chip{border:1px solid var(--line);background:var(--panel);border-radius:999px;padding:6px 14px;font-size:14px;cursor:pointer}
+.chip.on{background:var(--brand);border-color:var(--brand);color:#fff}
+:root[data-theme="dark"] .chip.on{color:#0f221e}
+.tabs{display:flex;gap:4px;overflow-x:auto;border-bottom:1px solid var(--line);margin:0 0 18px;scrollbar-width:thin}
+.tabs a{padding:10px 14px;text-decoration:none;color:var(--muted);border-bottom:3px solid transparent;white-space:nowrap;font-weight:500}
+.tabs a.on{color:var(--brand);border-bottom-color:var(--brand)}
+ul.clean{margin:0;padding:0 18px 0 0}
+ul.clean li{margin:4px 0}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.three{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+.empty{text-align:center;color:var(--muted);padding:40px 16px}
+.empty .big{font-size:46px;display:block;margin-bottom:6px}
+.banner{--h:160;border-radius:22px;padding:24px 26px;color:#fff;display:flex;gap:16px;align-items:center;flex-wrap:wrap;margin:6px 0 18px;background:linear-gradient(120deg,hsl(var(--h) 45% 30%),hsl(var(--h) 45% 45%))}
+.banner .emoji{width:62px;height:62px;border-radius:18px;background:rgba(255,255,255,.18);display:grid;place-items:center;font-size:32px;flex:0 0 auto}
+.banner h1{margin:0;font-size:clamp(21px,3vw,29px)}
+.banner p{margin:4px 0 0;opacity:.9}
+.banner .actions{margin-inline-start:auto}
+.banner .btn{background:rgba(255,255,255,.16);border-color:rgba(255,255,255,.3);color:#fff}
+.back{display:inline-flex;gap:6px;color:var(--muted);text-decoration:none;font-size:14px;margin-top:4px}
+.back:hover{color:var(--brand)}
+.note{background:var(--brand-soft);border-radius:14px;padding:12px 16px;font-size:14.5px}
+.note.warn{background:color-mix(in srgb,var(--accent) 18%,var(--panel))}
+.note.danger{background:color-mix(in srgb,var(--danger) 14%,var(--panel))}
+
+/* model diagram */
+.model{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;position:relative}
+.model .box{border-radius:14px;padding:12px 14px;background:var(--bg2);font-size:14px}
+.model .box b{display:block;margin-bottom:6px;font-size:14.5px}
+.model .box.t{background:hsl(210 var(--soft-s) var(--soft-l))}
+.model .box.f{background:hsl(0 var(--soft-s) var(--soft-l))}
+.model .box.b{background:hsl(35 var(--soft-s) var(--soft-l))}
+.model .box.a{background:hsl(145 var(--soft-s) var(--soft-l))}
+.model .trig{grid-column:1/-1;background:var(--panel);border:1px dashed var(--line)}
+
+/* sessions */
+.sess{border:1px solid var(--line);border-radius:14px;background:var(--panel);margin-bottom:10px;overflow:hidden}
+.sess summary{cursor:pointer;padding:12px 16px;display:flex;align-items:center;gap:12px;font-weight:600;list-style:none}
+.sess summary::-webkit-details-marker{display:none}
+.sess summary .n{width:32px;height:32px;border-radius:10px;display:grid;place-items:center;background:var(--brand-soft);color:var(--brand);font-size:14px;flex:0 0 auto}
+.sess summary .chev{margin-inline-start:auto;transition:transform .2s;color:var(--muted)}
+.sess[open] summary .chev{transform:rotate(-90deg)}
+.sess .body{padding:0 16px 14px 16px;display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.sess .body h4{margin:4px 0;font-size:13.5px;color:var(--muted)}
+.sess.done summary .n{background:var(--ok);color:#fff}
+
+/* forms */
+.form{display:grid;gap:12px}
+.form .row2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+label.f{display:grid;gap:4px;font-size:13.5px;color:var(--muted)}
+label.f input,label.f select,label.f textarea,.inp{border:1px solid var(--line);background:var(--bg);border-radius:10px;padding:9px 12px;color:var(--ink);font-size:15px;outline:none;width:100%}
+label.f textarea,.inp.ta{min-height:80px;resize:vertical}
+label.f input:focus,label.f select:focus,label.f textarea:focus,.inp:focus{border-color:var(--brand)}
+.checks{display:flex;flex-wrap:wrap;gap:8px}
+.checks label{display:flex;align-items:center;gap:6px;border:1px solid var(--line);border-radius:999px;padding:5px 12px;font-size:14px;cursor:pointer;background:var(--bg)}
+.checks input{accent-color:var(--brand)}
+
+/* modal */
+.modal{position:fixed;inset:0;z-index:60;background:rgba(10,14,20,.6);backdrop-filter:blur(3px);display:none;align-items:center;justify-content:center;padding:20px}
+.modal.open{display:flex}
+.modal .box{background:var(--panel);border-radius:20px;width:min(640px,100%);max-height:90vh;overflow:auto;padding:22px;box-shadow:0 30px 80px rgba(0,0,0,.4);animation:pop .2s ease}
+.modal.big .box{width:min(1100px,100%);height:92vh;padding:0;display:flex;flex-direction:column;overflow:hidden}
+.modal .mhead{display:flex;align-items:center;gap:10px;margin-bottom:14px}
+.modal.big .mhead{padding:10px 14px;margin:0;border-bottom:1px solid var(--line)}
+.modal .mhead h3{margin:0;flex:1;font-size:18px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.modal iframe{flex:1;border:0;width:100%;background:#fff}
+@keyframes pop{from{opacity:0;transform:scale(.97)}}
+
+/* student */
+.stat{background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:14px 16px}
+.stat b{display:block;font-size:24px}
+.stat span{font-size:13px;color:var(--muted)}
+.list{display:flex;flex-direction:column;gap:8px}
+.li{display:flex;gap:12px;align-items:flex-start;background:var(--bg);border:1px solid var(--line);border-radius:12px;padding:10px 14px}
+.li .grow{flex:1;min-width:0}
+.li .date{font-size:12.5px;color:var(--muted)}
+.chart{width:100%;height:190px}
+.chart .axis{stroke:var(--line)}
+.chart .lbl{fill:var(--muted);font-size:11px}
+.chart .ln{fill:none;stroke:var(--brand);stroke-width:2.5}
+.chart .pt{fill:var(--panel);stroke:var(--brand);stroke-width:2.5}
+
+/* kid tools */
+.toolstage{background:var(--panel);border:1px solid var(--line);border-radius:24px;padding:26px;box-shadow:var(--shadow);min-height:420px}
+.kid{font-size:19px}
+.kid h2{font-size:26px;margin:0 0 6px;text-align:center}
+.kid .lead{text-align:center;color:var(--muted);margin:0 0 18px}
+.thermo{display:flex;gap:26px;justify-content:center;align-items:stretch;flex-wrap:wrap}
+.thermo .bar{display:flex;flex-direction:column-reverse;gap:4px;width:120px}
+.thermo .lvl{height:36px;border-radius:10px;border:2px solid transparent;display:flex;align-items:center;justify-content:space-between;padding:0 12px;cursor:pointer;font-weight:700;color:#fff;transition:transform .12s;opacity:.45}
+.thermo .lvl.on{opacity:1;transform:scale(1.06);border-color:var(--ink)}
+.thermo .lvl.fill{opacity:1}
+.thermo .face{font-size:90px;text-align:center;line-height:1}
+.emos{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin-bottom:18px}
+.emos button{border:2px solid var(--line);background:var(--bg);border-radius:14px;padding:8px 14px;font-size:17px;cursor:pointer}
+.emos button.on{border-color:var(--brand);background:var(--brand-soft)}
+.breath{display:grid;place-items:center;height:330px}
+.breath .circle{width:120px;height:120px;border-radius:50%;background:radial-gradient(circle at 35% 35%,#bfe9df,#4a9c8a);box-shadow:0 0 0 18px rgba(74,156,138,.15),0 0 0 36px rgba(74,156,138,.08);display:grid;place-items:center;color:#fff;font-weight:700;font-size:20px;text-align:center;transition:transform 4s ease-in-out}
+.bigtext{font-size:28px;font-weight:700;text-align:center;min-height:44px}
+.lights{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+.light{border-radius:20px;padding:18px;border:2px solid var(--line);background:var(--bg);opacity:.55;transition:opacity .2s,transform .2s}
+.light.on{opacity:1;transform:translateY(-4px)}
+.light .bulb{width:64px;height:64px;border-radius:50%;margin:0 auto 10px;box-shadow:inset 0 -6px 12px rgba(0,0,0,.2)}
+.light.r .bulb{background:#e04a3f}.light.y .bulb{background:#f2b632}.light.g .bulb{background:#3aa65c}
+.light h3{text-align:center;margin:0 0 8px}
+.ladder{display:flex;flex-direction:column-reverse;gap:8px;max-width:560px;margin:0 auto}
+.rung{display:flex;align-items:center;gap:10px;background:var(--bg);border:2px solid var(--line);border-radius:14px;padding:10px 14px}
+.rung .suds{width:42px;height:42px;border-radius:12px;display:grid;place-items:center;font-weight:700;color:#fff;flex:0 0 auto}
+.rung.done{border-color:var(--ok);background:color-mix(in srgb,var(--ok) 10%,var(--panel))}
+.rung .grow{flex:1}
+.stickers{display:grid;grid-template-columns:repeat(auto-fill,minmax(64px,1fr));gap:10px;max-width:640px;margin:0 auto}
+.slot{aspect-ratio:1;border-radius:16px;border:2px dashed var(--line);display:grid;place-items:center;font-size:34px;cursor:pointer;background:var(--bg);transition:transform .15s}
+.slot:hover{transform:scale(1.06)}
+.slot.full{border-style:solid;border-color:var(--accent);background:color-mix(in srgb,var(--accent) 14%,var(--panel))}
+.slot.prize{border-color:var(--brand);font-size:30px}
+.pmr .step{font-size:24px;text-align:center;margin:10px 0}
+.progress{height:10px;background:var(--bg2);border-radius:99px;overflow:hidden}
+.progress i{display:block;height:100%;background:var(--brand);transition:width .3s}
+.copecard{max-width:460px;margin:0 auto;border-radius:24px;padding:24px;color:#1c2230;box-shadow:var(--shadow-hi)}
+.copecard h3{margin:0 0 12px;font-size:22px;text-align:center}
+.copecard ol{font-size:19px;margin:0;padding-inline-start:26px}
+.swatches{display:flex;gap:8px;justify-content:center;margin:12px 0}
+.swatches button{width:34px;height:34px;border-radius:50%;border:3px solid transparent;cursor:pointer}
+.swatches button.on{border-color:var(--ink)}
+.detective{display:grid;gap:14px;max-width:720px;margin:0 auto}
+.stepcard{border-radius:16px;padding:14px 16px;background:var(--bg);border:2px solid var(--line)}
+.stepcard h4{margin:0 0 8px;font-size:18px}
+.confetti{position:fixed;inset:0;pointer-events:none;z-index:80;overflow:hidden}
+.confetti i{position:absolute;top:-20px;font-size:26px;animation:fall 2.4s linear forwards}
+@keyframes fall{to{transform:translateY(110vh) rotate(540deg)}}
+.toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:var(--ink);color:var(--bg);padding:10px 18px;border-radius:12px;z-index:90;font-size:14.5px;box-shadow:var(--shadow-hi);animation:rise .2s}
+.lib-item{display:flex;gap:10px;align-items:center;padding:10px 12px;border:1px solid var(--line);border-radius:12px;background:var(--bg);cursor:pointer}
+.lib-item:hover{border-color:var(--brand)}
+.lib-item .grow{flex:1;min-width:0}
+.lib-item .t{font-weight:500;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.lib-item .s{font-size:12.5px;color:var(--muted)}
+.ft{font-size:10.5px;font-weight:700;padding:2px 6px;border-radius:5px;color:#fff;background:#667085}
+.ft.pdf{background:#d6453d}.ft.doc{background:#2b64c7}.ft.ppt{background:#d9731f}.ft.img{background:#2f9a5a}
+.search{position:relative}
+.search input{width:100%;height:44px;border-radius:12px;border:1px solid var(--line);background:var(--panel);padding:0 40px 0 14px;font-size:15px;outline:none}
+.search .ic{position:absolute;inset-inline-start:13px;top:50%;transform:translateY(-50%);opacity:.5}
+.print-only{display:none}
+
+@media (max-width:900px){
+  .shell{grid-template-columns:1fr}
+  .side{display:none}
+  .main{padding:0 16px 96px}
+  .tabbar{display:flex;position:fixed;bottom:0;inset-inline:0;z-index:30;background:var(--panel);border-top:1px solid var(--line);padding:6px 4px calc(6px + env(safe-area-inset-bottom))}
+  .tabbar a{flex:1;display:flex;flex-direction:column;align-items:center;gap:2px;text-decoration:none;font-size:11px;color:var(--muted);padding:4px 0}
+  .tabbar a .i{font-size:21px}
+  .tabbar a.on{color:var(--brand)}
+  .two,.sess .body,.form .row2{grid-template-columns:1fr}
+  .three{gap:8px}
+  .stat{padding:10px 12px}
+  .stat b{font-size:20px}
+  .stat span{font-size:12px}
+  .model{grid-template-columns:1fr 1fr}
+  .lights{grid-template-columns:1fr}
+  .who select{max-width:110px}
+  .hero{padding:24px 20px}
+  .toolstage{padding:18px}
+}
+@media print{
+  .side,.tabbar,.topbar,.no-print,.modal,.tabs,.back{display:none!important}
+  .shell{display:block}
+  .main{padding:0}
+  body{background:#fff;color:#000}
+  .panel,.sess,.card{box-shadow:none;border-color:#ccc;break-inside:avoid}
+  .sess .body{display:grid!important}
+  details.sess > *{display:block}
+  .print-only{display:block}
+  .banner{color:#000;background:none;border:2px solid #ccc}
+}
+
+.artifact [data-act="print"],.artifact [data-act="printproblem"],.artifact [data-act="export"],.artifact [data-act="fullscreen"]{display:none!important}
+.lite .who,.lite .sync,.lite [data-act="planfor"],.lite [data-act="newstudent"],.lite [data-act="usefor"]{display:none!important}
+.locked .side,.locked .tabbar,.locked .topbar{display:none!important}.locked .shell{grid-template-columns:1fr}
+
+</style>
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="icon-192.png">
+<script>window.CBT_CONFIG = {clientId: 'e7d3f1e4-8201-4945-8b93-7f55527c71c1', folderName: 'אתר לימודי סיביטי'};</script>
+<script src="https://cdn.jsdelivr.net/npm/@azure/msal-browser@2.39.0/lib/msal-browser.min.js"></script>
+</head>
+<body>
+<div class="shell">
+  <aside class="side">
+    <a class="brand" href="#/home"><span class="mark">🧠</span><span>CBT בבית הספר<small>ארגז הכלים של היועץ</small></span></a>
+    <nav class="nav" id="nav"></nav>
+    <div class="foot">
+      <button class="sync" data-act="syncbtn"></button>
+    </div>
+  </aside>
+  <main class="main">
+    <div class="topbar">
+      <div class="title" id="title"></div>
+      <label class="who" title="התלמיד שאיתו עובדים עכשיו">⭐<select id="who"></select></label>
+      <a class="iconbtn" href="#/settings" title="הגדרות" style="text-decoration:none">⚙️</a>
+      <button class="iconbtn" data-act="theme" title="מצב כהה / בהיר">🌓</button>
+    </div>
+    <div id="view"></div>
+  </main>
+</div>
+<nav class="tabbar" id="tabbar"></nav>
+<div class="modal" id="modal"></div>
+
+
+
+
+<script>
+/* CBT app – school counseling. Plain JS, no dependencies. */
+(function(){
+'use strict';
+
+/* ================= utils ================= */
+const $ = s => document.querySelector(s);
+const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const uid = () => Date.now().toString(36) + Math.random().toString(36).slice(2, 7);
+const today = () => new Date().toISOString().slice(0, 10);
+const fmtDate = d => { if (!d) return ''; const x = new Date(d); return isNaN(x) ? d : x.toLocaleDateString('he-IL', {day:'numeric', month:'short', year:'numeric'}); };
+const lines = t => String(t || '').split('\n').map(s => s.trim()).filter(Boolean);
+const href = p => p.split('/').map(encodeURIComponent).join('/');
+function toast(msg){ const t = document.createElement('div'); t.className = 'toast'; t.textContent = msg; document.body.appendChild(t); setTimeout(() => t.remove(), 2600); }
+function confetti(){ const c = document.createElement('div'); c.className = 'confetti'; const em = ['🎉','⭐','🌟','🎈','✨','🏆'];
+  for (let i = 0; i < 40; i++) { const e = document.createElement('i'); e.textContent = em[i % em.length]; e.style.left = Math.random()*100 + '%'; e.style.animationDelay = Math.random()*0.8 + 's'; c.appendChild(e); }
+  document.body.appendChild(c); setTimeout(() => c.remove(), 3500); }
+const ls = { get(k, d){ try { const v = localStorage.getItem(k); return v == null ? d : JSON.parse(v); } catch(e){ return d; } },
+             set(k, v){ try { localStorage.setItem(k, JSON.stringify(v)); } catch(e){} } };
+const GRADES = ['א','ב','ג','ד','ה','ו'];
+const hueOf = s => { let h = 0; for (const c of String(s)) h = (h * 31 + c.charCodeAt(0)) % 360; return h; };
+
+/* ================= content ================= */
+let PROBLEMS = (window.PROBLEMS || []);
+const AREAS = ['חרדות','רגש והתנהגות','חברה','למידה וקשב','גוף והרגלים','משבר ואובדן'];
+PROBLEMS.sort((a, b) => AREAS.indexOf(a.area) - AREAS.indexOf(b.area));
+let P = Object.fromEntries(PROBLEMS.map(p => [p.id, p]));
+function setContent(arr){ PROBLEMS = (arr || []).slice().sort((a, b) => AREAS.indexOf(a.area) - AREAS.indexOf(b.area)); P = Object.fromEntries(PROBLEMS.map(p => [p.id, p])); try { ASK_INDEX = null; } catch(e){} }
+function runContent(txt){ window.PROBLEMS = []; try { new Function(txt)(); setContent(window.PROBLEMS); return true; } catch(e){ return false; } }
+const unwrap = r => Array.isArray(r) ? r : (r && r.value) || [];
+const WEB = location.protocol !== 'file:';
+let LIBDATA = [], LIBTOPICS = [];
+const topicName = id => (LIBTOPICS.find(t => t.id === id) || {}).name || '';
+const topicIcon = id => (LIBTOPICS.find(t => t.id === id) || {}).icon || '📄';
+function setLib(d, t){ LIBDATA = unwrap(d); LIBTOPICS = unwrap(t);
+  LIBDATA.forEach((p, i) => { p.title = String(p.page || '').replace(/\s+/g,' ').trim(); p.attachments = (p.attachments || []).filter(a => a.path); p.key = p.pdf || (p.attachments[0] || {}).path || ('k' + i); }); }
+if (!PROBLEMS.length && location.protocol !== 'file:') { try { const c = localStorage.getItem('cbtapp.content'); if (c) { window.PROBLEMS = []; new Function(c)(); setContent(window.PROBLEMS); } } catch(e){} }
+if (window.LIB) setLib(window.LIB.data, window.LIB.topics); else { const c = ls.get('cbtapp.lib', null); if (c) setLib(c.data, c.topics); }
+function libMatches(keywords){
+  const kw = (keywords || []).map(k => k.toLowerCase()).filter(Boolean);
+  const seen = new Set(), out = [];
+  for (const p of LIBDATA) {
+    const hay = (p.title + ' ' + (p.sub || '') + ' ' + p.attachments.map(a => a.name).join(' ')).toLowerCase();
+    const hits = kw.filter(k => hay.includes(k)).length;
+    if (!hits) continue;
+    const sig = p.title + '|' + (p.src ? p.size : '') + '|' + p.attachments.map(a => a.name).join(',');
+    if (seen.has(sig)) continue; seen.add(sig); out.push({p, hits: hits + (/ילד|הור|בית ספר|כית/.test(hay) ? 0.5 : 0) + (p.src ? 0 : 0.3)});
+  }
+  return out.sort((a, b) => b.hits - a.hits).map(x => x.p);
+}
+function ftype(name){ const e = (String(name).split('.').pop() || '').toLowerCase();
+  if (e === 'pdf') return ['pdf','PDF']; if (e.startsWith('doc')) return ['doc','WORD']; if (e.startsWith('ppt')) return ['ppt','PPT'];
+  if (['jpg','jpeg','png','gif'].includes(e)) return ['img','תמונה']; if (['mp4','m4v','webm','mov'].includes(e)) return ['img','וידאו']; if (['mp3','m4a','wav','ogg'].includes(e)) return ['img','שמע']; return ['', e.toUpperCase()]; }
+
+const TOOLS = [
+  {id:'thermometer', name:'מדחום רגשות', icon:'🌡️', desc:'הילד מזהה רגש ומדרג את עוצמתו מ-0 עד 10', h:10},
+  {id:'breathing', name:'נשימה מונחית', icon:'🎈', desc:'נשימת בלון, נשימת ריבוע ו״מריחים פרח – מכבים נר״', h:170},
+  {id:'thoughts', name:'בלש המחשבות', icon:'🕵️', desc:'מצב ← מחשבה ← רגש ← התנהגות, ושאלות בלש למחשבה חלופית', h:215},
+  {id:'trafficlight', name:'רמזור לפתרון בעיות', icon:'🚦', desc:'עוצרים, חושבים על פתרונות, בוחרים ועושים', h:45},
+  {id:'ladder', name:'סולם חשיפה', icon:'🪜', desc:'בונים מדרגות מהקל לקשה ומסמנים כל מדרגה שטיפסנו', h:260},
+  {id:'rewards', name:'טבלת מדבקות', icon:'⭐', desc:'מטרה, מדבקות ופרס – עם חגיגה בסוף', h:35},
+  {id:'pmr', name:'הרפיית שרירים', icon:'🐢', desc:'לימון, צב, מסטיק ובוץ – הרפיה מונחית לילדים', h:130},
+  {id:'copingcard', name:'כרטיס התמודדות', icon:'🃏', desc:'כרטיס אישי ״כשאני מרגיש… אני יכול…״ להדפסה', h:300}
+];
+const TOOL = Object.fromEntries(TOOLS.map(t => [t.id, t]));
+const MEASURES = ['SCARED','SCAS – ספנס','SDQ','CDI – דיכאון ילדים','מדחום פחד','שאלון ויסות רגשי (DERS)','רוזנברג – ערך עצמי','YGTSS – טיקים','CPSS – טראומה','CY-BOCS','דירוג מחנכת'];
+
+/* ================= storage & sync ================= */
+const KEY = 'cbtapp.state.v1';
+const blank = () => ({version:1, updatedAt:0, students:[]});
+let S = ls.get(KEY, null) || blank();
+function fix(s){ ['plan','sessions','measures','ratings','thoughts','solutions','ladders','rewards','cards','problems','goals'].forEach(k => { if (!Array.isArray(s[k])) s[k] = []; }); return s; }
+S.students.forEach(fix);
+function save(){ S.updatedAt = Date.now(); ls.set(KEY, S); SYNC.schedule(); }
+const student = id => S.students.find(s => s.id === id);
+let activeId = ls.get('cbtapp.active', null);
+const active = () => student(activeId);
+function setActive(id){ activeId = id || null; ls.set('cbtapp.active', activeId); }
+
+const idb = {
+  open(){ return new Promise((res, rej) => { const r = indexedDB.open('cbtapp', 1); r.onupgradeneeded = () => r.result.createObjectStore('kv'); r.onsuccess = () => res(r.result); r.onerror = () => rej(r.error); }); },
+  async get(k){ try { const db = await this.open(); return await new Promise(res => { const q = db.transaction('kv').objectStore('kv').get(k); q.onsuccess = () => res(q.result); q.onerror = () => res(null); }); } catch(e){ return null; } },
+  async set(k, v){ try { const db = await this.open(); await new Promise(res => { const t = db.transaction('kv','readwrite'); t.objectStore('kv').put(v, k); t.oncomplete = res; t.onerror = res; }); } catch(e){} },
+  async del(k){ try { const db = await this.open(); await new Promise(res => { const t = db.transaction('kv','readwrite'); t.objectStore('kv').delete(k); t.oncomplete = res; t.onerror = res; }); } catch(e){} }
+};
+const Sync = {
+  supported: 'showSaveFilePicker' in window && 'showOpenFilePicker' in window,
+  handle: null, status: 'none', last: 0, timer: null, err: '',
+  types: [{description:'קובץ נתונים', accept:{'application/json':['.json']}}],
+  async init(){
+    if (!this.supported) { this.status = 'unsupported'; return ui(); }
+    this.handle = await idb.get('sync');
+    if (!this.handle) { this.status = 'none'; return ui(); }
+    try { const p = await this.handle.queryPermission({mode:'readwrite'}); if (p === 'granted') await this.pull(); else this.status = 'permission'; }
+    catch(e){ this.status = 'error'; this.err = e.message; }
+    ui();
+  },
+  async resume(){ try { const p = await this.handle.requestPermission({mode:'readwrite'}); if (p === 'granted') await this.pull(); } catch(e){ this.status = 'error'; this.err = e.message; } ui(); },
+  async create(){ try { const h = await window.showSaveFilePicker({suggestedName:'נתוני-מטופלים-CBT.json', types:this.types}); this.handle = h; await idb.set('sync', h); await this.push(); toast('קובץ הסנכרון נוצר'); } catch(e){ if (e.name !== 'AbortError') { this.status = 'error'; this.err = e.message; } } ui(); },
+  async open(){ try { const [h] = await window.showOpenFilePicker({types:this.types}); this.handle = h; await idb.set('sync', h); await this.pull(); toast('מחובר לקובץ הסנכרון'); } catch(e){ if (e.name !== 'AbortError') { this.status = 'error'; this.err = e.message; } } ui(); },
+  async disconnect(){ this.handle = null; this.status = 'none'; await idb.del('sync'); ui(); },
+  async pull(){
+    const f = await this.handle.getFile(); const txt = await f.text();
+    let remote = null; try { remote = txt.trim() ? JSON.parse(txt) : null; } catch(e){ remote = null; }
+    if (remote && remote.students && (remote.updatedAt || 0) > (S.updatedAt || 0)) {
+      S = remote; S.students.forEach(fix); ls.set(KEY, S); this.status = 'ok'; this.last = Date.now();
+      if (S.updatedAt) toast('נטענו הנתונים העדכניים מהקובץ ב-OneDrive'); render();
+    } else if (!remote || (remote.updatedAt || 0) < (S.updatedAt || 0)) { await this.push(); }
+    else { this.status = 'ok'; this.last = Date.now(); }
+  },
+  schedule(){ if (this.status !== 'ok') return ui(); clearTimeout(this.timer); this.timer = setTimeout(() => this.push(), 700); },
+  async push(){ try { const w = await this.handle.createWritable(); await w.write(JSON.stringify(S, null, 1)); await w.close(); this.status = 'ok'; this.last = Date.now(); this.err = ''; } catch(e){ this.status = 'error'; this.err = e.message; } ui(); }
+};
+/* ================= cloud sync via Microsoft Graph (web version) ================= */
+const DATAFILE = 'נתוני-מטופלים-CBT.json';
+const Cloud = {
+  msal: null, account: null, folderId: null, status: 'none', err: '', last: 0, timer: null,
+  scopes: ['Files.ReadWrite', 'User.Read'],
+  cfg(){ return window.CBT_CONFIG || {}; },
+  async init(){
+    const c = this.cfg();
+    if (!c.clientId || !window.msal) { this.status = 'noconfig'; return ui(); }
+    try {
+      this.msal = new msal.PublicClientApplication({auth:{clientId:c.clientId, authority:'https://login.microsoftonline.com/consumers', redirectUri: location.origin + location.pathname},
+        cache:{cacheLocation:'localStorage', storeAuthStateInCookie:false}});
+      if (this.msal.initialize) await this.msal.initialize();
+      const res = await this.msal.handleRedirectPromise().catch(e => { this.err = e.message; return null; });
+      this.account = (res && res.account) || this.msal.getAllAccounts()[0] || null;
+    } catch(e){ this.status = 'error'; this.err = e.message; return ui(); }
+    if (!this.account) { this.status = 'signedout'; return ui(); }
+    await this.connect();
+  },
+  login(){ if (this.msal) this.msal.loginRedirect({scopes: this.scopes, prompt: 'select_account'}); else toast('חסרה הגדרת התחברות'); },
+  logout(){ ['cbtapp.folderId','cbtapp.content','cbtapp.lib',KEY,'cbtapp.asks','cbtapp.active'].forEach(k => { try { localStorage.removeItem(k); } catch(e){} }); if (this.msal) this.msal.logoutRedirect({account: this.account}); },
+  async getText(rel){
+    const m = await this.g(this.itemPath(rel) + ':');
+    if (m.status === 404) return null;
+    const j = await m.json();
+    const r = await fetch(j['@microsoft.graph.downloadUrl']);
+    if (!r.ok) throw new Error('OneDrive ' + r.status);
+    return await r.text();
+  },
+  async loadContent(){
+    const txt = await this.getText('app-content.js');
+    if (txt == null) throw new Error('לא מצאתי ב-OneDrive את קובץ התוכן של האפליקציה');
+    if (runContent(txt)) { try { localStorage.setItem('cbtapp.content', txt); } catch(e){} }
+  },
+  async token(){
+    try { return (await this.msal.acquireTokenSilent({scopes: this.scopes, account: this.account})).accessToken; }
+    catch(e){ await this.msal.acquireTokenRedirect({scopes: this.scopes, account: this.account}); throw e; }
+  },
+  async g(path, opt = {}){
+    const t = await this.token();
+    const r = await fetch('https://graph.microsoft.com/v1.0' + path, {...opt, headers: {Authorization: 'Bearer ' + t, ...(opt.headers || {})}});
+    if (!r.ok && r.status !== 404) throw new Error('OneDrive ' + r.status);
+    return r;
+  },
+  itemPath(rel){ return `/me/drive/items/${this.folderId}:/${rel.split('/').map(encodeURIComponent).join('/')}`; },
+  async findFolder(){
+    const cached = ls.get('cbtapp.folderId', null);
+    if (cached) { const r = await this.g('/me/drive/items/' + cached + '?$select=id'); if (r.ok) return cached; }
+    const name = this.cfg().folderName || 'אתר לימודי סיביטי';
+    const r = await this.g(`/me/drive/root/search(q='${encodeURIComponent(name)}')?$select=id,name,folder`);
+    const j = await r.json();
+    const f = (j.value || []).find(x => x.folder && x.name === name);
+    if (!f) throw new Error('לא מצאתי ב-OneDrive את התיקייה ״' + name + '״');
+    ls.set('cbtapp.folderId', f.id); return f.id;
+  },
+  async connect(){
+    try {
+      this.status = 'connecting'; ui();
+      this.folderId = await this.findFolder();
+      await this.loadContent();
+      await this.loadLib();
+      await this.pull();
+      this.status = 'ok';
+    } catch(e){ if (this.status !== 'ok') { this.status = 'error'; this.err = e.message; } }
+    ui(); render();
+  },
+  async loadLib(){
+    const t = await this.getText('app-library.json');
+    if (t == null) return;
+    const j = JSON.parse(t);
+    setLib(j.data, j.topics);
+    try { localStorage.setItem('cbtapp.lib', JSON.stringify(j)); } catch(e){}
+  },
+  async pull(){
+    const t = await this.getText(DATAFILE);
+    if (t == null) { await this.push(); return; }
+    let remote = null; try { remote = JSON.parse(t); } catch(e){ remote = null; }
+    if (remote && remote.students && (remote.updatedAt || 0) > (S.updatedAt || 0)) {
+      S = remote; S.students.forEach(fix); ls.set(KEY, S);
+      if (S.updatedAt) toast('נטענו הנתונים העדכניים מ-OneDrive');
+      render();
+    } else if (!remote || (remote.updatedAt || 0) < (S.updatedAt || 0)) { await this.push(); }
+    this.status = 'ok'; this.last = Date.now(); ui();
+  },
+  async push(){
+    await this.g(this.itemPath(DATAFILE) + ':/content', {method: 'PUT', headers: {'Content-Type': 'application/json'}, body: JSON.stringify(S)});
+    this.status = 'ok'; this.last = Date.now(); this.err = ''; ui();
+  },
+  schedule(){ if (this.status !== 'ok') return ui(); clearTimeout(this.timer); this.timer = setTimeout(() => this.push().catch(e => { this.status = 'error'; this.err = e.message; ui(); }), 1000); },
+  async openFile(rel){
+    if (this.status !== 'ok') return toast('כדי לפתוח קבצים מהספרייה צריך להתחבר עם חשבון מיקרוסופט');
+    const w = window.open('', '_blank');
+    try {
+      const r = await this.g(this.itemPath(rel) + ':?$select=webUrl');
+      if (!r.ok) throw new Error('הקובץ לא נמצא ב-OneDrive');
+      const j = await r.json();
+      if (w) w.location.href = j.webUrl; else location.href = j.webUrl;
+    } catch(e){ if (w) w.close(); toast('לא הצלחתי לפתוח את הקובץ: ' + e.message); }
+  }
+};
+/* ================= claude.ai artifact sync (per-viewer private db) ================= */
+const ArtSync = {
+  db: null, uid: null, status: 'connecting', err: '', last: 0, timer: null, sent: {}, unsub: null, busy: false,
+  async init(){
+    try {
+      const [db, user] = await Promise.all([claude.use('db'), claude.use('user')]);
+      const uid = user ? await user.id() : null;
+      if (!db || !uid) { this.status = 'none'; return ui(); }
+      this.db = db; this.uid = uid;
+      await this.pull();
+      this.unsub = this.col().onSnapshot(snap => this.onRemote(snap), e => { if (e && e.code === 'revoked') { this.status = 'none'; ui(); } });
+    } catch(e){ this.status = 'error'; this.err = (e && (e.message || e.code)) || String(e); }
+    ui(); render();
+  },
+  col(){ return this.db.collection('data/users/' + this.uid); },
+  fromDocs(docs){
+    const meta = docs.find(d => d.id === 'meta'); if (!meta) return null;
+    const m = meta.data() || {};
+    const byId = Object.fromEntries(docs.filter(d => d.id.startsWith('s_')).map(d => [d.id.slice(2), d.data()]));
+    const order = Array.isArray(m.order) ? m.order : Object.keys(byId);
+    return {version: 1, updatedAt: m.updatedAt || 0, students: order.map(id => byId[id]).filter(Boolean).map(x => fix(JSON.parse(JSON.stringify(x))))};
+  },
+  adopt(remote){ S = remote; ls.set(KEY, S); this.sent = Object.fromEntries(S.students.map(s => [s.id, JSON.stringify(s)])); },
+  async pull(){
+    const snap = await this.col().get();
+    const remote = this.fromDocs(snap.docs);
+    if (remote && remote.updatedAt > (S.updatedAt || 0)) { this.adopt(remote); if (S.students.length) toast('נטענו הנתונים העדכניים'); }
+    else if (!remote || remote.updatedAt < (S.updatedAt || 0)) { await this.push(); }
+    else this.sent = Object.fromEntries(S.students.map(s => [s.id, JSON.stringify(s)]));
+    this.status = 'ok'; this.last = Date.now(); ui();
+  },
+  onRemote(snap){
+    if (this.busy || snap.metadata.hasPendingWrites) return;
+    const remote = this.fromDocs(snap.docs);
+    if (remote && remote.updatedAt > (S.updatedAt || 0)) { this.adopt(remote); this.last = Date.now(); render(); toast('עודכן ממכשיר אחר'); }
+  },
+  async push(){
+    if (!this.db) return;
+    this.busy = true;
+    try {
+      const col = this.col(), ids = new Set(S.students.map(s => s.id));
+      for (const s of S.students) { const j = JSON.stringify(s); if (this.sent[s.id] !== j) { await col.doc('s_' + s.id).set(JSON.parse(j)); this.sent[s.id] = j; } }
+      for (const id of Object.keys(this.sent)) if (!ids.has(id)) { await col.doc('s_' + id).delete(); delete this.sent[id]; }
+      await col.doc('meta').set({updatedAt: S.updatedAt || Date.now(), order: S.students.map(s => s.id)});
+      this.status = 'ok'; this.last = Date.now(); this.err = '';
+    } catch(e){ this.status = 'error'; this.err = e.code === 'quota_exceeded' ? 'נגמר המקום לשמירה' : (e.message || e.code); }
+    this.busy = false; ui();
+  },
+  schedule(){ if (!this.db) return ui(); clearTimeout(this.timer); this.timer = setTimeout(() => this.push(), 1200); }
+};
+function artSettings(){
+  const st = ArtSync.status;
+  const sync = st === 'ok' ? `<div class="note">✅ הנתונים נשמרים בחשבון Claude שלך ומסתנכרנים בין הטלפון למחשב. רק את/ה רואה אותם.</div><div class="actions" style="margin-top:12px"><button class="btn" data-act="art-sync">🔄 סנכרון עכשיו</button></div>`
+    : st === 'connecting' ? `<div class="note">⏳ מתחבר…</div>`
+    : st === 'error' ? `<div class="note danger">שגיאת סנכרון: ${esc(ArtSync.err)}</div><div class="actions" style="margin-top:12px"><button class="btn primary" data-act="art-sync">נסו שוב</button></div>`
+    : `<div class="note warn">הסנכרון לא זמין בתצוגה הזו. פתחו את הקישור כשאתם מחוברים לחשבון Claude שלכם. בינתיים הנתונים נשמרים רק במכשיר הזה.</div>`;
+  const h = `<div class="panel"><h3>☁️ סנכרון</h3>${sync}</div>
+    <div class="panel"><h3>📱 שימוש בטלפון</h3><ol style="margin:0;padding-inline-start:22px"><li>פותחים את הקישור לאפליקציה באפליקציית Claude או בדפדפן, מחוברים לאותו חשבון.</li><li>כדי שיהיה קיצור: בדפדפן בוחרים בתפריט ⋮ ״הוספה למסך הבית״.</li></ol></div>
+    <div class="panel"><h3>📚 הספרייה</h3><p style="margin:0">קובצי הספרייה (5.7 ג׳יגה) נמצאים במחשב, בתיקייה ״אתר לימודי סיביטי״ ב-OneDrive, ונפתחים מקיצור הדרך ״ספריית לימודי CBT״. בגרסה הזו מופיעים מפות הטיפול, הכלים, העוזר ותיקי התלמידים.</p></div>
+    <div class="panel"><h3>🔒 פרטיות</h3><ul class="clean"><li>התיקים נשמרים באזור פרטי בחשבון Claude שלך. גם מי שיקבל את הקישור לא יראה אותם.</li><li>רושמים כינוי או ראשי תיבות בלבד – לא שם מלא, לא ת״ז ולא כתובת.</li></ul></div>
+    <div class="panel"><h3>💾 העברת נתונים</h3><p style="margin:0 0 10px">אפשר לייבא קובץ גיבוי שיוצא מהאפליקציה במחשב.</p><label class="btn">⬆️ ייבוא מגיבוי<input type="file" accept=".json" id="importfile" hidden></label></div>
+    <div class="panel"><h3>ℹ️ על האפליקציה</h3><p style="margin:0">${PROBLEMS.length} מפות טיפול · ${TOOLS.length} כלים לילדים.</p><p class="muted" style="margin:8px 0 0;font-size:14px">מפות הטיפול הן כלי עזר מקצועי, ואינן מחליפות שיקול דעת קליני, הדרכה והפניה לגורם מתאים.</p></div>`;
+  return {title:'הגדרות', html:h, after(){ const f = $('#importfile'); f && f.addEventListener('change', async () => { const file = f.files[0]; if (!file) return; try { const d = JSON.parse(await file.text()); if (!d.students) throw 0; if (!(await uiConfirm(`לייבא ${d.students.length} תלמידים? הנתונים הנוכחיים יוחלפו.`))) return; S = d; S.students.forEach(fix); save(); render(); toast('הגיבוי יובא'); } catch(e){ toast('הקובץ אינו גיבוי תקין'); } }); }};
+}
+function uiConfirm(msg){
+  return new Promise(res => {
+    const m = $('#modal'); m.className = 'modal open';
+    m.innerHTML = `<div class="box" style="max-width:420px"><p style="font-size:17px;margin:0 0 18px">${esc(msg)}</p><div class="actions"><button class="btn primary" id="cfYes">אישור</button><button class="btn" id="cfNo">ביטול</button></div></div>`;
+    const done = v => { m.className = 'modal'; m.innerHTML = ''; res(v); };
+    $('#cfYes').onclick = () => done(true); $('#cfNo').onclick = () => done(false);
+  });
+}
+
+const ARTIFACT = !!(window.claude && typeof window.claude.use === 'function');
+const LITE = !!window.CBT_LITE;
+const LiteSync = {status: 'lite', last: 0, init(){ ui(); }, schedule(){}, pull(){ return Promise.resolve(); }};
+const SYNC = LITE ? LiteSync : ARTIFACT ? ArtSync : WEB ? Cloud : Sync;
+
+window.addEventListener('focus', () => { if (SYNC.status === 'ok') SYNC.pull().then(ui).catch(() => {}); });
+document.addEventListener('visibilitychange', () => { if (!document.hidden && SYNC.status === 'ok') SYNC.pull().then(ui).catch(() => {}); });
+function syncLabel(){
+  return ({ok:['ok','מסונכרן עם OneDrive' + (SYNC.last ? ' · ' + new Date(SYNC.last).toLocaleTimeString('he-IL',{hour:'2-digit',minute:'2-digit'}) : '')], signedout:['warn','התחברו עם מיקרוסופט לסנכרון'], connecting:['warn','מתחבר ל-OneDrive…'], noconfig:['err','חסרה הגדרת התחברות'],
+    permission:['warn','לחצו כדי לחדש סנכרון'], none:['warn','נשמר רק במחשב הזה'], error:['err','שגיאת סנכרון – לחצו לפרטים'],
+    unsupported:['warn','נשמר רק בדפדפן הזה']})[SYNC.status] || ['', ''];
+}
+function ui(){
+  const [cls, txt] = syncLabel();
+  document.querySelectorAll('.sync').forEach(b => { b.className = 'sync ' + cls; b.innerHTML = `<span class="dot"></span><span>${esc(txt)}</span>`; });
+  const sel = $('#who'); if (sel) {
+    const list = S.students.filter(s => !s.archived);
+    sel.innerHTML = `<option value="">— ללא תלמיד —</option>` + list.map(s => `<option value="${s.id}" ${s.id === activeId ? 'selected' : ''}>${esc(s.alias)} · ${esc(s.grade || '')}</option>`).join('');
+  }
+}
+
+/* ================= routing & shell ================= */
+const NAV = [['home','🏠','בית'],['ask','💬','שאל שאלה'],['problems','🧭','מנווט בעיות'],['students','🧒','תלמידים'],['workflow','🗺️','סדר עבודה'],['tools','🧰','כלים לילדים'],['library','📚','ספרייה'],['settings','⚙️','הגדרות']];
+function route(){ const h = location.hash.replace(/^#\/?/, '').split('/').map(decodeURIComponent); return {r: h[0] || 'home', id: h[1], sub: h[2], x: h[3]}; }
+let timers = [];
+function clearTimers(){ timers.forEach(t => { clearTimeout(t); clearInterval(t); }); timers = []; }
+function isLocked(){ return WEB && !ARTIFACT && !LITE && !Cloud.account; }
+function lockView(){
+  const nc = Cloud.status === 'noconfig';
+  return {title:'כניסה', html:`<div style="min-height:70vh;display:grid;place-items:center"><div class="panel" style="max-width:420px;text-align:center;padding:34px 26px">
+    <div style="width:72px;height:72px;border-radius:20px;margin:0 auto 14px;display:grid;place-items:center;font-size:38px;background:linear-gradient(135deg,#4a9c8a,#1f5a4f)">🧠</div>
+    <h2 style="margin:0 0 8px">CBT בבית הספר</h2><p class="muted" style="margin:0 0 20px">${nc ? 'האפליקציה עדיין לא הוגדרה להתחברות.' : 'האפליקציה פרטית. נכנסים עם חשבון המיקרוסופט של הבעלים.'}</p>
+    ${nc ? '' : '<button class="btn primary" data-act="cloud-login" style="width:100%;padding:12px">🔑 כניסה עם חשבון מיקרוסופט</button>'}
+    ${Cloud.status === 'error' ? `<p class="note danger" style="margin:14px 0 0">${esc(Cloud.err)}</p>` : ''}</div></div>`};
+}
+function render(){
+  clearTimers();
+  const R = route();
+  document.body.classList.toggle('locked', isLocked());
+  if (isLocked()) { const o = lockView(); $('#title').textContent = ''; $('#view').innerHTML = `<div class="page">${o.html}</div>`; document.title = 'CBT בבית הספר'; return; }
+  if (WEB && !ARTIFACT && !LITE && !PROBLEMS.length) { $('#title').textContent = ''; $('#view').innerHTML = `<div class="empty" style="padding-top:120px"><span class="big">⏳</span>${Cloud.status === 'error' ? esc(Cloud.err) + ' <br><br><button class="btn primary" data-act="cloud-retry">נסו שוב</button>' : 'טוען את התוכן מ-OneDrive…'}</div>`; return; }
+  const views = LITE ? {home: liteHome, problems, problem: problemView, tools, tool: toolView, settings: liteSettings, ask, workflow} : {home, problems, problem: problemView, students, student: studentView, tools, tool: toolView, library, settings, ask, workflow};
+  const fn = views[R.r] || home;
+  const out = fn(R);
+  $('#title').textContent = out.title;
+  $('#view').innerHTML = `<div class="page">${out.html}</div>`;
+  const navKey = {problem:'problems', student:'students', tool:'tools'}[R.r] || R.r;
+  document.querySelectorAll('[data-nav]').forEach(a => a.classList.toggle('on', a.dataset.nav === navKey));
+  document.title = out.title + ' · CBT בבית הספר';
+  if (out.after) out.after();
+  ui();
+}
+window.addEventListener('hashchange', () => { render(); window.scrollTo({top:0}); });
+
+/* ================= shared pieces ================= */
+function problemCard(p, i){
+  return `<a class="card accent" href="#/problem/${p.id}" style="--h:${hueOf(p.area) }">
+    <span class="emoji">${p.icon}</span><span class="name">${esc(p.name)}</span>
+    <span class="sub">${esc(p.summary)}</span>
+    <span class="row"><span class="pill">${esc(p.area)}</span><span class="pill">${p.sessions.length} מפגשים</span></span></a>`;
+}
+function studentCard(s){
+  const next = s.plan.find(x => !x.done);
+  const probs = s.problems.map(id => P[id]).filter(Boolean);
+  return `<a class="card accent" href="#/student/${s.id}" style="--h:${hueOf(s.alias)}">
+    <span class="emoji">${probs[0] ? probs[0].icon : '🧒'}</span>
+    <span class="name">${esc(s.alias)} <span class="muted" style="font-weight:400">· כיתה ${esc(s.grade || '?')}${s.classroom ? ' ' + esc(s.classroom) : ''}</span></span>
+    <span class="sub">${probs.map(p => esc(p.name)).join(' · ') || 'לא הוגדרה בעיה'}</span>
+    <span class="sub">${next ? '⏭️ הבא: ' + esc(next.title) : s.plan.length ? '✅ התוכנית הושלמה' : 'אין עדיין תוכנית טיפול'}</span>
+    <span class="row"><span class="pill">${s.sessions.length} מפגשים</span>${s.sessions.length ? `<span class="pill">אחרון: ${fmtDate(s.sessions.slice().sort((a,b)=>a.date<b.date?1:-1)[0].date)}</span>` : ''}</span></a>`;
+}
+function libItem(p){
+  const first = p.attachments[0];
+  const open = p.pdf ? `data-act="libopen" data-pdf="${esc(p.pdf)}"` : first ? `data-act="attopen" data-path="${esc(first.path)}"` : '';
+  return `<div class="lib-item" ${open} data-title="${esc(p.pdf ? p.title : first ? first.name : p.title)}">
+    <span style="font-size:22px">${topicIcon(p.topic)}</span>
+    <div class="grow"><div class="t">${esc(p.title)}</div><div class="s">${esc(topicName(p.topic))}${p.src ? ' · ' + esc(p.sub ? p.section + ' › ' + p.sub : p.section) : ''}</div></div>
+    ${p.attachments.map(a => { const [c, l] = ftype(a.name); return `<a class="ft ${c}" href="${href(a.path)}" target="_blank" data-act="attopen" data-path="${esc(a.path)}" data-title="${esc(a.name)}" title="${esc(a.name)}">${l}</a>`; }).join(' ')}
+  </div>`;
+}
+function ul(arr){ return arr && arr.length ? `<ul class="clean">${arr.map(x => `<li>${esc(x)}</li>`).join('')}</ul>` : '<p class="muted">—</p>'; }
+function chart(points, max = 10, label = ''){
+  if (points.length < 2) return `<p class="muted">הגרף יופיע אחרי שני רישומים לפחות.</p>`;
+  const W = 600, H = 190, pad = 30, n = points.length;
+  const x = i => pad + i * (W - pad * 2) / (n - 1), y = v => H - pad - (v / max) * (H - pad * 2);
+  const d = points.map((p, i) => (i ? 'L' : 'M') + x(i).toFixed(1) + ' ' + y(p.v).toFixed(1)).join(' ');
+  const grid = [0, max/2, max].map(v => `<line class="axis" x1="${pad}" x2="${W-pad}" y1="${y(v)}" y2="${y(v)}"/><text class="lbl" x="${W-pad+6}" y="${y(v)+4}">${v}</text>`).join('');
+  return `<svg class="chart" viewBox="0 0 ${W} ${H}" preserveAspectRatio="none" role="img" aria-label="${esc(label)}">${grid}<path class="ln" d="${d}"/>
+    ${points.map((p, i) => `<circle class="pt" cx="${x(i)}" cy="${y(p.v)}" r="5"><title>${esc(p.t)}: ${p.v}</title></circle>`).join('')}
+    <text class="lbl" x="${pad}" y="${H-8}">${esc(points[0].t)}</text><text class="lbl" x="${W-pad}" y="${H-8}" text-anchor="end">${esc(points[n-1].t)}</text></svg>`;
+}
+
+/* ================= views ================= */
+function home(){
+  const act = S.students.filter(s => !s.archived);
+  const month = today().slice(0, 7);
+  const sessMonth = act.reduce((n, s) => n + s.sessions.filter(x => (x.date || '').startsWith(month)).length, 0);
+  const a = active();
+  let h = `<section class="hero"><h1>שלום! במה נטפל היום? 👋</h1>
+    <p>מפות טיפול CBT לבעיות נפוצות בבית הספר היסודי, מתכנן מפגשים, כלים אינטראקטיביים לילדים ותיק לכל תלמיד – יחד עם כל החומרים מהספרייה שלך.</p>
+    <form id="homeask" style="display:flex;gap:8px;margin-top:18px;max-width:720px"><input class="inp" id="homeq" placeholder="💬 שאלו שאלה… למשל: ילד שבוכה כל בוקר בשער" style="flex:1;height:48px;border:0;font-size:16px"><button class="btn primary" type="submit">תשובה</button></form>
+    <div class="actions"><button class="btn" data-act="newstudent">＋ תלמיד חדש</button><a class="btn" href="#/problems">🧭 בחירת בעיה</a><a class="btn" href="#/workflow">🗺️ סדר עבודה</a><a class="btn" href="#/tools">🧰 כלים לילדים</a></div></section>`;
+  if (SYNC.status === 'signedout') h += `<div class="note warn no-print">☁️ כדי לראות את התלמידים ואת הספרייה מכל מכשיר – <button class="btn primary sm" data-act="cloud-login">התחברות עם חשבון מיקרוסופט</button></div>`;
+  else if (SYNC.status !== 'ok' && SYNC.status !== 'connecting') h += `<div class="note warn no-print">💾 הנתונים נשמרים כרגע רק במכשיר הזה. <a href="#/settings">להגדרת סנכרון עם OneDrive</a></div>`;
+  h += `<div class="three" style="margin-top:16px"><div class="stat"><b>${act.length}</b><span>תלמידים בטיפול</span></div><div class="stat"><b>${sessMonth}</b><span>מפגשים החודש</span></div><div class="stat"><b>${PROBLEMS.length}</b><span>מפות טיפול</span></div></div>`;
+  if (a) h += `<h2 class="sec">⭐ בעבודה עכשיו</h2><div class="grid wide">${studentCard(a)}</div>`;
+  h += `<h2 class="sec">🧒 התלמידים שלי <small>${act.length}</small></h2>`;
+  h += act.length ? `<div class="grid">${act.slice(0, 8).map(studentCard).join('')}</div>` : `<div class="panel empty"><span class="big">🌱</span>עוד אין תלמידים. <button class="btn primary" data-act="newstudent">＋ הוספת תלמיד ראשון</button></div>`;
+  h += `<h2 class="sec">🧭 מפות טיפול <small>לפי תחום</small></h2><div class="grid">${PROBLEMS.slice(0, 8).map(problemCard).join('')}</div>
+    <div style="margin-top:12px"><a class="btn" href="#/problems">לכל ${PROBLEMS.length} הבעיות ←</a></div>`;
+  h += `<h2 class="sec">🧰 כלים לשימוש בחדר</h2><div class="grid">${TOOLS.slice(0, 4).map(toolCard).join('')}</div>`;
+  return {title:'בית', html:h, after(){ const f = $('#homeask'); f.onsubmit = e => { e.preventDefault(); const v = $('#homeq').value.trim(); if (v) { const hist = ls.get('cbtapp.asks', []); ls.set('cbtapp.asks', [v, ...hist.filter(x => x !== v)].slice(0, 15)); location.hash = '#/ask/' + encodeURIComponent(v); } }; }};
+}
+
+let areaFilter = 'הכל', probQuery = '';
+function problems(){
+  const ql = probQuery.toLowerCase();
+  const list = PROBLEMS.filter(p => (areaFilter === 'הכל' || p.area === areaFilter) &&
+    (!ql || (p.name + ' ' + p.summary + ' ' + (p.signs || []).join(' ')).toLowerCase().includes(ql)));
+  let h = `<div class="search" style="margin:4px 0 14px"><input id="probq" placeholder="חיפוש בעיה, סימן או מילת מפתח…" value="${esc(probQuery)}"><span class="ic">🔍</span></div>
+    <div class="chips">${['הכל', ...AREAS].map(a => `<button class="chip ${a === areaFilter ? 'on' : ''}" data-act="area" data-v="${esc(a)}">${esc(a)}</button>`).join('')}</div>`;
+  if (!PROBLEMS.length) h += `<div class="panel empty"><span class="big">⏳</span>תוכן מפות הטיפול עדיין לא נטען.</div>`;
+  const groups = AREAS.map(a => [a, list.filter(p => p.area === a)]).filter(g => g[1].length);
+  for (const [a, ps] of groups) h += `<h2 class="sec">${esc(a)} <small>${ps.length}</small></h2><div class="grid">${ps.map(problemCard).join('')}</div>`;
+  if (PROBLEMS.length && !list.length) h += `<div class="empty"><span class="big">🔎</span>לא נמצאה בעיה מתאימה</div>`;
+  return {title:'מנווט בעיות', html:h, after(){ const i = $('#probq'); i.addEventListener('input', () => { probQuery = i.value; const pos = i.selectionStart; render(); const j = $('#probq'); j.focus(); j.setSelectionRange(pos, pos); }); }};
+}
+
+function sessionHTML(s, i, extra = ''){
+  return `<details class="sess ${s.done ? 'done' : ''}" ${extra.includes('open') ? 'open' : ''}><summary><span class="n">${s.done ? '✓' : i + 1}</span><span>${esc(s.title)}</span>${s.date ? `<span class="pill">${fmtDate(s.date)}</span>` : ''}<span class="chev">‹</span></summary>
+    <div class="body"><div><h4>🎯 מטרות</h4>${ul(s.goals)}</div><div><h4>🧩 פעילויות</h4>${ul(s.activities)}</div>
+    <div><h4>🏠 משימת בית</h4><p style="margin:0">${esc(s.homework || '—')}</p></div>
+    <div>${s.tool && TOOL[s.tool] ? `<h4>🧰 כלי במפגש</h4><a class="btn sm" href="#/tool/${s.tool}">${TOOL[s.tool].icon} ${TOOL[s.tool].name}</a>` : ''}</div>${extra.replace('open','')}</div></details>`;
+}
+function problemSections(p){
+  const m = p.model || {};
+  return {
+    overview: `<div class="panel"><h3>📌 בקצרה</h3><p style="margin:0">${esc(p.summary)}</p></div>
+      <div class="panel"><h3>👀 סימנים בבית הספר ובבית</h3>${ul(p.signs)}</div>
+      <div class="panel"><h3>🧠 המשגה – המודל הקוגניטיבי-התנהגותי</h3>
+        <div class="model"><div class="box trig"><b>⚡ מצבים מעוררים</b>${esc((m.triggers || []).join(' · '))}</div>
+        <div class="box t"><b>💭 מחשבות</b>${ul(m.thoughts)}</div><div class="box f"><b>❤️ רגשות</b>${ul(m.feelings)}</div>
+        <div class="box b"><b>🫀 גוף</b>${ul(m.body)}</div><div class="box a"><b>🏃 התנהגות</b>${ul(m.behaviors)}</div></div>
+        ${m.maintaining ? `<p class="note" style="margin:12px 0 0"><b>🔁 מה משמר את הבעיה:</b> ${esc(m.maintaining)}</p>` : ''}</div>
+      <div class="panel"><h3>🎯 יעדי טיפול</h3>${ul(p.goals)}</div>
+      <div class="panel" style="border-color:color-mix(in srgb,var(--danger) 40%,var(--line))"><h3>🚩 מתי להפנות</h3>${ul(p.redFlags)}</div>`,
+    assess: `<div class="panel"><h3>🔍 הערכה ואבחון</h3>${ul(p.assessment)}</div>`,
+    sessions: `<p class="muted no-print">${p.sessions.length} מפגשים. לחיצה על מפגש פותחת את הפירוט.</p>${p.sessions.map((s, i) => sessionHTML(s, i)).join('')}`,
+    techniques: `<div class="grid wide">${(p.techniques || []).map(t => `<div class="panel" style="margin:0"><h3>🛠️ ${esc(t.name)}</h3><p style="margin:0">${esc(t.how)}</p></div>`).join('')}</div>`,
+    partners: `<div class="two"><div class="panel" style="margin:0"><h3>👨‍👩‍👧 עבודה עם ההורים</h3>${ul(p.parents)}</div><div class="panel" style="margin:0"><h3>🏫 הנחיות למחנכ/ת ולצוות</h3>${ul(p.teachers)}</div></div>`,
+    sources: `<div class="panel"><h3>📖 מקורות ותוכניות מבוססות מחקר</h3>${ul(p.sources)}</div>`
+  };
+}
+function problemView(R){
+  const p = P[R.id]; if (!p) return {title:'לא נמצא', html:'<div class="empty">הבעיה לא נמצאה. <a href="#/problems">חזרה</a></div>'};
+  const tab = R.sub || 'overview';
+  const sec = problemSections(p);
+  const lib = libMatches(p.libraryKeywords);
+  const TABS = [['overview','סקירה'],['assess','הערכה'],['sessions','מהלך המפגשים'],['techniques','טכניקות'],['partners','הורים וצוות'],['tools','כלים'],['library',`מהספרייה (${lib.length})`]];
+  let body;
+  if (tab === 'print') body = `<div class="print-only"><h1>${esc(p.name)}</h1></div>` + ['overview','assess','sessions','techniques','partners','sources'].map(k => sec[k]).join('');
+  else if (tab === 'tools') body = `<div class="grid">${(p.tools || []).filter(t => TOOL[t]).map(t => toolCard(TOOL[t])).join('') || '<p class="muted">—</p>'}</div>`;
+  else if (tab === 'library') body = lib.length ? `<p class="muted">${lib.length} פריטים, הרלוונטיים ביותר קודם.${lib.length > 60 ? ' מוצגים 60 הראשונים.' : ''}</p><div class="list">${lib.slice(0, 60).map(libItem).join('')}</div>` : `<div class="empty">${LIBDATA.length ? 'לא נמצאו חומרים מתאימים בספרייה.' : '📚 חומרי הספרייה לנושא הזה זמינים במחשב, בקיצור הדרך ״ספריית לימודי CBT״.'}</div>`;
+  else body = (sec[tab] || sec.overview) + (tab === 'overview' ? sec.sources : '');
+  const h = `<a class="back no-print" href="#/problems">→ כל הבעיות</a>
+    <div class="banner" style="--h:${hueOf(p.area)}"><span class="emoji">${p.icon}</span><div><div style="opacity:.85;font-size:14px">${esc(p.area)} · כיתות א–ו</div><h1>${esc(p.name)}</h1></div>
+    <div class="actions no-print"><button class="btn" data-act="planfor" data-id="${p.id}">📋 תוכנית לתלמיד</button><button class="btn" data-act="printproblem" data-id="${p.id}">🖨️ הדפסה</button></div></div>
+    <nav class="tabs">${TABS.map(([k, l]) => `<a href="#/problem/${p.id}/${k}" class="${k === tab ? 'on' : ''}">${l}</a>`).join('')}</nav>${body}`;
+  return {title:p.name, html:h, after(){ if (tab === 'print') setTimeout(() => { window.print(); history.back(); }, 300); }};
+}
+
+let showArchived = false;
+function students(){
+  const list = S.students.filter(s => !!s.archived === showArchived);
+  let h = `<div class="actions" style="margin:4px 0 16px"><button class="btn primary" data-act="newstudent">＋ תלמיד חדש</button>
+    <button class="chip ${!showArchived ? 'on' : ''}" data-act="arch" data-v="0">בטיפול</button><button class="chip ${showArchived ? 'on' : ''}" data-act="arch" data-v="1">ארכיון</button></div>
+    <div class="note" style="margin-bottom:16px">🔒 מומלץ לרשום כינוי או ראשי תיבות בלבד, בלי שם מלא ובלי מספר זהות.</div>`;
+  h += list.length ? `<div class="grid">${list.map(studentCard).join('')}</div>` : `<div class="panel empty"><span class="big">${showArchived ? '🗄️' : '🌱'}</span>${showArchived ? 'הארכיון ריק' : 'עוד אין תלמידים בטיפול'}</div>`;
+  return {title:'תלמידים', html:h};
+}
+
+function studentView(R){
+  const s = student(R.id); if (!s) return {title:'לא נמצא', html:'<div class="empty">התלמיד לא נמצא. <a href="#/students">חזרה</a></div>'};
+  const tab = R.sub || 'overview';
+  const probs = s.problems.map(id => P[id]).filter(Boolean);
+  const TABS = [['overview','סקירה'],['plan',`תוכנית טיפול (${s.plan.filter(x=>x.done).length}/${s.plan.length})`],['sessions',`מפגשים (${s.sessions.length})`],['measures','מדדים ושאלונים'],['work','עבודות וכלים']];
+  const sorted = s.sessions.slice().sort((a, b) => a.date < b.date ? -1 : 1);
+  let body = '';
+  if (tab === 'overview') {
+    const rated = sorted.filter(x => x.rating !== '' && x.rating != null);
+    body = stagesHTML(s) + `<div class="three" style="margin-top:14px"><div class="stat"><b>${s.sessions.length}</b><span>מפגשים</span></div><div class="stat"><b>${s.plan.length ? Math.round(100 * s.plan.filter(x => x.done).length / s.plan.length) + '%' : '—'}</b><span>התקדמות בתוכנית</span></div><div class="stat"><b>${sorted.length ? fmtDate(sorted[sorted.length-1].date) : '—'}</b><span>מפגש אחרון</span></div></div>
+      <div class="panel" style="margin-top:14px"><h3>📈 עוצמת הקושי לאורך המפגשים <span class="muted" style="font-weight:400;font-size:13px">(0 = אין קושי, 10 = קושי קיצוני)</span></h3>${chart(rated.map(x => ({t: fmtDate(x.date), v: +x.rating})), 10, 'עוצמת הקושי')}</div>
+      <div class="two" style="margin-top:14px"><div class="panel" style="margin:0"><h3>🎯 מטרות</h3>${ul(s.goals)}</div><div class="panel" style="margin:0"><h3>📝 רקע והערות</h3><p style="margin:0;white-space:pre-wrap">${esc(s.notes || '—')}</p>
+      <p class="muted" style="margin:10px 0 0;font-size:14px">הופנה ע״י: ${esc(s.referral || '—')} · תחילת טיפול: ${fmtDate(s.start) || '—'}</p></div></div>
+      ${probs.length ? `<h2 class="sec">🧭 מפות הטיפול שלו</h2><div class="grid">${probs.map(problemCard).join('')}</div>` : ''}`;
+  }
+  if (tab === 'plan') {
+    if (!s.plan.length) body = `<div class="panel"><h3>📋 יצירת תוכנית טיפול</h3><p class="muted">בוחרים מפת טיפול, והמפגשים שלה נכנסים לתוכנית. אחר כך אפשר לערוך, למחוק ולהוסיף מפגשים.</p>
+      <div class="actions">${(probs.length ? probs : PROBLEMS).map(p => `<button class="btn" data-act="mkplan" data-s="${s.id}" data-p="${p.id}">${p.icon} ${esc(p.name)}</button>`).join('')}</div>
+      <p style="margin:14px 0 0"><button class="btn ghost" data-act="addplan" data-s="${s.id}">＋ או להתחיל תוכנית ריקה</button></p></div>`;
+    else body = `<div class="actions no-print" style="margin-bottom:12px"><button class="btn" data-act="addplan" data-s="${s.id}">＋ מפגש</button><button class="btn" data-act="print">🖨️ הדפסת התוכנית</button><button class="btn danger" data-act="clearplan" data-s="${s.id}">מחיקת התוכנית</button></div>
+      <div class="print-only"><h2>תוכנית טיפול – ${esc(s.alias)}</h2></div>` +
+      s.plan.map((x, i) => sessionHTML(x, i, `<div class="no-print" style="grid-column:1/-1;display:flex;gap:10px;flex-wrap:wrap;align-items:end;border-top:1px solid var(--line);padding-top:12px">
+        <label class="f">תאריך<input type="date" class="inp" value="${esc(x.date || '')}" data-bind="plan.date" data-s="${s.id}" data-i="${i}"></label>
+        <label class="f" style="flex:1;min-width:200px">הערות<input class="inp" value="${esc(x.notes || '')}" data-bind="plan.notes" data-s="${s.id}" data-i="${i}" placeholder="מה קרה בפועל, מה להתאים"></label>
+        <button class="btn ${x.done ? '' : 'primary'}" data-act="plandone" data-s="${s.id}" data-i="${i}">${x.done ? '↩️ לא בוצע' : '✓ בוצע'}</button>
+        <button class="btn" data-act="logfromplan" data-s="${s.id}" data-i="${i}">📝 רישום מפגש</button>
+        <button class="btn ghost" data-act="editplan" data-s="${s.id}" data-i="${i}">✏️</button><button class="btn ghost danger" data-act="delplan" data-s="${s.id}" data-i="${i}">🗑️</button></div>`)).join('');
+  }
+  if (tab === 'sessions') {
+    body = `<div class="actions" style="margin-bottom:12px"><button class="btn primary" data-act="addsession" data-s="${s.id}">＋ רישום מפגש</button></div>` +
+      (sorted.length ? `<div class="list">${sorted.slice().reverse().map(x => `<div class="li"><span class="pill brand">${x.num ? 'מפגש ' + esc(x.num) : 'מפגש'}</span>
+        <div class="grow"><div class="date">${fmtDate(x.date)}${x.rating !== '' && x.rating != null ? ' · עוצמת קושי ' + esc(x.rating) + '/10' : ''}</div>
+        <div style="white-space:pre-wrap">${esc(x.content || '')}</div>${x.homework ? `<div class="muted" style="font-size:14px">🏠 ${esc(x.homework)}</div>` : ''}${x.notes ? `<div class="muted" style="font-size:14px;white-space:pre-wrap">📝 ${esc(x.notes)}</div>` : ''}</div>
+        <button class="btn ghost sm" data-act="editsession" data-s="${s.id}" data-id="${x.id}">✏️</button><button class="btn ghost sm danger" data-act="delsession" data-s="${s.id}" data-id="${x.id}">🗑️</button></div>`).join('')}</div>`
+      : `<div class="panel empty"><span class="big">🗓️</span>עוד לא נרשמו מפגשים</div>`);
+  }
+  if (tab === 'measures') {
+    const names = [...new Set(s.measures.map(m => m.name))];
+    body = `<div class="actions" style="margin-bottom:12px"><button class="btn primary" data-act="addmeasure" data-s="${s.id}">＋ ציון שאלון / מדד</button></div>` +
+      (names.length ? names.map(n => { const ms = s.measures.filter(m => m.name === n).sort((a,b) => a.date < b.date ? -1 : 1); const mx = Math.max(10, ...ms.map(m => +m.score || 0));
+        return `<div class="panel"><h3>📊 ${esc(n)}</h3>${chart(ms.map(m => ({t: fmtDate(m.date), v: +m.score || 0})), Math.ceil(mx / 10) * 10, n)}
+          <div class="actions" style="margin-top:8px">${ms.map(m => `<span class="pill">${fmtDate(m.date)}: <b>${esc(m.score)}</b> <a href="#" data-act="delmeasure" data-s="${s.id}" data-id="${m.id}" title="מחיקה">✕</a></span>`).join('')}</div></div>`; }).join('')
+      : `<div class="panel empty"><span class="big">📊</span>עוד לא נרשמו ציוני שאלונים. מומלץ למדוד בתחילת הטיפול, באמצע ובסוף.</div>`);
+    const r = s.ratings.slice().sort((a,b) => a.date < b.date ? -1 : 1);
+    if (r.length) body += `<div class="panel"><h3>🌡️ מדחום רגשות</h3>${chart(r.map(x => ({t: fmtDate(x.date) + ' ' + x.emotion, v: x.level})), 10, 'מדחום')}<div class="actions" style="margin-top:8px">${r.slice(-8).map(x => `<span class="pill">${fmtDate(x.date)} · ${esc(x.emotion)} ${x.level}</span>`).join('')}</div></div>`;
+  }
+  if (tab === 'work') {
+    const block = (title, arr, fn, tool) => `<div class="panel"><h3>${title} <a class="btn sm" style="margin-inline-start:auto" href="#/tool/${tool}" data-act="usefor" data-s="${s.id}">＋ חדש</a></h3>${arr.length ? `<div class="list">${arr.map(fn).join('')}</div>` : '<p class="muted" style="margin:0">—</p>'}</div>`;
+    body = block('🪜 סולמות חשיפה', s.ladders, l => `<div class="li"><div class="grow"><b>${esc(l.title)}</b><div class="date">${l.steps.filter(x => x.done).length}/${l.steps.length} מדרגות</div></div><a class="btn sm" href="#/tool/ladder/${l.id}" data-act="usefor" data-s="${s.id}">פתיחה</a></div>`, 'ladder') +
+      block('⭐ טבלאות מדבקות', s.rewards, r => `<div class="li"><div class="grow"><b>${esc(r.title)}</b><div class="date">${r.filled}/${r.goal} · פרס: ${esc(r.prize || '')}</div></div><a class="btn sm" href="#/tool/rewards/${r.id}" data-act="usefor" data-s="${s.id}">פתיחה</a></div>`, 'rewards') +
+      block('🕵️ רישומי מחשבות', s.thoughts, t => `<div class="li"><div class="grow"><div class="date">${fmtDate(t.date)}</div><b>${esc(t.situation)}</b><div>💭 ${esc(t.thought)} ← 💡 ${esc(t.alt || '')}</div><div class="date">${esc(t.feeling || '')} ${t.before ?? ''} → ${t.after ?? ''}</div></div><button class="btn ghost sm danger" data-act="delwork" data-k="thoughts" data-s="${s.id}" data-id="${t.id}">🗑️</button></div>`, 'thoughts') +
+      block('🚦 פתרון בעיות', s.solutions, t => `<div class="li"><div class="grow"><div class="date">${fmtDate(t.date)}</div><b>${esc(t.problem)}</b><div>✅ ${esc(t.chosen || '')} ${t.plan ? '– ' + esc(t.plan) : ''}</div></div><button class="btn ghost sm danger" data-act="delwork" data-k="solutions" data-s="${s.id}" data-id="${t.id}">🗑️</button></div>`, 'trafficlight') +
+      block('🃏 כרטיסי התמודדות', s.cards, c => `<div class="li"><div class="grow"><b>כשאני מרגיש ${esc(c.feeling)}</b><div class="date">${c.items.map(esc).join(' · ')}</div></div><a class="btn sm" href="#/tool/copingcard/${c.id}" data-act="usefor" data-s="${s.id}">פתיחה</a></div>`, 'copingcard');
+  }
+  const h = `<a class="back no-print" href="#/students">→ כל התלמידים</a>
+    <div class="banner" style="--h:${hueOf(s.alias)}"><span class="emoji">${probs[0] ? probs[0].icon : '🧒'}</span><div><div style="opacity:.85;font-size:14px">כיתה ${esc(s.grade || '?')}${s.classroom ? ' ' + esc(s.classroom) : ''}${s.archived ? ' · בארכיון' : ''}</div><h1>${esc(s.alias)}</h1><p>${probs.map(p => esc(p.name)).join(' · ')}</p></div>
+    <div class="actions no-print">${s.id === activeId ? '<span class="pill" style="background:rgba(255,255,255,.2);color:#fff">⭐ בעבודה עכשיו</span>' : `<button class="btn" data-act="setactive" data-s="${s.id}">⭐ לעבוד איתו עכשיו</button>`}
+    <button class="btn" data-act="editstudent" data-s="${s.id}">✏️ עריכה</button><button class="btn" data-act="archive" data-s="${s.id}">${s.archived ? '↩️ החזרה לטיפול' : '🗄️ לארכיון'}</button></div></div>
+    <nav class="tabs">${TABS.map(([k, l]) => `<a href="#/student/${s.id}/${k}" class="${k === tab ? 'on' : ''}">${l}</a>`).join('')}</nav>${body}`;
+  return {title:s.alias, html:h};
+}
+
+function toolCard(t){
+  return `<a class="card accent" href="#/tool/${t.id}" style="--h:${t.h}"><span class="emoji">${t.icon}</span><span class="name">${t.name}</span><span class="sub">${t.desc}</span></a>`;
+}
+function tools(){
+  const a = active();
+  return {title:'כלים לילדים', html:`<div class="note" style="margin:4px 0 16px">${a ? `⭐ עבודה עם <b>${esc(a.alias)}</b>: מה שתשמרו בכלים ייכנס לתיק שלו.` : '💡 אפשר לבחור תלמיד בראש המסך, ואז מה ששומרים בכלים נכנס לתיק שלו.'}</div><div class="grid">${TOOLS.map(toolCard).join('')}</div>`};
+}
+
+/* ================= kid tools ================= */
+let T = {};
+function saveBar(kind){
+  if (LITE) return '';
+  const a = active();
+  return `<div class="actions no-print" style="justify-content:center;margin-top:20px">${a ? `<button class="btn primary" data-act="toolsave" data-k="${kind}">💾 שמירה בתיק של ${esc(a.alias)}</button>` : `<span class="muted">כדי לשמור, בחרו תלמיד בראש המסך</span>`}<button class="btn" data-act="print">🖨️ הדפסה</button></div>`;
+}
+const EMOS = [['פחד','😨'],['דאגה','😟'],['כעס','😠'],['עצב','😢'],['בושה','😳'],['תסכול','😤'],['שמחה','😄'],['רוגע','😌']];
+const FACES = ['😌','🙂','🙂','😐','😐','😕','😟','😣','😖','😫','🤯'];
+function toolView(R){
+  const t = TOOL[R.id]; if (!t) return {title:'כלי', html:'<div class="empty">הכלי לא נמצא</div>'};
+  const a = active();
+  if (T.__id !== R.id + '/' + (R.sub || '')) { T = {__id: R.id + '/' + (R.sub || '')}; initTool(R.id, R.sub); }
+  const body = TOOLRENDER[R.id]();
+  return {title:t.name, html:`<a class="back no-print" href="#/tools">→ כל הכלים</a>
+    <div class="actions no-print" style="margin:8px 0 12px"><span class="pill brand">${t.icon} ${t.name}</span>${a ? `<span class="pill">⭐ ${esc(a.alias)}</span>` : ''}<button class="btn sm" data-act="fullscreen" style="margin-inline-start:auto">⛶ מסך מלא</button></div>
+    <div class="toolstage kid" id="stage">${body}</div>`, after: TOOLAFTER[R.id]};
+}
+function initTool(id, itemId){
+  const a = active();
+  if (id === 'thermometer') Object.assign(T, {emotion:'פחד', level:null});
+  if (id === 'breathing') Object.assign(T, {mode:'balloon', running:false, cycles:0, phase:''});
+  if (id === 'thoughts') Object.assign(T, {situation:'', thought:'', feeling:'', before:7, behavior:'', q:[], alt:'', after:4});
+  if (id === 'trafficlight') Object.assign(T, {feel:'', problem:'', options:[], chosen:'', plan:''});
+  if (id === 'ladder') { const ex = a && itemId && a.ladders.find(l => l.id === itemId); Object.assign(T, ex ? JSON.parse(JSON.stringify(ex)) : {id:null, title:'', steps:[]}); }
+  if (id === 'rewards') { const ex = a && itemId && a.rewards.find(l => l.id === itemId); Object.assign(T, ex ? JSON.parse(JSON.stringify(ex)) : {id:null, title:'', goal:10, filled:0, prize:'', sticker:'⭐'}); }
+  if (id === 'pmr') Object.assign(T, {i:-1, phase:'', running:false});
+  if (id === 'copingcard') { const ex = a && itemId && a.cards.find(l => l.id === itemId); Object.assign(T, ex ? JSON.parse(JSON.stringify(ex)) : {id:null, feeling:'לחוץ', items:[], color:'#fde2a6'}); }
+}
+const lvlColor = l => `hsl(${130 - l * 13} 65% 45%)`;
+const BREATH = {
+  balloon:{name:'נשימת בלון 🎈', steps:[['מנפחים את הבלון… שאיפה דרך האף', 4, 1.9],['מחזיקים רגע', 1, 1.9],['משחררים את האוויר לאט… נשיפה מהפה', 5, 1]]},
+  square:{name:'נשימת ריבוע ⬜', steps:[['שאיפה', 4, 1.9],['מחזיקים', 4, 1.9],['נשיפה', 4, 1],['מחכים', 4, 1]]},
+  flower:{name:'מריחים פרח – מכבים נר 🌸🕯️', steps:[['מריחים את הפרח 🌸', 3, 1.8],['מכבים את הנר לאט 🕯️', 4, 1]]}
+};
+const PMR = [
+  ['🍋','ידיים – סוחטים לימון','סוחטים חזק את הלימון ביד, כמה שיותר מיץ!','עוזבים את הלימון ומרגישים את היד רכה ונעימה'],
+  ['🐱','ידיים וכתפיים – חתול מתמתח','מותחים את הידיים קדימה ולמעלה כמו חתול שמתעורר','מורידים את הידיים ונותנים להן ליפול לצדדים'],
+  ['🐢','כתפיים – צב נכנס לשריון','מרימים את הכתפיים עד האוזניים, הצב מתחבא','הצב יוצא לשמש – הכתפיים יורדות למטה'],
+  ['🍬','לסת – לועסים מסטיק','לועסים מסטיק ענק וקשה מאוד','מפסיקים ללעוס – הלסת רפויה ושקטה'],
+  ['🪰','פנים – זבוב על האף','מקמטים את האף והמצח כדי להבריח את הזבוב','הזבוב עף – הפנים חלקות ורגועות'],
+  ['🐘','בטן – פיל דורך','מכווצים את הבטן חזק, פיל עומד לדרוך עליה','הפיל הלך – הבטן רכה ונושמת'],
+  ['🟫','רגליים – הולכים בבוץ','לוחצים את כפות הרגליים עמוק לתוך הבוץ','יוצאים מהבוץ – הרגליים קלות ונחות']
+];
+const DETECTIVE_Q = ['מה ההוכחות שזה נכון?','מה ההוכחות שזה לא לגמרי נכון?','מה הייתי אומר לחבר טוב שחושב ככה?','מה הכי גרוע שיכול לקרות? מה הכי טוב? ומה הכי סביר?','נפלתי למלכודת חשיבה? (הכול או כלום, קורא מחשבות, מנחש עתיד, מגדיל)','זה יהיה חשוב גם בעוד שבוע?'];
+const COPE = ['לנשום נשימת בלון 3 פעמים','לספור לאט עד 10','להגיד לעצמי: ״אני יכול להתמודד עם זה״','לבקש עזרה מהמורה','ללכת לפינה השקטה','לשתות מים','לסחוט כדור לחץ','לצייר או לשרבט','לחשוב על המקום הבטוח שלי','לספר למבוגר שאני סומך עליו','ללכת קצת ולחזור','להשתמש ברמזור: לעצור, לחשוב, לעשות'];
+
+const TOOLRENDER = {
+  thermometer(){
+    const l = T.level;
+    return `<h2>🌡️ מדחום הרגשות</h2><p class="lead">איזה רגש יש לך עכשיו, וכמה הוא חזק?</p>
+      <div class="emos">${EMOS.map(([e, i]) => `<button class="${T.emotion === e ? 'on' : ''}" data-act="th-emo" data-v="${e}">${i} ${e}</button>`).join('')}</div>
+      <div class="thermo"><div class="bar">${Array.from({length:11}, (_, i) => `<div class="lvl ${l === i ? 'on' : ''} ${l != null && i <= l ? 'fill' : ''}" style="background:${lvlColor(i)}" data-act="th-lvl" data-v="${i}"><span>${i}</span><span>${i === 0 ? 'רגוע' : i === 10 ? 'הכי חזק' : ''}</span></div>`).join('')}</div>
+      <div style="display:flex;flex-direction:column;justify-content:center;gap:10px;min-width:200px"><div class="face">${l == null ? '👆' : FACES[l]}</div>
+      <div class="bigtext">${l == null ? 'לוחצים על מספר' : `${esc(T.emotion)} ברמה ${l}`}</div>
+      <p class="muted" style="text-align:center;margin:0;font-size:16px">${l == null ? '' : l <= 3 ? 'אפשר להמשיך כרגיל 👍' : l <= 6 ? 'אולי כדאי לנשום נשימת בלון 🎈' : 'זה הזמן לכלי ההרגעה שלנו 💪'}</p></div></div>${saveBar('thermometer')}`;
+  },
+  breathing(){
+    const m = BREATH[T.mode];
+    return `<h2>🎈 נושמים יחד</h2><p class="lead">עוקבים אחרי העיגול: כשהוא גדל – שואפים, כשהוא קטן – נושפים</p>
+      <div class="chips" style="justify-content:center">${Object.entries(BREATH).map(([k, v]) => `<button class="chip ${T.mode === k ? 'on' : ''}" data-act="br-mode" data-v="${k}">${v.name}</button>`).join('')}</div>
+      <div class="breath"><div class="circle" id="bcircle"><span id="bcount"></span></div></div>
+      <div class="bigtext" id="bphase">${T.running ? '' : 'מוכנים?'}</div>
+      <p class="muted" style="text-align:center" id="bcycles">${T.cycles ? `סבבים: ${T.cycles}` : ''}</p>
+      <div class="actions" style="justify-content:center"><button class="btn primary" data-act="br-toggle">${T.running ? '⏸ עצירה' : '▶ התחלה'}</button></div>`;
+  },
+  thoughts(){
+    const f = (k, label, ph, ta) => `<label class="f">${label}${ta ? `<textarea class="inp" data-bind="T.${k}" placeholder="${ph}">${esc(T[k])}</textarea>` : `<input class="inp" data-bind="T.${k}" value="${esc(T[k])}" placeholder="${ph}">`}</label>`;
+    const rng = (k, label) => `<label class="f">${label}: <b id="v-${k}">${T[k]}</b><input type="range" min="0" max="10" value="${T[k]}" data-bind="T.${k}" data-num="1" style="accent-color:var(--brand)"></label>`;
+    return `<h2>🕵️ בלש המחשבות</h2><p class="lead">בודקים את המחשבה כמו בלש: האם היא באמת נכונה?</p>
+      <div class="detective">
+        <div class="stepcard"><h4>1️⃣ מה קרה?</h4>${f('situation','המצב','למשל: המורה אמרה שיש מבחן מחר')}</div>
+        <div class="stepcard"><h4>2️⃣ מה חשבתי?</h4>${f('thought','המחשבה האוטומטית','למשל: ״אני בטוח אכשל״', true)}</div>
+        <div class="stepcard"><h4>3️⃣ מה הרגשתי ומה עשיתי?</h4><div class="form"><div class="row2">${f('feeling','הרגש','פחד, כעס, עצב…')}${rng('before','כמה חזק (0–10)')}</div>${f('behavior','מה עשיתי','למשל: בכיתי ולא רציתי ללמוד')}</div></div>
+        <div class="stepcard"><h4>4️⃣ שאלות הבלש 🔍</h4><div class="checks" style="flex-direction:column;align-items:flex-start">${DETECTIVE_Q.map((q, i) => `<label><input type="checkbox" data-act="dq" data-i="${i}" ${T.q.includes(i) ? 'checked' : ''}> ${q}</label>`).join('')}</div></div>
+        <div class="stepcard" style="border-color:var(--brand)"><h4>5️⃣ מחשבה חדשה ומועילה 💡</h4><div class="form">${f('alt','מה אפשר לחשוב במקום?','למשל: ״למדתי, ואם יהיה קשה – אבקש עזרה״', true)}${rng('after','כמה חזק הרגש עכשיו')}</div></div>
+      </div>${saveBar('thoughts')}`;
+  },
+  trafficlight(){
+    return `<h2>🚦 רמזור לפתרון בעיות</h2><p class="lead">עוצרים ← חושבים ← עושים</p>
+      <div class="lights">
+        <div class="light r on"><div class="bulb"></div><h3>עצור!</h3><p style="font-size:16px;margin:0 0 8px">מה אני מרגיש? נושמים 3 נשימות בלון 🎈</p><input class="inp" data-bind="T.feel" value="${esc(T.feel)}" placeholder="אני מרגיש…"></div>
+        <div class="light y ${T.problem ? 'on' : ''}"><div class="bulb"></div><h3>חשוב!</h3><input class="inp" data-bind="T.problem" value="${esc(T.problem)}" placeholder="מה הבעיה?" style="margin-bottom:8px">
+          <div class="list">${T.options.map((o, i) => `<div class="li" style="padding:6px 10px"><span class="grow" style="font-size:16px">${esc(o.t)}</span><button class="btn sm ${o.v === 1 ? 'primary' : ''}" data-act="tl-vote" data-i="${i}" data-v="1">👍</button><button class="btn sm ${o.v === -1 ? 'primary' : ''}" data-act="tl-vote" data-i="${i}" data-v="-1">👎</button></div>`).join('')}</div>
+          <div style="display:flex;gap:6px;margin-top:8px"><input class="inp" id="tlopt" placeholder="עוד פתרון אפשרי…"><button class="btn" data-act="tl-add">＋</button></div></div>
+        <div class="light g ${T.chosen ? 'on' : ''}"><div class="bulb"></div><h3>עשה!</h3>
+          <select class="inp" data-bind="T.chosen" style="margin-bottom:8px"><option value="">בוחרים את הפתרון הכי טוב…</option>${T.options.map(o => `<option ${T.chosen === o.t ? 'selected' : ''}>${esc(o.t)}</option>`).join('')}</select>
+          <textarea class="inp" data-bind="T.plan" placeholder="מתי ואיך אני עושה את זה?">${esc(T.plan)}</textarea></div>
+      </div>${saveBar('trafficlight')}`;
+  },
+  ladder(){
+    const steps = T.steps.slice().sort((a, b) => a.suds - b.suds);
+    const done = steps.filter(x => x.done).length;
+    return `<h2>🪜 סולם החשיפה</h2><p class="lead">מטפסים מדרגה אחרי מדרגה – מהקל אל הקשה</p>
+      <div style="max-width:560px;margin:0 auto 16px"><label class="f">המטרה בראש הסולם 🏆<input class="inp" data-bind="T.title" value="${esc(T.title)}" placeholder="למשל: להישאר בכיתה כל היום בלי אמא"></label></div>
+      ${steps.length ? `<div class="progress" style="max-width:560px;margin:0 auto 14px"><i style="width:${Math.round(100 * done / steps.length)}%"></i></div>` : ''}
+      <div class="ladder">${steps.map(st => `<div class="rung ${st.done ? 'done' : ''}"><span class="suds" style="background:${lvlColor(st.suds)}">${st.suds}</span><span class="grow">${esc(st.text)}</span>
+        <button class="btn sm ${st.done ? 'primary' : ''}" data-act="ld-done" data-id="${st.id}">${st.done ? '⭐ טיפסתי!' : 'טיפסתי?'}</button><button class="btn ghost sm" data-act="ld-del" data-id="${st.id}">✕</button></div>`).join('') || '<p class="muted" style="text-align:center">עוד אין מדרגות. מוסיפים מדרגה ומדרגים כמה היא מפחידה (0–10).</p>'}</div>
+      <div class="no-print" style="max-width:560px;margin:16px auto 0;display:flex;gap:8px;flex-wrap:wrap;align-items:end">
+        <label class="f" style="flex:1;min-width:200px">מדרגה חדשה<input class="inp" id="ldtext" placeholder="למשל: אמא נפרדת ממני בשער"></label>
+        <label class="f" style="width:110px">כמה מפחיד<select class="inp" id="ldsuds">${Array.from({length:11}, (_, i) => `<option ${i === 5 ? 'selected' : ''}>${i}</option>`).join('')}</select></label>
+        <button class="btn primary" data-act="ld-add">＋ הוספה</button></div>${saveBar('ladder')}`;
+  },
+  rewards(){
+    const slots = Array.from({length: T.goal}, (_, i) => i < T.filled);
+    return `<h2>⭐ טבלת המדבקות שלי</h2>
+      <div class="form no-print" style="max-width:640px;margin:0 auto 16px"><div class="row2">
+        <label class="f">על מה מקבלים מדבקה?<input class="inp" data-bind="T.title" value="${esc(T.title)}" placeholder="למשל: נכנסתי לכיתה בבוקר בלי בכי"></label>
+        <label class="f">הפרס בסוף 🎁<input class="inp" data-bind="T.prize" value="${esc(T.prize)}" placeholder="למשל: משחק עם אבא בפארק"></label></div>
+        <div class="row2"><label class="f">מספר מדבקות<select class="inp" data-bind="T.goal" data-num="1">${[5,7,10,14,20].map(n => `<option ${T.goal === n ? 'selected' : ''}>${n}</option>`).join('')}</select></label>
+        <label class="f">המדבקה<div class="emos" style="justify-content:flex-start;margin:0">${['⭐','🌟','🦄','⚽','🐶','🚀','🌈','🍭'].map(e => `<button class="${T.sticker === e ? 'on' : ''}" data-act="rw-st" data-v="${e}">${e}</button>`).join('')}</div></label></div></div>
+      <p class="lead" style="font-size:21px;color:var(--ink)"><b>${esc(T.title || 'המטרה שלי')}</b></p>
+      <div class="stickers">${slots.map((f, i) => `<div class="slot ${f ? 'full' : ''}" data-act="rw-fill" data-i="${i}">${f ? T.sticker : i + 1}</div>`).join('')}<div class="slot prize">🎁</div></div>
+      <p class="lead" style="margin-top:14px">${T.filled >= T.goal ? `🎉 כל הכבוד! הרווחת: <b>${esc(T.prize || 'פרס')}</b>` : `עוד ${T.goal - T.filled} מדבקות עד ${esc(T.prize || 'הפרס')}`}</p>${saveBar('rewards')}`;
+  },
+  pmr(){
+    const cur = PMR[T.i];
+    return `<h2>🐢 הרפיית שרירים</h2><p class="lead">מכווצים חזק… ומשחררים. מרגישים את ההבדל?</p>
+      <div class="progress" style="max-width:520px;margin:0 auto 20px"><i style="width:${Math.max(0, Math.round(100 * (T.i + (T.phase === 'relax' ? 1 : 0.5)) / PMR.length))}%"></i></div>
+      <div class="pmr" style="text-align:center">${cur ? `<div style="font-size:84px">${cur[0]}</div><div class="step"><b>${cur[1]}</b></div>
+        <div class="bigtext" style="color:${T.phase === 'tense' ? 'var(--danger)' : 'var(--ok)'}">${T.phase === 'tense' ? '💪 ' + cur[2] : '😌 ' + cur[3]}</div><div class="muted" id="pmrcount"></div>`
+        : T.i >= PMR.length ? `<div style="font-size:84px">🌈</div><div class="bigtext">כל הגוף רגוע ונעים. כל הכבוד!</div>` : `<div style="font-size:84px">🧘</div><div class="bigtext">יושבים בנוח, עוצמים עיניים אם רוצים</div>`}</div>
+      <div class="actions" style="justify-content:center;margin-top:18px"><button class="btn primary" data-act="pmr-go">${T.running ? '⏸ עצירה' : T.i >= 0 && T.i < PMR.length ? '▶ המשך' : '▶ התחלה'}</button>${T.i >= 0 ? '<button class="btn" data-act="pmr-reset">↺ מההתחלה</button>' : ''}</div>`;
+  },
+  copingcard(){
+    return `<h2>🃏 כרטיס ההתמודדות שלי</h2><p class="lead">בוחרים מה עוזר לי – ושומרים את הכרטיס בקלמר</p>
+      <div class="two"><div class="no-print"><label class="f">כשאני מרגיש…<input class="inp" data-bind="T.feeling" value="${esc(T.feeling)}"></label>
+        <div class="checks" style="margin-top:12px">${COPE.map(c => `<label><input type="checkbox" data-act="cc-item" data-v="${esc(c)}" ${T.items.includes(c) ? 'checked' : ''}> ${esc(c)}</label>`).join('')}</div>
+        <div style="display:flex;gap:6px;margin-top:10px"><input class="inp" id="ccown" placeholder="רעיון משלי…"><button class="btn" data-act="cc-add">＋</button></div>
+        <div class="swatches">${['#fde2a6','#cdeccd','#cfe3fb','#f8d0e0','#e3d7fb','#ffd8c2'].map(c => `<button style="background:${c}" class="${T.color === c ? 'on' : ''}" data-act="cc-color" data-v="${c}"></button>`).join('')}</div></div>
+      <div><div class="copecard" style="background:${T.color}"><h3>כשאני מרגיש ${esc(T.feeling || '…')}<br>אני יכול:</h3><ol>${T.items.map(i => `<li>${esc(i)}</li>`).join('') || '<li style="opacity:.5">בוחרים מהרשימה</li>'}</ol><p style="text-align:center;margin:14px 0 0;font-size:18px">💪 אני יודע להתמודד!</p></div></div></div>${saveBar('copingcard')}`;
+  }
+};
+const TOOLAFTER = {
+  breathing(){ if (T.running) runBreath(); },
+  pmr(){ if (T.running) runPmr(); }
+};
+function runBreath(){
+  const m = BREATH[T.mode]; let k = 0;
+  const circle = $('#bcircle'), ph = $('#bphase'), cnt = $('#bcount');
+  const step = () => {
+    if (!T.running || !circle) return;
+    const [txt, sec, scale] = m.steps[k];
+    circle.style.transitionDuration = sec + 's'; circle.style.transform = `scale(${scale})`; ph.textContent = txt;
+    let left = sec; cnt.textContent = left;
+    const iv = setInterval(() => { left--; if (left > 0) cnt.textContent = left; else clearInterval(iv); }, 1000); timers.push(iv);
+    k = (k + 1) % m.steps.length;
+    if (k === 0) timers.push(setTimeout(() => { T.cycles++; const c = $('#bcycles'); if (c) c.textContent = 'סבבים: ' + T.cycles; }, sec * 1000));
+    timers.push(setTimeout(step, sec * 1000));
+  };
+  step();
+}
+function runPmr(){
+  if (T.i < 0) { T.i = 0; T.phase = 'tense'; render(); return; }
+  if (T.i >= PMR.length) { T.running = false; render(); return; }
+  const sec = T.phase === 'tense' ? 5 : 8; let left = sec;
+  const c = $('#pmrcount'); if (c) c.textContent = left + ' שניות';
+  const iv = setInterval(() => { left--; const c2 = $('#pmrcount'); if (c2) c2.textContent = left > 0 ? left + ' שניות' : ''; }, 1000); timers.push(iv);
+  timers.push(setTimeout(() => { if (T.phase === 'tense') T.phase = 'relax'; else { T.i++; T.phase = 'tense'; if (T.i >= PMR.length) T.running = false; } render(); }, sec * 1000));
+}
+function toolSave(kind){
+  const a = active(); if (!a) return toast('בחרו תלמיד בראש המסך');
+  const d = today();
+  if (kind === 'thermometer') { if (T.level == null) return toast('בוחרים קודם רמה'); a.ratings.push({id:uid(), date:d, emotion:T.emotion, level:T.level}); }
+  if (kind === 'thoughts') { if (!T.situation && !T.thought) return toast('ממלאים לפחות מצב ומחשבה'); a.thoughts.push({id:uid(), date:d, situation:T.situation, thought:T.thought, feeling:T.feeling, before:T.before, behavior:T.behavior, alt:T.alt, after:T.after}); }
+  if (kind === 'trafficlight') { if (!T.problem) return toast('כותבים קודם מה הבעיה'); a.solutions.push({id:uid(), date:d, feel:T.feel, problem:T.problem, options:T.options, chosen:T.chosen, plan:T.plan}); }
+  const upsert = (arr, obj) => { if (!obj.id) obj.id = uid(); const i = arr.findIndex(x => x.id === obj.id); if (i >= 0) arr[i] = obj; else arr.push(obj); };
+  const pick = keys => Object.fromEntries(keys.map(k => [k, JSON.parse(JSON.stringify(T[k]))]));
+  if (kind === 'ladder') { if (!T.steps.length) return toast('מוסיפים קודם מדרגות'); const o = pick(['id','title','steps']); o.title = o.title || 'סולם חשיפה'; upsert(a.ladders, o); T.id = o.id; }
+  if (kind === 'rewards') { const o = pick(['id','title','goal','filled','prize','sticker']); o.title = o.title || 'טבלת מדבקות'; upsert(a.rewards, o); T.id = o.id; }
+  if (kind === 'copingcard') { if (!T.items.length) return toast('בוחרים לפחות דבר אחד'); const o = pick(['id','feeling','items','color']); upsert(a.cards, o); T.id = o.id; }
+  save(); toast('נשמר בתיק של ' + a.alias + ' ✓');
+}
+
+/* ================= library & settings ================= */
+let libQ = '', libTopic = '';
+function library(){
+  const ql = libQ.toLowerCase();
+  const seen = new Set();
+  const list = LIBDATA.filter(p => { const sig = p.title + '|' + (p.src ? p.size : '') + '|' + p.attachments.map(a => a.name).join(','); if (seen.has(sig)) return false; seen.add(sig); return true; })
+    .filter(p => (!libTopic || p.topic === libTopic) && (!ql || (p.title + ' ' + (p.sub || '') + ' ' + p.section + ' ' + p.attachments.map(a => a.name).join(' ')).toLowerCase().includes(ql)));
+  const h = `<div class="actions" style="margin:4px 0 12px">${WEB ? '' : '<a class="btn" href="index.html" target="_blank">📚 פתיחת הספרייה המלאה</a>'}${!LIBDATA.length ? (ARTIFACT ? '<span class="note warn">📚 קובצי הספרייה נמצאים במחשב – פותחים אותם מקיצור הדרך ״ספריית לימודי CBT״</span>' : '<span class="note warn">הספרייה תופיע אחרי התחברות עם חשבון מיקרוסופט</span>') : ''}<span class="muted">${list.length} פריטים</span></div>
+    <div class="search" style="margin-bottom:12px"><input id="libq" placeholder="חיפוש בספרייה…" value="${esc(libQ)}"><span class="ic">🔍</span></div>
+    <div class="chips"><button class="chip ${!libTopic ? 'on' : ''}" data-act="libtopic" data-v="">הכל</button>${LIBTOPICS.map(t => `<button class="chip ${libTopic === t.id ? 'on' : ''}" data-act="libtopic" data-v="${t.id}">${t.icon} ${esc(t.name)}</button>`).join('')}</div>
+    <div class="list">${list.slice(0, 120).map(libItem).join('')}</div>${list.length > 120 ? '<p class="muted">מוצגים 120 הראשונים – חפשו כדי לצמצם.</p>' : ''}`;
+  return {title:'ספרייה', html:h, after(){ const i = $('#libq'); i.addEventListener('input', () => { libQ = i.value; const pos = i.selectionStart; render(); const j = $('#libq'); j.focus(); j.setSelectionRange(pos, pos); }); }};
+}
+function settings(){
+  const st = Sync.status;
+  let sync = '';
+  if (ARTIFACT) return artSettings();
+  if (WEB) return cloudSettings();
+  if (st === 'unsupported') sync = `<div class="note warn">הדפדפן הזה לא תומך בחיבור לקובץ. כדי לסנכרן בין מחשבים, פתחו את האפליקציה ב-<b>Microsoft Edge</b> או ב-<b>Google Chrome</b>. בינתיים אפשר להעביר נתונים בעזרת ייצוא וייבוא.</div>`;
+  else if (st === 'ok') sync = `<div class="note">✅ מחובר לקובץ <b>${esc(Sync.handle && Sync.handle.name)}</b>. כל שינוי נשמר אליו אוטומטית, ו-OneDrive מעביר אותו למחשב השני.</div><div class="actions" style="margin-top:12px"><button class="btn" data-act="sync-now">🔄 סנכרון עכשיו</button><button class="btn danger" data-act="sync-off">ניתוק</button></div>`;
+  else if (st === 'permission') sync = `<div class="note warn">הדפדפן מבקש אישור מחדש לגשת לקובץ הסנכרון.</div><div class="actions" style="margin-top:12px"><button class="btn primary" data-act="sync-resume">🔓 אישור והמשך סנכרון</button><button class="btn danger" data-act="sync-off">ניתוק</button></div>`;
+  else sync = `${st === 'error' ? `<div class="note danger" style="margin-bottom:12px">שגיאה: ${esc(Sync.err)}</div>` : ''}
+    <ol style="margin:0 0 12px;padding-inline-start:22px"><li><b>במחשב הראשון:</b> לוחצים ״יצירת קובץ סנכרון״ ושומרים אותו בתיקייה שבתוך OneDrive (למשל ליד האפליקציה).</li><li><b>במחשב השני:</b> לוחצים ״חיבור לקובץ קיים״ ובוחרים את אותו קובץ.</li></ol>
+    <div class="actions"><button class="btn primary" data-act="sync-create">➕ יצירת קובץ סנכרון</button><button class="btn" data-act="sync-open">📂 חיבור לקובץ קיים</button></div>`;
+  const h = `<div class="panel"><h3>☁️ סנכרון בין מחשבים דרך OneDrive</h3>${sync}
+      <p class="muted" style="font-size:14px;margin:12px 0 0">אם עבדתם בשני המחשבים בלי חיבור, הגרסה שעודכנה אחרונה היא זו שנשמרת. כדאי לעבוד במחשב אחד בכל פעם.</p></div>
+    <div class="panel"><h3>🔒 פרטיות</h3><ul class="clean"><li>הנתונים נשמרים רק במחשב שלך ובקובץ ב-OneDrive שלך. שום דבר לא נשלח לשרת אחר.</li><li>רושמים כינוי או ראשי תיבות – לא שם מלא, לא ת״ז ולא כתובת.</li><li>מומלץ לנעול את המחשב בסיסמה, ולא לשתף את התיקייה ב-OneDrive עם אחרים.</li></ul></div>
+    <div class="panel"><h3>💾 גיבוי</h3><div class="actions"><button class="btn" data-act="export">⬇️ ייצוא גיבוי</button><label class="btn">⬆️ ייבוא מגיבוי<input type="file" accept=".json" id="importfile" hidden></label><button class="btn danger" data-act="wipe">מחיקת כל הנתונים</button></div></div>
+    <div class="panel"><h3>ℹ️ על האפליקציה</h3><p style="margin:0">${PROBLEMS.length} מפות טיפול · ${TOOLS.length} כלים לילדים · ${LIBDATA.length} פריטים בספרייה.</p>
+    <p class="muted" style="margin:8px 0 0;font-size:14px">מפות הטיפול הן כלי עזר מקצועי למטפל, ואינן מחליפות שיקול דעת קליני, הדרכה והפניה לגורם מתאים כשיש צורך.</p></div>`;
+  return {title:'הגדרות', html:h, after(){ const f = $('#importfile'); f && f.addEventListener('change', async () => { const file = f.files[0]; if (!file) return; try { const d = JSON.parse(await file.text()); if (!d.students) throw 0; if (!await uiConfirm(`לייבא ${d.students.length} תלמידים? הנתונים הנוכחיים יוחלפו.`)) return; S = d; S.students.forEach(fix); save(); render(); toast('הגיבוי יובא'); } catch(e){ toast('הקובץ אינו גיבוי תקין'); } }); }};
+}
+
+/* ================= assistant (offline, from the content) ================= */
+const NIQ = /[֑-ׇ]/g;
+const norm = t => ' ' + String(t || '').replace(NIQ, '').replace(/[״"׳'.,!?;:()\[\]\-–—\/+]/g, ' ').replace(/\s+/g, ' ').toLowerCase().trim() + ' ';
+function stem(w){
+  if (w.length > 4 && /^(וה|שה|וב|ול|מה|כש|שב|וכ|וש|לה|בה)/.test(w)) w = w.slice(2);
+  else if (w.length > 3 && /^[והבלמשכ]/.test(w)) w = w.slice(1);
+  if (w.length > 4 && /(ים|ות|יות)$/.test(w)) w = w.replace(/(יות|ים|ות)$/, '');
+  return w;
+}
+const STOP = new Set(['של','את','עם','על','זה','זו','הוא','היא','הם','יש','אני','מה','איך','כל','גם','או','אם','כי','רק','עוד','מאוד','ילד','ילדה','תלמיד','תלמידה','שלי','לו','לה','אצל','אחרי','לפני','כמו','יותר','כך','אבל','כדי','אותו','אותה','עושים','לעשות','צריך','אפשר','כשה','שהוא','שהיא','הזה','היום','כאשר','בזמן','מאד','ממש'].map(stem));
+const reEsc = x => x.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+const hasPh = (nq, ph) => { const p = norm(ph).trim(); return !!p && new RegExp('\\s[והבלמשכ]{0,3}' + reEsc(p)).test(nq); };
+const toks = t => norm(t).trim().split(' ').filter(w => w.length > 1).map(stem).filter(w => w.length > 1 && !STOP.has(w));
+const SYN = {
+  'school-refusal':['לא רוצה ללכת','לא מוכן ללכת','מסרב ללכת','סירוב','נשאר בבית','בוכה בבוקר','בוכה בשער','נצמד','להיפרד','פרידה','מתגעגע','לא נכנס לכיתה','היעדרויות','נעדר','חופש','אחרי החגים','אמא עוזבת'],
+  'gad':['דאגה','דאגות','דואג','מודאג','מה יהיה','שואל שוב ושוב','צריך הרגעה','מתח כללי','חרדה כללית','לחוץ כל הזמן'],
+  'test-anxiety':['מבחן','מבחנים','בוחן','חרדת בחינות','לפני מבחן','נתקע במבחן','ציונים','בגרות','הכתבה','מבחן מיצ','קריאה בקול','הצגה','להופיע','חרדת ביצוע'],
+  'social-anxiety':['ביישן','ביישנות','מתבייש','לא מדבר בכיתה','לא עונה','לא מצביע','חרדה חברתית','מפחד שיצחקו','אילם','אילמות','סלקטיבית','נבוך','מסמיק'],
+  'phobias':['פחד','פוביה','מפחד מכלבים','כלב','חושך','רעשים','הקאה','מחטים','זריקה','מעלית','חרקים','דבורה','פחד מ'],
+  'ocd':['טקס','טקסים','שוטף ידיים','רוחץ ידיים','בודק שוב','סופר','מסדר','מושלם','נקיון','חיידקים','מחשבות טורדניות','כפייתי','אובססיבי','ocd','חייב שיהיה'],
+  'anger':['כעס','כועס','מתפרץ','התפרצות','התפרצויות','צועק','מכה','מרביץ','זורק','בועט','מקלל','עצבים','עצבני','נפיץ','משתולל','מאבד שליטה','ויסות','התקף זעם','טריקת דלת','אלים','אלימות'],
+  'social-rejection':['אין חברים','אין לו חברים','לבד בהפסקה','לא משחקים איתו','דחוי','דחייה','בודד','בדידות','לא מקבלים אותו','כישורים חברתיים','לא יודע להשתלב','מתבודד','לא מזמינים'],
+  'bullying':['מחרימים אותו','חרם','וואטסאפ','מציקים','הצקות','מציק','בריונות','בריון','חרם','מחרימים','צוחקים עליו','משפילים','מכים אותו','קבוצת וואטסאפ','ברשת','שיימינג','מתעללים','פגיעה חברתית','נפגע'],
+  'self-esteem':['ערך עצמי','דימוי עצמי','ביטחון עצמי','לא מאמין בעצמו','אני טיפש','אני לא שווה','אני לא מצליח','מוותר','פוחד לנסות','ביקורת עצמית','מסוגלות'],
+  'low-mood':['לא רוצה לחיות','רוצה למות','עצוב','עצבות','דיכאון','מדוכא','אין חשק','לא נהנה','בוכה הרבה','מסתגר','עייף','אין כוח','חסר תקווה','מצב רוח','ירוד'],
+  'adhd-org':['קשב','ריכוז','לא מרוכז','מפוזר','שוכח','שכחן','התארגנות','מתארגן','לא מסיים','מפריע','קם מהמקום','אימפולסיבי','היפראקטיבי','adhd','הפרעת קשב','ריטלין','שיעורי בית','תיק','מחברות'],
+  'tics':['טיק','טיקים','ממצמץ','מצמוץ','תנועות לא רצוניות','משמיע קולות','כחכוח','טורט','מושך שיער','טריכו','מכרסם ציפורניים'],
+  'enuresis':['הרטבה','מרטיב','פיפי','במיטה','חיתול','התאפקות','מלכלך','צואה','אנקופרזיס','תאונות בשירותים','ליל'],
+  'somatic':['כאב בטן','כאבי בטן','כואבת לו הבטן','כאב ראש','כאבי ראש','אחות','הולך הביתה','מרגיש לא טוב','בחילה','גופני','סומטי','רופא לא מצא'],
+  'sleep':['שינה','לא נרדם','לא ישן','נרדם','מתעורר בלילה','סיוטים','חלומות רעים','ישן עם ההורים','פחדי לילה','עייף בבוקר','מסכים בלילה'],
+  'trauma':['טראומה','אזעקה','אזעקות','מלחמה','טיל','טילים','פיגוע','מרחב מוגן','ממד','פונה','פינוי','מילואים','הצפה','פלאשבק','נבהל','קפיצות מרעש','תאונה','חטוף','חטופים','ירי','חירום','שבעה באוקטובר','דחק'],
+  'grief':['אבל','נפטר','נפטרה','מת','מתה','מוות','לוויה','שבעה','אובדן','איבד','סבא נפטר','סבתא נפטרה','הורה נפטר','נהרג','נהרגה','יום זיכרון','התאבד'],
+  'family-change':['גירושין','התגרשו','מתגרשים','פרידת הורים','שני בתים','אח חדש','אחות חדשה','לידה','תינוק','מעבר דירה','עבר דירה','עלה לארץ','עולה חדש','בית ספר חדש','אבא לא גר','משמורת','נאמנות']
+};
+const INTENTS = [
+  {id:'teachers', label:'🏫 מה אומרים למחנכ/ת ולצוות', field:'teachers', words:['מורה','מחנכ','מחנכת','צוות','בכיתה','גננת','סייעת','מנהל','יועצת','שיעור','בהפסקה','ביה ס']},
+  {id:'parents', label:'👨‍👩‍👧 הדרכת הורים', field:'parents', words:['הורה','הורים','אמא','אבא','משפחה','בבית','ההורים','שיחת הורים']},
+  {id:'assess', label:'🔍 הערכה ואבחון', field:'assessment', words:['שאלון','שאלונים','אבחון','הערכה','לבדוק','לזהות','לאבחן','מדד','איך יודעים','סימנים']},
+  {id:'redflags', label:'🚩 מתי להפנות', field:'redFlags', words:['להפנות','הפניה','פסיכיאטר','פסיכולוג','מסוכן','חמור','דחוף','תרופות','תרופה','רופא','מתי לדאוג']},
+  {id:'techniques', label:'🛠️ טכניקות', field:'techniques', words:['טכניקה','טכניקות','איך מטפלים','איך לטפל','מה עושים','התערבות','לעזור','לטפל','שיטה','כלים']},
+  {id:'first', label:'1️⃣ המפגש הראשון', field:'first', words:['ראשון','להתחיל','פתיחה','היכרות','מפגש ראשון','איך מתחילים']},
+  {id:'homework', label:'🏠 משימות בית', field:'homework', words:['משימה','משימות','שיעורי בית','תרגול בבית','בין המפגשים']},
+  {id:'model', label:'🧠 המשגה', field:'model', words:['המשגה','למה','מה משמר','מודל','מחשבות','מה עובר עליו']}
+];
+const SAFETY = ['להתאבד','התאבדות','אובדני','אובדנות','לא רוצה לחיות','רוצה למות','לחתוך','חותך','פגיעה עצמית','פוגע בעצמו','מכים אותו בבית','מרביצים לו בבית','התעללות','מתעללים בו בבית','פגיעה מינית','נגעו בו','הזנחה','רעב','סכנה'];
+const FIELD_LABEL = {signs:'סימנים', assessment:'הערכה', goals:'יעדים', parents:'הורים', teachers:'צוות', redFlags:'מתי להפנות', techniques:'טכניקות', sessions:'מפגשים', model:'המשגה'};
+const FIELD_TAB = {signs:'overview', assessment:'assess', goals:'overview', parents:'partners', teachers:'partners', redFlags:'overview', techniques:'techniques', sessions:'sessions', model:'overview'};
+let ASK_INDEX = null;
+function buildIndex(){
+  const docs = [], df = {};
+  for (const p of PROBLEMS) {
+    const add = (field, text, extra) => { const tk = toks(text); if (!tk.length) return; docs.push({p, field, text, tk, extra}); };
+    (p.signs || []).forEach(t => add('signs', t)); (p.assessment || []).forEach(t => add('assessment', t)); (p.goals || []).forEach(t => add('goals', t));
+    (p.parents || []).forEach(t => add('parents', t)); (p.teachers || []).forEach(t => add('teachers', t)); (p.redFlags || []).forEach(t => add('redFlags', t));
+    (p.techniques || []).forEach(t => add('techniques', t.name + ' – ' + t.how));
+    const m = p.model || {}; ['triggers','thoughts','feelings','body','behaviors'].forEach(k => (m[k] || []).forEach(t => add('model', t))); if (m.maintaining) add('model', m.maintaining);
+    (p.sessions || []).forEach((s, i) => [...(s.activities || []), ...(s.goals || []), s.homework || ''].forEach(t => add('sessions', t, i)));
+  }
+  const bag = {}; for (const d of docs) { const k = d.p.id; bag[k] = bag[k] || new Set(); d.tk.forEach(t => bag[k].add(t)); }
+  for (const k in bag) bag[k].forEach(t => df[t] = (df[t] || 0) + 1);
+  const nameTk = Object.fromEntries(PROBLEMS.map(p => [p.id, new Set(toks(p.name + ' ' + p.summary))]));
+  ASK_INDEX = {docs, bag, df, nameTk, N: PROBLEMS.length};
+}
+function answer(q){
+  if (!ASK_INDEX) buildIndex();
+  const X = ASK_INDEX, nq = norm(q), qt = [...new Set(toks(q))];
+  const idf = t => Math.log(1 + X.N / (X.df[t] || X.N));
+  const scores = PROBLEMS.map(p => {
+    let s = 0; const why = [];
+    for (const ph of SYN[p.id] || []) if (hasPh(nq, ph)) { s += 6 + norm(ph).trim().split(' ').length; why.push(ph); }
+    for (const t of qt) { if (X.bag[p.id] && X.bag[p.id].has(t)) s += idf(t); if (X.nameTk[p.id].has(t)) s += 3; }
+    return {p, s, why};
+  }).sort((a, b) => b.s - a.s);
+  const intents = INTENTS.filter(it => it.words.some(w => hasPh(nq, w)));
+  const sessNum = (nq.match(/ מפגש (\d+) /) || [])[1];
+  const safety = SAFETY.some(w => hasPh(nq, w));
+  const top = scores[0] && scores[0].s >= 4 ? scores[0] : null;
+  const others = scores.slice(top ? 1 : 0, 4).filter(x => x.s >= (top ? top.s * 0.45 : 3));
+  const snip = X.docs.map(d => { let s = 0; for (const t of qt) if (d.tk.includes(t)) s += idf(t); if (top && d.p === top.p) s *= 1.3; if (intents.some(i => i.field === d.field)) s *= 1.4; return {d, s}; })
+    .filter(x => x.s > 1.2).sort((a, b) => b.s - a.s).slice(0, 7);
+  return {q, top, others, intents, sessNum, safety, snip, qt};
+}
+function libFor(q, p){
+  const kw = [...(p ? p.libraryKeywords || [] : [])];
+  const extra = toks(q).filter(t => t.length > 2);
+  const base = libMatches(kw);
+  const byWords = extra.length ? LIBDATA.filter(x => { const h = norm(x.title + ' ' + x.attachments.map(a => a.name).join(' ')); return extra.filter(t => h.includes(t)).length >= Math.min(2, extra.length); }) : [];
+  const seen = new Set(); return [...byWords, ...base].filter(x => { const k = x.title + '|' + (x.pdf || ''); if (seen.has(k)) return false; seen.add(k); return true; }).slice(0, 8);
+}
+function answerHTML(A){
+  let h = '';
+  if (A.safety) h += `<div class="panel" style="border:2px solid var(--danger);background:color-mix(in srgb,var(--danger) 8%,var(--panel))"><h3>🚨 קודם כול – בטיחות</h3>
+    <ul class="clean"><li>לא משאירים את הילד לבד כשיש חשש לסכנה מיידית, ומוודאים השגחה של מבוגר.</li><li>מעדכנים מיד את מנהל/ת בית הספר ואת הפסיכולוג/ית (שפ״ח), ופועלים לפי נוהל בית הספר וחוזר המנכ״ל.</li>
+    <li>בחשש לפגיעה או להזנחה בבית – חובת דיווח לפי החוק לעובד/ת סוציאלי/ת לפי חוק הנוער או למשטרה. לא מבררים לבד לעומק ולא מעמתים את המשפחה לפני התייעצות.</li>
+    <li>בחשש אובדני – שואלים ישירות ובעדינות, מיידעים הורים (אלא אם הם מקור הסכנה), ומפנים להערכה דחופה (מיון / פסיכיאטר ילדים). קו ער״ן 1201, סה״ר באתר sahar.org.il.</li></ul></div>`;
+  if (!A.top && !A.snip.length) return h + `<div class="panel empty"><span class="big">🤔</span>לא מצאתי תשובה מתאימה. נסו לתאר מה רואים אצל הילד: מה הוא עושה, מתי ואיפה.<br><br><a class="btn" href="#/problems">🧭 לרשימת הבעיות</a></div>`;
+  const p = A.top && A.top.p;
+  if (p) {
+    const s1 = p.sessions[0] || {};
+    h += `<div class="panel" style="border-inline-start:5px solid hsl(${hueOf(p.area)} 55% 45%)"><h3>${p.icon} נראה שמדובר ב: <a href="#/problem/${p.id}">${esc(p.name)}</a></h3>
+      <p style="margin:0 0 8px">${esc(p.summary)}</p>${A.top.why.length ? `<p class="muted" style="margin:0;font-size:14px">זיהיתי לפי: ${A.top.why.slice(0, 4).map(w => '״' + esc(w) + '״').join(', ')}</p>` : ''}
+      ${A.others.length ? `<p style="margin:8px 0 0;font-size:14px">אולי גם: ${A.others.map(o => `<a class="pill brand" href="#/problem/${o.p.id}" style="text-decoration:none">${o.p.icon} ${esc(o.p.name)}</a>`).join(' ')}</p>` : ''}</div>`;
+    const tech = (p.techniques || [])[0];
+    h += `<div class="panel"><h3>✅ מה עושים עכשיו – צעד אחר צעד</h3><ol style="margin:0;padding-inline-start:22px;display:grid;gap:8px">
+      <li><b>בירור ראשוני:</b> ${esc((p.assessment || [])[0] || '')}${(p.assessment || [])[1] ? ' · ' + esc(p.assessment[1]) : ''}</li>
+      <li><b>שיחה עם המחנכ/ת:</b> ${esc((p.teachers || [])[0] || '')}</li>
+      <li><b>שיחה עם ההורים:</b> ${esc((p.parents || [])[0] || '')}</li>
+      <li><b>מפגש ראשון עם הילד:</b> ${esc((s1.activities || []).slice(0, 2).join(' · '))}</li>
+      ${tech ? `<li><b>טכניקה מרכזית – ${esc(tech.name)}:</b> ${esc(tech.how)}</li>` : ''}
+      <li><b>מדידה:</b> קובעים מדד פשוט (מדחום 0–10 או שאלון) ורושמים אותו בכל מפגש בתיק התלמיד.</li></ol>
+      <div class="actions" style="margin-top:14px"><a class="btn primary" href="#/problem/${p.id}">🧭 מפת הטיפול המלאה</a><button class="btn" data-act="planfor" data-id="${p.id}">📋 תוכנית טיפול לתלמיד</button><a class="btn" href="#/problem/${p.id}/sessions">🗓️ ${p.sessions.length} המפגשים</a></div></div>`;
+    for (const it of A.intents) {
+      let body = '';
+      if (it.field === 'techniques') body = `<div class="list">${(p.techniques || []).map(t => `<div class="li"><div class="grow"><b>${esc(t.name)}</b><div>${esc(t.how)}</div></div></div>`).join('')}</div>`;
+      else if (it.field === 'first') body = sessionHTML(p.sessions[0], 0, 'open');
+      else if (it.field === 'homework') body = ul(p.sessions.map((s, i) => `מפגש ${i + 1}: ${s.homework}`).filter(Boolean));
+      else if (it.field === 'model') { const m = p.model || {}; body = `<p style="margin:0 0 6px"><b>מחשבות:</b> ${esc((m.thoughts || []).join(' · '))}</p><p style="margin:0 0 6px"><b>התנהגויות:</b> ${esc((m.behaviors || []).join(' · '))}</p><p class="note" style="margin:0">${esc(m.maintaining || '')}</p>`; }
+      else body = ul(p[it.field]);
+      h += `<div class="panel"><h3>${it.label}</h3>${body}</div>`;
+    }
+    if (A.sessNum && p.sessions[+A.sessNum - 1]) h += `<div class="panel"><h3>🗓️ מפגש ${A.sessNum}</h3>${sessionHTML(p.sessions[+A.sessNum - 1], +A.sessNum - 1, 'open')}</div>`;
+    const tl = (p.tools || []).filter(t => TOOL[t]);
+    if (tl.length) h += `<div class="panel"><h3>🧰 כלים לשימוש בחדר</h3><div class="actions">${tl.map(t => `<a class="btn" href="#/tool/${t}">${TOOL[t].icon} ${TOOL[t].name}</a>`).join('')}</div></div>`;
+  }
+  if (A.snip.length) h += `<div class="panel"><h3>💡 משפטים רלוונטיים מתוך מפות הטיפול</h3><div class="list">${A.snip.map(({d}) =>
+    `<a class="li" href="#/problem/${d.p.id}/${FIELD_TAB[d.field]}" style="text-decoration:none"><span style="font-size:20px">${d.p.icon}</span><div class="grow"><div>${esc(d.text)}</div><div class="date">${esc(d.p.name)} · ${FIELD_LABEL[d.field]}${d.extra != null ? ' ' + (d.extra + 1) : ''}</div></div></a>`).join('')}</div></div>`;
+  const lib = libFor(A.q, p);
+  if (lib.length) h += `<div class="panel"><h3>📚 חומרים מהספרייה שלך</h3><div class="list">${lib.map(libItem).join('')}</div></div>`;
+  return h;
+}
+const ASK_EXAMPLES = ['ילד בכיתה ב׳ בוכה כל בוקר בשער ולא מוכן להיפרד מאמא','מה אומרים למחנכת על ילד שמתפרץ ומכה בהפסקות','ילדה עם כאבי בטן לפני מבחנים והולכת לאחות','איך מתחילים מפגש ראשון עם ילד שיש לו טיקים','תלמיד שמחרימים אותו בקבוצת הוואטסאפ של הכיתה','ילד שאבא שלו נהרג – מה עושים בבית הספר','אילו שאלונים יש לחרדה','מתי להפנות ילד עם הרטבה לרופא'];
+let lastAsk = '';
+function ask(R){
+  const q = R.id ? R.id : lastAsk;
+  const hist = ls.get('cbtapp.asks', []);
+  let h = `<div class="panel" style="margin-top:4px"><h3>💬 מה השאלה?</h3>
+    <form id="askform" style="display:flex;gap:8px;flex-wrap:wrap"><textarea class="inp" id="askq" rows="2" style="flex:1;min-width:240px;min-height:52px" placeholder="מתארים את המצב במילים שלך – מה רואים, איפה ומתי">${esc(q || '')}</textarea><button class="btn primary" type="submit" style="align-self:stretch">🔎 קבלת תשובה</button></form>
+    <p class="muted" style="margin:10px 0 0;font-size:13.5px">התשובות נבנות מתוך ${PROBLEMS.length} מפות הטיפול והספרייה שלך, בלי אינטרנט. הן מכוונות ומסדרות – ושיקול הדעת המקצועי נשאר שלך.</p></div>`;
+  if (q) h += answerHTML(answer(q));
+  else h += `<h2 class="sec">💡 דוגמאות לשאלות</h2><div class="actions">${ASK_EXAMPLES.map(e => `<button class="chip" data-act="askex" data-v="${esc(e)}">${esc(e)}</button>`).join('')}</div>`;
+  if (hist.length) h += `<h2 class="sec">🕘 שאלות אחרונות</h2><div class="actions">${hist.slice(0, 10).map(e => `<button class="chip" data-act="askex" data-v="${esc(e)}">${esc(e)}</button>`).join('')}</div>`;
+  return {title:'שאל שאלה', html:h, after(){
+    const f = $('#askform'), i = $('#askq');
+    i.addEventListener('keydown', e => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); f.requestSubmit(); } });
+    f.onsubmit = e => { e.preventDefault(); const v = i.value.trim(); if (!v) return; lastAsk = v; ls.set('cbtapp.asks', [v, ...hist.filter(x => x !== v)].slice(0, 15)); location.hash = '#/ask/' + encodeURIComponent(v); };
+    if (!q) i.focus();
+  }};
+}
+
+/* ================= workflow ================= */
+const STAGES = [
+  {id:'referral', icon:'📥', name:'הפניה ואיסוף מידע', what:'מי הפנה ולמה, תצפית בכיתה ובהפסקה, שיחה עם המחנכ/ת, בדיקת רקע (בריאות, משפחה, לימודים).', link:s => `#/student/${s.id}/overview`, cta:'עדכון רקע בתיק'},
+  {id:'consent', icon:'✍️', name:'הסכמת הורים ופגישת הורים', what:'פגישה עם ההורים, הסבר על הטיפול, הסכמה, ואיסוף מידע התפתחותי. תיאום ציפיות לגבי תדירות ומשך.', link:s => `#/student/${s.id}/sessions`, cta:'רישום פגישת הורים'},
+  {id:'assess', icon:'🔍', name:'הערכה ומדידת בסיס', what:'שאלון מתאים או מדחום לפני תחילת הטיפול, כדי שיהיה למה להשוות. בודקים גם דגלים אדומים.', link:s => `#/student/${s.id}/measures`, cta:'רישום ציון בסיס'},
+  {id:'formulate', icon:'🧠', name:'המשגה ומטרות', what:'בונים יחד עם הילד את המודל (מצב–מחשבה–רגש–התנהגות), מנסחים 2–4 מטרות מדידות ומשתפים את ההורים והמחנכ/ת.', link:s => `#/student/${s.id}/overview`, cta:'ניסוח מטרות'},
+  {id:'plan', icon:'📋', name:'תוכנית טיפול', what:'בוחרים מפת טיפול ובונים תוכנית מפגשים. מתאימים לגיל, ללוח הזמנים של בית הספר ולאירועים (מבחנים, טיולים).', link:s => `#/student/${s.id}/plan`, cta:'בניית תוכנית'},
+  {id:'treat', icon:'🛠️', name:'מפגשים ותרגול', what:'מפגש שבועי, משימת בית קטנה, ורישום עוצמת הקושי בכל מפגש. עדכון המחנכ/ת פעם בשבועיים–שלושה.', link:s => `#/student/${s.id}/sessions`, cta:'רישום מפגש'},
+  {id:'review', icon:'📊', name:'מדידה חוזרת ובקרה', what:'באמצע ובסוף: אותו שאלון כמו בהתחלה. אם אין שיפור אחרי 6–8 מפגשים – חושבים מחדש, מתייעצים או מפנים.', link:s => `#/student/${s.id}/measures`, cta:'מדידה חוזרת'},
+  {id:'close', icon:'🎓', name:'סיום ומניעת הישנות', what:'מסכמים עם הילד מה למד (כרטיס התמודדות), מתכננים מה עושים אם הקושי חוזר, מדלילים מפגשים, ונפגשים שוב לבדיקה אחרי חודש.', link:s => `#/tool/copingcard`, cta:'כרטיס סיכום'}
+];
+function autoStage(s, id){
+  return {referral: !!(s.notes || s.referral), assess: s.measures.length > 0, formulate: s.goals.length > 0, plan: s.plan.length > 0, treat: s.sessions.length >= 3, review: new Set(s.measures.map(m => m.date)).size >= 2}[id] || false;
+}
+const stageDone = (s, st) => (s.stages || {})[st.id] ?? autoStage(s, st.id);
+function stagesHTML(s){
+  const done = STAGES.map(st => stageDone(s, st)); const nextI = done.indexOf(false);
+  return `<div class="panel"><h3>🗺️ סדר העבודה <span class="muted" style="font-weight:400;font-size:13px">${done.filter(Boolean).length}/${STAGES.length} שלבים</span></h3>
+    <div class="progress" style="margin-bottom:12px"><i style="width:${Math.round(100 * done.filter(Boolean).length / STAGES.length)}%"></i></div>
+    <div class="list">${STAGES.map((st, i) => `<div class="li" style="${i === nextI ? 'border-color:var(--brand);background:var(--brand-soft)' : ''}">
+      <button class="btn sm ${done[i] ? 'primary' : ''}" data-act="stage" data-s="${s.id}" data-id="${st.id}" title="סימון">${done[i] ? '✓' : i + 1}</button>
+      <div class="grow"><b>${st.icon} ${st.name}</b>${i === nextI ? ' <span class="pill brand">השלב הבא</span>' : ''}<div class="date" style="font-size:13.5px">${st.what}</div></div>
+      ${i === nextI ? `<a class="btn sm" href="${st.link(s)}">${st.cta} ←</a>` : ''}</div>`).join('')}</div></div>`;
+}
+function workflow(){
+  const act = S.students.filter(s => !s.archived);
+  let h = `<div class="panel" style="margin-top:4px"><h3>🗺️ סדר עבודה לכל תלמיד – משלב ההפניה ועד הסיום</h3><p class="muted" style="margin:0">השלבים מסומנים אוטומטית לפי מה שנרשם בתיק (מטרות, שאלונים, תוכנית, מפגשים). אפשר גם לסמן ידנית.</p></div>
+    <div class="list" style="margin-top:14px">${STAGES.map((st, i) => `<div class="li"><span class="pill brand">${i + 1}</span><div class="grow"><b>${st.icon} ${st.name}</b><div style="font-size:14.5px">${st.what}</div></div></div>`).join('')}</div>`;
+  if (LITE) return {title:'סדר עבודה', html: h + `<h2 class="sec">📅 שגרה שבועית מומלצת</h2><div class="panel"><ul class="clean"><li>אחרי כל מפגש: רישום קצר – מה עשינו, משימת בית ועוצמת קושי (0–10).</li><li>פעם בשבועיים: עדכון קצר למחנכ/ת, לפי ההנחיות ב״הורים וצוות״ של מפת הטיפול.</li><li>סוף חודש: מדידה חוזרת באותו שאלון כמו בהתחלה.</li></ul></div>`};
+  h += `<h2 class="sec">🧒 איפה כל תלמיד עומד</h2>`;
+  h += act.length ? `<div class="list">${act.map(s => { const d = STAGES.map(st => stageDone(s, st)); const n = d.indexOf(false); const st = STAGES[n];
+      return `<div class="li"><div class="grow"><b><a href="#/student/${s.id}">${esc(s.alias)}</a></b> <span class="muted">· כיתה ${esc(s.grade || '?')}</span><div class="progress" style="margin:6px 0"><i style="width:${Math.round(100 * d.filter(Boolean).length / STAGES.length)}%"></i></div>
+        <div class="date">${st ? `השלב הבא: ${st.icon} ${st.name}` : '🎓 כל השלבים הושלמו'}</div></div>${st ? `<a class="btn sm" href="${st.link(s)}">${st.cta} ←</a>` : ''}</div>`; }).join('')}</div>`
+    : `<div class="panel empty">עוד אין תלמידים בטיפול. <button class="btn primary" data-act="newstudent">＋ תלמיד חדש</button></div>`;
+  h += `<h2 class="sec">📅 שגרה שבועית מומלצת</h2><div class="panel"><ul class="clean"><li>ראשון: מעבר על רשימת התלמידים ב״איפה כל תלמיד עומד״ וקביעת מפגשי השבוע.</li><li>אחרי כל מפגש: רישום מפגש (2 דקות) – מה עשינו, משימת בית ועוצמת קושי.</li><li>פעם בשבועיים: עדכון קצר למחנכ/ת, לפי ההנחיות ב״הורים וצוות״ של מפת הטיפול.</li><li>סוף חודש: מדידה חוזרת לתלמידים שנמצאים בשלב הטיפול, ובדיקת הגרף.</li></ul></div>`;
+  return {title:'סדר עבודה', html:h};
+}
+
+
+function cloudSettings(){
+  const st = Cloud.status, acc = Cloud.account;
+  let sync;
+  if (st === 'noconfig') sync = `<div class="note danger">חסר מזהה ההתחברות (Client ID) בהגדרות האפליקציה.</div>`;
+  else if (st === 'signedout') sync = `<p style="margin:0 0 12px">מתחברים עם חשבון המיקרוסופט שבו נמצא ה-OneDrive שלך. התלמידים והספרייה ייטענו משם, בכל מכשיר.</p><button class="btn primary" data-act="cloud-login">🔑 התחברות עם חשבון מיקרוסופט</button>`;
+  else if (st === 'connecting') sync = `<div class="note">⏳ מתחבר ל-OneDrive…</div>`;
+  else if (st === 'ok') sync = `<div class="note">✅ מחובר כ-<b>${esc(acc && (acc.username || acc.name))}</b>. התלמידים נשמרים בקובץ <b>${DATAFILE}</b> בתיקיית האתר ב-OneDrive, והספרייה נפתחת משם.</div>
+    <div class="actions" style="margin-top:12px"><button class="btn" data-act="cloud-sync">🔄 סנכרון עכשיו</button><button class="btn danger" data-act="cloud-logout">התנתקות</button></div>`;
+  else sync = `<div class="note danger">שגיאה: ${esc(Cloud.err)}</div><div class="actions" style="margin-top:12px"><button class="btn primary" data-act="cloud-retry">נסו שוב</button><button class="btn" data-act="cloud-login">התחברות מחדש</button></div>`;
+  const h = `<div class="panel"><h3>☁️ חשבון מיקרוסופט ו-OneDrive</h3>${sync}</div>
+    <div class="panel"><h3>📱 התקנה בטלפון</h3><ol style="margin:0;padding-inline-start:22px"><li>פותחים את הכתובת הזו ב-Chrome או ב-Samsung Internet.</li><li>בתפריט (⋮) בוחרים ״הוספה למסך הבית״ או ״התקנת אפליקציה״.</li><li>מעכשיו נפתח מהאייקון, כמו אפליקציה רגילה.</li></ol></div>
+    <div class="panel"><h3>🔒 פרטיות</h3><ul class="clean"><li>הנתונים נשמרים רק ב-OneDrive שלך ובמכשיר. כתובת האפליקציה מכילה רק את הקוד – בלי תלמידים ובלי קבצים.</li><li>רושמים כינוי או ראשי תיבות בלבד. מומלץ לנעול את הטלפון בקוד או בטביעת אצבע.</li></ul></div>
+    <div class="panel"><h3>💾 גיבוי</h3><div class="actions"><button class="btn" data-act="export">⬇️ ייצוא גיבוי</button><label class="btn">⬆️ ייבוא מגיבוי<input type="file" accept=".json" id="importfile" hidden></label></div></div>
+    <div class="panel"><h3>ℹ️ על האפליקציה</h3><p style="margin:0">${PROBLEMS.length} מפות טיפול · ${TOOLS.length} כלים לילדים · ${LIBDATA.length} פריטים בספרייה.</p><p class="muted" style="margin:8px 0 0;font-size:14px">מפות הטיפול הן כלי עזר מקצועי, ואינן מחליפות שיקול דעת קליני, הדרכה והפניה לגורם מתאים.</p></div>`;
+  return {title:'הגדרות', html:h, after(){ const f = $('#importfile'); f && f.addEventListener('change', async () => { const file = f.files[0]; if (!file) return; try { const d = JSON.parse(await file.text()); if (!d.students) throw 0; if (!await uiConfirm(`לייבא ${d.students.length} תלמידים? הנתונים הנוכחיים יוחלפו.`)) return; S = d; S.students.forEach(fix); save(); render(); toast('הגיבוי יובא'); } catch(e){ toast('הקובץ אינו גיבוי תקין'); } }); }};
+}
+function liteHome(){
+  const sessions = PROBLEMS.reduce((n, p) => n + p.sessions.length, 0);
+  let h = `<section class="hero"><h1>שלום! במה נטפל היום? 👋</h1>
+    <p>מפות טיפול CBT לבעיות נפוצות בבית הספר היסודי, עוזר לשאלות, סדר עבודה וכלים אינטראקטיביים לילדים.</p>
+    <form id="homeask" style="display:flex;gap:8px;margin-top:18px;max-width:720px"><input class="inp" id="homeq" placeholder="💬 שאלו שאלה… למשל: ילד שבוכה כל בוקר בשער" style="flex:1;height:48px;border:0;font-size:16px"><button class="btn primary" type="submit">תשובה</button></form>
+    <div class="actions"><a class="btn" href="#/problems">🧭 בחירת בעיה</a><a class="btn" href="#/workflow">🗺️ סדר עבודה</a><a class="btn" href="#/tools">🧰 כלים לילדים</a></div></section>`;
+  h += `<div class="three"><div class="stat"><b>${PROBLEMS.length}</b><span>מפות טיפול</span></div><div class="stat"><b>${sessions}</b><span>מפגשים מפורטים</span></div><div class="stat"><b>${TOOLS.length}</b><span>כלים לילדים</span></div></div>`;
+  h += `<h2 class="sec">🧭 מפות טיפול <small>לפי תחום</small></h2><div class="grid">${PROBLEMS.slice(0, 8).map(problemCard).join('')}</div>
+    <div style="margin-top:12px"><a class="btn" href="#/problems">לכל ${PROBLEMS.length} הבעיות ←</a></div>`;
+  h += `<h2 class="sec">🧰 כלים לשימוש בחדר</h2><div class="grid">${TOOLS.slice(0, 4).map(toolCard).join('')}</div>`;
+  return {title:'בית', html:h, after(){ $('#homeask').onsubmit = e => { e.preventDefault(); const v = $('#homeq').value.trim(); if (v) { const hist = ls.get('cbtapp.asks', []); ls.set('cbtapp.asks', [v, ...hist.filter(x => x !== v)].slice(0, 15)); location.hash = '#/ask/' + encodeURIComponent(v); } }; }};
+}
+function liteSettings(){
+  return {title:'אודות', html:`<div class="panel"><h3>ℹ️ על הגרסה הזו</h3><p style="margin:0">${PROBLEMS.length} מפות טיפול · ${TOOLS.length} כלים לילדים · עוזר לשאלות · סדר עבודה.</p>
+    <p style="margin:10px 0 0">בגרסה הזו אין תיקי תלמידים ולא נשמר שום מידע על תלמידים. את התיקים מנהלים באפליקציה שבמחשב.</p></div>
+    <div class="panel"><h3>📱 שימוש בטלפון</h3><p style="margin:0">פותחים את הקישור באפליקציית Claude או בדפדפן. כדי שיהיה קיצור: בתפריט ⋮ של הדפדפן בוחרים ״הוספה למסך הבית״.</p></div>
+    <div class="panel"><h3>📚 הספרייה</h3><p style="margin:0">קובצי הספרייה נמצאים במחשב, בקיצור הדרך ״ספריית לימודי CBT״.</p></div>
+    <div class="panel"><p class="muted" style="margin:0;font-size:14px">מפות הטיפול הן כלי עזר מקצועי, ואינן מחליפות שיקול דעת קליני, הדרכה והפניה לגורם מתאים.</p></div>`};
+}
+/* ================= modals & forms ================= */
+function modal(title, html, onsubmit){
+  const m = $('#modal'); m.className = 'modal open';
+  m.innerHTML = `<div class="box"><div class="mhead"><h3>${esc(title)}</h3><button class="iconbtn" data-act="close">✕</button></div><form class="form" id="mform">${html}
+    <div class="actions" style="justify-content:flex-start"><button class="btn primary" type="submit">שמירה</button><button class="btn" type="button" data-act="close">ביטול</button></div></form></div>`;
+  $('#mform').onsubmit = e => { e.preventDefault(); const fd = new FormData(e.target); const o = {}; for (const [k, v] of fd.entries()) { if (o[k] !== undefined) { o[k] = [].concat(o[k], v); } else o[k] = v; } if (onsubmit(o) !== false) closeModal(); };
+  const first = m.querySelector('input,textarea,select'); if (first) first.focus();
+}
+function viewer(title, url, kind){
+  const m = $('#modal'); m.className = 'modal open big';
+  m.innerHTML = `<div class="box"><div class="mhead"><h3>${esc(title)}</h3><a class="btn sm" href="${url}" target="_blank">↗ לשונית חדשה</a><button class="iconbtn" data-act="close">✕</button></div>
+    ${kind === 'pdf' || kind === 'img' ? `<iframe src="${url}"></iframe>` : `<div class="empty"><span class="big">📂</span>את הקובץ הזה לא ניתן להציג בדפדפן.<br><br><a class="btn primary" href="${url}" target="_blank">פתיחה בתוכנה</a></div>`}</div>`;
+}
+function closeModal(){ const m = $('#modal'); m.className = 'modal'; m.innerHTML = ''; }
+function studentForm(s){
+  const x = s || {alias:'', grade:'', classroom:'', problems:[], start:today(), referral:'', goals:[], notes:''};
+  modal(s ? 'עריכת תלמיד' : 'תלמיד חדש', `
+    <label class="f">כינוי / ראשי תיבות *<input name="alias" required value="${esc(x.alias)}" placeholder="למשל: ד״ל או ״הכוכב״"></label>
+    <div class="row2"><label class="f">שכבה<select name="grade"><option value="">—</option>${GRADES.map(g => `<option ${x.grade === g ? 'selected' : ''}>${g}</option>`).join('')}</select></label>
+    <label class="f">כיתה<input name="classroom" value="${esc(x.classroom || '')}" placeholder="למשל: 2"></label></div>
+    <div class="row2"><label class="f">תחילת טיפול<input type="date" name="start" value="${esc(x.start || '')}"></label>
+    <label class="f">הופנה ע״י<select name="referral">${['','מחנכ/ת','הורים','יוזמת הילד','צוות','פסיכולוג/ית','אחר'].map(r => `<option ${x.referral === r ? 'selected' : ''}>${r}</option>`).join('')}</select></label></div>
+    <label class="f">בעיות מרכזיות</label><div class="checks">${PROBLEMS.map(p => `<label><input type="checkbox" name="problems" value="${p.id}" ${x.problems.includes(p.id) ? 'checked' : ''}> ${p.icon} ${esc(p.name)}</label>`).join('')}</div>
+    <label class="f">מטרות (שורה לכל מטרה)<textarea name="goals">${esc((x.goals || []).join('\n'))}</textarea></label>
+    <label class="f">רקע והערות<textarea name="notes">${esc(x.notes || '')}</textarea></label>`, o => {
+      const data = {alias:o.alias.trim(), grade:o.grade, classroom:o.classroom, start:o.start, referral:o.referral, problems:[].concat(o.problems || []), goals:lines(o.goals), notes:o.notes};
+      if (s) Object.assign(s, data); else { const n = fix({id:uid(), created:today(), ...data}); S.students.push(n); setActive(n.id); location.hash = '#/student/' + n.id; }
+      save(); render();
+    });
+}
+function sessionForm(s, sess, prefill){
+  const x = sess || {date:today(), num:String(s.sessions.length + 1), rating:'', content:'', homework:'', notes:'', ...(prefill || {})};
+  modal(sess ? 'עריכת מפגש' : 'רישום מפגש', `
+    <div class="row2"><label class="f">תאריך<input type="date" name="date" value="${esc(x.date)}"></label><label class="f">מספר מפגש<input name="num" value="${esc(x.num || '')}"></label></div>
+    <label class="f">עוצמת הקושי היום (0–10, לפי דיווח הילד או הערכתך)<input type="number" min="0" max="10" name="rating" value="${esc(x.rating ?? '')}"></label>
+    <label class="f">מה עשינו<textarea name="content">${esc(x.content || '')}</textarea></label>
+    <label class="f">משימת בית<input name="homework" value="${esc(x.homework || '')}"></label>
+    <label class="f">הערות ותובנות<textarea name="notes">${esc(x.notes || '')}</textarea></label>`, o => {
+      const d = {date:o.date, num:o.num, rating:o.rating === '' ? '' : Math.max(0, Math.min(10, +o.rating)), content:o.content, homework:o.homework, notes:o.notes};
+      if (sess) Object.assign(sess, d); else s.sessions.push({id:uid(), ...d});
+      save(); render();
+    });
+}
+function planForm(s, i){
+  const x = i != null ? s.plan[i] : {title:'', goals:[], activities:[], homework:'', tool:null};
+  modal(i != null ? 'עריכת מפגש בתוכנית' : 'מפגש חדש בתוכנית', `
+    <label class="f">כותרת<input name="title" required value="${esc(x.title)}"></label>
+    <label class="f">מטרות (שורה לכל אחת)<textarea name="goals">${esc(x.goals.join('\n'))}</textarea></label>
+    <label class="f">פעילויות (שורה לכל אחת)<textarea name="activities">${esc(x.activities.join('\n'))}</textarea></label>
+    <label class="f">משימת בית<input name="homework" value="${esc(x.homework || '')}"></label>
+    <label class="f">כלי במפגש<select name="tool"><option value="">—</option>${TOOLS.map(t => `<option value="${t.id}" ${x.tool === t.id ? 'selected' : ''}>${t.icon} ${t.name}</option>`).join('')}</select></label>`, o => {
+      const d = {title:o.title, goals:lines(o.goals), activities:lines(o.activities), homework:o.homework, tool:o.tool || null};
+      if (i != null) Object.assign(s.plan[i], d); else s.plan.push({...d, done:false, date:'', notes:''});
+      save(); render();
+    });
+}
+function measureForm(s){
+  modal('ציון שאלון / מדד', `
+    <label class="f">שם השאלון או המדד<input name="name" list="mlist" required placeholder="בחירה או הקלדה"><datalist id="mlist">${MEASURES.map(m => `<option value="${esc(m)}">`).join('')}${[...new Set(s.measures.map(m => m.name))].map(m => `<option value="${esc(m)}">`).join('')}</datalist></label>
+    <div class="row2"><label class="f">ציון<input type="number" step="any" name="score" required></label><label class="f">תאריך<input type="date" name="date" value="${today()}"></label></div>`, o => {
+      s.measures.push({id:uid(), name:o.name.trim(), score:+o.score, date:o.date}); save(); render();
+    });
+}
+
+/* ================= events ================= */
+document.addEventListener('click', async e => {
+  const el = e.target.closest('[data-act]'); if (!el) return;
+  const d = el.dataset, act = d.act, s = d.s ? student(d.s) : null;
+  const need = ['cloud-login','cloud-logout','cloud-sync','cloud-retry','askex','newstudent','close','print','fullscreen','area','arch','libtopic','libopen','attopen','planfor','printproblem','export','wipe','usefor'].includes(act) || act.startsWith('sync') || act.startsWith('th-') || act.startsWith('br-') || act.startsWith('tl-') || act.startsWith('ld-') || act.startsWith('rw-') || act.startsWith('pmr') || act.startsWith('cc-') || act === 'dq' || act === 'toolsave';
+  if (!need && !s && d.s) return;
+  switch (act) {
+    case 'newstudent': studentForm(); break;
+    case 'editstudent': studentForm(s); break;
+    case 'close': closeModal(); break;
+    case 'print': window.print(); break;
+    case 'fullscreen': { const st = $('#stage'); if (document.fullscreenElement) document.exitFullscreen(); else if (st && st.requestFullscreen) st.requestFullscreen(); break; }
+    case 'area': areaFilter = d.v; render(); break;
+    case 'arch': showArchived = d.v === '1'; render(); break;
+    case 'libtopic': libTopic = d.v; render(); break;
+    case 'libopen': if (e.target.closest('[data-act="attopen"]')) return; if (WEB) Cloud.openFile(d.pdf); else viewer(d.title, href(d.pdf), 'pdf'); break;
+    case 'attopen': e.preventDefault(); e.stopPropagation(); if (WEB) Cloud.openFile(d.path); else viewer(d.title, href(d.path), ftype(d.path)[0]); break;
+    case 'cloud-login': Cloud.login(); break;
+    case 'art-sync': await ArtSync.pull().catch(err => { ArtSync.status = 'error'; ArtSync.err = err.message || err.code; }); render(); toast('סונכרן'); break;
+    case 'cloud-logout': if (await uiConfirm('להתנתק מחשבון המיקרוסופט במכשיר הזה?')) Cloud.logout(); break;
+    case 'cloud-sync': await Cloud.pull().catch(err => { Cloud.status = 'error'; Cloud.err = err.message; }); render(); toast('סונכרן'); break;
+    case 'cloud-retry': await Cloud.connect(); break;
+    case 'planfor': {
+      const list = S.students.filter(x => !x.archived);
+      modal('תוכנית טיפול לתלמיד', `<label class="f">לאיזה תלמיד?<select name="sid"><option value="__new">＋ תלמיד חדש…</option>${list.map(x => `<option value="${x.id}" ${x.id === activeId ? 'selected' : ''}>${esc(x.alias)}</option>`).join('')}</select></label>
+        <p class="muted" style="margin:0">המפגשים של ״${esc(P[d.id].name)}״ יתווספו לתוכנית שלו.</p>`, o => {
+          if (o.sid === '__new') { closeModal(); studentForm(); return false; }
+          const st = student(o.sid); addPlanFrom(st, d.id); location.hash = '#/student/' + st.id + '/plan';
+        });
+      break; }
+    case 'printproblem': location.hash = '#/problem/' + d.id + '/print'; break;
+    case 'setactive': setActive(s.id); render(); toast('⭐ ' + s.alias + ' נבחר לעבודה'); break;
+    case 'usefor': setActive(d.s); break;
+    case 'archive': s.archived = !s.archived; if (s.archived && activeId === s.id) setActive(null); save(); render(); break;
+    case 'mkplan': addPlanFrom(s, d.p); render(); toast('התוכנית נוצרה'); break;
+    case 'addplan': planForm(s); break;
+    case 'editplan': planForm(s, +d.i); break;
+    case 'delplan': if (await uiConfirm('למחוק את המפגש מהתוכנית?')) { s.plan.splice(+d.i, 1); save(); render(); } break;
+    case 'clearplan': if (await uiConfirm('למחוק את כל תוכנית הטיפול?')) { s.plan = []; save(); render(); } break;
+    case 'plandone': { const x = s.plan[+d.i]; x.done = !x.done; if (x.done && !x.date) x.date = today(); save(); render(); if (x.done && s.plan.every(p => p.done)) confetti(); break; }
+    case 'logfromplan': { const x = s.plan[+d.i]; sessionForm(s, null, {num:String(+d.i + 1), date:x.date || today(), content:x.title + (x.activities.length ? '\n' + x.activities.join('\n') : ''), homework:x.homework}); break; }
+    case 'addsession': sessionForm(s); break;
+    case 'editsession': sessionForm(s, s.sessions.find(x => x.id === d.id)); break;
+    case 'delsession': if (await uiConfirm('למחוק את רישום המפגש?')) { s.sessions = s.sessions.filter(x => x.id !== d.id); save(); render(); } break;
+    case 'addmeasure': measureForm(s); break;
+    case 'delmeasure': e.preventDefault(); if (await uiConfirm('למחוק את הציון?')) { s.measures = s.measures.filter(x => x.id !== d.id); save(); render(); } break;
+    case 'delwork': if (await uiConfirm('למחוק?')) { s[d.k] = s[d.k].filter(x => x.id !== d.id); save(); render(); } break;
+    case 'toolsave': toolSave(d.k); break;
+    case 'askex': location.hash = '#/ask/' + encodeURIComponent(d.v); break;
+    case 'stage': { const st = STAGES.find(x => x.id === d.id); s.stages = s.stages || {}; s.stages[st.id] = !stageDone(s, st); save(); render(); break; }
+    // tools
+    case 'th-emo': T.emotion = d.v; render(); break;
+    case 'th-lvl': T.level = +d.v; render(); break;
+    case 'br-mode': T.mode = d.v; T.running = false; T.cycles = 0; render(); break;
+    case 'br-toggle': T.running = !T.running; render(); break;
+    case 'dq': { const i = +d.i; T.q = el.checked ? [...T.q, i] : T.q.filter(x => x !== i); break; }
+    case 'tl-add': { const i = $('#tlopt'); if (i.value.trim()) { T.options.push({t:i.value.trim(), v:0}); render(); } break; }
+    case 'tl-vote': T.options[+d.i].v = +d.v; render(); break;
+    case 'ld-add': { const t = $('#ldtext'); if (!t.value.trim()) return toast('כותבים את המדרגה'); T.steps.push({id:uid(), text:t.value.trim(), suds:+$('#ldsuds').value, done:false}); render(); break; }
+    case 'ld-done': { const st = T.steps.find(x => x.id === d.id); st.done = !st.done; render(); if (st.done) { confetti(); if (active() && T.id) toolSave('ladder'); } break; }
+    case 'ld-del': T.steps = T.steps.filter(x => x.id !== d.id); render(); break;
+    case 'rw-st': T.sticker = d.v; render(); break;
+    case 'rw-fill': { const i = +d.i; T.filled = i < T.filled ? i : i + 1; render(); if (T.filled >= T.goal) confetti(); if (active() && T.id) toolSave('rewards'); break; }
+    case 'pmr-go': T.running = !T.running; render(); break;
+    case 'pmr-reset': T.i = -1; T.phase = ''; T.running = false; render(); break;
+    case 'cc-item': T.items = el.checked ? [...T.items, d.v] : T.items.filter(x => x !== d.v); render(); break;
+    case 'cc-add': { const i = $('#ccown'); if (i.value.trim()) { T.items.push(i.value.trim()); render(); } break; }
+    case 'cc-color': T.color = d.v; render(); break;
+    // settings
+    case 'sync-create': await Sync.create(); render(); break;
+    case 'sync-open': await Sync.open(); render(); break;
+    case 'sync-resume': await Sync.resume(); render(); break;
+    case 'sync-now': await Sync.pull().catch(err => { Sync.status = 'error'; Sync.err = err.message; }); render(); toast('סונכרן'); break;
+    case 'sync-off': if (await uiConfirm('לנתק את קובץ הסנכרון? הנתונים יישארו במחשב הזה.')) { await Sync.disconnect(); render(); } break;
+    case 'syncbtn': if (WEB && Cloud.status === 'signedout') Cloud.login(); else if (!WEB && Sync.status === 'permission') { await Sync.resume(); render(); } else location.hash = '#/settings'; break;
+    case 'export': { const blob = new Blob([JSON.stringify(S, null, 1)], {type:'application/json'}); const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = 'גיבוי-CBT-' + today() + '.json'; a.click(); setTimeout(() => URL.revokeObjectURL(a.href), 2000); break; }
+    case 'wipe': if (await uiConfirm('למחוק את כל התלמידים והרישומים מהמחשב הזה?') && await uiConfirm('בטוח? אי אפשר לבטל. אם יש קובץ סנכרון, גם הוא יתעדכן.')) { S = blank(); save(); setActive(null); render(); } break;
+    case 'theme': { const r = document.documentElement; const dark = r.dataset.theme ? r.dataset.theme === 'dark' : matchMedia('(prefers-color-scheme: dark)').matches; r.dataset.theme = dark ? 'light' : 'dark'; ls.set('cbtapp.theme', r.dataset.theme); break; }
+  }
+});
+document.addEventListener('input', e => {
+  const el = e.target, b = el.dataset && el.dataset.bind; if (!b) return;
+  const v = el.dataset.num ? +el.value : el.value;
+  if (b.startsWith('T.')) { const k = b.slice(2); T[k] = v; const lab = $('#v-' + k); if (lab) lab.textContent = v; if (el.tagName === 'SELECT' || (el.type === 'range' && false)) render(); }
+  if (b.startsWith('plan.')) { const s = student(el.dataset.s); if (s) { s.plan[+el.dataset.i][b.slice(5)] = v; save(); } }
+});
+document.addEventListener('change', e => {
+  const el = e.target;
+  if (el.id === 'who') { setActive(el.value); render(); if (el.value) toast('⭐ עבודה עם ' + active().alias); }
+  if (el.dataset && el.dataset.bind && el.tagName === 'SELECT' && el.dataset.bind.startsWith('T.')) render();
+});
+document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal(); });
+$('#modal').addEventListener('click', e => { if (e.target.id === 'modal') closeModal(); });
+
+function addPlanFrom(s, pid){
+  const p = P[pid]; if (!p || !s) return;
+  if (!s.problems.includes(pid)) s.problems.push(pid);
+  if (!s.goals.length) s.goals = (p.goals || []).slice();
+  p.sessions.forEach(x => s.plan.push({title:x.title, goals:(x.goals || []).slice(), activities:(x.activities || []).slice(), homework:x.homework || '', tool:x.tool || null, done:false, date:'', notes:'', from:pid}));
+  save();
+}
+
+/* ================= boot ================= */
+{ const t = ls.get('cbtapp.theme', null); if (t) document.documentElement.dataset.theme = t; }
+$('#nav').innerHTML = NAV.filter(n => !LITE || !['students','library'].includes(n[0])).map(([k, i, l]) => `<a href="#/${k}" data-nav="${k}"><span class="i">${i}</span>${l}</a>`).join('');
+$('#tabbar').innerHTML = NAV.filter(n => !['library','settings','workflow'].concat(LITE ? ['students'] : []).includes(n[0])).map(([k, i, l]) => `<a href="#/${k}" data-nav="${k}"><span class="i">${i}</span>${l}</a>`).join('');
+render();
+document.body.classList.toggle('artifact', ARTIFACT); document.body.classList.toggle('lite', LITE);
+SYNC.init();
+if (WEB && !ARTIFACT && 'serviceWorker' in navigator && location.protocol === 'https:') navigator.serviceWorker.register('sw.js').catch(() => {});
+})();
+
+</script>
+</body>
+</html>
