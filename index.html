@@ -1842,7 +1842,9 @@ function circAskView(R){
   if (!q) return {title: 'שאלה על החוזרים', html: h + `<div class="actions"><a class="btn" href="#/circ">← לכל החוזרים</a></div>`, after: circAskAfter};
   const C = circSearch(q, {nGuide: 8, nText: 6});
   if (AI.available()) h += `<div class="note" style="margin-bottom:12px;display:flex;gap:10px;align-items:center;flex-wrap:wrap"><span>⚡ למטה – תשובה מהמנוע המהיר, בלי טוקנים.</span><button class="btn primary sm" data-act="circ-ai" data-v="${esc(q)}">🤖 תשובה מלאה מ-Claude – רק מהחוזרים</button><span class="muted" style="font-size:13px">רק בלחיצה – נספר במכסת המנוי</span></div><div id="circAi"></div>`;
-  if (!C.guide.length && !C.text.length) h += `<div class="panel empty">לא מצאתי בחוזרים תשובה לשאלה הזו. נסו לנסח אחרת, או לחפש בדף של חוזר מסוים.</div>`;
+  const askClaude = !AI.available() && !ARTIFACT ? `<a class="btn primary sm" href="https://claude.ai/artifact/VR9R29KShiqhmHX7NTqbjT" target="_blank" rel="noopener" data-act="copyq" data-v="${esc(q)}">🤖 שאל את Claude</a>` : '';
+  if (askClaude) h += `<div class="note" style="margin-bottom:12px;display:flex;gap:10px;align-items:center;flex-wrap:wrap"><span>🤖 רוצים תשובה מ-Claude עצמו, שמבין כל ניסוח?</span>${askClaude}<span class="muted" style="font-size:13px">השאלה מועתקת. בעמוד שנפתח נכנסים ל״חוזרי מנכ״ל״, מדביקים בתיבה ולוחצים ״תשובה מלאה מ-Claude – רק מהחוזרים״</span></div>`;
+  if (!C.guide.length && !C.text.length) h += `<div class="panel empty">לא מצאתי בחוזרים תשובה לשאלה הזו. אפשר לנסח אחרת${askClaude ? ', או ללחוץ למעלה על ״שאל את Claude״' : AI.available() ? ', או ללחוץ למעלה על ״תשובה מלאה מ-Claude״' : ''}.</div>`;
   else {
     const top = C.guide[0] ? C.guide[0].s : 0;
     const strong = C.guide.filter((x, i) => i === 0 || x.s >= top * 0.55).slice(0, 4);
