@@ -272,6 +272,26 @@ label.f input:focus,label.f select:focus,label.f textarea:focus,.inp:focus{borde
 .lite .who,.lite .sync,.lite [data-act="planfor"],.lite [data-act="newstudent"],.lite [data-act="usefor"]{display:none!important}
 .locked .side,.locked .tabbar,.locked .topbar{display:none!important}.locked .shell{grid-template-columns:1fr}
 
+/* ===== חוזרי מנכ"ל ===== */
+.split2{display:grid;grid-template-columns:1fr 1fr;gap:14px;align-items:start}
+.split2>.panel{margin:0 0 14px}
+.half{border-radius:14px;padding:12px 14px;border:1px solid var(--line)}
+.half h4,.half h3{margin:0 0 8px}
+.half.ther{background:color-mix(in srgb,#35b8a0 9%,var(--panel));border-color:color-mix(in srgb,#35b8a0 45%,var(--line))}
+.half.fram{background:color-mix(in srgb,var(--brand) 9%,var(--panel));border-color:color-mix(in srgb,var(--brand) 50%,var(--line))}
+.half ul.clean li,.half ol li{font-size:14.5px;line-height:1.6}
+.circ-quote{margin:14px 0 0;padding:10px 14px;border-inline-start:4px solid var(--brand);background:var(--bg2);border-radius:10px;font-size:14.5px;line-height:1.7}
+.circ-quote small{color:var(--muted)}
+.circ-sec summary{cursor:pointer;list-style:none;line-height:1.6}
+.circ-sec summary::-webkit-details-marker{display:none}
+.circ-sec{display:block}
+.circ-text{white-space:pre-wrap;font-size:14px;line-height:1.75;margin-top:10px;padding:10px 12px;background:var(--bg2);border-radius:10px;max-height:420px;overflow:auto}
+details.panel>summary{cursor:pointer}
+@media (max-width:760px){.split2{grid-template-columns:1fr}.tabbar a{font-size:10px;white-space:nowrap}}
+.cite{font-size:12.5px;font-weight:500;color:var(--brand-text);text-decoration:none;border-bottom:1px dotted currentColor}
+.cite:hover{text-decoration:underline}
+mark#hl{background:#ffda2a;color:#171717;padding:2px 3px;border-radius:4px;box-shadow:0 0 0 3px rgba(255,218,42,.35)}
+
 </style>
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="apple-touch-icon" href="icon-192.png">
@@ -299,6 +319,7 @@ label.f input:focus,label.f select:focus,label.f textarea:focus,.inp:focus{borde
 </div>
 <nav class="tabbar" id="tabbar"></nav>
 <div class="modal" id="modal"></div>
+
 
 
 
@@ -337,7 +358,7 @@ const STAFF_AREA = 'צוות, כיתה והורים';
 PROBLEMS.sort((a, b) => AREAS.indexOf(a.area) - AREAS.indexOf(b.area));
 let P = Object.fromEntries(PROBLEMS.map(p => [p.id, p]));
 function setContent(arr){ PROBLEMS = (arr || []).slice().sort((a, b) => AREAS.indexOf(a.area) - AREAS.indexOf(b.area)); P = Object.fromEntries(PROBLEMS.map(p => [p.id, p])); try { ASK_INDEX = null; } catch(e){} }
-function runContent(txt){ window.PROBLEMS = []; try { new Function(txt)(); setContent(window.PROBLEMS); return true; } catch(e){ return false; } }
+function runContent(txt){ window.PROBLEMS = []; window.CIRC_META = []; window.CIRC_GUIDE = []; try { new Function(txt)(); setContent(window.PROBLEMS); return true; } catch(e){ return false; } }
 const unwrap = r => Array.isArray(r) ? r : (r && r.value) || [];
 const WEB = location.protocol !== 'file:';
 let LIBDATA = [], LIBTOPICS = [];
@@ -486,6 +507,7 @@ const Cloud = {
       try { const cfg = await this.getText('app-config.json'); window.CBT_AI_CONFIG = cfg ? JSON.parse(cfg) : null; } catch(e){ window.CBT_AI_CONFIG = null; }
       await AI.init();
       await this.loadLib();
+      try { const ct = await this.getText('app-circtext.js'); if (ct) new Function(ct)(); } catch(e){}
       await this.pull();
       this.status = 'ok';
     } catch(e){ if (this.status !== 'ok') { this.status = 'error'; this.err = e.message; } }
@@ -514,6 +536,13 @@ const Cloud = {
     this.status = 'ok'; this.last = Date.now(); this.err = ''; ui();
   },
   schedule(){ if (this.status !== 'ok') return ui(); clearTimeout(this.timer); this.timer = setTimeout(() => this.push().catch(e => { this.status = 'error'; this.err = e.message; ui(); }), 1000); },
+  async openFileAt(rel, page){
+    if (!page || /Android|iPhone|iPad/i.test(navigator.userAgent) || !/\.pdf$/i.test(rel)) return this.openFile(rel);
+    if (this.status !== 'ok') return toast('כדי לפתוח קבצים צריך להתחבר עם חשבון מיקרוסופט');
+    const w = window.open('', '_blank');
+    try { const r = await this.g(this.itemPath(rel)); if (!r.ok) throw new Error('הקובץ לא נמצא ב-OneDrive'); const j = await r.json(); const b = await (await fetch(j['@microsoft.graph.downloadUrl'])).blob(); const u = URL.createObjectURL(new Blob([b], {type: 'application/pdf'})); if (w) w.location.href = u + '#page=' + page; else window.open(u + '#page=' + page, '_blank'); }
+    catch(e){ if (w) w.close(); toast('לא הצלחתי לפתוח את הקובץ: ' + e.message); }
+  },
   async openFile(rel){
     if (this.status !== 'ok') return toast('כדי לפתוח קבצים מהספרייה צריך להתחבר עם חשבון מיקרוסופט');
     const w = window.open('', '_blank');
@@ -620,7 +649,7 @@ function ui(){
 }
 
 /* ================= routing & shell ================= */
-const NAV = [['home','🏠','בית'],['ask','💬','שאל שאלה'],['problems','🧭','מנווט בעיות'],['students','🧒','תלמידים'],['workflow','🗺️','סדר עבודה'],['roles','👥','מי פונה למי'],['tools','🧰','כלים לילדים'],['library','📚','ספרייה'],['settings','⚙️','הגדרות']];
+const NAV = [['home','🏠','בית'],['ask','💬','שאל שאלה'],['problems','🧭','מנווט בעיות'],['students','🧒','תלמידים'],['workflow','🗺️','סדר עבודה'],['roles','👥','מי פונה למי'],['circ','📜','חוזרי מנכ״ל'],['tools','🧰','כלים לילדים'],['library','📚','ספרייה'],['settings','⚙️','הגדרות']];
 function route(){ const h = location.hash.replace(/^#\/?/, '').split('/').map(decodeURIComponent); return {r: h[0] || 'home', id: h[1], sub: h[2], x: h[3]}; }
 let timers = [];
 function clearTimers(){ timers.forEach(t => { clearTimeout(t); clearInterval(t); }); timers = []; }
@@ -639,12 +668,12 @@ function render(){
   document.body.classList.toggle('locked', isLocked());
   if (isLocked()) { const o = lockView(); $('#title').textContent = ''; $('#view').innerHTML = `<div class="page">${o.html}</div>`; document.title = 'CBT בבית הספר'; return; }
   if (WEB && !ARTIFACT && !LITE && !PROBLEMS.length) { $('#title').textContent = ''; $('#view').innerHTML = `<div class="empty" style="padding-top:120px"><span class="big">⏳</span>${Cloud.status === 'error' ? esc(Cloud.err) + ' <br><br><button class="btn primary" data-act="cloud-retry">נסו שוב</button>' : 'טוען את התוכן מ-OneDrive…'}</div>`; return; }
-  const views = LITE ? {home: liteHome, problems, problem: problemView, tools, tool: toolView, settings: liteSettings, ask, workflow, roles: rolesView} : {home, problems, problem: problemView, students, student: studentView, tools, tool: toolView, library, settings, ask, workflow, roles: rolesView};
+  const views = LITE ? {home: liteHome, problems, problem: problemView, tools, tool: toolView, settings: liteSettings, ask, workflow, roles: rolesView, circ: circView, circsrc: circSrcView} : {home, problems, problem: problemView, students, student: studentView, tools, tool: toolView, library, settings, ask, workflow, roles: rolesView, circ: circView, circsrc: circSrcView};
   const fn = views[R.r] || home;
   const out = fn(R);
   $('#title').textContent = out.title;
   $('#view').innerHTML = `<div class="page">${out.html}</div>`;
-  const navKey = {problem:'problems', student:'students', tool:'tools'}[R.r] || R.r;
+  const navKey = {problem:'problems', student:'students', tool:'tools', circsrc:'circ'}[R.r] || R.r;
   document.querySelectorAll('[data-nav]').forEach(a => a.classList.toggle('on', a.dataset.nav === navKey));
   document.title = out.title + ' · CBT בבית הספר';
   if (out.after) out.after();
@@ -1030,7 +1059,7 @@ function library(){
   const ql = libQ.toLowerCase();
   const seen = new Set();
   const list = LIBDATA.filter(p => { const sig = p.title + '|' + (p.src ? p.size : '') + '|' + p.attachments.map(a => a.name).join(','); if (seen.has(sig)) return false; seen.add(sig); return true; })
-    .filter(p => (!libTopic || p.topic === libTopic) && (!ql || (p.title + ' ' + (p.sub || '') + ' ' + p.section + ' ' + p.attachments.map(a => a.name).join(' ')).toLowerCase().includes(ql)));
+    .filter(p => (!libTopic || p.topic === libTopic || (p.extra || []).includes(libTopic)) && (!ql || (p.title + ' ' + (p.sub || '') + ' ' + p.section + ' ' + p.attachments.map(a => a.name).join(' ')).toLowerCase().includes(ql)));
   const h = `<div class="actions" style="margin:4px 0 12px">${WEB ? '' : '<a class="btn" href="index.html" target="_blank">📚 פתיחת הספרייה המלאה</a>'}${!LIBDATA.length ? (ARTIFACT ? '<span class="note warn">📚 קובצי הספרייה נמצאים במחשב – פותחים אותם מקיצור הדרך ״ספריית לימודי CBT״</span>' : '<span class="note warn">הספרייה תופיע אחרי התחברות עם חשבון מיקרוסופט</span>') : ''}<span class="muted">${list.length} פריטים</span></div>
     <div class="search" style="margin-bottom:12px"><input id="libq" placeholder="חיפוש בספרייה…" value="${esc(libQ)}"><span class="ic">🔍</span></div>
     <div class="chips"><button class="chip ${!libTopic ? 'on' : ''}" data-act="libtopic" data-v="">הכל</button>${LIBTOPICS.map(t => `<button class="chip ${libTopic === t.id ? 'on' : ''}" data-act="libtopic" data-v="${t.id}">${t.icon} ${esc(t.name)}</button>`).join('')}</div>
@@ -1114,7 +1143,8 @@ function mergeExtras(){
   for (const id in X) { SYN[id] = [...new Set([...(SYN[id] || []), ...X[id]])]; }
   if (Array.isArray(window.ROLE_WORDS_EXTRA)) for (const w of window.ROLE_WORDS_EXTRA) if (!ROLE_WORDS.includes(w)) ROLE_WORDS.push(w);
 }
-window.__qa = q => { const A = answer(q); return {top: A.top ? A.top.p.id : null, roles: A.roles, safety: A.safety, adult: A.adult, scores: A.scores, others: A.others.map(o => o.p.id)}; };
+window.__preview = () => { if (/^(localhost|127\.0\.0\.1)$/.test(location.hostname)) { Cloud.account = {username: 'בדיקה מקומית'}; render(); } };
+window.__qa = q => { const A = answer(q); return {top: A.top ? A.top.p.id : null, roles: A.roles, safety: A.safety, adult: A.adult, circ: A.circOn ? A.circ.guide.slice(0, 3).map(x => x.g.id) : [], circScore: A.circ.guide[0] ? Math.round(A.circ.guide[0].s * 10) / 10 : 0, scores: A.scores, others: A.others.map(o => o.p.id)}; };
 function buildIndex(){
   mergeExtras();
   const docs = [], df = {};
@@ -1155,7 +1185,13 @@ function answer(q){
   const others = scores.slice(top ? 1 : 0, 4).filter(x => x.s >= (top ? top.s * 0.45 : 3));
   const snip = X.docs.map(d => { let s = 0; for (const t of qt) if (d.tk.includes(t)) s += idf(t); if (top && d.p === top.p) s *= 1.3; if (intents.some(i => i.field === d.field)) s *= 1.4; return {d, s}; })
     .filter(x => x.s > 1.2).sort((a, b) => b.s - a.s).slice(0, 7);
-  return {q, top, others, intents, sessNum, safety, snip, qt, roles, adult, scores: scores.slice(0, 4).map(x => ({id: x.p.id, s: Math.round(x.s * 10) / 10, why: x.why}))};
+  const circ = circGuide().length ? circSearch(q) : {guide: [], text: [], strong: false, qt};
+  const circFocus = CIRC_WORDS.some(w => hasPh(nq, w));
+  const cs = circ.guide.length ? circ.guide[0].s : 0;
+  const cw = circ.guide.length ? circ.guide[0].why.length : 0;
+  const cv = circ.guide.length ? circ.guide[0].cov : 0;
+  const circOn = cs > 0 && ((cw && cv >= 0.2) || cv >= 0.6 || (circFocus && cs >= 5) || (safety && cs >= 4));
+  return {q, top, others, intents, sessNum, safety, snip, qt, roles, adult, circ, circOn, scores: scores.slice(0, 4).map(x => ({id: x.p.id, s: Math.round(x.s * 10) / 10, why: x.why}))};
 }
 function libFor(q, p){
   const kw = [...(p ? p.libraryKeywords || [] : [])];
@@ -1171,7 +1207,7 @@ function answerHTML(A){
     <li>בחשש לפגיעה או להזנחה בבית – חובת דיווח לפי החוק לעובד/ת סוציאלי/ת לפי חוק הנוער או למשטרה. לא מבררים לבד לעומק ולא מעמתים את המשפחה לפני התייעצות.</li>
     <li>בחשש אובדני – שואלים ישירות ובעדינות, מיידעים הורים (אלא אם הם מקור הסכנה), ומפנים להערכה דחופה (מיון / פסיכיאטר ילדים). קו ער״ן 1201, סה״ר באתר sahar.org.il.</li></ul></div>`;
   if (!A.top && (A.roles || ASKER !== 'counselor')) h += myRoleCardHTML() + (A.roles ? rolesAnswerHTML(null) : '');
-  else if (!A.top) {
+  else if (!A.top && !A.circOn) {
     h += `<div class="panel"><h3>🤔 לא מצאתי מפת טיפול שמתאימה בדיוק לשאלה</h3><p style="margin:0 0 8px">כדי לא לתת תשובה לא מדויקת, אני לא בוחר מפה בכוח. אפשר לנסות לנסח שוב: מי מתקשה (ילד, מורה, הורים, כיתה), מה בדיוק קורה, ומתי.</p>
       ${A.others.length ? `<p style="margin:0;font-size:14px">אולי אחד מאלה קרוב: ${A.others.map(o => `<a class="pill brand" href="#/problem/${o.p.id}" style="text-decoration:none">${o.p.icon} ${esc(o.p.name)}</a>`).join(' ')}</p>` : ''}
       <div class="actions" style="margin-top:12px"><a class="btn" href="#/problems">🧭 לרשימת כל המפות</a></div></div>`;
@@ -1179,6 +1215,7 @@ function answerHTML(A){
   const p = A.top && A.top.p;
   if (p) {
     const s1 = p.sessions[0] || {};
+    if (A.circOn) h += `<h2 class="sec">🧠 המענה הטיפולי <small>מתוך מפות הטיפול</small></h2>`;
     h += `<div class="panel" style="border-inline-start:5px solid hsl(${hueOf(p.area)} 55% 45%)"><h3>${p.icon} נראה שמדובר ב: <a href="#/problem/${p.id}">${esc(p.name)}</a></h3>
       <p style="margin:0 0 8px">${esc(p.summary)}</p>${A.top.why.length ? `<p class="muted" style="margin:0;font-size:14px">זיהיתי לפי: ${A.top.why.slice(0, 4).map(w => '״' + esc(w) + '״').join(', ')}</p>` : ''}
       ${A.others.length ? `<p style="margin:8px 0 0;font-size:14px">אולי גם: ${A.others.map(o => `<a class="pill brand" href="#/problem/${o.p.id}" style="text-decoration:none">${o.p.icon} ${esc(o.p.name)}</a>`).join(' ')}</p>` : ''}</div>`;
@@ -1186,18 +1223,19 @@ function answerHTML(A){
     if (ASKER !== 'counselor') h += rolePlanHTML(p);
     else h += `<div class="panel"><h3>✅ מה עושים עכשיו – צעד אחר צעד</h3><ol style="margin:0;padding-inline-start:22px;display:grid;gap:8px">
       ${p.area === STAFF_AREA ? `
-      <li><b>בירור ראשוני:</b> ${esc((p.assessment || [])[0] || '')}${(p.assessment || [])[1] ? ' · ' + esc(p.assessment[1]) : ''}</li>
-      <li><b>פגישה ראשונה:</b> ${esc((s1.activities || []).slice(0, 2).join(' · '))}</li>
-      ${tech ? `<li><b>דרך עבודה מרכזית – ${esc(tech.name)}:</b> ${esc(tech.how)}</li>` : ''}
-      <li><b>הנחיות מעשיות:</b> ${esc((p.teachers || []).slice(0, 2).join(' · '))}</li>
+      <li><b>בירור ראשוני:</b> ${esc((p.assessment || [])[0] || '')}${(p.assessment || [])[1] ? ' · ' + esc(p.assessment[1]) : ''} ${mcite(p, 'assessment')}</li>
+      <li><b>פגישה ראשונה:</b> ${esc((s1.activities || []).slice(0, 2).join(' · '))} ${mcite(p, 'sessions')}</li>
+      ${tech ? `<li><b>דרך עבודה מרכזית – ${esc(tech.name)}:</b> ${esc(tech.how)} ${mcite(p, 'techniques')}</li>` : ''}
+      <li><b>הנחיות מעשיות:</b> ${esc((p.teachers || []).slice(0, 2).join(' · '))} ${mcite(p, 'teachers')}</li>
       <li><b>מעקב:</b> קובעים פגישת המשך ומדד פשוט להצלחה, ובודקים אותו בכל פגישה.</li>
-      <li><b>מתי להסלים:</b> ${esc((p.redFlags || [])[0] || '')}</li>` : `
-      <li><b>בירור ראשוני:</b> ${esc((p.assessment || [])[0] || '')}${(p.assessment || [])[1] ? ' · ' + esc(p.assessment[1]) : ''}</li>
-      <li><b>שיחה עם המחנכ/ת:</b> ${esc((p.teachers || [])[0] || '')}</li>
-      <li><b>שיחה עם ההורים:</b> ${esc((p.parents || [])[0] || '')}</li>
-      <li><b>מפגש ראשון עם הילד:</b> ${esc((s1.activities || []).slice(0, 2).join(' · '))}</li>
-      ${tech ? `<li><b>טכניקה מרכזית – ${esc(tech.name)}:</b> ${esc(tech.how)}</li>` : ''}
+      <li><b>מתי להסלים:</b> ${esc((p.redFlags || [])[0] || '')} ${mcite(p, 'redFlags')}</li>` : `
+      <li><b>בירור ראשוני:</b> ${esc((p.assessment || [])[0] || '')}${(p.assessment || [])[1] ? ' · ' + esc(p.assessment[1]) : ''} ${mcite(p, 'assessment')}</li>
+      <li><b>שיחה עם המחנכ/ת:</b> ${esc((p.teachers || [])[0] || '')} ${mcite(p, 'teachers')}</li>
+      <li><b>שיחה עם ההורים:</b> ${esc((p.parents || [])[0] || '')} ${mcite(p, 'parents')}</li>
+      <li><b>מפגש ראשון עם הילד:</b> ${esc((s1.activities || []).slice(0, 2).join(' · '))} ${mcite(p, 'sessions')}</li>
+      ${tech ? `<li><b>טכניקה מרכזית – ${esc(tech.name)}:</b> ${esc(tech.how)} ${mcite(p, 'techniques')}</li>` : ''}
       <li><b>מדידה:</b> קובעים מדד פשוט (מדחום 0–10 או שאלון) ורושמים אותו בכל מפגש בתיק התלמיד.</li>`}</ol>
+      ${(p.sources || []).length ? `<p class="muted" style="margin:12px 0 0;font-size:13px">📚 המקורות המקצועיים של המפה: ${p.sources.map(esc).join(' · ')}</p>` : ''}
       <div class="actions" style="margin-top:14px"><a class="btn primary" href="#/problem/${p.id}">🧭 מפת הטיפול המלאה</a>${p.area === STAFF_AREA ? '' : `<button class="btn" data-act="planfor" data-id="${p.id}">📋 תוכנית טיפול לתלמיד</button>`}<a class="btn" href="#/problem/${p.id}/sessions">🗓️ ${p.sessions.length} ${p.area === STAFF_AREA ? 'הפגישות' : 'המפגשים'}</a></div></div>`;
     if (A.roles) h += rolesAnswerHTML(p);
     for (const it of A.intents) {
@@ -1207,30 +1245,32 @@ function answerHTML(A){
       else if (it.field === 'homework') body = ul(p.sessions.map((s, i) => `מפגש ${i + 1}: ${s.homework}`).filter(Boolean));
       else if (it.field === 'model') { const m = p.model || {}; body = `<p style="margin:0 0 6px"><b>מחשבות:</b> ${esc((m.thoughts || []).join(' · '))}</p><p style="margin:0 0 6px"><b>התנהגויות:</b> ${esc((m.behaviors || []).join(' · '))}</p><p class="note" style="margin:0">${esc(m.maintaining || '')}</p>`; }
       else body = ul(p[it.field]);
-      h += `<div class="panel"><h3>${it.label}</h3>${body}</div>`;
+      h += `<div class="panel"><h3>${it.label}</h3>${body}<p style="margin:8px 0 0">${mcite(p, it.field === 'first' || it.field === 'homework' ? 'sessions' : it.field)}</p></div>`;
     }
     if (A.sessNum && p.sessions[+A.sessNum - 1]) h += `<div class="panel"><h3>🗓️ מפגש ${A.sessNum}</h3>${sessionHTML(p.sessions[+A.sessNum - 1], +A.sessNum - 1, 'open')}</div>`;
     const tl = (p.tools || []).filter(t => TOOL[t]);
     if (tl.length) h += `<div class="panel"><h3>🧰 כלים לשימוש בחדר</h3><div class="actions">${tl.map(t => `<a class="btn" href="#/tool/${t}">${TOOL[t].icon} ${TOOL[t].name}</a>`).join('')}</div></div>`;
   }
-  if (A.snip.length) h += `<div class="panel"><h3>💡 משפטים רלוונטיים מתוך מפות הטיפול</h3><div class="list">${A.snip.map(({d}) =>
+  if (A.circOn) h += `<h2 class="sec">📋 המענה המשמעתי / מסגרתי / מנהלי <small>לפי חוזרי המנכ״ל</small></h2>` + (A.top ? '' : `<p class="muted" style="margin:-4px 0 10px;font-size:14px">לשאלה הזו אין מפת טיפול ייעודית. את הצד הטיפולי אפשר לחפש ב<a href="#/problems">מנווט הבעיות</a>.</p>`) + circAnswerHTML(A.circ, A.q);
+  if (A.snip.length && (A.top || !A.circOn)) h += `<div class="panel"><h3>💡 משפטים רלוונטיים מתוך מפות הטיפול</h3><div class="list">${A.snip.map(({d}) =>
     `<a class="li" href="#/problem/${d.p.id}/${FIELD_TAB[d.field]}" style="text-decoration:none"><span style="font-size:20px">${d.p.icon}</span><div class="grow"><div>${esc(d.text)}</div><div class="date">${esc(d.p.name)} · ${FIELD_LABEL[d.field]}${d.extra != null ? ' ' + (d.extra + 1) : ''}</div></div></a>`).join('')}</div></div>`;
   const lib = libFor(A.q, p);
   if (lib.length) h += `<div class="panel"><h3>📚 חומרים מהספרייה שלך</h3><div class="list">${lib.map(libItem).join('')}</div></div>`;
   return h;
 }
-const ASK_EXAMPLES = ['ילד בכיתה ב׳ בוכה כל בוקר בשער ולא מוכן להיפרד מאמא','מה אומרים למחנכת על ילד שמתפרץ ומכה בהפסקות','ילדה עם כאבי בטן לפני מבחנים והולכת לאחות','איך מתחילים מפגש ראשון עם ילד שיש לו טיקים','תלמיד שמחרימים אותו בקבוצת הוואטסאפ של הכיתה','ילד שאבא שלו נהרג – מה עושים בבית הספר','אילו שאלונים יש לחרדה','מתי להפנות ילד עם הרטבה לרופא'];
+const ASK_EXAMPLES = ['ילד בכיתה ב׳ בוכה כל בוקר בשער ולא מוכן להיפרד מאמא','מה אומרים למחנכת על ילד שמתפרץ ומכה בהפסקות','ילדה עם כאבי בטן לפני מבחנים והולכת לאחות','איך מתחילים מפגש ראשון עם ילד שיש לו טיקים','תלמיד שמחרימים אותו בקבוצת הוואטסאפ של הכיתה','ילד שאבא שלו נהרג – מה עושים בבית הספר','אילו שאלונים יש לחרדה','מתי להפנות ילד עם הרטבה לרופא','תלמיד קילל מורה באמצע השיעור – מה עושים?','מתי מותר להשעות תלמיד ומי מחליט','אבא גרוש מבקש לקבל את התעודה','ילד כתב במחברת שהוא רוצה למות – מה חובה לעשות'];
 let lastAsk = '', aiFast = false;
 function ask(R){
   const q = R.id ? R.id : lastAsk;
   const hist = ls.get('cbtapp.asks', []);
   let h = `<div class="panel" style="margin-top:4px"><h3>💬 מה השאלה?</h3>${askerChips()}
     <form id="askform" style="display:flex;gap:8px;flex-wrap:wrap"><textarea class="inp" id="askq" rows="2" style="flex:1;min-width:240px;min-height:52px" placeholder="מתארים את המצב במילים שלך – מה רואים, איפה ומתי">${esc(q || '')}</textarea><button class="btn primary" type="submit" style="align-self:stretch">🔎 קבלת תשובה</button></form>
-    <p class="muted" style="margin:10px 0 0;font-size:13.5px">התשובות נבנות מתוך ${PROBLEMS.length} מפות הטיפול והספרייה שלך, בלי אינטרנט. הן מכוונות ומסדרות – ושיקול הדעת המקצועי נשאר שלך.</p></div>`;
-  if (q && AI.available() && !aiFast) h += '<div id="aiPanel"></div>';
-  if (q && !AI.available() && !ARTIFACT) h += `<div class="note" style="margin-bottom:12px;display:flex;gap:10px;align-items:center;flex-wrap:wrap"><span>🤖 רוצה תשובה מ-Claude עצמו, שמבין כל ניסוח?</span><a class="btn primary sm" href="https://claude.ai/artifact/VR9R29KShiqhmHX7NTqbjT" target="_blank" rel="noopener" data-act="copyq" data-v="${esc(q)}">שאל את Claude</a><span class="muted" style="font-size:13px">השאלה מועתקת – מדביקים אותה בעמוד שנפתח</span></div>`;
-  else if (q) h += (AI.status === 'off' && AI.err ? `<div class="note warn" style="margin-bottom:12px">🤖 ${esc(AI_ERR[AI.err] || 'Claude לא זמין כרגע – התשובה מהמנוע המהיר.')}</div>` : '') + answerHTML(answer(q));
-  else h += `<h2 class="sec">💡 דוגמאות לשאלות</h2><div class="actions">${ASK_EXAMPLES.map(e => `<button class="chip" data-act="askex" data-v="${esc(e)}">${esc(e)}</button>`).join('')}</div>`;
+    <p class="muted" style="margin:10px 0 0;font-size:13.5px">התשובות נבנות מתוך ${PROBLEMS.length} מפות הטיפול, חוזרי המנכ״ל והספרייה שלך – תמיד בהפרדה בין המענה הטיפולי למענה המשמעתי / מסגרתי / מנהלי. הן מכוונות ומסדרות – ושיקול הדעת המקצועי נשאר שלך.</p></div>`;
+  const useAI = q && AI.available() && !aiFast;
+  if (useAI) h += '<div id="aiPanel"></div>';
+  if (q && !useAI && !AI.available() && !ARTIFACT) h += `<div class="note" style="margin-bottom:12px;display:flex;gap:10px;align-items:center;flex-wrap:wrap"><span>🤖 רוצה תשובה מ-Claude עצמו, שמבין כל ניסוח?</span><a class="btn primary sm" href="https://claude.ai/artifact/VR9R29KShiqhmHX7NTqbjT" target="_blank" rel="noopener" data-act="copyq" data-v="${esc(q)}">שאל את Claude</a><span class="muted" style="font-size:13px">השאלה מועתקת – מדביקים אותה בעמוד שנפתח</span></div>`;
+  if (q && !useAI) h += (AI.status === 'off' && AI.err ? `<div class="note warn" style="margin-bottom:12px">🤖 ${esc(AI_ERR[AI.err] || 'Claude לא זמין כרגע – התשובה מהמנוע המהיר.')}</div>` : '') + answerHTML(answer(q));
+  else if (!q) h += `<h2 class="sec">💡 דוגמאות לשאלות</h2><div class="actions">${ASK_EXAMPLES.map(e => `<button class="chip" data-act="askex" data-v="${esc(e)}">${esc(e)}</button>`).join('')}</div>`;
   if (hist.length) h += `<h2 class="sec">🕘 שאלות אחרונות</h2><div class="actions">${hist.slice(0, 10).map(e => `<button class="chip" data-act="askex" data-v="${esc(e)}">${esc(e)}</button>`).join('')}</div>`;
   return {title:'שאל שאלה', html:h, after(){
     const f = $('#askform'), i = $('#askq');
@@ -1386,18 +1426,37 @@ ${idx}
 מי שואל/ת: ${askerOf().label}
 השאלה: """${q}"""
 
-בחר את המפה המתאימה ביותר לשאלה, ועד מפה נוספת אחת אם היא באמת רלוונטית. אם השאלה אינה קשורה לאף מפה ולא למדריך התפקידים (למשל תקציב, מערכת שעות, קריאה וכתיבה, נושא שאינו רגשי-התנהגותי-חינוכי) – החזר mapIds ריק ו-offTopic true. אל תבחר מפה "בכוח". סמן safety true אם יש בשאלה רמז לסכנה: אובדנות, פגיעה עצמית, אלימות חמורה, חשד לפגיעה או להזנחה בבית, פגיעה מינית.
+${circClassifyList(q)}
 
-השב אך ורק ב-JSON אחד בצורה: {"mapIds": ["id"], "roles": false, "safety": false, "offTopic": false}`;
+בחר את המפה המתאימה ביותר לשאלה, ועד מפה נוספת אחת אם היא באמת רלוונטית. בנוסף בחר עד 4 "מצבים מחוזרי המנכ״ל" (circIds) שנוגעים לשאלה – במיוחד בכל שאלה על משמעת, אלימות, השעיה, תקנון, דיווח, זכויות, הורים, מידע, חירום, חינוך מיוחד או אובדנות, גם אם השאלה טיפולית ביסודה (למשל ילד שמכה – גם מפת כעס וגם מצבי אלימות מחוזר האקלים). אם השאלה אינה קשורה לאף מפה, למדריך התפקידים או לחוזרים – החזר רשימות ריקות ו-offTopic true. אל תבחר "בכוח". סמן safety true אם יש בשאלה רמז לסכנה: אובדנות, פגיעה עצמית, אלימות חמורה, חשד לפגיעה או להזנחה בבית, פגיעה מינית.
+
+השב אך ורק ב-JSON אחד בצורה: {"mapIds": ["id"], "circIds": ["id"], "roles": false, "safety": false, "offTopic": false}`;
 }
-function aiAnswerPrompt(q, maps, rolesQ){
+const utf8len = s => new TextEncoder().encode(s).length;
+function circClassifyList(q){
+  const G = circGuide(); if (!G.length) return '';
+  let list = G;
+  const all = G.map(g => `- ${g.id} | ${g.title}`).join('\n');
+  if (utf8len(all) > 34000) { const C = circSearch(q, {nGuide: 70}); list = C.guide.map(x => x.g); }
+  return `מצבים מחוזרי המנכ״ל (כל שורה: מזהה | מצב):\n${list.map(g => `- ${g.id} | ${g.title}`).join('\n')}`;
+}
+function aiAnswerPrompt(q, maps, rolesQ, circArg){
   const a = askerOf();
   const roleBrief = {counselor: 'היועץ/ת – רוצה את מהלך ההתערבות: בירור, המשגה, שיחות עם מחנך/ת והורים, מפגשים עם הילד, טכניקות, מדידה ומתי להפנות.',
     homeroom: 'המחנך/ת – רוצה לדעת מה לשים לב אליו ולתעד, מה לעשות בכיתה ובשיחה עם הילד, איך ומתי לפנות להורים, ומתי לערב את היועץ/ת ואת ההנהלה. לא מטפל/ת בעצמו/ה.',
     teacher: 'מורה מקצועי/ת – רוצה לדעת מה לעשות בתוך השיעור שלו/ה, מתי לעדכן את המחנך/ת, ומתי מותר לפנות להורים ישירות (רק בעניין לימודי במקצוע שלו/ה). לא מטפל/ת ולא מנהל/ת את המקרה.',
     management: 'ההנהלה – רוצה לדעת מה תפקיד ההנהלה במקרה, מה לבקש מהמחנך/ת ומהיועץ/ת, מתי לפנות להורים, מתי לערב פיקוח או גורמי חוץ, ומה דחוף.'}[a.id];
-  const material = JSON.stringify({maps: maps.map(compactMap), rolesGuide: rolesCompact()});
-  return `אתה עוזר מקצועי בתוך אפליקציה ליועץ/ת חינוכי/ת בבית ספר יסודי בישראל. ענה על השאלה אך ורק מתוך החומר המצורף (מפות טיפול CBT ומדריך תפקידים). אל תוסיף ידע חיצוני, אל תמציא נהלים, שמות של שאלונים או גורמים שאינם בחומר. אם החומר לא מכסה את השאלה, אמור זאת במפורש ב-notFound ואל תנחש.
+  const circ = circArg || {items: [], excerpts: []};
+  const material = JSON.stringify({maps: maps.map(compactMap), rolesGuide: rolesCompact(), circulars: circ.items.length || circ.excerpts.length ? circ : undefined});
+  return `אתה עוזר מקצועי בתוך אפליקציה ליועץ/ת חינוכי/ת בבית ספר יסודי בישראל. ענה על השאלה אך ורק מתוך החומר המצורף (מפות טיפול CBT, מדריך תפקידים, ומצבים וסעיפים מחוזרי מנכ״ל של משרד החינוך). אל תוסיף ידע חיצוני, אל תמציא נהלים, סעיפים, מספרים, מועדים, שמות של שאלונים או גורמים שאינם בחומר. אם החומר לא מכסה את השאלה, אמור זאת במפורש ב-notFound ואל תנחש.
+
+כלל ההפרדה (חובה): תמיד מפרידים בין
+• therapeutic – 🧠 המענה הטיפולי / חינוכי-רגשי: הבנת הילד והצורך שמאחורי ההתנהגות, שיחה, תמיכה בנפגע ובפוגע, עבודה עם הכיתה, הדרכת המורה וההורים, התערבות CBT מהמפות, ליווי ומעקב.
+• framework – 📋 המענה המשמעתי / מסגרתי / מנהלי: מה החוזר מחייב או מתיר – כללים ותקנון, מדרג תגובות, השעיה והרחקה, יידוע הורים, דיווח (הנהלה, פיקוח, משטרה, רווחה), תיעוד, מועדים, סמכויות, זכויות התלמיד והליך הוגן, איסורים. כל פריט ב-framework חייב מקור מדויק בשדה src (שם החוזר + מספר סעיף כפי שמופיע בחומר). מה שאין לו מקור בחוזרים – לא נכנס ל-framework.
+אסור לערבב: לא להציג צעד משמעתי כטיפול, ולא להציג המלצה טיפולית כחובה מנהלית. אם אחד הצדדים לא מכוסה בחומר – השאר אותו ריק וכתוב זאת ב-note.
+היה ממוקד אבל מקיף: תשובה מלאה שכוללת את כל מה שהחומר אומר על המקרה, בלי מילים מיותרות.
+
+כללי המקור (חובה, לכל פריט בלי יוצא מן הכלל): לכל פריט ב-therapeutic וב-framework יש שדה src. אם הפריט נשען על מפת טיפול – src בצורה: ״מפת טיפול: <שם המפה כפי שמופיע בחומר> › <החלק: סימנים / הערכה / מטרות / מפגש N / טכניקות / הורים / צוות / מתי להפנות / המשגה>״. אם הוא נשען על חוזר – src בצורה: ״<שם החוזר כפי שמופיע בחומר>, סעיף <המספר המדויק מהחומר>״, ובשדה q ציטוט מילה במילה של המשפט הרלוונטי מתוך החומר (items או excerpts). אם נשען על מדריך התפקידים – ״מדריך התפקידים באפליקציה״. פריט שאין לו מקור בחומר – לא נכנס לתשובה.
 
 מי שואל/ת: ${roleBrief}
 התאם את התשובה בדיוק לתפקיד הזה: מה הוא/היא עושה, מה לא בתפקידו/ה, ולמי מעביר/ה. הקפד על ההפרדה בין מורה מקצועי/ת למחנך/ת, ועל מי פונה להורים ומתי (לפי whoDoesWhat של המפה ולפי rolesGuide).
@@ -1411,17 +1470,38 @@ ${material}
 כתוב בעברית, בגובה העיניים, במשפטים קצרים ומעשיים. בלי פנייה בלשון "אתה". השב אך ורק ב-JSON אחד בצורה הבאה (בלי טקסט לפני או אחרי):
 {
  "mapId": "המזהה של המפה הראשית או null",
- "headline": "משפט אחד: מה כנראה קורה כאן",
- "steps": [{"t": "כותרת קצרה", "d": "מה לעשות, 1-3 משפטים"}],
+ "headline": "משפט אחד: מה כנראה קורה כאן ומה השורה התחתונה",
+ "therapeutic": [{"t": "כותרת קצרה", "d": "מה לעשות, 1-3 משפטים", "src": "מקור מדויק – ראה כללי המקור"}],
+ "framework": [{"t": "כותרת קצרה", "d": "מה החוזר קובע ומה עושים, 1-3 משפטים", "src": "שם החוזר, סעיף X", "q": "ציטוט מדויק קצר (עד 15 מילים) מתוך החומר שעליו נשען הפריט"}],
  "contacts": "מי פונה למי ומתי במקרה הזה, כולל ההורים – 2-4 משפטים",
- "watch": ["דגל אדום או מצב שמחייב הפניה/הסלמה", "..."],
+ "watch": ["דגל אדום או מצב שמחייב הפניה/הסלמה/דיווח", "..."],
  "note": "הערה קצרה אם יש, אחרת מחרוזת ריקה",
+ "circIds": ["המזהים של מצבי החוזרים שעליהם נשענת התשובה"],
  "notFound": false,
  "safety": false
 }
-steps: 4-7 צעדים, בסדר ביצוע, מותאמים לתפקיד השואל/ת. אם notFound=true – headline מסביר שהחומר לא מכסה את השאלה, steps ריק, contacts ריק, ואפשר להציע ב-note לאיזה גורם כדאי לפנות.`;
+therapeutic: 3-7 צעדים בסדר ביצוע, מותאמים לתפקיד השואל/ת (ריק אם השאלה מנהלית בלבד והחומר לא מציע צד טיפולי). framework: כל ההוראות הרלוונטיות מהחוזרים, בסדר ביצוע (ריק אם אין חוזר רלוונטי בחומר). אם notFound=true – headline מסביר שהחומר לא מכסה את השאלה, שאר הרשימות ריקות, ואפשר להציע ב-note לאיזה גורם כדאי לפנות.`;
 }
-let aiCtl = null;
+let aiCtl = null, aiMaxBytes = 0;
+async function aiCircMaterial(q, maps, rolesQ, cids, local){
+  if (!aiMaxBytes) { aiMaxBytes = 65536; try { const l = AI.sample && AI.sample.limits ? await AI.sample.limits() : null; if (l && l.maxPromptBytes) aiMaxBytes = l.maxPromptBytes; } catch(e){} }
+  const budget = Math.floor(aiMaxBytes * 0.92);
+  const strip = g => ({id: g.id, circular: circMeta(g.circ).title, title: g.title, sections: g.sections, summary: g.summary, therapeutic: g.therapeutic, framework: g.framework, roles: g.roles, mustNot: g.mustNot, deadlines: g.deadlines, quote: g.quote});
+  const mat = {items: cids.map(circItem).filter(Boolean).map(strip), excerpts: []};
+  const size = () => utf8len(aiAnswerPrompt(q, maps, rolesQ, mat));
+  while (mat.items.length > 1 && size() > budget) mat.items.pop();
+  const T = window.CIRC_TEXT || [], seen = new Set(), cand = [];
+  for (const id of cids) { const g = circItem(id); if (!g) continue; const secs = (g.sections || []).map(String);
+    T.filter(x => x.c === g.circ && x.s && secs.some(s => x.s === s || x.s.startsWith(s + '.'))).slice(0, 3).forEach(x => cand.push(x)); }
+  (local.text || []).forEach(({x}) => cand.push(x));
+  for (const x of cand) {
+    const k = x.c + '|' + x.s + '|' + x.h; if (seen.has(k)) continue; seen.add(k);
+    const e = {circular: circMeta(x.c).title, section: x.s, heading: x.h, text: x.t};
+    mat.excerpts.push(e);
+    if (size() > budget) { e.text = x.t.slice(0, 900); if (size() > budget) { mat.excerpts.pop(); break; } }
+  }
+  return mat;
+}
 async function aiAnswerRun(q){
   const box = $('#aiPanel'); if (!box) return;
   aiCtl = new AbortController();
@@ -1429,13 +1509,19 @@ async function aiAnswerRun(q){
   busy('קורא את השאלה ובוחר מפה מתאימה…');
   try {
     const c = await AI.ask(aiClassifyPrompt(q), {quick: true, signal: aiCtl.signal});
-    const ids = Array.isArray(c && c.mapIds) ? c.mapIds.map(String).filter(id => P[id]).slice(0, 2) : [];
+    let ids = Array.isArray(c && c.mapIds) ? c.mapIds.map(String).filter(id => P[id]).slice(0, 2) : [];
     const rolesQ = !!(c && c.roles);
-    if (!ids.length && !rolesQ) { box.innerHTML = aiNotFoundHTML(q, !!(c && c.safety)); return; }
+    const local = circGuide().length ? circSearch(q, {nGuide: 4, nText: 10}) : {guide: [], text: [], qt: []};
+    let cids = Array.isArray(c && c.circIds) ? c.circIds.map(String).filter(circItem).slice(0, 4) : [];
+    if (!cids.length && local.strong) cids = local.guide.slice(0, 2).map(x => x.g.id);
+    if (!ids.length && !rolesQ && !cids.length) { box.innerHTML = aiNotFoundHTML(q, !!(c && c.safety)); return; }
+    if (cids.length && ids.length > 1) ids = ids.slice(0, 1);
     const maps = ids.map(id => P[id]);
-    busy(maps.length ? `מצאתי: ${maps.map(p => p.icon + ' ' + p.name).join(', ')}. כותב תשובה מותאמת ל${askerOf().label}…` : 'כותב תשובה מתוך מדריך התפקידים…');
-    const ans = await AI.ask(aiAnswerPrompt(q, maps, rolesQ), {signal: aiCtl.signal});
+    busy(`מצאתי: ${[...maps.map(p => p.icon + ' ' + p.name), ...cids.map(id => '📜 ' + circItem(id).title)].join(' · ') || 'מדריך התפקידים'}. כותב תשובה מותאמת ל${askerOf().label}…`);
+    const circMat = await aiCircMaterial(q, maps, rolesQ, cids, local);
+    const ans = await AI.ask(aiAnswerPrompt(q, maps, rolesQ, circMat), {signal: aiCtl.signal});
     if (ans && typeof ans === 'object' && c && c.safety) ans.safety = true;
+    if (ans && typeof ans === 'object') ans._cids = cids;
     box.innerHTML = aiAnswerHTML(q, ans, maps, rolesQ || !!(c && c.safety) || !!(ans && ans.safety));
   } catch(e){
     if (e && e.code === 'cancelled') { box.innerHTML = ''; return; }
@@ -1450,8 +1536,18 @@ function aiNotFoundHTML(q, safety){
     `<div class="panel"><h3>🤔 השאלה לא מכוסה במפות הטיפול</h3><p style="margin:0 0 8px">Claude קרא את השאלה ולא מצא מפה שעונה עליה. כדי לא לתת תשובה לא מדויקת, אין כאן ניחוש.</p>
     <p class="muted" style="margin:0;font-size:14px">אפשר לנסח שוב (מי מתקשה, מה קורה, מתי), או לעיין ברשימת המפות.</p><div class="actions" style="margin-top:12px"><a class="btn" href="#/problems">🧭 כל המפות</a><a class="btn" href="#/roles">👥 מי פונה למי</a></div></div>`;
 }
-function aiAnswerHTML(q, A, maps, rolesQ){
-  if (!A || typeof A !== 'object') return `<div class="note warn">התשובה הגיעה בפורמט לא צפוי. <button class="btn sm" data-act="ai-retry">נסו שוב</button></div>`;
+const TAB_WORDS = [['סימנים','overview'],['הערכה','assess'],['מטרות','overview'],['מפגש','sessions'],['טכניקות','techniques'],['טכניקה','techniques'],['הורים','partners'],['צוות','partners'],['מתי להפנות','overview'],['המשגה','overview'],['מי עושה מה','roles']];
+function aiSrcHTML(s){
+  const src = String(s && s.src || '').trim();
+  if (!src) return '<span class="pill" style="font-size:12px;opacity:.7">⚠️ ללא מקור</span>';
+  const map = PROBLEMS.find(p => src.includes(p.name));
+  if (map) { const tab = (TAB_WORDS.find(([w]) => src.split('›').pop().includes(w)) || [,'overview'])[1]; return `<a class="cite" href="#/problem/${map.id}/${tab}">(מקור: ${esc(src)} ↗)</a>`; }
+  const cid = circFindCid(src);
+  if (cid) return `<a class="cite" href="${circSrcHref(cid, (src.split('סעיף')[1] || ''), s.q || s.d)}">(מקור: ${esc(src)} ↗)</a>`;
+  if (src.includes('מדריך התפקידים')) return `<a class="cite" href="#/roles">(מקור: ${esc(src)} ↗)</a>`;
+  return `<span class="pill" style="font-size:12px">📌 ${esc(src)}</span>`;
+}
+function aiAnswerHTML(q, A, maps, rolesQ){  if (!A || typeof A !== 'object') return `<div class="note warn">התשובה הגיעה בפורמט לא צפוי. <button class="btn sm" data-act="ai-retry">נסו שוב</button></div>`;
   const p = P[A.mapId] || maps[0] || null;
   const a = askerOf();
   let h = '';
@@ -1460,7 +1556,13 @@ function aiAnswerHTML(q, A, maps, rolesQ){
   h += `<div class="panel" style="border-inline-start:5px solid hsl(${p ? hueOf(p.area) : 160} 55% 45%)"><h3>${p ? p.icon + ' ' : '🤖 '}${esc(A.headline || '')}</h3>
     ${p ? `<p class="muted" style="margin:0;font-size:14px">מפת הטיפול: <a href="#/problem/${p.id}">${esc(p.name)}</a>${maps.length > 1 ? ' · קשור גם: ' + maps.filter(x => x !== p).map(x => `<a href="#/problem/${x.id}">${esc(x.name)}</a>`).join(', ') : ''}</p>` : ''}
     <p class="pill brand" style="margin:8px 0 0;display:inline-block">${a.icon} תשובה מותאמת ל${a.label}</p></div>`;
-  if (Array.isArray(A.steps) && A.steps.length) h += `<div class="panel"><h3>✅ מה עושים עכשיו – צעד אחר צעד</h3><ol style="margin:0;padding-inline-start:22px;display:grid;gap:8px">${A.steps.map(s => `<li><b>${esc(s.t || '')}:</b> ${esc(s.d || '')}</li>`).join('')}</ol></div>`;
+  const ther = Array.isArray(A.therapeutic) ? A.therapeutic : Array.isArray(A.steps) ? A.steps : [];
+  const fram = Array.isArray(A.framework) ? A.framework : [];
+  const cids = [...new Set([...(Array.isArray(A.circIds) ? A.circIds : []), ...(A._cids || [])].map(String))].filter(circItem);
+  if (ther.length || fram.length) h += `<div class="split2">
+    <div class="panel half ther"><h3>🧠 המענה הטיפולי / חינוכי</h3>${ther.length ? `<ol style="margin:0;padding-inline-start:22px;display:grid;gap:8px">${ther.map(s => `<li><b>${esc(s.t || '')}:</b> ${esc(s.d || '')} ${aiSrcHTML(s)}</li>`).join('')}</ol>` : '<p class="muted" style="margin:0">אין בחומר צד טיפולי לשאלה הזו.</p>'}</div>
+    <div class="panel half fram"><h3>📋 המענה המשמעתי / מסגרתי / מנהלי</h3>${fram.length ? `<ol style="margin:0;padding-inline-start:22px;display:grid;gap:8px">${fram.map(s => `<li><b>${esc(s.t || '')}:</b> ${esc(s.d || '')} ${aiSrcHTML(s)}${s.q ? `<div class="muted" style="font-size:13px;margin-top:2px">❝ ${esc(s.q)} ❞</div>` : ''}</li>`).join('')}</ol>` : '<p class="muted" style="margin:0">לא נמצאה בחוזרים הוראה משמעתית או מנהלית לשאלה הזו.</p>'}</div></div>`;
+  if (cids.length) h += `<div class="panel"><h3>📜 המקורות בחוזרי המנכ״ל</h3><div class="list">${cids.map(id => circRowHTML(circItem(id))).join('')}</div></div>`;
   if (A.contacts) h += `<div class="panel"><h3>📞 מי פונה למי</h3><p style="margin:0">${esc(A.contacts)}</p><p style="margin:10px 0 0"><a class="btn sm" href="#/roles">👥 המדריך המלא</a>${p ? ` <a class="btn sm" href="#/problem/${p.id}/roles">מי עושה מה במפה הזו</a>` : ''}</p></div>`;
   if (Array.isArray(A.watch) && A.watch.length) h += `<div class="panel" style="border-color:color-mix(in srgb,var(--danger) 40%,var(--line))"><h3>🚩 לשים לב / מתי להפנות</h3>${ul(A.watch)}</div>`;
   if (A.note) h += `<div class="note">${esc(A.note)}</div>`;
@@ -1470,8 +1572,226 @@ function aiAnswerHTML(q, A, maps, rolesQ){
     const lib = libFor(q, p);
     if (lib.length) h += `<div class="panel"><h3>📚 חומרים מהספרייה שלך</h3><div class="list">${lib.map(libItem).join('')}</div></div>`;
   }
-  h += `<p class="muted" style="font-size:13px">התשובה נכתבה על ידי Claude מתוך מפות הטיפול והמדריך שבאפליקציה בלבד. היא כלי עזר, ושיקול הדעת המקצועי נשאר של השואל/ת. <a href="#" data-act="ai-fast">להצגת התשובה מהמנוע המהיר</a></p>`;
+  h += `<p class="muted" style="font-size:13px">התשובה נכתבה על ידי Claude מתוך מפות הטיפול, המדריך וחוזרי המנכ״ל שבאפליקציה בלבד. היא כלי עזר, ושיקול הדעת המקצועי נשאר של השואל/ת. <a href="#" data-act="ai-fast">להצגת התשובה מהמנוע המהיר</a></p>`;
   return h;
+}
+
+/* ================= חוזרי מנכ״ל ================= */
+const CIRC_DIR = 'files/חוזרי מנכל/';
+const CIRC_FILE = {c01:'הקשר בין ההורים לצוותים החינוכיים - אתר הסתדרות המורים.pdf', c02:'חוזר מנכל  ועדות – המיוחד החינוך חוק יישום.pdf', c03:'חוזר מנכל  מענים לתלמידים שהוריהם נעדרים מהבית בשל המלחמה.pdf', c04:'חוזר מנכל אקלים חינוכי מיטבי.pdf', c05:'חוזר מנכל העברת מידע בין מוסדות חינוך.pdf', c06:'חוזר מנכל הקשר בין מוסדות החינוך ובין הורים פרודים או גרושים.pdf', c07:'חוזר מנכל הקשר בין מוסדות החינוך וההורים.pdf', c08:'חוזר מנכל חוק זכויות התלמיד.pdf', c09:'חוזר מנכל כישורי חיים.pdf', c10:'חוזר מנכל ליווי תלמידים בעקבות משבר מתמשך.pdf', c11:'חוזר מנכל מניעה - נוער ובני ילדים אובדנות.pdf', c12:'חוזר מנכל מצלמות במוסדות החינוך.pdf', c13:'חוזר מנכל נוהלי שעת חירום במערכת החינוך.pdf', c14:'חוזר מנכל קשב והפרעת למידה לקויות עם לתלמידים היבחנות בדרכי.pdf', c15:'טופס דיווח ארוע חריג תשפ_ו.docx'};
+const CIRC_ORDER = ['c04','c11','c07','c08','c06','c05','c10','c03','c13','c02','c14','c09','c12','c15','c01'];
+const CIRC_ICON = {c01:'🗞️', c02:'🧩', c03:'🪖', c04:'⚖️', c05:'🔐', c06:'👨‍👧', c07:'🤝', c08:'🧾', c09:'🌱', c10:'🕯️', c11:'💛', c12:'📹', c13:'🚨', c14:'📝', c15:'📋'};
+const KIND = {discipline:['⚖️','משמעת והתנהגות'], violence:['🛑','אלימות ופגיעה'], safety:['🦺','בטיחות וסיכון'], reporting:['📣','דיווח'], procedure:['📑','נהלים'], rights:['🧾','זכויות'],
+  parents:['👨‍👩‍👧','הורים'], info:['🔐','מידע ופרטיות'], emergency:['🚨','חירום'], 'special-ed':['🧩','חינוך מיוחד'], wellbeing:['💛','רווחה נפשית']};
+const CROLE = {counselor:'🧭 יועץ/ת', homeroom:'🏠 מחנך/ת', teacher:'📘 מורה מקצועי/ת', management:'🏛️ הנהלה', parents:'👨‍👩‍👧 הורים'};
+const CIRC_WORDS = ['חוזר','חוזרי','מנכ״ל','מנכל','מנכ"ל','מותר','אסור','חובה','חובת','נוהל','נהלים','לפי החוק','השעיה','להשעות','השעיית','השהיה','הרחקה','להרחיק','תקנון','משמעת','משמעתי','עונש','ענישה','להעניש','סנקציה','דיווח','לדווח','מדווחים','שימוע','ערעור','לערער','זכויות','זכות','סמכות','מוסמך','מי מחליט','אקלים','תיעוד','לתעד','משטרה','רווחה','פקיד סעד','ועדת','צוות רב מקצועי','ועדת זכאות','התאמות','משמורת','גרושים','פרודים','מצלמות','חירום','העברת מידע','אלימות','מכות','הרביץ','קילל','קללות','חרם','טלפון נייד','פלאפון','חיפוש בתיק','מכה','מרביץ','מרביצה','בועט','פוגע','איים','מאיים','מקלל','מקללת','השפיל','רוצה למות','להתאבד','פגיעה עצמית','אובדנות','צועק','צועקת','מידע','למסור','מרביץ לו','מרביצים לו','בבית מרביצים'];
+const circMeta = id => (window.CIRC_META || []).find(m => m.id === id) || {id, title: id, chapters: []};
+const circGuide = () => window.CIRC_GUIDE || [];
+const circItem = id => circGuide().find(g => g.id === id);
+const circFile = id => CIRC_FILE[id] ? CIRC_DIR + CIRC_FILE[id] : '';
+const circList = () => CIRC_ORDER.filter(id => (window.CIRC_META || []).some(m => m.id === id)).map(circMeta);
+let CIRC_IDX = null;
+function circIndex(){
+  const G0 = circGuide(), T0 = window.CIRC_TEXT || [];
+  if (CIRC_IDX && CIRC_IDX.nG === G0.length && CIRC_IDX.nT === T0.length) return CIRC_IDX;
+  const G = G0.map(g => {
+    const body = [g.summary, ...(g.therapeutic || []), ...(g.framework || []), ...(g.mustNot || []), ...(g.deadlines || []), ...Object.values(g.roles || {})].join(' ');
+    return {g, tt: new Set(toks(g.title + ' ' + (g.triggers || []).join(' '))), tk: new Set(toks(body))};
+  });
+  const dfG = {}; G.forEach(d => new Set([...d.tt, ...d.tk]).forEach(t => dfG[t] = (dfG[t] || 0) + 1));
+  const dfT = {}, T = T0.map(x => { const tk = toks(x.h + ' ' + x.t), tf = {}; tk.forEach(t => tf[t] = (tf[t] || 0) + 1); Object.keys(tf).forEach(t => dfT[t] = (dfT[t] || 0) + 1); return {x, tf, len: tk.length}; });
+  const avg = T.reduce((n, d) => n + d.len, 0) / (T.length || 1);
+  return CIRC_IDX = {G, T, dfG, dfT, avg, nG: G0.length, nT: T0.length};
+}
+function circSearch(q, opt = {}){
+  const X = circIndex(), nq = norm(q), qt = [...new Set(toks(q))];
+  const idfG = t => X.dfG[t] ? Math.log(1 + X.G.length / X.dfG[t]) : 2.5;
+  const qIdf = qt.reduce((n, t) => n + idfG(t), 0) || 1;
+  const spedQ = /חינוך מיוחד|חנ״מ|שילוב|משולב|גן |גננת|ילדי גן|לקות|אוטיזם|על הרצף|כיתה מקדמת|תקשורת|מוגבלות|ועדת/.test(q);
+  const guide = X.G.map(d => {
+    const g = d.g; let s = 0; const why = [];
+    for (const ph of g.triggers || []) if (hasPh(nq, ph)) { const w = norm(ph).trim().split(' ').length; s += w > 1 ? 6 + w : 3; if (w > 1) why.push(ph); }
+    let tok = 0; for (const t of qt) { if (d.tt.has(t)) tok += idfG(t); else if (d.tk.has(t)) tok += idfG(t) * 0.3; }
+    const cov = Math.min(1, tok / qIdf); s += 10 * cov;
+    if (opt.circ && g.circ === opt.circ) s *= 1.3;
+    if (g.circ === 'c04') s *= 1.08;
+    if (!spedQ && (/^c04d-(sped|gan)/.test(g.id) || g.kind === 'special-ed' && g.circ === 'c04')) s *= 0.75;
+    return {g, s, why, cov};
+  }).filter(x => x.s >= 4).sort((a, b) => b.s - a.s);
+  const topG = guide.slice(0, 3).map(x => x.g);
+  const boost = new Set(topG.flatMap(g => (g.sections || []).map(s => g.circ + '|' + s)));
+  const k1 = 1.2, b = 0.75;
+  const text = X.T.map(d => {
+    let s = 0; for (const t of qt) { const f = d.tf[t]; if (!f) continue; const idf = Math.log(1 + (X.T.length - X.dfT[t] + 0.5) / (X.dfT[t] + 0.5)); s += idf * f * (k1 + 1) / (f + k1 * (1 - b + b * d.len / X.avg)); }
+    if (boost.has(d.x.c + '|' + d.x.s)) s = s * 1.6 + 3;
+    if (opt.circ && d.x.c === opt.circ) s *= 1.3;
+    return {x: d.x, s};
+  }).filter(x => x.s > 2.5).sort((a, b) => b.s - a.s);
+  const g0 = guide[0];
+  const strong = !!g0 && ((g0.why.length && g0.s >= 10) || g0.s >= 7.5);
+  return {guide: guide.slice(0, opt.nGuide || 6), text: text.slice(0, opt.nText || 6), strong, qt};
+}
+window.__circ = q => circSearch(q).guide.slice(0, 4).map(x => x.g.id + ' ' + x.s.toFixed(1) + ' [' + x.why.join('|') + ']');
+function circExcerpt(t, qt, n = 360){
+  const sents = String(t).split(/(?<=[.:;])\s+|\n/).filter(s => s.trim().length > 20);
+  if (!sents.length) return t.slice(0, n);
+  let best = 0, bs = -1; sents.forEach((s, i) => { const tk = new Set(toks(s)); const sc = qt.filter(x => tk.has(x)).length; if (sc > bs) { bs = sc; best = i; } });
+  let out = sents[best]; for (let i = best + 1; i < sents.length && out.length < n; i++) out += ' ' + sents[i];
+  return (best ? '… ' : '') + (out.length > n + 80 ? out.slice(0, n) + ' …' : out);
+}
+function circOpenBtn(id, cls = 'btn'){
+  const f = circFile(id); if (!f || LITE || ARTIFACT) return '';
+  return `<button class="${cls}" data-act="attopen" data-path="${esc(f)}" data-title="${esc(circMeta(id).title)}">📄 החוזר המקורי</button>`;
+}
+function circSecPills(g){ return (g.sections || []).slice(0, 5).map(s => `<span class="pill">סעיף ${esc(s)}</span>`).join(' '); }
+function circItemHTML(g, {full = true, link = true} = {}){
+  const m = circMeta(g.circ), k = KIND[g.kind] || ['📜', ''];
+  const roles = g.roles || {}, order = [ASKER, ...Object.keys(CROLE).filter(r => r !== ASKER)].filter(r => roles[r]);
+  let h = `<div class="panel circ-item" style="border-inline-start:5px solid var(--brand)"><h3>${k[0]} ${link ? `<a href="#/circ/${g.circ}/${esc(g.id)}">${esc(g.title)}</a>` : esc(g.title)}</h3>
+    <p class="muted" style="margin:0 0 10px;font-size:14px">${CIRC_ICON[g.circ] || '📜'} <a href="#/circ/${g.circ}">${esc(m.title)}</a> ${circSecPills(g)}</p>
+    ${g.summary ? `<p style="margin:0 0 12px"><b>${esc(g.summary)}</b></p>` : ''}
+    <div class="split2"><div class="half ther"><h4>🧠 טיפולי / חינוכי</h4>${(g.therapeutic || []).length ? ulCite(g.therapeutic, g.circ) : '<p class="muted" style="margin:0">החוזר לא מפרט כאן צד טיפולי. את הצד הטיפולי מחפשים במפות הטיפול.</p>'}</div>
+    <div class="half fram"><h4>📋 משמעתי / מסגרתי / מנהלי</h4>${(g.framework || []).length ? ulCite(g.framework, g.circ) : '<p class="muted" style="margin:0">אין כאן הוראה משמעתית או מנהלית מפורשת.</p>'}</div></div>`;
+  if (full) {
+    if (order.length) h += `<h4 style="margin:14px 0 6px">👥 מי עושה מה לפי החוזר</h4><div class="list">${order.map(r => `<div class="li" ${r === ASKER ? 'style="border-color:var(--brand)"' : ''}><div class="grow"><b>${CROLE[r]}</b>${r === ASKER ? ' <span class="pill brand">זה את/ה</span>' : ''}<div>${citeHTML(roles[r], g.circ)}</div></div></div>`).join('')}</div>`;
+    if ((g.mustNot || []).length) h += `<div class="note danger" style="margin-top:12px"><b>⛔ אסור:</b>${ulCite(g.mustNot, g.circ)}</div>`;
+    if ((g.deadlines || []).length) h += `<div class="note warn" style="margin-top:12px"><b>⏱️ מועדים:</b>${ulCite(g.deadlines, g.circ)}</div>`;
+    if (g.quote && g.quote.text) h += `<blockquote class="circ-quote">❝ ${esc(g.quote.text)} ❞<small> – <a class="cite" href="${circSrcHref(g.circ, g.quote.s || '', g.quote.text)}">סעיף ${esc(g.quote.s || '')} ↗</a></small></blockquote>`;
+  }
+  return h + `</div>`;
+}
+function circRowHTML(g, extra = ''){
+  const k = KIND[g.kind] || ['📜', ''];
+  return `<a class="li" href="#/circ/${g.circ}/${esc(g.id)}" style="text-decoration:none"><span style="font-size:20px">${k[0]}</span><div class="grow"><b>${esc(g.title)}</b><div class="date">${esc(circMeta(g.circ).title)} · ${(g.sections || []).slice(0, 3).map(s => 'סעיף ' + esc(s)).join(', ')}${extra}</div></div></a>`;
+}
+function circTextHTML(list, qt){
+  return `<div class="list">${list.map(({x}) => `<details class="li circ-sec"><summary><span style="font-size:18px">${CIRC_ICON[x.c] || '📜'}</span> <b>${esc(circMeta(x.c).title)}</b> · ${x.s ? 'סעיף ' + esc(x.s) + ' – ' : ''}${esc(x.h)}<div class="date" style="margin-top:4px">${esc(circExcerpt(x.t, qt || []))}</div></summary><div class="circ-text">${esc(x.t)}</div><a class="cite" href="${circSrcHref(x.c, x.s, circExcerpt(x.t, qt || []))}">↗ פתיחה במקור${x.p ? ' · עמוד ' + x.p : ''}</a></details>`).join('')}</div>`;
+}
+/* the circulars block inside an answer */
+function circAnswerHTML(C, q){
+  if (!C || !C.guide.length) return '';
+  const [first, ...rest] = C.guide;
+  const second = rest[0] && rest[0].s >= first.s * 0.8 ? rest.shift() : null;
+  let h = circItemHTML(first.g) + (second ? circItemHTML(second.g, {full: false}) : '');
+  if (rest.length) h += `<div class="panel"><h3>📜 עוד מצבים קרובים בחוזרים</h3><div class="list">${rest.slice(0, 4).map(x => circRowHTML(x.g)).join('')}</div></div>`;
+  if (C.text.length) h += `<div class="panel"><h3>📖 מתוך לשון החוזר <small class="muted" style="font-weight:400">לחיצה פותחת את הסעיף המלא</small></h3>${circTextHTML(C.text.slice(0, 4), C.qt)}</div>`;
+  return h;
+}
+/* ---- citations: every claim links to its exact place in the source ---- */
+const mcite = (p, field) => `<a class="cite" href="#/problem/${p.id}/${FIELD_TAB[field] || 'overview'}" title="פתיחת המקור במפת הטיפול">(מקור: מפת ״${esc(p.name)}״ › ${FIELD_LABEL[field] || field})</a>`;
+const CITE_RE = /\(((?:סעיף|סעיפים|ס״ק|סעיף קטן|נספח|פרק|טבלה|חלק|מכתב)[^()]{0,70})\)/g;
+const secOf = s => ((String(s).match(/\d+(?:\.\d+){0,3}/) || [])[0] || '');
+const circSrcHref = (cid, sec, snip) => `#/circsrc/${cid}/${encodeURIComponent(secOf(sec) || '-')}/${encodeURIComponent(String(snip || '').replace(CITE_RE, '').trim().slice(0, 160) || '-')}`;
+function citeHTML(text, cid){
+  const plain = String(text).replace(CITE_RE, '').trim();
+  let found = false;
+  const h = esc(text).replace(CITE_RE, (m, inner) => { found = true; return `<a class="cite" href="${circSrcHref(cid, inner, plain)}" title="לשון החוזר בסעיף הזה, עם המשפט המודגש">(${inner} ↗)</a>`; });
+  return found ? h : h + ` <a class="cite" href="${circSrcHref(cid, '', plain)}" title="איתור המשפט בחוזר">(מקור ↗)</a>`;
+}
+function ulCite(arr, cid){ return arr && arr.length ? `<ul class="clean">${arr.map(x => `<li>${citeHTML(x, cid)}</li>`).join('')}</ul>` : '<p class="muted">—</p>'; }
+function circFindCid(src){
+  const s = String(src || '');
+  const hit = CIRC_ORDER.map(circMeta).find(m => m.title && m.title !== m.id && (s.includes(m.title) || m.title.includes(s.split(',')[0].trim()) || s.includes(m.title.split(' ').slice(0, 3).join(' '))));
+  return hit ? hit.id : '';
+}
+function circLocate(cid, sec, snip){
+  const all = (window.CIRC_TEXT || []).filter(x => x.c === cid);
+  let cands = [];
+  for (let s = sec; s && !cands.length; s = s.split('.').slice(0, -1).join('.')) cands = all.filter(x => x.s === s || x.s.startsWith(s + '.'));
+  const qt = new Set(toks(snip));
+  const segs = t => { const out = [], re = /[^\n]*(\n|$)/g; let m, cur = null;
+    while ((m = re.exec(t)) && m[0].length) { const line = m[0], tl = line.trim();
+      const starts = /^([-•●▪*]|\(?[א-ת0-9]{1,2}[.)]\s|\d+(\.\d+)+\s)/.test(tl);
+      if (!cur || starts || cur.n >= 4) { if (cur) out.push(cur); cur = {off: m.index, len: 0, n: 0}; }
+      cur.len = m.index + line.length - cur.off; cur.n++;
+      if (/[.:;]\s*$/.test(tl)) { out.push(cur); cur = null; } }
+    if (cur) out.push(cur); return out; };
+  const scan = list => { let best = null; list.forEach(x => segs(x.t).forEach(g => { const txt = x.t.substr(g.off, g.len); const tk = toks(txt); if (tk.length < 2) return; const hits = new Set(tk.filter(t => qt.has(t))).size; const sc = hits + hits / (tk.length + 4); if (hits && (!best || sc > best.sc)) best = {x, off: g.off, len: txt.trimEnd().length, sc, hits}; })); return best; };
+  let best = qt.size ? scan(cands) : null;
+  if ((!best || best.hits < 2) && qt.size) { const b2 = scan(all); if (b2 && (!best || b2.hits > best.hits + 1)) { best = b2; cands = [b2.x]; } }
+  const chunk = best ? best.x : cands[0] || all[0];
+  return {chunk, best, all, cands};
+}
+const pageAt = (x, off) => { let p = x.p || 0; (x.pg || []).forEach(([o, pp]) => { if (o <= off) p = pp; }); return p; };
+function circSrcView(R){
+  const cid = R.id, sec = R.sub && R.sub !== '-' ? R.sub : '', snip = R.x && R.x !== '-' ? R.x : '';
+  const m = circMeta(cid);
+  if (!(window.CIRC_TEXT || []).length) return {title: 'מקור', html: `<div class="panel empty">⏳ לשון החוזרים עדיין נטענת… נסו שוב בעוד רגע.</div>`};
+  const {chunk, best} = circLocate(cid, sec, snip);
+  if (!chunk) return {title: 'מקור', html: `<div class="panel empty">לא מצאתי את הסעיף בחוזר. <a href="#/circ/${esc(cid)}">לדף החוזר</a></div>`};
+  const i = (window.CIRC_TEXT || []).indexOf(chunk), T = window.CIRC_TEXT;
+  const prev = T[i - 1] && T[i - 1].c === cid && T[i - 1].s === chunk.s ? T[i - 1] : null, next = T[i + 1] && T[i + 1].c === cid && T[i + 1].s === chunk.s ? T[i + 1] : null;
+  const page = best ? pageAt(chunk, best.off) : chunk.p;
+  const body = best ? esc(chunk.t.slice(0, best.off)) + `<mark id="hl">${esc(chunk.t.slice(best.off, best.off + best.len))}</mark>` + esc(chunk.t.slice(best.off + best.len)) : esc(chunk.t);
+  const canOpen = circFile(cid) && !LITE && !ARTIFACT;
+  const h = `<div class="panel" style="border-inline-start:5px solid var(--brand)"><h3>📖 המקור: ${esc(m.title)}</h3>
+    <div class="actions" style="margin:0 0 8px">${chunk.s ? `<span class="pill brand">סעיף ${esc(chunk.s)}</span>` : ''}<span class="pill">${esc(chunk.h)}</span>${page ? `<span class="pill">עמוד ${page} בקובץ המקורי</span>` : ''}${m.number ? `<span class="pill">${esc(m.type || '')} ${esc(m.number)}</span>` : ''}</div>
+    ${snip ? `<p class="muted" style="margin:0;font-size:14px">${best ? '🔎 המשפט שעליו נשען הפריט מודגש בצהוב.' : 'לא נמצא משפט תואם במדויק – מוצג הסעיף כולו.'}</p>` : ''}
+    <div class="actions" style="margin-top:10px">${canOpen ? `<button class="btn primary" data-act="circpdf" data-c="${esc(cid)}" data-p="${page || ''}">📄 פתיחת הקובץ המקורי${page ? ' בעמוד ' + page : ''}</button>` : ''}<a class="btn" href="#/circ/${esc(cid)}">לדף החוזר</a><button class="btn" data-act="back">← חזרה</button></div></div>
+    ${prev ? `<details class="panel"><summary class="muted">החלק הקודם של הסעיף</summary><div class="circ-text">${esc(prev.t)}</div></details>` : ''}
+    <div class="panel"><div class="circ-text" style="max-height:none">${body}</div></div>
+    ${next ? `<details class="panel"><summary class="muted">המשך הסעיף</summary><div class="circ-text">${esc(next.t)}</div></details>` : ''}
+    <p class="muted" style="font-size:13px">הטקסט חולץ מקובץ ה-PDF של החוזר; בטבלאות הסדר עלול להשתבש. בהחלטה מחייבת בודקים בקובץ המקורי.</p>`;
+  return {title: 'מקור · ' + m.title, html: h, after(){ const e = $('#hl'); if (e) setTimeout(() => e.scrollIntoView({block: 'center'}), 60); }};
+}
+/* pages */
+let circQ = '', circScope = '', circKind = '';
+function circView(R){
+  if (R.id && R.sub) return circItemView(R.id, R.sub);
+  if (R.id) return circOneView(R.id);
+  const list = circList(), G = circGuide();
+  let h = `<section class="hero"><h1>📜 חוזרי מנכ״ל</h1><p>${list.length} חוזרים ומסמכים, ובהם ${G.length} מצבים מעשיים. בכל מצב יש הפרדה בין <b>המענה הטיפולי</b> לבין <b>המענה המשמעתי / מסגרתי / מנהלי</b>, עם הפניה לסעיף בחוזר.</p>
+    <form id="circform" style="display:flex;gap:8px;margin-top:18px;max-width:720px"><input class="inp" id="circq" value="${esc(circScope ? '' : circQ)}" placeholder="🔎 חיפוש בחוזרים… למשל: תלמיד קילל מורה" style="flex:1;height:48px;border:0;font-size:16px"><button class="btn primary" type="submit">חיפוש</button></form>
+    <div class="actions"><a class="btn" href="#/circ/c04">⚖️ חוזר האקלים והמשמעת</a><a class="btn" href="#/ask">💬 שאלה מלאה לעוזר</a></div></section>`;
+  if (!G.length) h += `<div class="panel empty">⏳ תוכן החוזרים עדיין נטען…</div>`;
+  if (circQ && !circScope) h += circResultsHTML(circQ, '');
+  h += `<div class="chips" style="margin:16px 0 10px"><button class="chip ${!circKind ? 'on' : ''}" data-act="circkind" data-v="">כל החוזרים</button>${Object.entries(KIND).filter(([k]) => G.some(g => g.kind === k)).map(([k, v]) => `<button class="chip ${circKind === k ? 'on' : ''}" data-act="circkind" data-v="${k}">${v[0]} ${v[1]} <small>${G.filter(g => g.kind === k).length}</small></button>`).join('')}</div>`;
+  if (circKind) h += `<div class="list">${G.filter(g => g.kind === circKind).sort((a, b) => CIRC_ORDER.indexOf(a.circ) - CIRC_ORDER.indexOf(b.circ)).map(g => circRowHTML(g)).join('')}</div>`;
+  else h += `<div class="grid">${list.map(m => { const n = G.filter(g => g.circ === m.id).length; return `<a class="card accent" href="#/circ/${m.id}" style="--h:${hueOf(m.id + m.title)}">
+      <span class="emoji">${CIRC_ICON[m.id] || '📜'}</span><span class="name">${esc(m.title)}${m.id === 'c04' ? ' <span class="pill brand">מרכזי</span>' : ''}</span>
+      <span class="sub">${esc((m.summary || '').slice(0, 170))}${(m.summary || '').length > 170 ? '…' : ''}</span>
+      <span class="row">${m.number ? `<span class="pill">${esc(m.type || 'הוראת קבע')} ${esc(m.number)}</span>` : m.type ? `<span class="pill">${esc(m.type)}</span>` : ''}${m.validFrom ? `<span class="pill">בתוקף מ-${esc(m.validFrom)}</span>` : ''}<span class="pill">${n} מצבים</span></span></a>`; }).join('')}</div>`;
+  return {title:'חוזרי מנכ״ל', html:h, after: circFormAfter('')};
+}
+function circFormAfter(scope){
+  return () => { const f = $('#circform'); if (f) f.onsubmit = e => { e.preventDefault(); circQ = $('#circq').value.trim(); circScope = scope; render(); const r = $('#circres'); if (r) r.scrollIntoView({behavior: 'smooth', block: 'start'}); }; };
+}
+function circResultsHTML(q, scope){
+  const C = circSearch(q, {circ: scope || undefined, nGuide: 8, nText: 6});
+  const G = scope ? C.guide.filter(x => x.g.circ === scope) : C.guide, T = scope ? C.text.filter(x => x.x.c === scope) : C.text;
+  let h = `<div id="circres"><h2 class="sec">🔎 תוצאות: ״${esc(q)}״</h2>`;
+  if (!G.length && !T.length) return h + `<div class="panel empty">לא נמצא בחוזרים. נסו מילים אחרות, או שאלו את העוזר.</div></div>`;
+  if (G[0]) h += circItemHTML(G[0].g, {full: false});
+  if (G.length > 1) h += `<div class="panel"><h3>📜 מצבים נוספים</h3><div class="list">${G.slice(1).map(x => circRowHTML(x.g)).join('')}</div></div>`;
+  if (T.length) h += `<div class="panel"><h3>📖 סעיפים מתוך החוזרים</h3>${circTextHTML(T, C.qt)}</div>`;
+  return h + `<div class="actions" style="margin-bottom:10px"><a class="btn primary" href="#/ask/${encodeURIComponent(q)}">💬 תשובה מלאה מהעוזר – טיפולי + משמעתי</a></div></div>`;
+}
+function circOneView(id){
+  const m = circMeta(id), G = circGuide().filter(g => g.circ === id);
+  let h = `<div class="panel" style="border-inline-start:5px solid var(--brand)"><h3>${CIRC_ICON[id] || '📜'} ${esc(m.title)}</h3>
+    <div class="actions" style="margin:0 0 10px">${m.type ? `<span class="pill">${esc(m.type)}${m.number ? ' ' + esc(m.number) : ''}</span>` : ''}${m.status ? `<span class="pill">${esc(m.status)}</span>` : ''}${m.validFrom ? `<span class="pill">בתוקף מ-${esc(m.validFrom)}</span>` : ''}${m.publication ? `<span class="pill">${esc(m.publication)}</span>` : ''}</div>
+    ${m.applies ? `<p style="margin:0 0 8px"><b>תחולה:</b> ${esc(m.applies)}</p>` : ''}<p style="margin:0">${esc(m.summary || '')}</p>
+    ${m.forCounselor ? `<div class="note" style="margin-top:12px">🧭 <b>ליועץ/ת ולצוות:</b> ${esc(m.forCounselor)}</div>` : ''}
+    <div class="actions" style="margin-top:12px">${circOpenBtn(id, 'btn primary')}<a class="btn" href="#/circ">← כל החוזרים</a></div></div>
+    <div class="panel"><h3>🔎 חיפוש בחוזר הזה</h3><form id="circform" style="display:flex;gap:8px"><input class="inp" id="circq" value="${esc(circScope === id ? circQ : '')}" placeholder="מה רוצים לברר?" style="flex:1"><button class="btn primary" type="submit">חיפוש</button></form></div>`;
+  if (circQ && circScope === id) h += circResultsHTML(circQ, id);
+  if ((m.chapters || []).length) h += `<details class="panel"><summary><b>📑 מבנה החוזר – ${m.chapters.length} פרקים וסעיפים</b></summary><div class="list" style="margin-top:10px">${m.chapters.map(c => `<div class="li"><span class="pill brand">${esc(c.s)}</span><div class="grow">${esc(c.t)}</div></div>`).join('')}</div></details>`;
+  const kinds = [...new Set(G.map(g => g.kind))];
+  for (const k of kinds) { const v = KIND[k] || ['📜', 'נוספים']; h += `<h2 class="sec">${v[0]} ${v[1]} <small>${G.filter(g => g.kind === k).length}</small></h2><div class="list">${G.filter(g => g.kind === k).map(g => circRowHTML(g)).join('')}</div>`; }
+  return {title: m.title, html: h, after: circFormAfter(id)};
+}
+function circItemView(cid, gid){
+  const g = circItem(gid);
+  if (!g) return {title:'חוזרי מנכ״ל', html:`<div class="panel empty">המצב לא נמצא. <a href="#/circ/${esc(cid)}">לחוזר</a></div>`};
+  let h = circItemHTML(g, {link: false});
+  const secs = (g.sections || []).map(String);
+  const T = (window.CIRC_TEXT || []).filter(x => x.c === g.circ && x.s && secs.some(s => x.s === s || x.s.startsWith(s + '.'))).slice(0, 8);
+  if (T.length) h += `<div class="panel"><h3>📖 לשון החוזר בסעיפים האלה</h3>${circTextHTML(T.map(x => ({x})), toks(g.title))}</div>`;
+  const rel = circGuide().filter(x => x !== g && x.circ === g.circ && ((x.sections || []).some(s => secs.some(t => String(s).split('.').slice(0, 2).join('.') === t.split('.').slice(0, 2).join('.'))) || x.kind === g.kind)).slice(0, 6);
+  if (rel.length) h += `<div class="panel"><h3>🔗 מצבים קשורים</h3><div class="list">${rel.map(x => circRowHTML(x)).join('')}</div></div>`;
+  h += `<div class="actions">${circOpenBtn(g.circ)}<a class="btn" href="#/circ/${g.circ}">← ${esc(circMeta(g.circ).title)}</a><a class="btn primary" href="#/ask/${encodeURIComponent(g.title)}">💬 לשאול על זה את העוזר</a></div>
+    <p class="muted" style="font-size:13px;margin-top:12px">הסיכום נבנה מתוך לשון החוזר. בכל החלטה מחייבת בודקים את הסעיף המקורי ואת העדכון האחרון באתר משרד החינוך.</p>`;
+  return {title: g.title, html: h};
 }
 
 /* ================= who is asking ================= */
@@ -1671,6 +1991,9 @@ document.addEventListener('click', async e => {
     case 'area': areaFilter = d.v; render(); break;
     case 'arch': showArchived = d.v === '1'; render(); break;
     case 'libtopic': libTopic = d.v; render(); break;
+    case 'circkind': circKind = d.v; circQ = ''; render(); break;
+    case 'back': history.back(); break;
+    case 'circpdf': { const f = circFile(d.c), pg = +d.p || 0; if (!f) break; if (WEB) Cloud.openFileAt(f, pg); else viewer(circMeta(d.c).title, href(f) + (pg ? '#page=' + pg : ''), ftype(f)[0]); break; }
     case 'libopen': if (e.target.closest('[data-act="attopen"]')) return; if (WEB) Cloud.openFile(d.pdf); else viewer(d.title, href(d.pdf), 'pdf'); break;
     case 'attopen': e.preventDefault(); e.stopPropagation(); if (WEB) Cloud.openFile(d.path); else viewer(d.title, href(d.path), ftype(d.path)[0]); break;
     case 'cloud-login': Cloud.login(); break;
