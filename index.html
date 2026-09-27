@@ -1844,8 +1844,11 @@ function circAskView(R){
   if (AI.available()) h += `<div class="note" style="margin-bottom:12px;display:flex;gap:10px;align-items:center;flex-wrap:wrap"><span>⚡ למטה – תשובה מהמנוע המהיר, בלי טוקנים.</span><button class="btn primary sm" data-act="circ-ai" data-v="${esc(q)}">🤖 תשובה מלאה מ-Claude – רק מהחוזרים</button><span class="muted" style="font-size:13px">רק בלחיצה – נספר במכסת המנוי</span></div><div id="circAi"></div>`;
   if (!C.guide.length && !C.text.length) h += `<div class="panel empty">לא מצאתי בחוזרים תשובה לשאלה הזו. נסו לנסח אחרת, או לחפש בדף של חוזר מסוים.</div>`;
   else {
-    const [first, ...rest] = C.guide;
-    if (first) h += circItemHTML(first.g);
+    const top = C.guide[0] ? C.guide[0].s : 0;
+    const strong = C.guide.filter((x, i) => i === 0 || x.s >= top * 0.55).slice(0, 4);
+    const rest = C.guide.filter(x => !strong.includes(x));
+    if (strong.length) h += `<div class="panel" style="border-inline-start:5px solid var(--brand)"><h3>🧾 בקצרה – מה אומרים המקורות</h3><ul class="clean">${strong.map(x => `<li><b>${esc(circMeta(x.g.circ).title)}:</b> ${esc(x.g.summary || x.g.title)} <a class="cite" href="#/circ/${x.g.circ}/${esc(x.g.id)}">(לפירוט ↗)</a></li>`).join('')}</ul>${strong.some(x => (circMeta(x.g.circ).type || '').includes('מכתב')) ? '<p class="muted" style="margin:8px 0 0;font-size:13px">מכתב הסתדרות המורים אינו חוזר מנכ״ל – הוא עמדת ארגון המורים ופרשנותו לחוזר.</p>' : ''}</div>`;
+    strong.slice(0, 3).forEach(x => { h += circItemHTML(x.g); });
     if (rest.length) h += `<div class="panel"><h3>📜 עוד מצבים קרובים בחוזרים</h3><div class="list">${rest.slice(0, 6).map(x => circRowHTML(x.g)).join('')}</div></div>`;
     if (C.text.length) h += `<div class="panel"><h3>📖 סעיפים מתוך לשון החוזרים</h3>${circTextHTML(C.text.slice(0, 5), C.qt)}</div>`;
   }
