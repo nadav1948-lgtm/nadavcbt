@@ -1072,7 +1072,7 @@ const SYN = {
   'phobias':['בורח מהחצר','בורחת מהחצר','רואה חתול','רואה יונה','מפחדת מבלונים','מפחד מבלונים','פחד מבלונים','פחד','פוביה','מפחד מכלבים','כלב','חושך','רעשים','הקאה','מחטים','זריקה','מעלית','חרקים','דבורה','פחד מ'],
   'ocd':['טקס','טקסים','שוטף ידיים','רוחץ ידיים','בודק שוב','סופר','מסדר','מושלם','נקיון','חיידקים','מחשבות טורדניות','כפייתי','אובססיבי','ocd','חייב שיהיה'],
   'anger':['כעס','כועס','מתפרץ','התפרצות','התפרצויות','צועק','מכה','מרביץ','זורק','בועט','מקלל','עצבים','עצבני','נפיץ','משתולל','מאבד שליטה','ויסות','התקף זעם','טריקת דלת','אלים','אלימות'],
-  'social-rejection':['אין חברים','אין לו חברים','לבד בהפסקה','לא משחקים איתו','דחוי','דחייה','בודד','בדידות','לא מקבלים אותו','כישורים חברתיים','לא יודע להשתלב','מתבודד','לא מזמינים'],
+  'social-rejection':['מריבות חוזרות','מריבות','מסתכסך','מסתכסכת','מסתכסכים','מסתכסך עם','רב עם','רבה עם','רבים איתו','רבים איתה','מריבות עם','מריבות בהפסקה','מריבות עם חברים','לא מסתדר עם הכיתה','לא מסתדרת עם הכיתה','לא מסתדר עם הילדים','לא מסתדרת עם הילדים','לא מסתדר עם חברים','לא מסתדרת עם חברים','לא מסתדר עם בני הכיתה','בעיות חברתיות','קשיים חברתיים','קושי חברתי','סכסוכים עם','סכסוך עם','ויכוחים עם','מתווכח עם','לא יודע להפסיד','לא יודעת להפסיד','לא מקבל תור','ילדים מתרחקים','מתרחקים ממנו','מתרחקים ממנה','אין חברים','אין לו חברים','לבד בהפסקה','לא משחקים איתו','דחוי','דחייה','בודד','בדידות','לא מקבלים אותו','כישורים חברתיים','לא יודע להשתלב','מתבודד','לא מזמינים'],
   'bullying':['מחרימים אותו','חרם','וואטסאפ','מציקים','הצקות','מציק','בריונות','בריון','חרם','מחרימים','צוחקים עליו','משפילים','מכים אותו','קבוצת וואטסאפ','ברשת','שיימינג','מתעללים','פגיעה חברתית','נפגע'],
   'self-esteem':['ערך עצמי','דימוי עצמי','ביטחון עצמי','לא מאמין בעצמו','אני טיפש','אני לא שווה','אני לא מצליח','מוותר','פוחד לנסות','ביקורת עצמית','מסוגלות'],
   'low-mood':['לא רוצה לחיות','רוצה למות','עצוב','עצבות','דיכאון','מדוכא','אין חשק','לא נהנה','בוכה הרבה','מסתגר','עייף','אין כוח','חסר תקווה','מצב רוח','ירוד'],
@@ -1130,12 +1130,14 @@ function answer(q){
   const X = ASK_INDEX, nq = norm(q), qt = [...new Set(toks(q))];
   const idf = t => Math.log(1 + X.N / (X.df[t] || X.N));
   const adult = /(^|\s)[והבלמשכ]{0,2}(מורה|מורים|מורות|מחנכ|מחנכת|מחנך|הצוות|צוות|הורים|ההורים|אמא|אבא|מנהל|מנהלת|סייעת)\s+(ש|לא|כועס|מאשימ|מתקש|צועק|מותש|מספר|מרגיש|חוזר|בוכה|שחוק|שבור|בדיכאון|בלחץ)|איך מדריכים|להדריך (את|מורה|הורים|צוות)|מדריכים (אותו|אותה|אותם)/.test(nq);
+  const child = /(^|\s)[והבלמשכ]{0,2}(ילד|ילדה|תלמיד|תלמידה)\s+(ש|מכיתה|בכיתה|עם)/.test(nq);
   const scores = PROBLEMS.map(p => {
     let s = 0; const why = [];
     for (const ph of SYN[p.id] || []) if (hasPh(nq, ph)) { s += 6 + norm(ph).trim().split(' ').length; why.push(ph); }
     let tok = 0; for (const t of qt) { if (X.bag[p.id] && X.bag[p.id].has(t)) tok += idf(t) * 0.5; if (X.nameTk[p.id].has(t)) tok += 2; }
     s += Math.min(tok, 6);
     if (adult) { if (p.area === STAFF_AREA) s += 5; else if (!why.length) s *= 0.6; }
+    else if (child && p.area === STAFF_AREA) s *= 0.6;
     return {p, s, why};
   }).sort((a, b) => b.s - a.s);
   const intents = INTENTS.filter(it => it.words.some(w => hasPh(nq, w)));
@@ -1220,6 +1222,7 @@ function ask(R){
     <form id="askform" style="display:flex;gap:8px;flex-wrap:wrap"><textarea class="inp" id="askq" rows="2" style="flex:1;min-width:240px;min-height:52px" placeholder="מתארים את המצב במילים שלך – מה רואים, איפה ומתי">${esc(q || '')}</textarea><button class="btn primary" type="submit" style="align-self:stretch">🔎 קבלת תשובה</button></form>
     <p class="muted" style="margin:10px 0 0;font-size:13.5px">התשובות נבנות מתוך ${PROBLEMS.length} מפות הטיפול והספרייה שלך, בלי אינטרנט. הן מכוונות ומסדרות – ושיקול הדעת המקצועי נשאר שלך.</p></div>`;
   if (q && AI.available() && !aiFast) h += '<div id="aiPanel"></div>';
+  if (q && !AI.available() && !ARTIFACT) h += `<div class="note" style="margin-bottom:12px;display:flex;gap:10px;align-items:center;flex-wrap:wrap"><span>🤖 רוצה תשובה מ-Claude עצמו, שמבין כל ניסוח?</span><a class="btn primary sm" href="https://claude.ai/artifact/VR9R29KShiqhmHX7NTqbjT" target="_blank" rel="noopener" data-act="copyq" data-v="${esc(q)}">שאל את Claude</a><span class="muted" style="font-size:13px">השאלה מועתקת – מדביקים אותה בעמוד שנפתח</span></div>`;
   else if (q) h += (AI.status === 'off' && AI.err ? `<div class="note warn" style="margin-bottom:12px">🤖 ${esc(AI_ERR[AI.err] || 'Claude לא זמין כרגע – התשובה מהמנוע המהיר.')}</div>` : '') + answerHTML(answer(q));
   else h += `<h2 class="sec">💡 דוגמאות לשאלות</h2><div class="actions">${ASK_EXAMPLES.map(e => `<button class="chip" data-act="askex" data-v="${esc(e)}">${esc(e)}</button>`).join('')}</div>`;
   if (hist.length) h += `<h2 class="sec">🕘 שאלות אחרונות</h2><div class="actions">${hist.slice(0, 10).map(e => `<button class="chip" data-act="askex" data-v="${esc(e)}">${esc(e)}</button>`).join('')}</div>`;
@@ -1651,7 +1654,7 @@ function measureForm(s){
 document.addEventListener('click', async e => {
   const el = e.target.closest('[data-act]'); if (!el) return;
   const d = el.dataset, act = d.act, s = d.s ? student(d.s) : null;
-  const need = ['ai-stop','ai-retry','ai-fast','asker','cloud-login','cloud-logout','cloud-sync','cloud-retry','askex','newstudent','close','print','fullscreen','area','arch','libtopic','libopen','attopen','planfor','printproblem','export','wipe','usefor'].includes(act) || act.startsWith('sync') || act.startsWith('th-') || act.startsWith('br-') || act.startsWith('tl-') || act.startsWith('ld-') || act.startsWith('rw-') || act.startsWith('pmr') || act.startsWith('cc-') || act === 'dq' || act === 'toolsave';
+  const need = ['copyq','ai-stop','ai-retry','ai-fast','asker','cloud-login','cloud-logout','cloud-sync','cloud-retry','askex','newstudent','close','print','fullscreen','area','arch','libtopic','libopen','attopen','planfor','printproblem','export','wipe','usefor'].includes(act) || act.startsWith('sync') || act.startsWith('th-') || act.startsWith('br-') || act.startsWith('tl-') || act.startsWith('ld-') || act.startsWith('rw-') || act.startsWith('pmr') || act.startsWith('cc-') || act === 'dq' || act === 'toolsave';
   if (!need && !s && d.s) return;
   switch (act) {
     case 'newstudent': studentForm(); break;
@@ -1696,6 +1699,7 @@ document.addEventListener('click', async e => {
     case 'delwork': if (await uiConfirm('למחוק?')) { s[d.k] = s[d.k].filter(x => x.id !== d.id); save(); render(); } break;
     case 'toolsave': toolSave(d.k); break;
     case 'asker': ASKER = d.v; ls.set('cbtapp.asker', ASKER); aiFast = false; render(); break;
+    case 'copyq': try { navigator.clipboard.writeText(d.v).then(() => toast('השאלה הועתקה – הדביקו אותה בעמוד של Claude'), () => {}); } catch(err){} break;
     case 'ai-stop': if (aiCtl) aiCtl.abort(); break;
     case 'ai-retry': if (lastAsk || route().id) aiAnswerRun(route().id || lastAsk); break;
     case 'ai-fast': e.preventDefault(); aiFast = true; render(); break;
