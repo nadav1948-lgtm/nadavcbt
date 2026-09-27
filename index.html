@@ -297,6 +297,7 @@ label.f input:focus,label.f select:focus,label.f textarea:focus,.inp:focus{borde
 
 
 
+
 <script>
 /* CBT app – school counseling. Plain JS, no dependencies. */
 (function(){
@@ -321,7 +322,8 @@ const hueOf = s => { let h = 0; for (const c of String(s)) h = (h * 31 + c.charC
 
 /* ================= content ================= */
 let PROBLEMS = (window.PROBLEMS || []);
-const AREAS = ['חרדות','רגש והתנהגות','חברה','למידה וקשב','גוף והרגלים','משבר ואובדן'];
+const AREAS = ['חרדות','רגש והתנהגות','חברה','למידה וקשב','גוף והרגלים','משבר ואובדן','צוות, כיתה והורים'];
+const STAFF_AREA = 'צוות, כיתה והורים';
 PROBLEMS.sort((a, b) => AREAS.indexOf(a.area) - AREAS.indexOf(b.area));
 let P = Object.fromEntries(PROBLEMS.map(p => [p.id, p]));
 function setContent(arr){ PROBLEMS = (arr || []).slice().sort((a, b) => AREAS.indexOf(a.area) - AREAS.indexOf(b.area)); P = Object.fromEntries(PROBLEMS.map(p => [p.id, p])); try { ASK_INDEX = null; } catch(e){} }
@@ -1053,7 +1055,7 @@ function stem(w){
 }
 const STOP = new Set(['של','את','עם','על','זה','זו','הוא','היא','הם','יש','אני','מה','איך','כל','גם','או','אם','כי','רק','עוד','מאוד','ילד','ילדה','תלמיד','תלמידה','שלי','לו','לה','אצל','אחרי','לפני','כמו','יותר','כך','אבל','כדי','אותו','אותה','עושים','לעשות','צריך','אפשר','כשה','שהוא','שהיא','הזה','היום','כאשר','בזמן','מאד','ממש'].map(stem));
 const reEsc = x => x.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-const hasPh = (nq, ph) => { const p = norm(ph).trim(); return !!p && new RegExp('\\s[והבלמשכ]{0,3}' + reEsc(p)).test(nq); };
+const hasPh = (nq, ph) => { const p = norm(ph).trim(); return !!p && new RegExp('\\s[והבלמשכ]{0,3}' + reEsc(p) + (p.replace(/\s/g, '').length <= 4 ? '(?=\\s)' : '')).test(nq); };
 const toks = t => norm(t).trim().split(' ').filter(w => w.length > 1).map(stem).filter(w => w.length > 1 && !STOP.has(w));
 const SYN = {
   'school-refusal':['לא רוצה ללכת','לא מוכן ללכת','מסרב ללכת','סירוב','נשאר בבית','בוכה בבוקר','בוכה בשער','נצמד','להיפרד','פרידה','מתגעגע','לא נכנס לכיתה','היעדרויות','נעדר','חופש','אחרי החגים','אמא עוזבת'],
@@ -1074,6 +1076,10 @@ const SYN = {
   'sleep':['שינה','לא נרדם','לא ישן','נרדם','מתעורר בלילה','סיוטים','חלומות רעים','ישן עם ההורים','פחדי לילה','עייף בבוקר','מסכים בלילה'],
   'trauma':['טראומה','אזעקה','אזעקות','מלחמה','טיל','טילים','פיגוע','מרחב מוגן','ממד','פונה','פינוי','מילואים','הצפה','פלאשבק','נבהל','קפיצות מרעש','תאונה','חטוף','חטופים','ירי','חירום','שבעה באוקטובר','דחק'],
   'grief':['אבל','נפטר','נפטרה','מת','מתה','מוות','לוויה','שבעה','אובדן','איבד','סבא נפטר','סבתא נפטרה','הורה נפטר','נהרג','נהרגה','יום זיכרון','התאבד'],
+  'teacher-consult':['מורה שלא מסתדר','לא מסתדר עם התלמידים','לא מסתדרת עם התלמידים','לא יודע לנהל','לא יודעת לנהל','ניהול כיתה','ניהול שיעור','לנהל שיעור','לנהל את הכיתה','להדריך מורה','להדריך את המורה','מדריכים אותו','מדריכים אותה','הדרכת מורה','הדרכת מורים','מורה חדש','מורה חדשה','מורה מתקשה','מורה שצועק','מורה שצועקת','מורה צועק','משמעת בכיתה','מאבד שליטה בכיתה','מסתבכים איתו','מסתבכים איתה','קונפליקט עם מורה','עימות עם מורה','מורה ממלא מקום','מחליף'],
+  'class-climate':['כיתה קשה','כיתה מאתגרת','כל הכיתה','הכיתה משתוללת','אין שקט בכיתה','רעש בכיתה','אקלים כיתה','אקלים כיתתי','אווירה בכיתה','שיחה כיתתית','כיתה שאכלה','כיתה מפורקת','מתח חברתי בכיתה','חוזה כיתתי'],
+  'parent-consult':['הורים כועסים','הורה כועס','הורים מאשימים','שיחה עם הורים','שיחת הורים','פגישה עם הורים','הורים לא משתפים פעולה','הורים לא מגיעים','הורים מתנגדים','הורים חרדתיים','הורים גרושים','איך מדברים עם ההורים','הדרכת הורים'],
+  'teacher-stress':['שחיקה','שחוק','שחוקה','מורה מותש','מורה מותשת','מורה בלחץ','עומס על המורים','מורה בוכה','מורה אחרי אירוע','דחק של מורים','חוסן לצוות','צוות מותש'],
   'family-change':['גירושין','התגרשו','מתגרשים','פרידת הורים','שני בתים','אח חדש','אחות חדשה','לידה','תינוק','מעבר דירה','עבר דירה','עלה לארץ','עולה חדש','בית ספר חדש','אבא לא גר','משמורת','נאמנות']
 };
 const INTENTS = [
@@ -1109,16 +1115,19 @@ function answer(q){
   if (!ASK_INDEX) buildIndex();
   const X = ASK_INDEX, nq = norm(q), qt = [...new Set(toks(q))];
   const idf = t => Math.log(1 + X.N / (X.df[t] || X.N));
+  const adult = /(^|\s)[והבלמשכ]{0,2}(מורה|מורים|מורות|מחנכ|מחנכת|מחנך|הצוות|צוות|הורים|ההורים|אמא|אבא|מנהל|מנהלת|סייעת)\s+(ש|לא|כועס|מאשימ|מתקש|צועק|מותש)|איך מדריכים|להדריך (את|מורה|הורים|צוות)|מדריכים (אותו|אותה|אותם)/.test(nq);
   const scores = PROBLEMS.map(p => {
     let s = 0; const why = [];
     for (const ph of SYN[p.id] || []) if (hasPh(nq, ph)) { s += 6 + norm(ph).trim().split(' ').length; why.push(ph); }
     for (const t of qt) { if (X.bag[p.id] && X.bag[p.id].has(t)) s += idf(t); if (X.nameTk[p.id].has(t)) s += 3; }
+    if (adult) { if (p.area === STAFF_AREA) s += 5; else if (!why.length) s *= 0.6; }
     return {p, s, why};
   }).sort((a, b) => b.s - a.s);
   const intents = INTENTS.filter(it => it.words.some(w => hasPh(nq, w)));
   const sessNum = (nq.match(/ מפגש (\d+) /) || [])[1];
   const safety = SAFETY.some(w => hasPh(nq, w));
-  const top = scores[0] && scores[0].s >= 4 ? scores[0] : null;
+  const c0 = scores[0];
+  const top = c0 && (c0.why.length ? c0.s >= 7 : c0.s >= 12) ? c0 : null;
   const others = scores.slice(top ? 1 : 0, 4).filter(x => x.s >= (top ? top.s * 0.45 : 3));
   const snip = X.docs.map(d => { let s = 0; for (const t of qt) if (d.tk.includes(t)) s += idf(t); if (top && d.p === top.p) s *= 1.3; if (intents.some(i => i.field === d.field)) s *= 1.4; return {d, s}; })
     .filter(x => x.s > 1.2).sort((a, b) => b.s - a.s).slice(0, 7);
@@ -1137,7 +1146,11 @@ function answerHTML(A){
     <ul class="clean"><li>לא משאירים את הילד לבד כשיש חשש לסכנה מיידית, ומוודאים השגחה של מבוגר.</li><li>מעדכנים מיד את מנהל/ת בית הספר ואת הפסיכולוג/ית (שפ״ח), ופועלים לפי נוהל בית הספר וחוזר המנכ״ל.</li>
     <li>בחשש לפגיעה או להזנחה בבית – חובת דיווח לפי החוק לעובד/ת סוציאלי/ת לפי חוק הנוער או למשטרה. לא מבררים לבד לעומק ולא מעמתים את המשפחה לפני התייעצות.</li>
     <li>בחשש אובדני – שואלים ישירות ובעדינות, מיידעים הורים (אלא אם הם מקור הסכנה), ומפנים להערכה דחופה (מיון / פסיכיאטר ילדים). קו ער״ן 1201, סה״ר באתר sahar.org.il.</li></ul></div>`;
-  if (!A.top && !A.snip.length) return h + `<div class="panel empty"><span class="big">🤔</span>לא מצאתי תשובה מתאימה. נסו לתאר מה רואים אצל הילד: מה הוא עושה, מתי ואיפה.<br><br><a class="btn" href="#/problems">🧭 לרשימת הבעיות</a></div>`;
+  if (!A.top) {
+    h += `<div class="panel"><h3>🤔 לא מצאתי מפת טיפול שמתאימה בדיוק לשאלה</h3><p style="margin:0 0 8px">כדי לא לתת תשובה לא מדויקת, אני לא בוחר מפה בכוח. אפשר לנסות לנסח שוב: מי מתקשה (ילד, מורה, הורים, כיתה), מה בדיוק קורה, ומתי.</p>
+      ${A.others.length ? `<p style="margin:0;font-size:14px">אולי אחד מאלה קרוב: ${A.others.map(o => `<a class="pill brand" href="#/problem/${o.p.id}" style="text-decoration:none">${o.p.icon} ${esc(o.p.name)}</a>`).join(' ')}</p>` : ''}
+      <div class="actions" style="margin-top:12px"><a class="btn" href="#/problems">🧭 לרשימת כל המפות</a></div></div>`;
+  }
   const p = A.top && A.top.p;
   if (p) {
     const s1 = p.sessions[0] || {};
@@ -1146,13 +1159,20 @@ function answerHTML(A){
       ${A.others.length ? `<p style="margin:8px 0 0;font-size:14px">אולי גם: ${A.others.map(o => `<a class="pill brand" href="#/problem/${o.p.id}" style="text-decoration:none">${o.p.icon} ${esc(o.p.name)}</a>`).join(' ')}</p>` : ''}</div>`;
     const tech = (p.techniques || [])[0];
     h += `<div class="panel"><h3>✅ מה עושים עכשיו – צעד אחר צעד</h3><ol style="margin:0;padding-inline-start:22px;display:grid;gap:8px">
+      ${p.area === STAFF_AREA ? `
+      <li><b>בירור ראשוני:</b> ${esc((p.assessment || [])[0] || '')}${(p.assessment || [])[1] ? ' · ' + esc(p.assessment[1]) : ''}</li>
+      <li><b>פגישה ראשונה:</b> ${esc((s1.activities || []).slice(0, 2).join(' · '))}</li>
+      ${tech ? `<li><b>דרך עבודה מרכזית – ${esc(tech.name)}:</b> ${esc(tech.how)}</li>` : ''}
+      <li><b>הנחיות מעשיות:</b> ${esc((p.teachers || []).slice(0, 2).join(' · '))}</li>
+      <li><b>מעקב:</b> קובעים פגישת המשך ומדד פשוט להצלחה, ובודקים אותו בכל פגישה.</li>
+      <li><b>מתי להסלים:</b> ${esc((p.redFlags || [])[0] || '')}</li>` : `
       <li><b>בירור ראשוני:</b> ${esc((p.assessment || [])[0] || '')}${(p.assessment || [])[1] ? ' · ' + esc(p.assessment[1]) : ''}</li>
       <li><b>שיחה עם המחנכ/ת:</b> ${esc((p.teachers || [])[0] || '')}</li>
       <li><b>שיחה עם ההורים:</b> ${esc((p.parents || [])[0] || '')}</li>
       <li><b>מפגש ראשון עם הילד:</b> ${esc((s1.activities || []).slice(0, 2).join(' · '))}</li>
       ${tech ? `<li><b>טכניקה מרכזית – ${esc(tech.name)}:</b> ${esc(tech.how)}</li>` : ''}
-      <li><b>מדידה:</b> קובעים מדד פשוט (מדחום 0–10 או שאלון) ורושמים אותו בכל מפגש בתיק התלמיד.</li></ol>
-      <div class="actions" style="margin-top:14px"><a class="btn primary" href="#/problem/${p.id}">🧭 מפת הטיפול המלאה</a><button class="btn" data-act="planfor" data-id="${p.id}">📋 תוכנית טיפול לתלמיד</button><a class="btn" href="#/problem/${p.id}/sessions">🗓️ ${p.sessions.length} המפגשים</a></div></div>`;
+      <li><b>מדידה:</b> קובעים מדד פשוט (מדחום 0–10 או שאלון) ורושמים אותו בכל מפגש בתיק התלמיד.</li>`}</ol>
+      <div class="actions" style="margin-top:14px"><a class="btn primary" href="#/problem/${p.id}">🧭 מפת הטיפול המלאה</a>${p.area === STAFF_AREA ? '' : `<button class="btn" data-act="planfor" data-id="${p.id}">📋 תוכנית טיפול לתלמיד</button>`}<a class="btn" href="#/problem/${p.id}/sessions">🗓️ ${p.sessions.length} ${p.area === STAFF_AREA ? 'הפגישות' : 'המפגשים'}</a></div></div>`;
     for (const it of A.intents) {
       let body = '';
       if (it.field === 'techniques') body = `<div class="list">${(p.techniques || []).map(t => `<div class="li"><div class="grow"><b>${esc(t.name)}</b><div>${esc(t.how)}</div></div></div>`).join('')}</div>`;
