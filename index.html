@@ -301,6 +301,7 @@ label.f input:focus,label.f select:focus,label.f textarea:focus,.inp:focus{borde
 
 
 
+
 <script>
 /* CBT app – school counseling. Plain JS, no dependencies. */
 (function(){
@@ -476,6 +477,8 @@ const Cloud = {
       this.status = 'connecting'; ui();
       this.folderId = await this.findFolder();
       await this.loadContent();
+      try { const cfg = await this.getText('app-config.json'); window.CBT_AI_CONFIG = cfg ? JSON.parse(cfg) : null; } catch(e){ window.CBT_AI_CONFIG = null; }
+      await AI.init();
       await this.loadLib();
       await this.pull();
       this.status = 'ok';
@@ -641,7 +644,7 @@ function render(){
   if (out.after) out.after();
   ui();
 }
-window.addEventListener('hashchange', () => { render(); window.scrollTo({top:0}); });
+window.addEventListener('hashchange', () => { aiFast = false; if (aiCtl) aiCtl.abort(); render(); window.scrollTo({top:0}); });
 
 /* ================= shared pieces ================= */
 function problemCard(p, i){
@@ -1062,11 +1065,11 @@ const reEsc = x => x.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 const hasPh = (nq, ph) => { const p = norm(ph).trim(); return !!p && new RegExp('\\s[והבלמשכ]{0,3}' + reEsc(p) + (p.replace(/\s/g, '').length <= 4 ? '(?=\\s)' : '')).test(nq); };
 const toks = t => norm(t).trim().split(' ').filter(w => w.length > 1).map(stem).filter(w => w.length > 1 && !STOP.has(w));
 const SYN = {
-  'school-refusal':['לא רוצה ללכת','לא מוכן ללכת','מסרב ללכת','סירוב','נשאר בבית','בוכה בבוקר','בוכה בשער','נצמד','להיפרד','פרידה','מתגעגע','לא נכנס לכיתה','היעדרויות','נעדר','חופש','אחרי החגים','אמא עוזבת'],
-  'gad':['דאגה','דאגות','דואג','מודאג','מה יהיה','שואל שוב ושוב','צריך הרגעה','מתח כללי','חרדה כללית','לחוץ כל הזמן'],
-  'test-anxiety':['מבחן','מבחנים','בוחן','חרדת בחינות','לפני מבחן','נתקע במבחן','ציונים','בגרות','הכתבה','מבחן מיצ','קריאה בקול','הצגה','להופיע','חרדת ביצוע'],
-  'social-anxiety':['ביישן','ביישנות','מתבייש','לא מדבר בכיתה','לא עונה','לא מצביע','חרדה חברתית','מפחד שיצחקו','אילם','אילמות','סלקטיבית','נבוך','מסמיק'],
-  'phobias':['פחד','פוביה','מפחד מכלבים','כלב','חושך','רעשים','הקאה','מחטים','זריקה','מעלית','חרקים','דבורה','פחד מ'],
+  'school-refusal':['יקרה משהו לאמא','יקרה משהו לאבא','להתקשר אליה כל שיעור','להתקשר לאמא','לחזור הביתה כל יום','מבקשת לחזור הביתה','מבקש לחזור הביתה','בוכה כשאמא הולכת','להישאר בלי ההורים','מפחד להישאר בלי','מפחדת להישאר בלי','לא רוצה ללכת','לא מוכן ללכת','מסרב ללכת','סירוב','נשאר בבית','בוכה בבוקר','בוכה בשער','נצמד','להיפרד','פרידה','מתגעגע','לא נכנס לכיתה','היעדרויות','נעדר','חופש','אחרי החגים','אמא עוזבת'],
+  'gad':['תמיד דרוכה','תמיד דרוך','אישור על כל צעד','שואל האם זה בסדר','שואלת האם זה בסדר','עשרות פעמים','דאגנית','דאגן','מפחדת מכל דבר','מפחד מכל דבר','לא מפסיקה לחשוב','לא מפסיק לחשוב','דואגת שההורים','דואג שההורים','דאגה','דאגות','דואג','מודאג','מה יהיה','שואל שוב ושוב','צריך הרגעה','מתח כללי','חרדה כללית','לחוץ כל הזמן'],
+  'test-anxiety':['באמצע מבחן','בכל מבחן','לפני כל מבחן','נעדר בימי מבחנים','נעדרת בימי מבחנים','בדיוק בימי מבחנים','מבחן','מבחנים','בוחן','חרדת בחינות','לפני מבחן','נתקע במבחן','ציונים','בגרות','הכתבה','מבחן מיצ','קריאה בקול','הצגה','להופיע','חרדת ביצוע'],
+  'social-anxiety':['לא מדברת עם מבוגרים','לא מדבר עם מבוגרים','לא מבקשת עזרה','לא מבקש עזרה','מתחמק מכל אירוע','מתחמקת מכל אירוע','לא מגיע לימי הולדת','לא מגיעה לימי הולדת','מסרבת לענות בטלפון','מסרב לענות בטלפון','להקליט הודעה קולית','ביישן','ביישנות','מתבייש','לא מדבר בכיתה','לא עונה','לא מצביע','חרדה חברתית','מפחד שיצחקו','אילם','אילמות','סלקטיבית','נבוך','מסמיק'],
+  'phobias':['בורח מהחצר','בורחת מהחצר','רואה חתול','רואה יונה','מפחדת מבלונים','מפחד מבלונים','פחד מבלונים','פחד','פוביה','מפחד מכלבים','כלב','חושך','רעשים','הקאה','מחטים','זריקה','מעלית','חרקים','דבורה','פחד מ'],
   'ocd':['טקס','טקסים','שוטף ידיים','רוחץ ידיים','בודק שוב','סופר','מסדר','מושלם','נקיון','חיידקים','מחשבות טורדניות','כפייתי','אובססיבי','ocd','חייב שיהיה'],
   'anger':['כעס','כועס','מתפרץ','התפרצות','התפרצויות','צועק','מכה','מרביץ','זורק','בועט','מקלל','עצבים','עצבני','נפיץ','משתולל','מאבד שליטה','ויסות','התקף זעם','טריקת דלת','אלים','אלימות'],
   'social-rejection':['אין חברים','אין לו חברים','לבד בהפסקה','לא משחקים איתו','דחוי','דחייה','בודד','בדידות','לא מקבלים אותו','כישורים חברתיים','לא יודע להשתלב','מתבודד','לא מזמינים'],
@@ -1076,15 +1079,15 @@ const SYN = {
   'adhd-org':['קשב','ריכוז','לא מרוכז','מפוזר','שוכח','שכחן','התארגנות','מתארגן','לא מסיים','מפריע','קם מהמקום','אימפולסיבי','היפראקטיבי','adhd','הפרעת קשב','ריטלין','שיעורי בית','תיק','מחברות'],
   'tics':['טיק','טיקים','ממצמץ','מצמוץ','תנועות לא רצוניות','משמיע קולות','כחכוח','טורט','מושך שיער','טריכו','מכרסם ציפורניים'],
   'enuresis':['הרטבה','מרטיב','פיפי','במיטה','חיתול','התאפקות','מלכלך','צואה','אנקופרזיס','תאונות בשירותים','ליל'],
-  'somatic':['כאב בטן','כאבי בטן','כואבת לו הבטן','כאב ראש','כאבי ראש','אחות','הולך הביתה','מרגיש לא טוב','בחילה','גופני','סומטי','רופא לא מצא'],
+  'somatic':['הכאב עובר','הכאב נעלם','כאב בטן','כאבי בטן','כואבת לו הבטן','כאב ראש','כאבי ראש','אחות','הולך הביתה','מרגיש לא טוב','בחילה','גופני','סומטי','רופא לא מצא'],
   'sleep':['שינה','לא נרדם','לא ישן','נרדם','מתעורר בלילה','סיוטים','חלומות רעים','ישן עם ההורים','פחדי לילה','עייף בבוקר','מסכים בלילה'],
   'trauma':['טראומה','אזעקה','אזעקות','מלחמה','טיל','טילים','פיגוע','מרחב מוגן','ממד','פונה','פינוי','מילואים','הצפה','פלאשבק','נבהל','קפיצות מרעש','תאונה','חטוף','חטופים','ירי','חירום','שבעה באוקטובר','דחק'],
   'grief':['אבל','נפטר','נפטרה','מת','מתה','מוות','לוויה','שבעה','אובדן','איבד','סבא נפטר','סבתא נפטרה','הורה נפטר','נהרג','נהרגה','יום זיכרון','התאבד'],
-  'teacher-consult':['מורה שלא מסתדר','לא מסתדר עם התלמידים','לא מסתדרת עם התלמידים','לא יודע לנהל','לא יודעת לנהל','ניהול כיתה','ניהול שיעור','לנהל שיעור','לנהל את הכיתה','להדריך מורה','להדריך את המורה','מדריכים אותו','מדריכים אותה','הדרכת מורה','הדרכת מורים','מורה חדש','מורה חדשה','מורה מתקשה','מורה שצועק','מורה שצועקת','מורה צועק','משמעת בכיתה','מאבד שליטה בכיתה','מסתבכים איתו','מסתבכים איתה','קונפליקט עם מורה','עימות עם מורה','מורה ממלא מקום','מחליף'],
-  'class-climate':['כיתה קשה','כיתה מאתגרת','כל הכיתה','הכיתה משתוללת','אין שקט בכיתה','רעש בכיתה','אקלים כיתה','אקלים כיתתי','אווירה בכיתה','שיחה כיתתית','כיתה שאכלה','כיתה מפורקת','מתח חברתי בכיתה','חוזה כיתתי'],
+  'teacher-consult':['עימותים חוזרים','נכנס לעימותים','נכנסת לעימותים','סמכות נשחקת','הסמכות שלה נשחקת','הסמכות שלו נשחקת','אין לו כלים','אין לה כלים','הפכו לבלגן','מורה מקצועי אומר','מורה מקצועית אומרת','מדריכים מורה','איך מדריכים','מורה שלא מסתדר','לא מסתדר עם התלמידים','לא מסתדרת עם התלמידים','לא יודע לנהל','לא יודעת לנהל','ניהול כיתה','ניהול שיעור','לנהל שיעור','לנהל את הכיתה','להדריך מורה','להדריך את המורה','מדריכים אותו','מדריכים אותה','הדרכת מורה','הדרכת מורים','מורה חדש','מורה חדשה','מורה מתקשה','מורה שצועק','מורה שצועקת','מורה צועק','משמעת בכיתה','מאבד שליטה בכיתה','מסתבכים איתו','מסתבכים איתה','קונפליקט עם מורה','עימות עם מורה','מורה ממלא מקום','מחליף'],
+  'class-climate':['הפרעות בכיתה','אף מורה לא מצליח','אווירה של לעג','לעג ופגיעות','פגיעות בין תלמידים','אווירה בכיתה','כל מורה שנכנס','כולה פרועה','כיתה פרועה','יוצא שבור','כיתה קשה','כיתה מאתגרת','כל הכיתה','הכיתה משתוללת','אין שקט בכיתה','רעש בכיתה','אקלים כיתה','אקלים כיתתי','אווירה בכיתה','שיחה כיתתית','כיתה שאכלה','כיתה מפורקת','מתח חברתי בכיתה','חוזה כיתתי'],
   'parent-consult':['הורים כועסים','הורה כועס','הורים מאשימים','שיחה עם הורים','שיחת הורים','פגישה עם הורים','הורים לא משתפים פעולה','הורים לא מגיעים','הורים מתנגדים','הורים חרדתיים','הורים גרושים','איך מדברים עם ההורים','הדרכת הורים'],
-  'teacher-stress':['שחיקה','שחוק','שחוקה','מורה מותש','מורה מותשת','מורה בלחץ','עומס על המורים','מורה בוכה','מורה אחרי אירוע','דחק של מורים','חוסן לצוות','צוות מותש'],
-  'family-change':['גירושין','התגרשו','מתגרשים','פרידת הורים','שני בתים','אח חדש','אחות חדשה','לידה','תינוק','מעבר דירה','עבר דירה','עלה לארץ','עולה חדש','בית ספר חדש','אבא לא גר','משמורת','נאמנות']
+  'teacher-stress':['חוסר אונים','לחץ בחזה','מורה בדיכאון','מורה מספרת שהיא','מורה מספר שהוא','חוזרת מחופשת מחלה','מורה שבורה','מורה שבור','שחיקה','שחוק','שחוקה','מורה מותש','מורה מותשת','מורה בלחץ','עומס על המורים','מורה בוכה','מורה אחרי אירוע','דחק של מורים','חוסן לצוות','צוות מותש'],
+  'family-change':['עלתה לארץ','עלו לארץ','עלה לארץ','לא מדבר עברית','לא מדברת עברית','גירושין','התגרשו','מתגרשים','פרידת הורים','שני בתים','אח חדש','אחות חדשה','לידה','תינוק','מעבר דירה','עבר דירה','עלה לארץ','עולה חדש','בית ספר חדש','אבא לא גר','משמורת','נאמנות']
 };
 const INTENTS = [
   {id:'teachers', label:'🏫 מה אומרים למחנכ/ת ולצוות', field:'teachers', words:['מורה','מחנכ','מחנכת','צוות','בכיתה','גננת','סייעת','מנהל','יועצת','שיעור','בהפסקה','ביה ס']},
@@ -1100,7 +1103,14 @@ const SAFETY = ['להתאבד','התאבדות','אובדני','אובדנות',
 const FIELD_LABEL = {signs:'סימנים', assessment:'הערכה', goals:'יעדים', parents:'הורים', teachers:'צוות', redFlags:'מתי להפנות', techniques:'טכניקות', sessions:'מפגשים', model:'המשגה'};
 const FIELD_TAB = {signs:'overview', assessment:'assess', goals:'overview', parents:'partners', teachers:'partners', redFlags:'overview', techniques:'techniques', sessions:'sessions', model:'overview'};
 let ASK_INDEX = null;
+function mergeExtras(){
+  const X = window.SYN_EXTRA || {};
+  for (const id in X) { SYN[id] = [...new Set([...(SYN[id] || []), ...X[id]])]; }
+  if (Array.isArray(window.ROLE_WORDS_EXTRA)) for (const w of window.ROLE_WORDS_EXTRA) if (!ROLE_WORDS.includes(w)) ROLE_WORDS.push(w);
+}
+window.__qa = q => { const A = answer(q); return {top: A.top ? A.top.p.id : null, roles: A.roles, safety: A.safety, adult: A.adult, scores: A.scores, others: A.others.map(o => o.p.id)}; };
 function buildIndex(){
+  mergeExtras();
   const docs = [], df = {};
   for (const p of PROBLEMS) {
     const add = (field, text, extra) => { const tk = toks(text); if (!tk.length) return; docs.push({p, field, text, tk, extra}); };
@@ -1119,11 +1129,12 @@ function answer(q){
   if (!ASK_INDEX) buildIndex();
   const X = ASK_INDEX, nq = norm(q), qt = [...new Set(toks(q))];
   const idf = t => Math.log(1 + X.N / (X.df[t] || X.N));
-  const adult = /(^|\s)[והבלמשכ]{0,2}(מורה|מורים|מורות|מחנכ|מחנכת|מחנך|הצוות|צוות|הורים|ההורים|אמא|אבא|מנהל|מנהלת|סייעת)\s+(ש|לא|כועס|מאשימ|מתקש|צועק|מותש)|איך מדריכים|להדריך (את|מורה|הורים|צוות)|מדריכים (אותו|אותה|אותם)/.test(nq);
+  const adult = /(^|\s)[והבלמשכ]{0,2}(מורה|מורים|מורות|מחנכ|מחנכת|מחנך|הצוות|צוות|הורים|ההורים|אמא|אבא|מנהל|מנהלת|סייעת)\s+(ש|לא|כועס|מאשימ|מתקש|צועק|מותש|מספר|מרגיש|חוזר|בוכה|שחוק|שבור|בדיכאון|בלחץ)|איך מדריכים|להדריך (את|מורה|הורים|צוות)|מדריכים (אותו|אותה|אותם)/.test(nq);
   const scores = PROBLEMS.map(p => {
     let s = 0; const why = [];
     for (const ph of SYN[p.id] || []) if (hasPh(nq, ph)) { s += 6 + norm(ph).trim().split(' ').length; why.push(ph); }
-    for (const t of qt) { if (X.bag[p.id] && X.bag[p.id].has(t)) s += idf(t); if (X.nameTk[p.id].has(t)) s += 3; }
+    let tok = 0; for (const t of qt) { if (X.bag[p.id] && X.bag[p.id].has(t)) tok += idf(t) * 0.5; if (X.nameTk[p.id].has(t)) tok += 2; }
+    s += Math.min(tok, 6);
     if (adult) { if (p.area === STAFF_AREA) s += 5; else if (!why.length) s *= 0.6; }
     return {p, s, why};
   }).sort((a, b) => b.s - a.s);
@@ -1136,7 +1147,7 @@ function answer(q){
   const others = scores.slice(top ? 1 : 0, 4).filter(x => x.s >= (top ? top.s * 0.45 : 3));
   const snip = X.docs.map(d => { let s = 0; for (const t of qt) if (d.tk.includes(t)) s += idf(t); if (top && d.p === top.p) s *= 1.3; if (intents.some(i => i.field === d.field)) s *= 1.4; return {d, s}; })
     .filter(x => x.s > 1.2).sort((a, b) => b.s - a.s).slice(0, 7);
-  return {q, top, others, intents, sessNum, safety, snip, qt, roles};
+  return {q, top, others, intents, sessNum, safety, snip, qt, roles, adult, scores: scores.slice(0, 4).map(x => ({id: x.p.id, s: Math.round(x.s * 10) / 10, why: x.why}))};
 }
 function libFor(q, p){
   const kw = [...(p ? p.libraryKeywords || [] : [])];
@@ -1201,14 +1212,15 @@ function answerHTML(A){
   return h;
 }
 const ASK_EXAMPLES = ['ילד בכיתה ב׳ בוכה כל בוקר בשער ולא מוכן להיפרד מאמא','מה אומרים למחנכת על ילד שמתפרץ ומכה בהפסקות','ילדה עם כאבי בטן לפני מבחנים והולכת לאחות','איך מתחילים מפגש ראשון עם ילד שיש לו טיקים','תלמיד שמחרימים אותו בקבוצת הוואטסאפ של הכיתה','ילד שאבא שלו נהרג – מה עושים בבית הספר','אילו שאלונים יש לחרדה','מתי להפנות ילד עם הרטבה לרופא'];
-let lastAsk = '';
+let lastAsk = '', aiFast = false;
 function ask(R){
   const q = R.id ? R.id : lastAsk;
   const hist = ls.get('cbtapp.asks', []);
   let h = `<div class="panel" style="margin-top:4px"><h3>💬 מה השאלה?</h3>${askerChips()}
     <form id="askform" style="display:flex;gap:8px;flex-wrap:wrap"><textarea class="inp" id="askq" rows="2" style="flex:1;min-width:240px;min-height:52px" placeholder="מתארים את המצב במילים שלך – מה רואים, איפה ומתי">${esc(q || '')}</textarea><button class="btn primary" type="submit" style="align-self:stretch">🔎 קבלת תשובה</button></form>
     <p class="muted" style="margin:10px 0 0;font-size:13.5px">התשובות נבנות מתוך ${PROBLEMS.length} מפות הטיפול והספרייה שלך, בלי אינטרנט. הן מכוונות ומסדרות – ושיקול הדעת המקצועי נשאר שלך.</p></div>`;
-  if (q) h += answerHTML(answer(q));
+  if (q && AI.available() && !aiFast) h += '<div id="aiPanel"></div>';
+  else if (q) h += (AI.status === 'off' && AI.err ? `<div class="note warn" style="margin-bottom:12px">🤖 ${esc(AI_ERR[AI.err] || 'Claude לא זמין כרגע – התשובה מהמנוע המהיר.')}</div>` : '') + answerHTML(answer(q));
   else h += `<h2 class="sec">💡 דוגמאות לשאלות</h2><div class="actions">${ASK_EXAMPLES.map(e => `<button class="chip" data-act="askex" data-v="${esc(e)}">${esc(e)}</button>`).join('')}</div>`;
   if (hist.length) h += `<h2 class="sec">🕘 שאלות אחרונות</h2><div class="actions">${hist.slice(0, 10).map(e => `<button class="chip" data-act="askex" data-v="${esc(e)}">${esc(e)}</button>`).join('')}</div>`;
   return {title:'שאל שאלה', html:h, after(){
@@ -1216,6 +1228,7 @@ function ask(R){
     i.addEventListener('keydown', e => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); f.requestSubmit(); } });
     f.onsubmit = e => { e.preventDefault(); const v = i.value.trim(); if (!v) return; lastAsk = v; ls.set('cbtapp.asks', [v, ...hist.filter(x => x !== v)].slice(0, 15)); location.hash = '#/ask/' + encodeURIComponent(v); };
     if (!q) i.focus();
+    if (q && $('#aiPanel')) aiAnswerRun(q);
   }};
 }
 
@@ -1268,6 +1281,7 @@ function cloudSettings(){
     <div class="actions" style="margin-top:12px"><button class="btn" data-act="cloud-sync">🔄 סנכרון עכשיו</button><button class="btn danger" data-act="cloud-logout">התנתקות</button></div>`;
   else sync = `<div class="note danger">שגיאה: ${esc(Cloud.err)}</div><div class="actions" style="margin-top:12px"><button class="btn primary" data-act="cloud-retry">נסו שוב</button><button class="btn" data-act="cloud-login">התחברות מחדש</button></div>`;
   const h = `<div class="panel"><h3>☁️ חשבון מיקרוסופט ו-OneDrive</h3>${sync}</div>
+    <div class="panel"><h3>🤖 עוזר חכם (Claude)</h3>${AI.available() ? '<div class="note">✅ פעיל. שאלות ב״שאל שאלה״ נענות על ידי Claude מתוך מפות הטיפול.</div>' : '<p style="margin:0">בגרסה הזו העוזר עונה עם מנוע מהיר שנבדק על מאות שאלות. תשובות שנכתבות על ידי Claude עצמו זמינות בעמוד ה-Claude של האפליקציה (כלול במנוי Claude, בלי תשלום נוסף).</p>'}</div>
     <div class="panel"><h3>📱 התקנה בטלפון</h3><ol style="margin:0;padding-inline-start:22px"><li>פותחים את הכתובת הזו ב-Chrome או ב-Samsung Internet.</li><li>בתפריט (⋮) בוחרים ״הוספה למסך הבית״ או ״התקנת אפליקציה״.</li><li>מעכשיו נפתח מהאייקון, כמו אפליקציה רגילה.</li></ol></div>
     <div class="panel"><h3>🔒 פרטיות</h3><ul class="clean"><li>הנתונים נשמרים רק ב-OneDrive שלך ובמכשיר. כתובת האפליקציה מכילה רק את הקוד – בלי תלמידים ובלי קבצים.</li><li>רושמים כינוי או ראשי תיבות בלבד. מומלץ לנעול את הטלפון בקוד או בטביעת אצבע.</li></ul></div>
     <div class="panel"><h3>💾 גיבוי</h3><div class="actions"><button class="btn" data-act="export">⬇️ ייצוא גיבוי</button><label class="btn">⬆️ ייבוא מגיבוי<input type="file" accept=".json" id="importfile" hidden></label></div></div>
@@ -1293,6 +1307,164 @@ function liteSettings(){
     <div class="panel"><h3>📚 הספרייה</h3><p style="margin:0">קובצי הספרייה נמצאים במחשב, בקיצור הדרך ״ספריית לימודי CBT״.</p></div>
     <div class="panel"><p class="muted" style="margin:0;font-size:14px">מפות הטיפול הן כלי עזר מקצועי, ואינן מחליפות שיקול דעת קליני, הדרכה והפניה לגורם מתאים.</p></div>`};
 }
+/* ================= AI assistant (grounded in the maps) ================= */
+const AI = {
+  backend: null, status: 'unknown', sample: null, err: '',
+  async init(){
+    if (ARTIFACT) {
+      try { this.sample = await claude.use('sample'); } catch(e){ this.sample = null; }
+      this.backend = this.sample ? 'sample' : null;
+    } else if (WEB && window.CBT_AI_CONFIG && window.CBT_AI_CONFIG.anthropicKey) {
+      this.backend = 'api';
+    }
+    this.status = this.backend ? 'ready' : 'none';
+  },
+  available(){ return this.status === 'ready' && !!this.backend; },
+  disable(reason){ this.status = 'off'; this.err = reason || ''; },
+  async ask(prompt, {quick = false, signal, onText} = {}){
+    if (this.backend === 'sample') {
+      return await this.sample.json(prompt, {modelTier: quick ? 'quick' : 'default', signal, onText, cache: false});
+    }
+    if (this.backend === 'api') {
+      const c = window.CBT_AI_CONFIG;
+      const r = await fetch('https://api.anthropic.com/v1/messages', {method: 'POST', signal,
+        headers: {'content-type': 'application/json', 'x-api-key': c.anthropicKey, 'anthropic-version': '2023-06-01', 'anthropic-dangerous-direct-browser-access': 'true'},
+        body: JSON.stringify({model: quick ? (c.quickModel || 'claude-haiku-4-5-20251001') : (c.model || 'claude-opus-5'), max_tokens: quick ? 400 : 4000, messages: [{role: 'user', content: prompt}]})});
+      if (!r.ok) { const t = await r.text().catch(() => ''); throw {code: r.status === 401 ? 'not_granted' : r.status === 429 ? 'rate_limited' : 'upstream_error', message: 'API ' + r.status + ' ' + t.slice(0, 200)}; }
+      const j = await r.json();
+      const text = (j.content || []).filter(x => x.type === 'text').map(x => x.text).join('');
+      return parseJsonLoose(text);
+    }
+    throw {code: 'not_granted', message: 'no backend'};
+  }
+};
+function parseJsonLoose(t){
+  try { return JSON.parse(t); } catch(e){}
+  const m = t.match(/```(?:json)?\s*([\s\S]*?)```/); if (m) { try { return JSON.parse(m[1]); } catch(e){} }
+  const a = t.indexOf('{'), b = t.lastIndexOf('}'); if (a >= 0 && b > a) { try { return JSON.parse(t.slice(a, b + 1)); } catch(e){} }
+  throw {code: 'invalid_json', message: 'no json', text: t};
+}
+const AI_ERR = {
+  not_granted: 'לא אושר שימוש ב-Claude בעמוד הזה. התשובה שלמטה היא מהמנוע המהיר.',
+  sampling_disabled: 'Claude לא זמין בחשבון הזה. התשובה שלמטה היא מהמנוע המהיר.',
+  rate_limited: 'יותר מדי שאלות בזמן קצר, או שמכסת השימוש נגמרה. אפשר לנסות שוב בעוד כמה דקות.',
+  session_expired: 'צריך להתחבר מחדש לחשבון.',
+  prompt_too_large: 'השאלה או החומר ארוכים מדי. נסו לקצר.',
+  refused: 'Claude סירב לענות על השאלה הזו. נסו לנסח אחרת.',
+  invalid_json: 'התשובה הגיעה בפורמט לא תקין. נסו שוב.',
+  cancelled: '',
+  upstream_error: 'תקלה זמנית בחיבור. נסו שוב.'
+};
+function compactMap(p){
+  const R = (window.CBT_MAP_ROLES || {})[p.id] || {};
+  const m = p.model || {};
+  return {id: p.id, name: p.name, area: p.area, summary: p.summary, signs: p.signs, assessment: p.assessment,
+    model: {triggers: m.triggers, thoughts: m.thoughts, feelings: m.feelings, body: m.body, behaviors: m.behaviors, maintaining: m.maintaining},
+    goals: p.goals, sessions: (p.sessions || []).map((s, i) => ({n: i + 1, title: s.title, goals: s.goals, activities: s.activities, homework: s.homework})),
+    techniques: p.techniques, parents: p.parents, teachers: p.teachers, redFlags: p.redFlags, sources: p.sources, whoDoesWhat: R};
+}
+function rolesCompact(){
+  const G = window.CBT_ROLES || {};
+  return {intro: G.intro, roles: (G.roles || []).map(r => ({name: r.name, who: r.who, owns: r.owns, contactsParentsWhen: r.parents, notParentsWhen: r.notParents, next: r.next})), ladder: G.ladder, emergency: G.emergency, whoCallsParents: G.whoCallsParents, teacherToHomeroom: G.teacherToHomeroom, rules: G.rules};
+}
+function aiClassifyPrompt(q){
+  const idx = PROBLEMS.map(p => `- ${p.id} | ${p.name} | ${p.area} | ${p.summary}`).join('\n');
+  return `אתה מסווג שאלות של יועץ/ת חינוכי/ת בבית ספר יסודי בישראל. יש רשימת "מפות טיפול" (כל שורה: מזהה | שם | תחום | תיאור), ובנוסף "מדריך תפקידים" שעונה על שאלות של מי פונה למי (מורה מקצועי/ת, מחנך/ת, יועץ/ת, הנהלה, מזכירות, פיקוח, הורים, גורמי חוץ), מדרגות הסלמה ומי מדבר עם ההורים.
+
+המפות:
+${idx}
+
+מי שואל/ת: ${askerOf().label}
+השאלה: """${q}"""
+
+בחר את המפה המתאימה ביותר לשאלה, ועד מפה נוספת אחת אם היא באמת רלוונטית. אם השאלה אינה קשורה לאף מפה ולא למדריך התפקידים (למשל תקציב, מערכת שעות, קריאה וכתיבה, נושא שאינו רגשי-התנהגותי-חינוכי) – החזר mapIds ריק ו-offTopic true. אל תבחר מפה "בכוח". סמן safety true אם יש בשאלה רמז לסכנה: אובדנות, פגיעה עצמית, אלימות חמורה, חשד לפגיעה או להזנחה בבית, פגיעה מינית.
+
+השב אך ורק ב-JSON אחד בצורה: {"mapIds": ["id"], "roles": false, "safety": false, "offTopic": false}`;
+}
+function aiAnswerPrompt(q, maps, rolesQ){
+  const a = askerOf();
+  const roleBrief = {counselor: 'היועץ/ת – רוצה את מהלך ההתערבות: בירור, המשגה, שיחות עם מחנך/ת והורים, מפגשים עם הילד, טכניקות, מדידה ומתי להפנות.',
+    homeroom: 'המחנך/ת – רוצה לדעת מה לשים לב אליו ולתעד, מה לעשות בכיתה ובשיחה עם הילד, איך ומתי לפנות להורים, ומתי לערב את היועץ/ת ואת ההנהלה. לא מטפל/ת בעצמו/ה.',
+    teacher: 'מורה מקצועי/ת – רוצה לדעת מה לעשות בתוך השיעור שלו/ה, מתי לעדכן את המחנך/ת, ומתי מותר לפנות להורים ישירות (רק בעניין לימודי במקצוע שלו/ה). לא מטפל/ת ולא מנהל/ת את המקרה.',
+    management: 'ההנהלה – רוצה לדעת מה תפקיד ההנהלה במקרה, מה לבקש מהמחנך/ת ומהיועץ/ת, מתי לפנות להורים, מתי לערב פיקוח או גורמי חוץ, ומה דחוף.'}[a.id];
+  const material = JSON.stringify({maps: maps.map(compactMap), rolesGuide: rolesCompact()});
+  return `אתה עוזר מקצועי בתוך אפליקציה ליועץ/ת חינוכי/ת בבית ספר יסודי בישראל. ענה על השאלה אך ורק מתוך החומר המצורף (מפות טיפול CBT ומדריך תפקידים). אל תוסיף ידע חיצוני, אל תמציא נהלים, שמות של שאלונים או גורמים שאינם בחומר. אם החומר לא מכסה את השאלה, אמור זאת במפורש ב-notFound ואל תנחש.
+
+מי שואל/ת: ${roleBrief}
+התאם את התשובה בדיוק לתפקיד הזה: מה הוא/היא עושה, מה לא בתפקידו/ה, ולמי מעביר/ה. הקפד על ההפרדה בין מורה מקצועי/ת למחנך/ת, ועל מי פונה להורים ומתי (לפי whoDoesWhat של המפה ולפי rolesGuide).
+
+השאלה: """${q}"""
+${rolesQ ? 'השאלה עוסקת (גם) במי פונה למי / תפקידים / הסלמה – השתמש ב-rolesGuide ובשדה whoDoesWhat.' : ''}
+
+החומר (JSON):
+${material}
+
+כתוב בעברית, בגובה העיניים, במשפטים קצרים ומעשיים. בלי פנייה בלשון "אתה". השב אך ורק ב-JSON אחד בצורה הבאה (בלי טקסט לפני או אחרי):
+{
+ "mapId": "המזהה של המפה הראשית או null",
+ "headline": "משפט אחד: מה כנראה קורה כאן",
+ "steps": [{"t": "כותרת קצרה", "d": "מה לעשות, 1-3 משפטים"}],
+ "contacts": "מי פונה למי ומתי במקרה הזה, כולל ההורים – 2-4 משפטים",
+ "watch": ["דגל אדום או מצב שמחייב הפניה/הסלמה", "..."],
+ "note": "הערה קצרה אם יש, אחרת מחרוזת ריקה",
+ "notFound": false,
+ "safety": false
+}
+steps: 4-7 צעדים, בסדר ביצוע, מותאמים לתפקיד השואל/ת. אם notFound=true – headline מסביר שהחומר לא מכסה את השאלה, steps ריק, contacts ריק, ואפשר להציע ב-note לאיזה גורם כדאי לפנות.`;
+}
+let aiCtl = null;
+async function aiAnswerRun(q){
+  const box = $('#aiPanel'); if (!box) return;
+  aiCtl = new AbortController();
+  const busy = t => { box.innerHTML = `<div class="panel" style="border-inline-start:5px solid var(--brand)"><h3>🤖 Claude עונה מתוך מפות הטיפול</h3><p class="muted" style="margin:0">${esc(t)}</p><div class="actions" style="margin-top:10px"><button class="btn sm" data-act="ai-stop">⏹ עצירה</button></div></div>`; };
+  busy('קורא את השאלה ובוחר מפה מתאימה…');
+  try {
+    const c = await AI.ask(aiClassifyPrompt(q), {quick: true, signal: aiCtl.signal});
+    const ids = Array.isArray(c && c.mapIds) ? c.mapIds.map(String).filter(id => P[id]).slice(0, 2) : [];
+    const rolesQ = !!(c && c.roles);
+    if (!ids.length && !rolesQ) { box.innerHTML = aiNotFoundHTML(q, !!(c && c.safety)); return; }
+    const maps = ids.map(id => P[id]);
+    busy(maps.length ? `מצאתי: ${maps.map(p => p.icon + ' ' + p.name).join(', ')}. כותב תשובה מותאמת ל${askerOf().label}…` : 'כותב תשובה מתוך מדריך התפקידים…');
+    const ans = await AI.ask(aiAnswerPrompt(q, maps, rolesQ), {signal: aiCtl.signal});
+    if (ans && typeof ans === 'object' && c && c.safety) ans.safety = true;
+    box.innerHTML = aiAnswerHTML(q, ans, maps, rolesQ || !!(c && c.safety) || !!(ans && ans.safety));
+  } catch(e){
+    if (e && e.code === 'cancelled') { box.innerHTML = ''; return; }
+    const code = (e && e.code) || 'upstream_error';
+    if (['not_granted', 'sampling_disabled', 'not_declared', 'capability_disabled', 'capability_removed'].includes(code)) AI.disable(code);
+    const msg = AI_ERR[code] || AI_ERR.upstream_error;
+    box.innerHTML = `<div class="note warn" style="margin-bottom:12px">🤖 ${esc(msg)}${AI.available() ? ` <button class="btn sm" data-act="ai-retry">נסו שוב</button>` : ''}</div>` + (AI.available() ? '' : answerHTML(answer(q)));
+  }
+}
+function aiNotFoundHTML(q, safety){
+  return (safety ? answerHTML({safety: true, top: null, others: [], snip: [], intents: [], roles: false, q}).split('<div class="panel"><h3>🤔')[0] : '') +
+    `<div class="panel"><h3>🤔 השאלה לא מכוסה במפות הטיפול</h3><p style="margin:0 0 8px">Claude קרא את השאלה ולא מצא מפה שעונה עליה. כדי לא לתת תשובה לא מדויקת, אין כאן ניחוש.</p>
+    <p class="muted" style="margin:0;font-size:14px">אפשר לנסח שוב (מי מתקשה, מה קורה, מתי), או לעיין ברשימת המפות.</p><div class="actions" style="margin-top:12px"><a class="btn" href="#/problems">🧭 כל המפות</a><a class="btn" href="#/roles">👥 מי פונה למי</a></div></div>`;
+}
+function aiAnswerHTML(q, A, maps, rolesQ){
+  if (!A || typeof A !== 'object') return `<div class="note warn">התשובה הגיעה בפורמט לא צפוי. <button class="btn sm" data-act="ai-retry">נסו שוב</button></div>`;
+  const p = P[A.mapId] || maps[0] || null;
+  const a = askerOf();
+  let h = '';
+  if (A.safety) h += answerHTML({safety: true, top: null, others: [], snip: [], intents: [], roles: false, q}).split('<div class="panel"><h3>🤔')[0];
+  if (A.notFound) return h + aiNotFoundHTML(q, false).replace('<h3>🤔 השאלה לא מכוסה במפות הטיפול</h3>', `<h3>🤔 ${esc(A.headline || 'השאלה לא מכוסה במפות הטיפול')}</h3>`) + (A.note ? `<div class="note">${esc(A.note)}</div>` : '');
+  h += `<div class="panel" style="border-inline-start:5px solid hsl(${p ? hueOf(p.area) : 160} 55% 45%)"><h3>${p ? p.icon + ' ' : '🤖 '}${esc(A.headline || '')}</h3>
+    ${p ? `<p class="muted" style="margin:0;font-size:14px">מפת הטיפול: <a href="#/problem/${p.id}">${esc(p.name)}</a>${maps.length > 1 ? ' · קשור גם: ' + maps.filter(x => x !== p).map(x => `<a href="#/problem/${x.id}">${esc(x.name)}</a>`).join(', ') : ''}</p>` : ''}
+    <p class="pill brand" style="margin:8px 0 0;display:inline-block">${a.icon} תשובה מותאמת ל${a.label}</p></div>`;
+  if (Array.isArray(A.steps) && A.steps.length) h += `<div class="panel"><h3>✅ מה עושים עכשיו – צעד אחר צעד</h3><ol style="margin:0;padding-inline-start:22px;display:grid;gap:8px">${A.steps.map(s => `<li><b>${esc(s.t || '')}:</b> ${esc(s.d || '')}</li>`).join('')}</ol></div>`;
+  if (A.contacts) h += `<div class="panel"><h3>📞 מי פונה למי</h3><p style="margin:0">${esc(A.contacts)}</p><p style="margin:10px 0 0"><a class="btn sm" href="#/roles">👥 המדריך המלא</a>${p ? ` <a class="btn sm" href="#/problem/${p.id}/roles">מי עושה מה במפה הזו</a>` : ''}</p></div>`;
+  if (Array.isArray(A.watch) && A.watch.length) h += `<div class="panel" style="border-color:color-mix(in srgb,var(--danger) 40%,var(--line))"><h3>🚩 לשים לב / מתי להפנות</h3>${ul(A.watch)}</div>`;
+  if (A.note) h += `<div class="note">${esc(A.note)}</div>`;
+  if (p) {
+    const tl = (p.tools || []).filter(t => TOOL[t]);
+    h += `<div class="panel"><div class="actions"><a class="btn primary" href="#/problem/${p.id}">🧭 מפת הטיפול המלאה</a>${!LITE && a.id === 'counselor' ? `<button class="btn" data-act="planfor" data-id="${p.id}">📋 תוכנית טיפול לתלמיד</button>` : ''}<a class="btn" href="#/problem/${p.id}/sessions">🗓️ המפגשים</a>${tl.map(t => `<a class="btn" href="#/tool/${t}">${TOOL[t].icon} ${TOOL[t].name}</a>`).join('')}</div></div>`;
+    const lib = libFor(q, p);
+    if (lib.length) h += `<div class="panel"><h3>📚 חומרים מהספרייה שלך</h3><div class="list">${lib.map(libItem).join('')}</div></div>`;
+  }
+  h += `<p class="muted" style="font-size:13px">התשובה נכתבה על ידי Claude מתוך מפות הטיפול והמדריך שבאפליקציה בלבד. היא כלי עזר, ושיקול הדעת המקצועי נשאר של השואל/ת. <a href="#" data-act="ai-fast">להצגת התשובה מהמנוע המהיר</a></p>`;
+  return h;
+}
+
 /* ================= who is asking ================= */
 const ASKERS = [
   {id:'counselor', label:'יועץ/ת', icon:'🧭'},
@@ -1479,7 +1651,7 @@ function measureForm(s){
 document.addEventListener('click', async e => {
   const el = e.target.closest('[data-act]'); if (!el) return;
   const d = el.dataset, act = d.act, s = d.s ? student(d.s) : null;
-  const need = ['asker','cloud-login','cloud-logout','cloud-sync','cloud-retry','askex','newstudent','close','print','fullscreen','area','arch','libtopic','libopen','attopen','planfor','printproblem','export','wipe','usefor'].includes(act) || act.startsWith('sync') || act.startsWith('th-') || act.startsWith('br-') || act.startsWith('tl-') || act.startsWith('ld-') || act.startsWith('rw-') || act.startsWith('pmr') || act.startsWith('cc-') || act === 'dq' || act === 'toolsave';
+  const need = ['ai-stop','ai-retry','ai-fast','asker','cloud-login','cloud-logout','cloud-sync','cloud-retry','askex','newstudent','close','print','fullscreen','area','arch','libtopic','libopen','attopen','planfor','printproblem','export','wipe','usefor'].includes(act) || act.startsWith('sync') || act.startsWith('th-') || act.startsWith('br-') || act.startsWith('tl-') || act.startsWith('ld-') || act.startsWith('rw-') || act.startsWith('pmr') || act.startsWith('cc-') || act === 'dq' || act === 'toolsave';
   if (!need && !s && d.s) return;
   switch (act) {
     case 'newstudent': studentForm(); break;
@@ -1523,7 +1695,10 @@ document.addEventListener('click', async e => {
     case 'delmeasure': e.preventDefault(); if (await uiConfirm('למחוק את הציון?')) { s.measures = s.measures.filter(x => x.id !== d.id); save(); render(); } break;
     case 'delwork': if (await uiConfirm('למחוק?')) { s[d.k] = s[d.k].filter(x => x.id !== d.id); save(); render(); } break;
     case 'toolsave': toolSave(d.k); break;
-    case 'asker': ASKER = d.v; ls.set('cbtapp.asker', ASKER); render(); break;
+    case 'asker': ASKER = d.v; ls.set('cbtapp.asker', ASKER); aiFast = false; render(); break;
+    case 'ai-stop': if (aiCtl) aiCtl.abort(); break;
+    case 'ai-retry': if (lastAsk || route().id) aiAnswerRun(route().id || lastAsk); break;
+    case 'ai-fast': e.preventDefault(); aiFast = true; render(); break;
     case 'askex': location.hash = '#/ask/' + encodeURIComponent(d.v); break;
     case 'stage': { const st = STAGES.find(x => x.id === d.id); s.stages = s.stages || {}; s.stages[st.id] = !stageDone(s, st); save(); render(); break; }
     // tools
@@ -1583,6 +1758,7 @@ function addPlanFrom(s, pid){
 $('#nav').innerHTML = NAV.filter(n => !LITE || !['students','library'].includes(n[0])).map(([k, i, l]) => `<a href="#/${k}" data-nav="${k}"><span class="i">${i}</span>${l}</a>`).join('');
 $('#tabbar').innerHTML = NAV.filter(n => !['library','settings','workflow','roles'].concat(LITE ? ['students'] : []).includes(n[0])).map(([k, i, l]) => `<a href="#/${k}" data-nav="${k}"><span class="i">${i}</span>${l}</a>`).join('');
 render();
+AI.init().then(() => { if (route().r === 'ask') render(); });
 document.body.classList.toggle('artifact', ARTIFACT); document.body.classList.toggle('lite', LITE);
 SYNC.init();
 if (WEB && !ARTIFACT && 'serviceWorker' in navigator && location.protocol === 'https:') navigator.serviceWorker.register('sw.js').catch(() => {});
