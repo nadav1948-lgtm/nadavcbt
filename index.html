@@ -420,16 +420,17 @@ const Cloud = {
     const c = this.cfg();
     if (!c.clientId || !window.msal) { this.status = 'noconfig'; return ui(); }
     try {
-      this.msal = new msal.PublicClientApplication({auth:{clientId:c.clientId, authority:'https://login.microsoftonline.com/consumers', redirectUri: location.origin + location.pathname},
-        cache:{cacheLocation:'localStorage', storeAuthStateInCookie:false}});
+      this.msal = new msal.PublicClientApplication({auth:{clientId:c.clientId, authority:'https://login.microsoftonline.com/consumers', redirectUri: location.origin + location.pathname, navigateToLoginRequestUrl:false},
+        cache:{cacheLocation:'localStorage', storeAuthStateInCookie:true}});
       if (this.msal.initialize) await this.msal.initialize();
-      const res = await this.msal.handleRedirectPromise().catch(e => { this.err = e.message; return null; });
-      this.account = (res && res.account) || this.msal.getAllAccounts()[0] || null;
+      const res = await this.msal.handleRedirectPromise().catch(e => { this.err = (e && (e.errorMessage || e.message)) || String(e); return null; });
+      if (res && res.account) { this.msal.setActiveAccount(res.account); history.replaceState(null, '', location.pathname + '#/home'); }
+      this.account = (res && res.account) || this.msal.getActiveAccount() || this.msal.getAllAccounts()[0] || null;
     } catch(e){ this.status = 'error'; this.err = e.message; return ui(); }
     if (!this.account) { this.status = 'signedout'; return ui(); }
     await this.connect();
   },
-  login(){ if (this.msal) this.msal.loginRedirect({scopes: this.scopes, prompt: 'select_account'}); else toast('חסרה הגדרת התחברות'); },
+  login(){ if (this.msal) this.msal.loginRedirect({scopes: this.scopes, redirectUri: location.origin + location.pathname}); else toast('חסרה הגדרת התחברות'); },
   logout(){ ['cbtapp.folderId','cbtapp.content','cbtapp.lib',KEY,'cbtapp.asks','cbtapp.active'].forEach(k => { try { localStorage.removeItem(k); } catch(e){} }); if (this.msal) this.msal.logoutRedirect({account: this.account}); },
   async getText(rel){
     const m = await this.g(this.itemPath(rel) + ':');
@@ -616,7 +617,7 @@ function lockView(){
     <div style="width:72px;height:72px;border-radius:20px;margin:0 auto 14px;display:grid;place-items:center;font-size:38px;background:linear-gradient(135deg,#4a9c8a,#1f5a4f)">🧠</div>
     <h2 style="margin:0 0 8px">CBT בבית הספר</h2><p class="muted" style="margin:0 0 20px">${nc ? 'האפליקציה עדיין לא הוגדרה להתחברות.' : 'האפליקציה פרטית. נכנסים עם חשבון המיקרוסופט של הבעלים.'}</p>
     ${nc ? '' : '<button class="btn primary" data-act="cloud-login" style="width:100%;padding:12px">🔑 כניסה עם חשבון מיקרוסופט</button>'}
-    ${Cloud.status === 'error' ? `<p class="note danger" style="margin:14px 0 0">${esc(Cloud.err)}</p>` : ''}</div></div>`};
+    ${Cloud.err ? `<p class="note danger" style="margin:14px 0 0;font-size:13px;text-align:start">הכניסה לא הושלמה: ${esc(Cloud.err)}</p>` : ''}</div></div>`};
 }
 function render(){
   clearTimers();
