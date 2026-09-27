@@ -298,6 +298,9 @@ label.f input:focus,label.f select:focus,label.f textarea:focus,.inp:focus{borde
 
 
 
+
+
+
 <script>
 /* CBT app – school counseling. Plain JS, no dependencies. */
 (function(){
@@ -608,7 +611,7 @@ function ui(){
 }
 
 /* ================= routing & shell ================= */
-const NAV = [['home','🏠','בית'],['ask','💬','שאל שאלה'],['problems','🧭','מנווט בעיות'],['students','🧒','תלמידים'],['workflow','🗺️','סדר עבודה'],['tools','🧰','כלים לילדים'],['library','📚','ספרייה'],['settings','⚙️','הגדרות']];
+const NAV = [['home','🏠','בית'],['ask','💬','שאל שאלה'],['problems','🧭','מנווט בעיות'],['students','🧒','תלמידים'],['workflow','🗺️','סדר עבודה'],['roles','👥','מי פונה למי'],['tools','🧰','כלים לילדים'],['library','📚','ספרייה'],['settings','⚙️','הגדרות']];
 function route(){ const h = location.hash.replace(/^#\/?/, '').split('/').map(decodeURIComponent); return {r: h[0] || 'home', id: h[1], sub: h[2], x: h[3]}; }
 let timers = [];
 function clearTimers(){ timers.forEach(t => { clearTimeout(t); clearInterval(t); }); timers = []; }
@@ -627,7 +630,7 @@ function render(){
   document.body.classList.toggle('locked', isLocked());
   if (isLocked()) { const o = lockView(); $('#title').textContent = ''; $('#view').innerHTML = `<div class="page">${o.html}</div>`; document.title = 'CBT בבית הספר'; return; }
   if (WEB && !ARTIFACT && !LITE && !PROBLEMS.length) { $('#title').textContent = ''; $('#view').innerHTML = `<div class="empty" style="padding-top:120px"><span class="big">⏳</span>${Cloud.status === 'error' ? esc(Cloud.err) + ' <br><br><button class="btn primary" data-act="cloud-retry">נסו שוב</button>' : 'טוען את התוכן מ-OneDrive…'}</div>`; return; }
-  const views = LITE ? {home: liteHome, problems, problem: problemView, tools, tool: toolView, settings: liteSettings, ask, workflow} : {home, problems, problem: problemView, students, student: studentView, tools, tool: toolView, library, settings, ask, workflow};
+  const views = LITE ? {home: liteHome, problems, problem: problemView, tools, tool: toolView, settings: liteSettings, ask, workflow, roles: rolesView} : {home, problems, problem: problemView, students, student: studentView, tools, tool: toolView, library, settings, ask, workflow, roles: rolesView};
   const fn = views[R.r] || home;
   const out = fn(R);
   $('#title').textContent = out.title;
@@ -744,9 +747,10 @@ function problemView(R){
   const tab = R.sub || 'overview';
   const sec = problemSections(p);
   const lib = libMatches(p.libraryKeywords);
-  const TABS = [['overview','סקירה'],['assess','הערכה'],['sessions','מהלך המפגשים'],['techniques','טכניקות'],['partners','הורים וצוות'],['tools','כלים'],['library',`מהספרייה (${lib.length})`]];
+  const TABS = [['overview','סקירה'],['assess','הערכה'],['sessions','מהלך המפגשים'],['techniques','טכניקות'],['partners','הורים וצוות'],['roles','מי עושה מה'],['tools','כלים'],['library',`מהספרייה (${lib.length})`]];
   let body;
-  if (tab === 'print') body = `<div class="print-only"><h1>${esc(p.name)}</h1></div>` + ['overview','assess','sessions','techniques','partners','sources'].map(k => sec[k]).join('');
+  if (tab === 'print') body = `<div class="print-only"><h1>${esc(p.name)}</h1></div>` + ['overview','assess','sessions','techniques','partners','sources'].map(k => sec[k]).join('') + `<div class="panel"><h3>👥 מי עושה מה</h3>${mapRolesHTML(p)}</div>`;
+  else if (tab === 'roles') body = `<div class="panel"><h3>👥 מי עושה מה במקרה הזה</h3>${mapRolesHTML(p)}</div>`;
   else if (tab === 'tools') body = `<div class="grid">${(p.tools || []).filter(t => TOOL[t]).map(t => toolCard(TOOL[t])).join('') || '<p class="muted">—</p>'}</div>`;
   else if (tab === 'library') body = lib.length ? `<p class="muted">${lib.length} פריטים, הרלוונטיים ביותר קודם.${lib.length > 60 ? ' מוצגים 60 הראשונים.' : ''}</p><div class="list">${lib.slice(0, 60).map(libItem).join('')}</div>` : `<div class="empty">${LIBDATA.length ? 'לא נמצאו חומרים מתאימים בספרייה.' : '📚 חומרי הספרייה לנושא הזה זמינים במחשב, בקיצור הדרך ״ספריית לימודי CBT״.'}</div>`;
   else body = (sec[tab] || sec.overview) + (tab === 'overview' ? sec.sources : '');
@@ -1126,12 +1130,13 @@ function answer(q){
   const intents = INTENTS.filter(it => it.words.some(w => hasPh(nq, w)));
   const sessNum = (nq.match(/ מפגש (\d+) /) || [])[1];
   const safety = SAFETY.some(w => hasPh(nq, w));
+  const roles = ROLE_WORDS.some(w => hasPh(nq, w));
   const c0 = scores[0];
   const top = c0 && (c0.why.length ? c0.s >= 7 : c0.s >= 12) ? c0 : null;
   const others = scores.slice(top ? 1 : 0, 4).filter(x => x.s >= (top ? top.s * 0.45 : 3));
   const snip = X.docs.map(d => { let s = 0; for (const t of qt) if (d.tk.includes(t)) s += idf(t); if (top && d.p === top.p) s *= 1.3; if (intents.some(i => i.field === d.field)) s *= 1.4; return {d, s}; })
     .filter(x => x.s > 1.2).sort((a, b) => b.s - a.s).slice(0, 7);
-  return {q, top, others, intents, sessNum, safety, snip, qt};
+  return {q, top, others, intents, sessNum, safety, snip, qt, roles};
 }
 function libFor(q, p){
   const kw = [...(p ? p.libraryKeywords || [] : [])];
@@ -1146,7 +1151,8 @@ function answerHTML(A){
     <ul class="clean"><li>לא משאירים את הילד לבד כשיש חשש לסכנה מיידית, ומוודאים השגחה של מבוגר.</li><li>מעדכנים מיד את מנהל/ת בית הספר ואת הפסיכולוג/ית (שפ״ח), ופועלים לפי נוהל בית הספר וחוזר המנכ״ל.</li>
     <li>בחשש לפגיעה או להזנחה בבית – חובת דיווח לפי החוק לעובד/ת סוציאלי/ת לפי חוק הנוער או למשטרה. לא מבררים לבד לעומק ולא מעמתים את המשפחה לפני התייעצות.</li>
     <li>בחשש אובדני – שואלים ישירות ובעדינות, מיידעים הורים (אלא אם הם מקור הסכנה), ומפנים להערכה דחופה (מיון / פסיכיאטר ילדים). קו ער״ן 1201, סה״ר באתר sahar.org.il.</li></ul></div>`;
-  if (!A.top) {
+  if (!A.top && (A.roles || ASKER !== 'counselor')) h += myRoleCardHTML() + (A.roles ? rolesAnswerHTML(null) : '');
+  else if (!A.top) {
     h += `<div class="panel"><h3>🤔 לא מצאתי מפת טיפול שמתאימה בדיוק לשאלה</h3><p style="margin:0 0 8px">כדי לא לתת תשובה לא מדויקת, אני לא בוחר מפה בכוח. אפשר לנסות לנסח שוב: מי מתקשה (ילד, מורה, הורים, כיתה), מה בדיוק קורה, ומתי.</p>
       ${A.others.length ? `<p style="margin:0;font-size:14px">אולי אחד מאלה קרוב: ${A.others.map(o => `<a class="pill brand" href="#/problem/${o.p.id}" style="text-decoration:none">${o.p.icon} ${esc(o.p.name)}</a>`).join(' ')}</p>` : ''}
       <div class="actions" style="margin-top:12px"><a class="btn" href="#/problems">🧭 לרשימת כל המפות</a></div></div>`;
@@ -1158,7 +1164,8 @@ function answerHTML(A){
       <p style="margin:0 0 8px">${esc(p.summary)}</p>${A.top.why.length ? `<p class="muted" style="margin:0;font-size:14px">זיהיתי לפי: ${A.top.why.slice(0, 4).map(w => '״' + esc(w) + '״').join(', ')}</p>` : ''}
       ${A.others.length ? `<p style="margin:8px 0 0;font-size:14px">אולי גם: ${A.others.map(o => `<a class="pill brand" href="#/problem/${o.p.id}" style="text-decoration:none">${o.p.icon} ${esc(o.p.name)}</a>`).join(' ')}</p>` : ''}</div>`;
     const tech = (p.techniques || [])[0];
-    h += `<div class="panel"><h3>✅ מה עושים עכשיו – צעד אחר צעד</h3><ol style="margin:0;padding-inline-start:22px;display:grid;gap:8px">
+    if (ASKER !== 'counselor') h += rolePlanHTML(p);
+    else h += `<div class="panel"><h3>✅ מה עושים עכשיו – צעד אחר צעד</h3><ol style="margin:0;padding-inline-start:22px;display:grid;gap:8px">
       ${p.area === STAFF_AREA ? `
       <li><b>בירור ראשוני:</b> ${esc((p.assessment || [])[0] || '')}${(p.assessment || [])[1] ? ' · ' + esc(p.assessment[1]) : ''}</li>
       <li><b>פגישה ראשונה:</b> ${esc((s1.activities || []).slice(0, 2).join(' · '))}</li>
@@ -1173,6 +1180,7 @@ function answerHTML(A){
       ${tech ? `<li><b>טכניקה מרכזית – ${esc(tech.name)}:</b> ${esc(tech.how)}</li>` : ''}
       <li><b>מדידה:</b> קובעים מדד פשוט (מדחום 0–10 או שאלון) ורושמים אותו בכל מפגש בתיק התלמיד.</li>`}</ol>
       <div class="actions" style="margin-top:14px"><a class="btn primary" href="#/problem/${p.id}">🧭 מפת הטיפול המלאה</a>${p.area === STAFF_AREA ? '' : `<button class="btn" data-act="planfor" data-id="${p.id}">📋 תוכנית טיפול לתלמיד</button>`}<a class="btn" href="#/problem/${p.id}/sessions">🗓️ ${p.sessions.length} ${p.area === STAFF_AREA ? 'הפגישות' : 'המפגשים'}</a></div></div>`;
+    if (A.roles) h += rolesAnswerHTML(p);
     for (const it of A.intents) {
       let body = '';
       if (it.field === 'techniques') body = `<div class="list">${(p.techniques || []).map(t => `<div class="li"><div class="grow"><b>${esc(t.name)}</b><div>${esc(t.how)}</div></div></div>`).join('')}</div>`;
@@ -1197,7 +1205,7 @@ let lastAsk = '';
 function ask(R){
   const q = R.id ? R.id : lastAsk;
   const hist = ls.get('cbtapp.asks', []);
-  let h = `<div class="panel" style="margin-top:4px"><h3>💬 מה השאלה?</h3>
+  let h = `<div class="panel" style="margin-top:4px"><h3>💬 מה השאלה?</h3>${askerChips()}
     <form id="askform" style="display:flex;gap:8px;flex-wrap:wrap"><textarea class="inp" id="askq" rows="2" style="flex:1;min-width:240px;min-height:52px" placeholder="מתארים את המצב במילים שלך – מה רואים, איפה ומתי">${esc(q || '')}</textarea><button class="btn primary" type="submit" style="align-self:stretch">🔎 קבלת תשובה</button></form>
     <p class="muted" style="margin:10px 0 0;font-size:13.5px">התשובות נבנות מתוך ${PROBLEMS.length} מפות הטיפול והספרייה שלך, בלי אינטרנט. הן מכוונות ומסדרות – ושיקול הדעת המקצועי נשאר שלך.</p></div>`;
   if (q) h += answerHTML(answer(q));
@@ -1285,6 +1293,124 @@ function liteSettings(){
     <div class="panel"><h3>📚 הספרייה</h3><p style="margin:0">קובצי הספרייה נמצאים במחשב, בקיצור הדרך ״ספריית לימודי CBT״.</p></div>
     <div class="panel"><p class="muted" style="margin:0;font-size:14px">מפות הטיפול הן כלי עזר מקצועי, ואינן מחליפות שיקול דעת קליני, הדרכה והפניה לגורם מתאים.</p></div>`};
 }
+/* ================= who is asking ================= */
+const ASKERS = [
+  {id:'counselor', label:'יועץ/ת', icon:'🧭'},
+  {id:'homeroom', label:'מחנך/ת', icon:'🏠'},
+  {id:'teacher', label:'מורה מקצועי/ת', icon:'📘'},
+  {id:'management', label:'הנהלה', icon:'🏛️'}
+];
+let ASKER = ls.get('cbtapp.asker', 'counselor');
+if (!ASKERS.some(a => a.id === ASKER)) ASKER = 'counselor';
+const askerOf = () => ASKERS.find(a => a.id === ASKER) || ASKERS[0];
+function askerChips(){
+  return `<div class="chips" style="margin:0 0 10px;align-items:center"><span class="muted" style="font-size:14px">מי שואל/ת?</span>${ASKERS.map(a => `<button type="button" class="chip ${a.id === ASKER ? 'on' : ''}" data-act="asker" data-v="${a.id}">${a.icon} ${a.label}</button>`).join('')}</div>`;
+}
+function rolePlanHTML(p){
+  const a = askerOf(), R = (window.CBT_MAP_ROLES || {})[p.id] || {}, G = window.CBT_ROLES || {};
+  const li = (t, b) => b ? `<li><b>${t}:</b> ${esc(b)}</li>` : '';
+  const join = arr => (arr || []).filter(Boolean).join(' · ');
+  let items = '', title = '';
+  if (a.id === 'homeroom') {
+    title = 'מה את/ה עושה עכשיו – כמחנך/ת';
+    items = li('מה לשים לב אליו ולתעד', join((p.signs || []).slice(0, 3)))
+      + li('מה עושים בכיתה', join((p.teachers || []).slice(0, 3)))
+      + li('התפקיד שלך במקרה הזה', R.homeroom)
+      + li('פנייה להורים', R.parents)
+      + li('מתי לערב את היועץ/ת', R.counselor)
+      + li('מתי לפנות להנהלה', R.management);
+  } else if (a.id === 'teacher') {
+    title = 'מה את/ה עושה עכשיו – כמורה מקצועי/ת';
+    items = li('בתוך השיעור שלך', join((p.teachers || []).slice(0, 3)))
+      + li('התפקיד שלך במקרה הזה', R.teacher)
+      + li('מתי לעדכן את המחנך/ת', join((G.teacherToHomeroom || []).slice(0, 4)))
+      + li('פנייה להורים', 'בעניין לימודי במקצוע שלך – אפשר ישירות, בעדכון המחנך/ת. בכל עניין רגשי, חברתי או שחוזר בכמה שיעורים – דרך המחנך/ת, ולא ישירות.');
+  } else if (a.id === 'management') {
+    title = 'מה ההנהלה עושה עכשיו';
+    items = li('התפקיד של ההנהלה במקרה הזה', R.management)
+      + li('גורמי חוץ ופיקוח', R.escalate)
+      + li('מה לבקש מהמחנך/ת', R.homeroom)
+      + li('מה לבקש מהיועץ/ת', R.counselor)
+      + li('פנייה להורים', R.parents)
+      + li('מתי זה דחוף', (p.redFlags || [])[0]);
+  }
+  items += `<li><b>🚨 בכל חשד לסכנה:</b> פונים מיד ליועץ/ת ולהנהלה, בלי לחכות לסדר המדרגות.</li>`;
+  return `<div class="panel"><h3>✅ ${title}</h3><ol style="margin:0;padding-inline-start:22px;display:grid;gap:8px">${items}</ol>
+    <div class="actions" style="margin-top:14px"><a class="btn primary" href="#/problem/${p.id}">🧭 המפה המלאה</a><a class="btn" href="#/problem/${p.id}/roles">👥 מי עושה מה</a><a class="btn" href="#/roles">📞 מי פונה למי</a></div></div>`;
+}
+function myRoleCardHTML(){
+  const G = window.CBT_ROLES; if (!G) return '';
+  const r = (G.roles || []).find(x => x.id === ASKER); if (!r) return '';
+  return `<div class="panel" style="border-inline-start:5px solid var(--brand)"><h3>${r.icon} התפקיד שלך – ${esc(r.name)}</h3>
+    <h4 style="margin:6px 0 4px;font-size:14px">באחריותך</h4>${ul(r.owns)}
+    <h4 style="margin:10px 0 4px;font-size:14px">📞 פונה להורים כש…</h4>${ul(r.parents)}
+    ${r.notParents && r.notParents.length ? `<h4 style="margin:10px 0 4px;font-size:14px">🚫 לא פונה להורים כש…</h4>${ul(r.notParents)}` : ''}
+    <p class="note" style="margin:10px 0 0">➡️ ${esc(r.next)}</p></div>`;
+}
+
+/* ================= roles: who contacts whom ================= */
+const R_ICON = {teacher:'📘', homeroom:'🏠', counselor:'🧭', management:'🏛️', parents:'👨‍👩‍👧', escalate:'🤝'};
+const R_LABEL = {teacher:'מורה מקצועי/ת', homeroom:'מחנך/ת הכיתה', counselor:'יועץ/ת', management:'הנהלה ומזכירות', parents:'מי פונה להורים', escalate:'גורמי חוץ ופיקוח'};
+function circlesSVG(){
+  const rings = [
+    {r: 58, label: 'הילד', items: []},
+    {r: 118, label: '', items: ['הורים', 'מורים מקצועיים', 'מחנך/ת']},
+    {r: 178, label: '', items: ['יועץ/ת', 'מזכירות']},
+    {r: 238, label: '', items: ['הנהלה', 'שפ״ח וגורמי חוץ']},
+    {r: 298, label: '', items: ['פיקוח']}
+  ];
+  const C = 310, fills = ['var(--brand)', 'hsl(160 var(--soft-s) var(--soft-l))', 'hsl(200 var(--soft-s) var(--soft-l))', 'hsl(35 var(--soft-s) var(--soft-l))', 'hsl(270 var(--soft-s) var(--soft-l))'];
+  let g = '';
+  for (let i = rings.length - 1; i >= 0; i--) g += `<circle cx="${C}" cy="${C}" r="${rings[i].r}" fill="${fills[i]}" stroke="var(--panel)" stroke-width="3"/>`;
+  g += `<text x="${C}" y="${C + 7}" text-anchor="middle" font-size="22" font-weight="700" fill="#fff">הילד</text>`;
+  rings.forEach((ring, i) => {
+    if (!i) return;
+    const mid = (rings[i - 1].r + ring.r) / 2, n = ring.items.length;
+    ring.items.forEach((t, k) => {
+      const a = -Math.PI / 2 + (k - (n - 1) / 2) * (n > 2 ? 0.95 : 1.1) + (i % 2 ? 0 : Math.PI);
+      const x = C + mid * Math.cos(a), y = C + mid * Math.sin(a);
+      g += `<text x="${x.toFixed(1)}" y="${(y + 6).toFixed(1)}" text-anchor="middle" font-size="16" font-weight="600" fill="var(--ink)">${t}</text>`;
+    });
+  });
+  return `<svg viewBox="0 0 620 620" style="width:100%;max-width:520px;display:block;margin:0 auto" role="img" aria-label="מעגלי הגורמים סביב הילד">${g}</svg>`;
+}
+function rolesView(){
+  const G = window.CBT_ROLES;
+  if (!G) return {title:'מי פונה למי', html:'<div class="empty">⏳ המדריך עוד לא נטען</div>'};
+  const roleCard = r => `<div class="panel" style="margin:0"><h3>${r.icon} ${esc(r.name)}</h3><p class="muted" style="margin:0 0 10px;font-size:14.5px">${esc(r.who)}</p>
+    <h4 style="margin:6px 0 4px;font-size:14px">באחריותו/ה</h4>${ul(r.owns)}
+    <h4 style="margin:10px 0 4px;font-size:14px">📞 פונה להורים כש…</h4>${ul(r.parents)}
+    ${r.notParents && r.notParents.length ? `<h4 style="margin:10px 0 4px;font-size:14px">🚫 לא פונה להורים כש…</h4>${ul(r.notParents)}` : ''}
+    <p class="note" style="margin:10px 0 0;font-size:14px">➡️ ${esc(r.next)}</p></div>`;
+  const h = `<div class="panel" style="margin-top:4px"><h3>👥 מי פונה למי – מעגל הגורמים סביב הילד</h3><p style="margin:0">${esc(G.intro)}</p></div>
+    <div class="two" style="align-items:start;margin-top:14px"><div class="panel" style="margin:0">${circlesSVG()}<p class="muted" style="text-align:center;margin:8px 0 0;font-size:13.5px">מהמעגל הקרוב לילד אל המעגל הרחוק</p></div>
+    <div class="panel" style="margin:0"><h3>🪜 מדרגות הפנייה</h3><div class="list">${G.ladder.map(l => `<div class="li"><span class="pill brand">${l.level}</span><div class="grow"><b>${esc(l.who)}</b><div style="font-size:14.5px">${esc(l.what)}</div></div></div>`).join('')}</div></div></div>
+    <div class="panel" style="border:2px solid var(--danger);margin-top:14px"><h3>🚨 במצב של סכנה – בלי מדרגות</h3><p style="margin:0">${esc(G.emergency)}</p></div>
+    <h2 class="sec">📞 מי פונה להורים – לפי מצב</h2>
+    <div class="panel" style="overflow-x:auto"><table style="width:100%;border-collapse:collapse;font-size:15px;min-width:520px"><thead><tr style="text-align:start;color:var(--muted);font-size:13px"><th style="text-align:start;padding:6px">המצב</th><th style="text-align:start;padding:6px">מי פונה</th><th style="text-align:start;padding:6px">חשוב לדעת</th></tr></thead>
+    <tbody>${G.whoCallsParents.map(x => `<tr style="border-top:1px solid var(--line)"><td style="padding:8px 6px">${esc(x.situation)}</td><td style="padding:8px 6px;font-weight:600">${esc(x.who)}</td><td style="padding:8px 6px;color:var(--muted)">${esc(x.note)}</td></tr>`).join('')}</tbody></table></div>
+    <div class="two" style="margin-top:14px"><div class="panel" style="margin:0"><h3>📘 ➡️ 🏠 מתי המורה המקצועי/ת פונה למחנך/ת</h3>${ul(G.teacherToHomeroom)}</div>
+    <div class="panel" style="margin:0"><h3>✅ כללי זהב</h3>${ul(G.rules)}</div></div>
+    <h2 class="sec">🧑‍🤝‍🧑 התפקידים</h2><div class="grid wide">${G.roles.map(roleCard).join('')}</div>`;
+  return {title:'מי פונה למי', html:h};
+}
+function mapRolesHTML(p){
+  const R = (window.CBT_MAP_ROLES || {})[p.id];
+  if (!R) return '<div class="empty">החלוקה לתפקידים למפה הזו עוד לא נכתבה. <a href="#/roles">למדריך הכללי ←</a></div>';
+  return `<div class="list">${['teacher','homeroom','counselor','management','parents','escalate'].filter(k => R[k]).map(k => `<div class="li"><span style="font-size:22px">${R_ICON[k]}</span><div class="grow"><b>${R_LABEL[k]}</b><div>${esc(R[k])}</div></div></div>`).join('')}</div>
+    <p style="margin:12px 0 0"><a class="btn sm" href="#/roles">👥 המדריך המלא – מי פונה למי</a></p>`;
+}
+const ROLE_WORDS = ['מי פונה','מי מדבר','מי מתקשר','מי אחראי','למי לפנות','למי פונים','למי מדווחים','מתי לערב','מתי מערבים','לערב את','פונה להורים','פונים להורים','פונה למחנך','פונה למחנכת','לעדכן את המחנך','לעדכן את המחנכת','לעדכן את ההורים','מורה מקצועי','מורה מקצועית','פיקוח','מפקח','מפקחת','מזכירות','מזכירה','הנהלה','סדר פנייה','הסלמה','מדרג','תפקיד המחנך','תפקיד המחנכת','ההבדל בין מורה למחנך'];
+function rolesAnswerHTML(p){
+  const G = window.CBT_ROLES; if (!G) return '';
+  let h = `<div class="panel" style="border-inline-start:5px solid var(--brand)"><h3>👥 מי פונה למי</h3>`;
+  if (p && (window.CBT_MAP_ROLES || {})[p.id]) h += `<p style="margin:0 0 8px"><b>במקרה של ״${esc(p.name)}״:</b></p>${mapRolesHTML(p)}`;
+  else h += `<div class="list">${G.ladder.map(l => `<div class="li"><span class="pill brand">${l.level}</span><div class="grow"><b>${esc(l.who)}</b><div style="font-size:14.5px">${esc(l.what)}</div></div></div>`).join('')}</div>`;
+  h += `</div><div class="panel"><h3>📞 מי פונה להורים</h3><div class="list">${G.whoCallsParents.map(x => `<div class="li"><div class="grow"><b>${esc(x.situation)}</b><div>➡️ ${esc(x.who)} <span class="muted" style="font-size:14px">· ${esc(x.note)}</span></div></div></div>`).join('')}</div>
+    <p class="note danger" style="margin:12px 0 0">🚨 ${esc(G.emergency)}</p><p style="margin:12px 0 0"><a class="btn primary" href="#/roles">👥 המדריך המלא – תפקידים, מדרגות ותרשים</a></p></div>`;
+  return h;
+}
+
 /* ================= modals & forms ================= */
 function modal(title, html, onsubmit){
   const m = $('#modal'); m.className = 'modal open';
@@ -1353,7 +1479,7 @@ function measureForm(s){
 document.addEventListener('click', async e => {
   const el = e.target.closest('[data-act]'); if (!el) return;
   const d = el.dataset, act = d.act, s = d.s ? student(d.s) : null;
-  const need = ['cloud-login','cloud-logout','cloud-sync','cloud-retry','askex','newstudent','close','print','fullscreen','area','arch','libtopic','libopen','attopen','planfor','printproblem','export','wipe','usefor'].includes(act) || act.startsWith('sync') || act.startsWith('th-') || act.startsWith('br-') || act.startsWith('tl-') || act.startsWith('ld-') || act.startsWith('rw-') || act.startsWith('pmr') || act.startsWith('cc-') || act === 'dq' || act === 'toolsave';
+  const need = ['asker','cloud-login','cloud-logout','cloud-sync','cloud-retry','askex','newstudent','close','print','fullscreen','area','arch','libtopic','libopen','attopen','planfor','printproblem','export','wipe','usefor'].includes(act) || act.startsWith('sync') || act.startsWith('th-') || act.startsWith('br-') || act.startsWith('tl-') || act.startsWith('ld-') || act.startsWith('rw-') || act.startsWith('pmr') || act.startsWith('cc-') || act === 'dq' || act === 'toolsave';
   if (!need && !s && d.s) return;
   switch (act) {
     case 'newstudent': studentForm(); break;
@@ -1397,6 +1523,7 @@ document.addEventListener('click', async e => {
     case 'delmeasure': e.preventDefault(); if (await uiConfirm('למחוק את הציון?')) { s.measures = s.measures.filter(x => x.id !== d.id); save(); render(); } break;
     case 'delwork': if (await uiConfirm('למחוק?')) { s[d.k] = s[d.k].filter(x => x.id !== d.id); save(); render(); } break;
     case 'toolsave': toolSave(d.k); break;
+    case 'asker': ASKER = d.v; ls.set('cbtapp.asker', ASKER); render(); break;
     case 'askex': location.hash = '#/ask/' + encodeURIComponent(d.v); break;
     case 'stage': { const st = STAGES.find(x => x.id === d.id); s.stages = s.stages || {}; s.stages[st.id] = !stageDone(s, st); save(); render(); break; }
     // tools
@@ -1454,7 +1581,7 @@ function addPlanFrom(s, pid){
 /* ================= boot ================= */
 { const t = ls.get('cbtapp.theme', null); if (t) document.documentElement.dataset.theme = t; }
 $('#nav').innerHTML = NAV.filter(n => !LITE || !['students','library'].includes(n[0])).map(([k, i, l]) => `<a href="#/${k}" data-nav="${k}"><span class="i">${i}</span>${l}</a>`).join('');
-$('#tabbar').innerHTML = NAV.filter(n => !['library','settings','workflow'].concat(LITE ? ['students'] : []).includes(n[0])).map(([k, i, l]) => `<a href="#/${k}" data-nav="${k}"><span class="i">${i}</span>${l}</a>`).join('');
+$('#tabbar').innerHTML = NAV.filter(n => !['library','settings','workflow','roles'].concat(LITE ? ['students'] : []).includes(n[0])).map(([k, i, l]) => `<a href="#/${k}" data-nav="${k}"><span class="i">${i}</span>${l}</a>`).join('');
 render();
 document.body.classList.toggle('artifact', ARTIFACT); document.body.classList.toggle('lite', LITE);
 SYNC.init();
