@@ -1273,11 +1273,13 @@ function ask(R){
     <p class="muted" style="margin:10px 0 0;font-size:13.5px">התשובות נבנות מתוך ${PROBLEMS.length} מפות הטיפול, חוזרי המנכ״ל והספרייה שלך – תמיד בהפרדה בין המענה הטיפולי למענה המשמעתי / מסגרתי / מנהלי. הן מכוונות ומסדרות – ושיקול הדעת המקצועי נשאר שלך.</p></div>`;
   const useAI = q && AI.available() && !aiFast;
   if (useAI) h += '<div id="aiPanel"></div>';
-  if (q && !useAI && !AI.available() && !ARTIFACT) h += `<div class="note" style="margin-bottom:12px;display:flex;gap:10px;align-items:center;flex-wrap:wrap"><span>🤖 רוצה תשובה מ-Claude עצמו, שמבין כל ניסוח?</span><a class="btn primary sm" href="https://claude.ai/artifact/VR9R29KShiqhmHX7NTqbjT" target="_blank" rel="noopener" data-act="copyq" data-v="${esc(q)}">שאל את Claude</a><span class="muted" style="font-size:13px">השאלה מועתקת – מדביקים אותה בעמוד שנפתח</span></div>`;
-  if (q && !useAI && AI.available()) h += `<div class="note" style="margin-bottom:12px;display:flex;gap:10px;align-items:center;flex-wrap:wrap"><span>⚡ זו תשובת המנוע המהיר – בלי טוקנים.</span><button class="btn primary sm" data-act="ai-go">🤖 תשובה מלאה מ-Claude</button><span class="muted" style="font-size:13px">רק בלחיצה – נספר במכסת המנוי</span></div>`;
+  let claudeBox = '';
+  if (q && !useAI && !AI.available() && !ARTIFACT) claudeBox += `<div class="note" style="margin-bottom:12px;display:flex;gap:10px;align-items:center;flex-wrap:wrap"><span>🤖 התשובה לא מספיקה? אפשר לשאול את Claude עצמו.</span><a class="btn primary sm" href="https://claude.ai/artifact/VR9R29KShiqhmHX7NTqbjT" target="_blank" rel="noopener" data-act="copyq" data-v="${esc(q)}">שאל את Claude</a><span class="muted" style="font-size:13px">השאלה מועתקת – מדביקים אותה בעמוד שנפתח</span></div>`;
+  if (q && !useAI && AI.available()) claudeBox += `<div class="note" style="margin-bottom:12px;display:flex;gap:10px;align-items:center;flex-wrap:wrap"><span>🤖 התשובה לא מספיקה?</span><button class="btn primary sm" data-act="ai-go">🤖 תשובה מלאה מ-Claude</button><span class="muted" style="font-size:13px">רק בלחיצה – נספר במכסת המנוי</span></div>`;
   if (q && !useAI) h += (AI.status === 'off' && AI.err ? `<div class="note warn" style="margin-bottom:12px">🤖 ${esc(AI_ERR[AI.err] || 'Claude לא זמין כרגע – התשובה מהמנוע המהיר.')}</div>` : '') + answerHTML(answer(q));
   else if (!q) h += `<h2 class="sec">💡 דוגמאות לשאלות</h2><div class="actions">${ASK_EXAMPLES.map(e => `<button class="chip" data-act="askex" data-v="${esc(e)}">${esc(e)}</button>`).join('')}</div>`;
   if (q) h += '<div id="libPanel"></div>';
+  if (claudeBox) h += claudeBox;
   if (hist.length) h += `<h2 class="sec">🕘 שאלות אחרונות</h2><div class="actions">${hist.slice(0, 10).map(e => `<button class="chip" data-act="askex" data-v="${esc(e)}">${esc(e)}</button>`).join('')}</div>`;
   return {title:'שאל שאלה', html:h, after(){
     const f = $('#askform'), i = $('#askq');
@@ -1841,10 +1843,11 @@ function circAskView(R){
     <p class="muted" style="margin:10px 0 0;font-size:13.5px">התשובה כאן נשענת <b>רק</b> על ${circList().length} חוזרי המנכ״ל – בלי מפות הטיפול ובלי הספרייה – בהפרדה בין הטיפולי למשמעתי / מסגרתי / מנהלי, ועם קישור לסעיף המדויק בכל פריט.</p></div>`;
   if (!q) return {title: 'שאלה על החוזרים', html: h + `<div class="actions"><a class="btn" href="#/circ">← לכל החוזרים</a></div>`, after: circAskAfter};
   const C = circSearch(q, {nGuide: 8, nText: 6});
-  if (AI.available()) h += `<div class="note" style="margin-bottom:12px;display:flex;gap:10px;align-items:center;flex-wrap:wrap"><span>⚡ למטה – תשובה מהמנוע המהיר, בלי טוקנים.</span><button class="btn primary sm" data-act="circ-ai" data-v="${esc(q)}">🤖 תשובה מלאה מ-Claude – רק מהחוזרים</button><span class="muted" style="font-size:13px">רק בלחיצה – נספר במכסת המנוי</span></div><div id="circAi"></div>`;
+  let claudeEnd = '';
+  if (AI.available()) claudeEnd += `<div class="note" style="margin-bottom:12px;display:flex;gap:10px;align-items:center;flex-wrap:wrap"><span>🤖 התשובה לא מספיקה?</span><button class="btn primary sm" data-act="circ-ai" data-v="${esc(q)}">🤖 תשובה מלאה מ-Claude – רק מהחוזרים</button><span class="muted" style="font-size:13px">רק בלחיצה – נספר במכסת המנוי</span></div><div id="circAi"></div>`;
   const askClaude = !AI.available() && !ARTIFACT ? `<a class="btn primary sm" href="https://claude.ai/artifact/VR9R29KShiqhmHX7NTqbjT" target="_blank" rel="noopener" data-act="copyq" data-v="${esc(q)}">🤖 שאל את Claude</a>` : '';
-  if (askClaude) h += `<div class="note" style="margin-bottom:12px;display:flex;gap:10px;align-items:center;flex-wrap:wrap"><span>🤖 רוצים תשובה מ-Claude עצמו, שמבין כל ניסוח?</span>${askClaude}<span class="muted" style="font-size:13px">השאלה מועתקת. בעמוד שנפתח נכנסים ל״חוזרי מנכ״ל״, מדביקים בתיבה ולוחצים ״תשובה מלאה מ-Claude – רק מהחוזרים״</span></div>`;
-  if (!C.guide.length && !C.text.length) h += `<div class="panel empty">לא מצאתי בחוזרים תשובה לשאלה הזו. אפשר לנסח אחרת${askClaude ? ', או ללחוץ למעלה על ״שאל את Claude״' : AI.available() ? ', או ללחוץ למעלה על ״תשובה מלאה מ-Claude״' : ''}.</div>`;
+  if (askClaude) claudeEnd += `<div class="note" style="margin-bottom:12px;display:flex;gap:10px;align-items:center;flex-wrap:wrap"><span>🤖 התשובה לא מספיקה? אפשר לשאול את Claude עצמו.</span>${askClaude}<span class="muted" style="font-size:13px">השאלה מועתקת. בעמוד שנפתח נכנסים ל״חוזרי מנכ״ל״, מדביקים בתיבה ולוחצים ״תשובה מלאה מ-Claude – רק מהחוזרים״</span></div>`;
+  if (!C.guide.length && !C.text.length) h += `<div class="panel empty">לא מצאתי בחוזרים תשובה לשאלה הזו. אפשר לנסח אחרת, או לשאול את Claude בתחתית הדף.</div>`;
   else {
     const top = C.guide[0] ? C.guide[0].s : 0;
     const strong = C.guide.filter((x, i) => i === 0 || x.s >= top * 0.55).slice(0, 4);
@@ -1854,6 +1857,7 @@ function circAskView(R){
     if (rest.length) h += `<div class="panel"><h3>📜 עוד מצבים קרובים בחוזרים</h3><div class="list">${rest.slice(0, 6).map(x => circRowHTML(x.g)).join('')}</div></div>`;
     if (C.text.length) h += `<div class="panel"><h3>📖 סעיפים מתוך לשון החוזרים</h3>${circTextHTML(C.text.slice(0, 5), C.qt)}</div>`;
   }
+  h += claudeEnd;
   h += `<div class="actions"><a class="btn" href="#/circ">← לכל החוזרים</a></div>`;
   return {title: 'שאלה על החוזרים', html: h, after: circAskAfter};
 }
@@ -1887,7 +1891,7 @@ async function aiCircOnlyRun(q){
   const box = $('#circAi'); if (!box) return;
   aiCtl = new AbortController();
   const busy = t => { box.innerHTML = `<div class="panel" style="border-inline-start:5px solid var(--brand)"><h3>🤖 Claude עונה – רק מתוך חוזרי המנכ״ל</h3><p class="muted" style="margin:0">${esc(t)}</p><div class="actions" style="margin-top:10px"><button class="btn sm" data-act="ai-stop">⏹ עצירה</button></div></div>`; };
-  busy('מאתר את המצבים הרלוונטיים בחוזרים…');
+  busy('מאתר את המצבים הרלוונטיים בחוזרים…'); box.scrollIntoView({behavior: 'smooth', block: 'start'});
   try {
     const c = await AI.ask(aiCircOnlyClassify(q), {quick: true, signal: aiCtl.signal});
     const local = circSearch(q, {nGuide: 4, nText: 10});
@@ -2272,7 +2276,6 @@ document.body.classList.toggle('artifact', ARTIFACT); document.body.classList.to
 SYNC.init();
 if (WEB && !ARTIFACT && 'serviceWorker' in navigator && location.protocol === 'https:') navigator.serviceWorker.register('sw.js').catch(() => {});
 })();
-
 </script>
 </body>
 </html>
