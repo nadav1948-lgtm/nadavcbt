@@ -668,12 +668,12 @@ function render(){
   document.body.classList.toggle('locked', isLocked());
   if (isLocked()) { const o = lockView(); $('#title').textContent = ''; $('#view').innerHTML = `<div class="page">${o.html}</div>`; document.title = 'CBT בבית הספר'; return; }
   if (WEB && !ARTIFACT && !LITE && !PROBLEMS.length) { $('#title').textContent = ''; $('#view').innerHTML = `<div class="empty" style="padding-top:120px"><span class="big">⏳</span>${Cloud.status === 'error' ? esc(Cloud.err) + ' <br><br><button class="btn primary" data-act="cloud-retry">נסו שוב</button>' : 'טוען את התוכן מ-OneDrive…'}</div>`; return; }
-  const views = LITE ? {home: liteHome, problems, problem: problemView, tools, tool: toolView, settings: liteSettings, ask, workflow, roles: rolesView, circ: circView, circsrc: circSrcView, libsrc: libSrcView} : {home, problems, problem: problemView, students, student: studentView, tools, tool: toolView, library, settings, ask, workflow, roles: rolesView, circ: circView, circsrc: circSrcView, libsrc: libSrcView};
+  const views = LITE ? {home: liteHome, problems, problem: problemView, tools, tool: toolView, settings: liteSettings, ask, workflow, roles: rolesView, circ: circView, circsrc: circSrcView, libsrc: libSrcView, circask: circAskView} : {home, problems, problem: problemView, students, student: studentView, tools, tool: toolView, library, settings, ask, workflow, roles: rolesView, circ: circView, circsrc: circSrcView, libsrc: libSrcView, circask: circAskView};
   const fn = views[R.r] || home;
   const out = fn(R);
   $('#title').textContent = out.title;
   $('#view').innerHTML = `<div class="page">${out.html}</div>`;
-  const navKey = {problem:'problems', student:'students', tool:'tools', circsrc:'circ', libsrc:'library'}[R.r] || R.r;
+  const navKey = {problem:'problems', student:'students', tool:'tools', circsrc:'circ', libsrc:'library', circask:'circ'}[R.r] || R.r;
   document.querySelectorAll('[data-nav]').forEach(a => a.classList.toggle('on', a.dataset.nav === navKey));
   document.title = out.title + ' · CBT בבית הספר';
   if (out.after) out.after();
@@ -1491,7 +1491,7 @@ ${material}
 therapeutic: 3-7 צעדים בסדר ביצוע, מותאמים לתפקיד השואל/ת (ריק אם השאלה מנהלית בלבד והחומר לא מציע צד טיפולי). framework: כל ההוראות הרלוונטיות מהחוזרים, בסדר ביצוע (ריק אם אין חוזר רלוונטי בחומר). אם notFound=true – headline מסביר שהחומר לא מכסה את השאלה, שאר הרשימות ריקות, ואפשר להציע ב-note לאיזה גורם כדאי לפנות.`;
 }
 let aiCtl = null, aiMaxBytes = 0;
-async function aiCircMaterial(q, maps, rolesQ, cids, local){
+async function aiCircMaterial(q, maps, rolesQ, cids, local, noLib){
   if (!aiMaxBytes) { aiMaxBytes = 65536; try { const l = AI.sample && AI.sample.limits ? await AI.sample.limits() : null; if (l && l.maxPromptBytes) aiMaxBytes = l.maxPromptBytes; } catch(e){} }
   const budget = Math.floor(aiMaxBytes * 0.92);
   const strip = g => ({id: g.id, circular: circMeta(g.circ).title, title: g.title, sections: g.sections, summary: g.summary, therapeutic: g.therapeutic, framework: g.framework, roles: g.roles, mustNot: g.mustNot, deadlines: g.deadlines, quote: g.quote});
@@ -1500,7 +1500,7 @@ async function aiCircMaterial(q, maps, rolesQ, cids, local){
   while (mat.items.length > 1 && size() > budget) mat.items.pop();
   // excerpts from the user's own library files (text extracted from the PDFs / Word files)
   mat.library = [];
-  try { if (await libTextLoad()) for (const r of libSearch(q, 5)) { mat.library.push({file: r.title, page: r.page, text: r.text}); if (size() > budget * 0.75) { mat.library.pop(); break; } } } catch(e){}
+  if (!noLib) try { if (await libTextLoad()) for (const r of libSearch(q, 5)) { mat.library.push({file: r.title, page: r.page, text: r.text}); if (size() > budget * 0.75) { mat.library.pop(); break; } } } catch(e){}
   const T = window.CIRC_TEXT || [], seen = new Set(), cand = [];
   for (const id of cids) { const g = circItem(id); if (!g) continue; const secs = (g.sections || []).map(String);
     T.filter(x => x.c === g.circ && x.s && secs.some(s => x.s === s || x.s.startsWith(s + '.'))).slice(0, 3).forEach(x => cand.push(x)); }
@@ -1829,6 +1829,77 @@ function libSrcView(R){
     <p class="muted" style="font-size:13px">הטקסט חולץ אוטומטית מהקובץ; בטבלאות ובקבצים סרוקים הוא עלול להשתבש. בודקים בקובץ המקורי.</p>`;
   return {title: 'מקור · ' + f[1], html: h, after(){ const e = $('#hl'); if (e) setTimeout(() => e.scrollIntoView({block: 'center'}), 60); }};
 }
+/* ---- questions answered ONLY from the circulars ---- */
+function circAskFormHTML(q){
+  return `<form id="circaskform" style="display:flex;gap:8px;flex-wrap:wrap"><textarea class="inp" id="circaskq" rows="2" style="flex:1;min-width:240px;min-height:52px" placeholder="שאלה על חוזרי המנכ״ל… למשל: מתי מותר להשעות תלמיד ביסודי?">${esc(q || '')}</textarea><button class="btn primary" type="submit" style="align-self:stretch">🔎 תשובה מהחוזרים</button></form>`;
+}
+function circAskAfter(){ const f = $('#circaskform'), i = $('#circaskq'); if (!f) return; i.addEventListener('keydown', e => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); f.requestSubmit(); } }); f.onsubmit = e => { e.preventDefault(); const v = i.value.trim(); if (v) location.hash = '#/circask/' + encodeURIComponent(v); }; }
+function circAskView(R){
+  const q = R.id || '';
+  let h = `<div class="panel" style="margin-top:4px;border-inline-start:5px solid var(--brand)"><h3>📜 שאלה על חוזרי המנכ״ל בלבד</h3>${askerChips()}${circAskFormHTML(q)}
+    <p class="muted" style="margin:10px 0 0;font-size:13.5px">התשובה כאן נשענת <b>רק</b> על ${circList().length} חוזרי המנכ״ל – בלי מפות הטיפול ובלי הספרייה – בהפרדה בין הטיפולי למשמעתי / מסגרתי / מנהלי, ועם קישור לסעיף המדויק בכל פריט.</p></div>`;
+  if (!q) return {title: 'שאלה על החוזרים', html: h + `<div class="actions"><a class="btn" href="#/circ">← לכל החוזרים</a></div>`, after: circAskAfter};
+  const C = circSearch(q, {nGuide: 8, nText: 6});
+  if (AI.available()) h += `<div class="note" style="margin-bottom:12px;display:flex;gap:10px;align-items:center;flex-wrap:wrap"><span>⚡ למטה – תשובה מהמנוע המהיר, בלי טוקנים.</span><button class="btn primary sm" data-act="circ-ai" data-v="${esc(q)}">🤖 תשובה מלאה מ-Claude – רק מהחוזרים</button><span class="muted" style="font-size:13px">רק בלחיצה – נספר במכסת המנוי</span></div><div id="circAi"></div>`;
+  if (!C.guide.length && !C.text.length) h += `<div class="panel empty">לא מצאתי בחוזרים תשובה לשאלה הזו. נסו לנסח אחרת, או לחפש בדף של חוזר מסוים.</div>`;
+  else {
+    const [first, ...rest] = C.guide;
+    if (first) h += circItemHTML(first.g);
+    if (rest.length) h += `<div class="panel"><h3>📜 עוד מצבים קרובים בחוזרים</h3><div class="list">${rest.slice(0, 6).map(x => circRowHTML(x.g)).join('')}</div></div>`;
+    if (C.text.length) h += `<div class="panel"><h3>📖 סעיפים מתוך לשון החוזרים</h3>${circTextHTML(C.text.slice(0, 5), C.qt)}</div>`;
+  }
+  h += `<div class="actions"><a class="btn" href="#/circ">← לכל החוזרים</a></div>`;
+  return {title: 'שאלה על החוזרים', html: h, after: circAskAfter};
+}
+function aiCircOnlyClassify(q){
+  return `אתה מסווג שאלות של צוות בית ספר יסודי בישראל לפי ״מצבים״ מתוך חוזרי מנכ״ל של משרד החינוך.
+${circClassifyList(q)}
+
+מי שואל/ת: ${askerOf().label}
+השאלה: """${q}"""
+
+בחר עד 4 מצבים (circIds) שעונים על השאלה. אם אף מצב לא קשור – החזר רשימה ריקה ו-offTopic true. אל תבחר בכוח. סמן safety true אם יש בשאלה רמז לסכנה (אובדנות, פגיעה עצמית, אלימות חמורה, חשד לפגיעה או הזנחה, פגיעה מינית).
+השב אך ורק ב-JSON: {"circIds": ["id"], "safety": false, "offTopic": false}`;
+}
+function aiCircOnlyPrompt(q, mat){
+  const a = askerOf();
+  return `אתה עוזר מקצועי לצוות בית ספר יסודי בישראל. ענה על השאלה אך ורק מתוך חוזרי המנכ״ל המצורפים (items = מצבים מובנים מהחוזרים, excerpts = לשון החוזר עצמה). אסור להשתמש בידע כללי, במפות טיפול או בכל מקור אחר. אל תמציא סעיפים, מספרים, מועדים או סמכויות. אם החוזרים לא מכסים את השאלה – notFound true.
+
+מי שואל/ת: ${a.label}. התאם את התשובה לתפקיד הזה (מה בתפקידו, מה לא, למי מעביר).
+השאלה: """${q}"""
+
+כלל ההפרדה (חובה): therapeutic = 🧠 מה שהחוזר אומר על הצד הטיפולי / חינוכי-רגשי (שיחה, תמיכה, ליווי, עבודה עם הכיתה, מעורבות יועץ/פסיכולוג); framework = 📋 מה שהחוזר מחייב או מתיר במישור המשמעתי / מסגרתי / מנהלי (כללים, מדרג תגובות, השעיה, יידוע הורים, דיווח, תיעוד, מועדים, סמכויות, איסורים). אסור לערבב. ממוקד אבל מקיף – כל מה שהחוזרים אומרים על המקרה.
+כללי המקור (חובה בכל פריט): src בצורה ״<שם החוזר כפי שמופיע בחומר>, סעיף <המספר המדויק>״, ו-q = ציטוט מילה במילה קצר (עד 15 מילים) מהחומר.
+
+החומר (JSON):
+${JSON.stringify({circulars: {items: mat.items, excerpts: mat.excerpts}})}
+
+כתוב בעברית, בגובה העיניים. השב אך ורק ב-JSON אחד:
+{"headline": "משפט אחד – השורה התחתונה לפי החוזרים", "therapeutic": [{"t": "", "d": "", "src": "", "q": ""}], "framework": [{"t": "", "d": "", "src": "", "q": ""}], "contacts": "מי פונה למי ומתי לפי החוזרים, 2-4 משפטים", "watch": ["מצב שמחייב דיווח/הסלמה לפי החוזר"], "note": "", "circIds": ["id"], "notFound": false, "safety": false}`;
+}
+async function aiCircOnlyRun(q){
+  const box = $('#circAi'); if (!box) return;
+  aiCtl = new AbortController();
+  const busy = t => { box.innerHTML = `<div class="panel" style="border-inline-start:5px solid var(--brand)"><h3>🤖 Claude עונה – רק מתוך חוזרי המנכ״ל</h3><p class="muted" style="margin:0">${esc(t)}</p><div class="actions" style="margin-top:10px"><button class="btn sm" data-act="ai-stop">⏹ עצירה</button></div></div>`; };
+  busy('מאתר את המצבים הרלוונטיים בחוזרים…');
+  try {
+    const c = await AI.ask(aiCircOnlyClassify(q), {quick: true, signal: aiCtl.signal});
+    const local = circSearch(q, {nGuide: 4, nText: 10});
+    let cids = Array.isArray(c && c.circIds) ? c.circIds.map(String).filter(circItem).slice(0, 4) : [];
+    if (!cids.length) cids = local.guide.slice(0, 2).map(x => x.g.id);
+    if (!cids.length && !local.text.length) { box.innerHTML = `<div class="panel"><h3>🤔 החוזרים לא עונים על השאלה הזו</h3><p class="muted" style="margin:0">Claude לא מצא בחוזרי המנכ״ל מענה, ולכן אין כאן ניחוש.</p></div>`; return; }
+    busy(`מצאתי: ${cids.map(id => '📜 ' + circItem(id).title).join(' · ')}. כותב תשובה מתוך החוזרים בלבד…`);
+    const mat = await aiCircMaterial(q, [], false, cids, local, true);
+    const ans = await AI.ask(aiCircOnlyPrompt(q, mat), {signal: aiCtl.signal});
+    if (ans && typeof ans === 'object') { if (c && c.safety) ans.safety = true; ans._cids = cids; }
+    box.innerHTML = aiAnswerHTML(q, ans, [], false).replace('מתוך מפות הטיפול, המדריך וחוזרי המנכ״ל שבאפליקציה בלבד', 'מתוך חוזרי המנכ״ל בלבד');
+  } catch(e){
+    if (e && e.code === 'cancelled') { box.innerHTML = ''; return; }
+    const code = (e && e.code) || 'upstream_error';
+    if (['not_granted', 'sampling_disabled', 'not_declared', 'capability_disabled', 'capability_removed'].includes(code)) AI.disable(code);
+    box.innerHTML = `<div class="note warn" style="margin-bottom:12px">🤖 ${esc(AI_ERR[code] || AI_ERR.upstream_error)}</div>`;
+  }
+}
 /* pages */
 let circQ = '', circScope = '', circKind = '';
 function circView(R){
@@ -1836,7 +1907,7 @@ function circView(R){
   if (R.id) return circOneView(R.id);
   const list = circList(), G = circGuide();
   let h = `<section class="hero"><h1>📜 חוזרי מנכ״ל</h1><p>${list.length} חוזרים ומסמכים, ובהם ${G.length} מצבים מעשיים. בכל מצב יש הפרדה בין <b>המענה הטיפולי</b> לבין <b>המענה המשמעתי / מסגרתי / מנהלי</b>, עם הפניה לסעיף בחוזר.</p>
-    <form id="circform" style="display:flex;gap:8px;margin-top:18px;max-width:720px"><input class="inp" id="circq" value="${esc(circScope ? '' : circQ)}" placeholder="🔎 חיפוש בחוזרים… למשל: תלמיד קילל מורה" style="flex:1;height:48px;border:0;font-size:16px"><button class="btn primary" type="submit">חיפוש</button></form>
+    <div style="margin-top:18px;max-width:760px">${circAskFormHTML('')}<p style="margin:8px 0 0;font-size:14px">💬 כאן עונים <b>רק מתוך חוזרי המנכ״ל</b> – בלי מפות הטיפול ובלי הספרייה.</p></div>
     <div class="actions"><a class="btn" href="#/circ/c04">⚖️ חוזר האקלים והמשמעת</a><a class="btn" href="#/ask">💬 שאלה מלאה לעוזר</a></div></section>`;
   if (!G.length) h += `<div class="panel empty">⏳ תוכן החוזרים עדיין נטען…</div>`;
   if (circQ && !circScope) h += circResultsHTML(circQ, '');
@@ -1846,7 +1917,7 @@ function circView(R){
       <span class="emoji">${CIRC_ICON[m.id] || '📜'}</span><span class="name">${esc(m.title)}${m.id === 'c04' ? ' <span class="pill brand">מרכזי</span>' : ''}</span>
       <span class="sub">${esc((m.summary || '').slice(0, 170))}${(m.summary || '').length > 170 ? '…' : ''}</span>
       <span class="row">${m.number ? `<span class="pill">${esc(m.type || 'הוראת קבע')} ${esc(m.number)}</span>` : m.type ? `<span class="pill">${esc(m.type)}</span>` : ''}${m.validFrom ? `<span class="pill">בתוקף מ-${esc(m.validFrom)}</span>` : ''}<span class="pill">${n} מצבים</span></span></a>`; }).join('')}</div>`;
-  return {title:'חוזרי מנכ״ל', html:h, after: circFormAfter('')};
+  return {title:'חוזרי מנכ״ל', html:h, after: circAskAfter};
 }
 function circFormAfter(scope){
   return () => { const f = $('#circform'); if (f) f.onsubmit = e => { e.preventDefault(); circQ = $('#circq').value.trim(); circScope = scope; render(); const r = $('#circres'); if (r) r.scrollIntoView({behavior: 'smooth', block: 'start'}); }; };
@@ -1859,7 +1930,7 @@ function circResultsHTML(q, scope){
   if (G[0]) h += circItemHTML(G[0].g, {full: false});
   if (G.length > 1) h += `<div class="panel"><h3>📜 מצבים נוספים</h3><div class="list">${G.slice(1).map(x => circRowHTML(x.g)).join('')}</div></div>`;
   if (T.length) h += `<div class="panel"><h3>📖 סעיפים מתוך החוזרים</h3>${circTextHTML(T, C.qt)}</div>`;
-  return h + `<div class="actions" style="margin-bottom:10px"><a class="btn primary" href="#/ask/${encodeURIComponent(q)}">💬 תשובה מלאה מהעוזר – טיפולי + משמעתי</a></div></div>`;
+  return h + `<div class="actions" style="margin-bottom:10px"><a class="btn primary" href="#/circask/${encodeURIComponent(q)}">📜 תשובה מהחוזרים בלבד</a><a class="btn" href="#/ask/${encodeURIComponent(q)}">💬 תשובה משולבת – חוזרים + מפות טיפול</a></div></div>`;
 }
 function circOneView(id){
   const m = circMeta(id), G = circGuide().filter(g => g.circ === id);
@@ -1884,7 +1955,7 @@ function circItemView(cid, gid){
   if (T.length) h += `<div class="panel"><h3>📖 לשון החוזר בסעיפים האלה</h3>${circTextHTML(T.map(x => ({x})), toks(g.title))}</div>`;
   const rel = circGuide().filter(x => x !== g && x.circ === g.circ && ((x.sections || []).some(s => secs.some(t => String(s).split('.').slice(0, 2).join('.') === t.split('.').slice(0, 2).join('.'))) || x.kind === g.kind)).slice(0, 6);
   if (rel.length) h += `<div class="panel"><h3>🔗 מצבים קשורים</h3><div class="list">${rel.map(x => circRowHTML(x)).join('')}</div></div>`;
-  h += `<div class="actions">${circOpenBtn(g.circ)}<a class="btn" href="#/circ/${g.circ}">← ${esc(circMeta(g.circ).title)}</a><a class="btn primary" href="#/ask/${encodeURIComponent(g.title)}">💬 לשאול על זה את העוזר</a></div>
+  h += `<div class="actions">${circOpenBtn(g.circ)}<a class="btn" href="#/circ/${g.circ}">← ${esc(circMeta(g.circ).title)}</a><a class="btn primary" href="#/circask/${encodeURIComponent(g.title)}">📜 לשאול על זה – מהחוזרים בלבד</a></div>
     <p class="muted" style="font-size:13px;margin-top:12px">הסיכום נבנה מתוך לשון החוזר. בכל החלטה מחייבת בודקים את הסעיף המקורי ואת העדכון האחרון באתר משרד החינוך.</p>`;
   return {title: g.title, html: h};
 }
@@ -2089,6 +2160,7 @@ document.addEventListener('click', async e => {
     case 'libsub': libSub = d.v; render(); break;
     case 'circkind': circKind = d.v; circQ = ''; render(); break;
     case 'back': history.back(); break;
+    case 'circ-ai': if (AI.available()) aiCircOnlyRun(d.v); break;
     case 'libpdf': { const pg = +d.p || 0, f = d.path; if (WEB) Cloud.openFileAt(f, pg); else viewer(d.title, href(f) + (pg && /\.pdf$/i.test(f) ? '#page=' + pg : ''), ftype(f)[0]); break; }
     case 'circpdf': { const f = circFile(d.c), pg = +d.p || 0; if (!f) break; if (WEB) Cloud.openFileAt(f, pg); else viewer(circMeta(d.c).title, href(f) + (pg ? '#page=' + pg : ''), ftype(f)[0]); break; }
     case 'libopen': if (e.target.closest('[data-act="attopen"]')) return; if (WEB) Cloud.openFile(d.pdf); else viewer(d.title, href(d.pdf), 'pdf'); break;
