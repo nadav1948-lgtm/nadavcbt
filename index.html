@@ -668,18 +668,18 @@ function render(){
   document.body.classList.toggle('locked', isLocked());
   if (isLocked()) { const o = lockView(); $('#title').textContent = ''; $('#view').innerHTML = `<div class="page">${o.html}</div>`; document.title = 'CBT בבית הספר'; return; }
   if (WEB && !ARTIFACT && !LITE && !PROBLEMS.length) { $('#title').textContent = ''; $('#view').innerHTML = `<div class="empty" style="padding-top:120px"><span class="big">⏳</span>${Cloud.status === 'error' ? esc(Cloud.err) + ' <br><br><button class="btn primary" data-act="cloud-retry">נסו שוב</button>' : 'טוען את התוכן מ-OneDrive…'}</div>`; return; }
-  const views = LITE ? {home: liteHome, problems, problem: problemView, tools, tool: toolView, settings: liteSettings, ask, workflow, roles: rolesView, circ: circView, circsrc: circSrcView} : {home, problems, problem: problemView, students, student: studentView, tools, tool: toolView, library, settings, ask, workflow, roles: rolesView, circ: circView, circsrc: circSrcView};
+  const views = LITE ? {home: liteHome, problems, problem: problemView, tools, tool: toolView, settings: liteSettings, ask, workflow, roles: rolesView, circ: circView, circsrc: circSrcView, libsrc: libSrcView} : {home, problems, problem: problemView, students, student: studentView, tools, tool: toolView, library, settings, ask, workflow, roles: rolesView, circ: circView, circsrc: circSrcView, libsrc: libSrcView};
   const fn = views[R.r] || home;
   const out = fn(R);
   $('#title').textContent = out.title;
   $('#view').innerHTML = `<div class="page">${out.html}</div>`;
-  const navKey = {problem:'problems', student:'students', tool:'tools', circsrc:'circ'}[R.r] || R.r;
+  const navKey = {problem:'problems', student:'students', tool:'tools', circsrc:'circ', libsrc:'library'}[R.r] || R.r;
   document.querySelectorAll('[data-nav]').forEach(a => a.classList.toggle('on', a.dataset.nav === navKey));
   document.title = out.title + ' · CBT בבית הספר';
   if (out.after) out.after();
   ui();
 }
-window.addEventListener('hashchange', () => { aiFast = false; if (aiCtl) aiCtl.abort(); render(); window.scrollTo({top:0}); });
+window.addEventListener('hashchange', () => { aiFast = true; if (aiCtl) aiCtl.abort(); render(); window.scrollTo({top:0}); });
 
 /* ================= shared pieces ================= */
 function problemCard(p, i){
@@ -1054,15 +1054,20 @@ function toolSave(kind){
 }
 
 /* ================= library & settings ================= */
-let libQ = '', libTopic = '';
+let libQ = '', libTopic = '', libSub = '';
 function library(){
   const ql = libQ.toLowerCase();
   const seen = new Set();
-  const list = LIBDATA.filter(p => { const sig = p.title + '|' + (p.src ? p.size : '') + '|' + p.attachments.map(a => a.name).join(','); if (seen.has(sig)) return false; seen.add(sig); return true; })
+  let list = LIBDATA.filter(p => { const sig = p.title + '|' + (p.src ? p.size : '') + '|' + p.attachments.map(a => a.name).join(','); if (seen.has(sig)) return false; seen.add(sig); return true; })
     .filter(p => (!libTopic || p.topic === libTopic || (p.extra || []).includes(libTopic)) && (!ql || (p.title + ' ' + (p.sub || '') + ' ' + p.section + ' ' + p.attachments.map(a => a.name).join(' ')).toLowerCase().includes(ql)));
+  const rel = {}; if (libTopic) list.forEach(p => [p.topic, ...(p.extra || [])].forEach(id => { if (id !== libTopic && topicName(id)) rel[id] = (rel[id] || 0) + 1; }));
+  const relList = Object.entries(rel).filter(([, n]) => n >= 2).sort((a, b) => b[1] - a[1]).slice(0, 16);
+  if (libSub && !rel[libSub]) libSub = '';
+  const full = list; if (libSub) list = list.filter(p => p.topic === libSub || (p.extra || []).includes(libSub));
+  const subBar = relList.length ? `<div class="chips" style="margin-top:-4px"><span class="muted" style="font-size:14px">${libTopic === 'forms' ? 'טפסים לפי נושא:' : 'בתוך הנושא:'}</span><button class="chip ${!libSub ? 'on' : ''}" data-act="libsub" data-v="">הכל · ${full.length}</button>${relList.map(([id, n]) => `<button class="chip ${libSub === id ? 'on' : ''}" data-act="libsub" data-v="${id}">${topicIcon(id)} ${esc(topicName(id))} · ${n}</button>`).join('')}</div>` : '';
   const h = `<div class="actions" style="margin:4px 0 12px">${WEB ? '' : '<a class="btn" href="index.html" target="_blank">📚 פתיחת הספרייה המלאה</a>'}${!LIBDATA.length ? (ARTIFACT ? '<span class="note warn">📚 קובצי הספרייה נמצאים במחשב – פותחים אותם מקיצור הדרך ״ספריית לימודי CBT״</span>' : '<span class="note warn">הספרייה תופיע אחרי התחברות עם חשבון מיקרוסופט</span>') : ''}<span class="muted">${list.length} פריטים</span></div>
     <div class="search" style="margin-bottom:12px"><input id="libq" placeholder="חיפוש בספרייה…" value="${esc(libQ)}"><span class="ic">🔍</span></div>
-    <div class="chips"><button class="chip ${!libTopic ? 'on' : ''}" data-act="libtopic" data-v="">הכל</button>${LIBTOPICS.map(t => `<button class="chip ${libTopic === t.id ? 'on' : ''}" data-act="libtopic" data-v="${t.id}">${t.icon} ${esc(t.name)}</button>`).join('')}</div>
+    <div class="chips"><button class="chip ${!libTopic ? 'on' : ''}" data-act="libtopic" data-v="">הכל</button>${LIBTOPICS.map(t => `<button class="chip ${libTopic === t.id ? 'on' : ''}" data-act="libtopic" data-v="${t.id}">${t.icon} ${esc(t.name)}</button>`).join('')}</div>${subBar}
     <div class="list">${list.slice(0, 120).map(libItem).join('')}</div>${list.length > 120 ? '<p class="muted">מוצגים 120 הראשונים – חפשו כדי לצמצם.</p>' : ''}`;
   return {title:'ספרייה', html:h, after(){ const i = $('#libq'); i.addEventListener('input', () => { libQ = i.value; const pos = i.selectionStart; render(); const j = $('#libq'); j.focus(); j.setSelectionRange(pos, pos); }); }};
 }
@@ -1259,7 +1264,7 @@ function answerHTML(A){
   return h;
 }
 const ASK_EXAMPLES = ['ילד בכיתה ב׳ בוכה כל בוקר בשער ולא מוכן להיפרד מאמא','מה אומרים למחנכת על ילד שמתפרץ ומכה בהפסקות','ילדה עם כאבי בטן לפני מבחנים והולכת לאחות','איך מתחילים מפגש ראשון עם ילד שיש לו טיקים','תלמיד שמחרימים אותו בקבוצת הוואטסאפ של הכיתה','ילד שאבא שלו נהרג – מה עושים בבית הספר','אילו שאלונים יש לחרדה','מתי להפנות ילד עם הרטבה לרופא','תלמיד קילל מורה באמצע השיעור – מה עושים?','מתי מותר להשעות תלמיד ומי מחליט','אבא גרוש מבקש לקבל את התעודה','ילד כתב במחברת שהוא רוצה למות – מה חובה לעשות'];
-let lastAsk = '', aiFast = false;
+let lastAsk = '', aiFast = true;
 function ask(R){
   const q = R.id ? R.id : lastAsk;
   const hist = ls.get('cbtapp.asks', []);
@@ -1269,8 +1274,10 @@ function ask(R){
   const useAI = q && AI.available() && !aiFast;
   if (useAI) h += '<div id="aiPanel"></div>';
   if (q && !useAI && !AI.available() && !ARTIFACT) h += `<div class="note" style="margin-bottom:12px;display:flex;gap:10px;align-items:center;flex-wrap:wrap"><span>🤖 רוצה תשובה מ-Claude עצמו, שמבין כל ניסוח?</span><a class="btn primary sm" href="https://claude.ai/artifact/VR9R29KShiqhmHX7NTqbjT" target="_blank" rel="noopener" data-act="copyq" data-v="${esc(q)}">שאל את Claude</a><span class="muted" style="font-size:13px">השאלה מועתקת – מדביקים אותה בעמוד שנפתח</span></div>`;
+  if (q && !useAI && AI.available()) h += `<div class="note" style="margin-bottom:12px;display:flex;gap:10px;align-items:center;flex-wrap:wrap"><span>⚡ זו תשובת המנוע המהיר – בלי טוקנים.</span><button class="btn primary sm" data-act="ai-go">🤖 תשובה מלאה מ-Claude</button><span class="muted" style="font-size:13px">רק בלחיצה – נספר במכסת המנוי</span></div>`;
   if (q && !useAI) h += (AI.status === 'off' && AI.err ? `<div class="note warn" style="margin-bottom:12px">🤖 ${esc(AI_ERR[AI.err] || 'Claude לא זמין כרגע – התשובה מהמנוע המהיר.')}</div>` : '') + answerHTML(answer(q));
   else if (!q) h += `<h2 class="sec">💡 דוגמאות לשאלות</h2><div class="actions">${ASK_EXAMPLES.map(e => `<button class="chip" data-act="askex" data-v="${esc(e)}">${esc(e)}</button>`).join('')}</div>`;
+  if (q) h += '<div id="libPanel"></div>';
   if (hist.length) h += `<h2 class="sec">🕘 שאלות אחרונות</h2><div class="actions">${hist.slice(0, 10).map(e => `<button class="chip" data-act="askex" data-v="${esc(e)}">${esc(e)}</button>`).join('')}</div>`;
   return {title:'שאל שאלה', html:h, after(){
     const f = $('#askform'), i = $('#askq');
@@ -1278,6 +1285,7 @@ function ask(R){
     f.onsubmit = e => { e.preventDefault(); const v = i.value.trim(); if (!v) return; lastAsk = v; ls.set('cbtapp.asks', [v, ...hist.filter(x => x !== v)].slice(0, 15)); location.hash = '#/ask/' + encodeURIComponent(v); };
     if (!q) i.focus();
     if (q && $('#aiPanel')) aiAnswerRun(q);
+    if (q) libFill(q);
   }};
 }
 
@@ -1447,7 +1455,7 @@ function aiAnswerPrompt(q, maps, rolesQ, circArg){
     teacher: 'מורה מקצועי/ת – רוצה לדעת מה לעשות בתוך השיעור שלו/ה, מתי לעדכן את המחנך/ת, ומתי מותר לפנות להורים ישירות (רק בעניין לימודי במקצוע שלו/ה). לא מטפל/ת ולא מנהל/ת את המקרה.',
     management: 'ההנהלה – רוצה לדעת מה תפקיד ההנהלה במקרה, מה לבקש מהמחנך/ת ומהיועץ/ת, מתי לפנות להורים, מתי לערב פיקוח או גורמי חוץ, ומה דחוף.'}[a.id];
   const circ = circArg || {items: [], excerpts: []};
-  const material = JSON.stringify({maps: maps.map(compactMap), rolesGuide: rolesCompact(), circulars: circ.items.length || circ.excerpts.length ? circ : undefined});
+  const material = JSON.stringify({maps: maps.map(compactMap), rolesGuide: rolesCompact(), circulars: circ.items.length || circ.excerpts.length ? {items: circ.items, excerpts: circ.excerpts} : undefined, library: (circ.library || []).length ? circ.library : undefined});
   return `אתה עוזר מקצועי בתוך אפליקציה ליועץ/ת חינוכי/ת בבית ספר יסודי בישראל. ענה על השאלה אך ורק מתוך החומר המצורף (מפות טיפול CBT, מדריך תפקידים, ומצבים וסעיפים מחוזרי מנכ״ל של משרד החינוך). אל תוסיף ידע חיצוני, אל תמציא נהלים, סעיפים, מספרים, מועדים, שמות של שאלונים או גורמים שאינם בחומר. אם החומר לא מכסה את השאלה, אמור זאת במפורש ב-notFound ואל תנחש.
 
 כלל ההפרדה (חובה): תמיד מפרידים בין
@@ -1456,7 +1464,7 @@ function aiAnswerPrompt(q, maps, rolesQ, circArg){
 אסור לערבב: לא להציג צעד משמעתי כטיפול, ולא להציג המלצה טיפולית כחובה מנהלית. אם אחד הצדדים לא מכוסה בחומר – השאר אותו ריק וכתוב זאת ב-note.
 היה ממוקד אבל מקיף: תשובה מלאה שכוללת את כל מה שהחומר אומר על המקרה, בלי מילים מיותרות.
 
-כללי המקור (חובה, לכל פריט בלי יוצא מן הכלל): לכל פריט ב-therapeutic וב-framework יש שדה src. אם הפריט נשען על מפת טיפול – src בצורה: ״מפת טיפול: <שם המפה כפי שמופיע בחומר> › <החלק: סימנים / הערכה / מטרות / מפגש N / טכניקות / הורים / צוות / מתי להפנות / המשגה>״. אם הוא נשען על חוזר – src בצורה: ״<שם החוזר כפי שמופיע בחומר>, סעיף <המספר המדויק מהחומר>״, ובשדה q ציטוט מילה במילה של המשפט הרלוונטי מתוך החומר (items או excerpts). אם נשען על מדריך התפקידים – ״מדריך התפקידים באפליקציה״. פריט שאין לו מקור בחומר – לא נכנס לתשובה.
+כללי המקור (חובה, לכל פריט בלי יוצא מן הכלל): לכל פריט ב-therapeutic וב-framework יש שדה src. אם הפריט נשען על מפת טיפול – src בצורה: ״מפת טיפול: <שם המפה כפי שמופיע בחומר> › <החלק: סימנים / הערכה / מטרות / מפגש N / טכניקות / הורים / צוות / מתי להפנות / המשגה>״. אם הוא נשען על חוזר – src בצורה: ״<שם החוזר כפי שמופיע בחומר>, סעיף <המספר המדויק מהחומר>״, ובשדה q ציטוט מילה במילה של המשפט הרלוונטי מתוך החומר (items או excerpts). אם נשען על מדריך התפקידים – ״מדריך התפקידים באפליקציה״. אם נשען על קטע מהספרייה האישית (library) – src בצורה: ״ספרייה: <שם הקובץ בדיוק כפי שמופיע ב-file>, עמוד <page>״ ובשדה q ציטוט קצר מדויק מהקטע. קטעי הספרייה הם חומרי לימוד ומאמרים של המשתמש – השתמש בהם להרחבת הצד הטיפולי כשהם רלוונטיים באמת, ואל תשתמש בהם לקביעת נהלים מחייבים (את אלה קובעים רק החוזרים). פריט שאין לו מקור בחומר – לא נכנס לתשובה.
 
 מי שואל/ת: ${roleBrief}
 התאם את התשובה בדיוק לתפקיד הזה: מה הוא/היא עושה, מה לא בתפקידו/ה, ולמי מעביר/ה. הקפד על ההפרדה בין מורה מקצועי/ת למחנך/ת, ועל מי פונה להורים ומתי (לפי whoDoesWhat של המפה ולפי rolesGuide).
@@ -1490,6 +1498,9 @@ async function aiCircMaterial(q, maps, rolesQ, cids, local){
   const mat = {items: cids.map(circItem).filter(Boolean).map(strip), excerpts: []};
   const size = () => utf8len(aiAnswerPrompt(q, maps, rolesQ, mat));
   while (mat.items.length > 1 && size() > budget) mat.items.pop();
+  // excerpts from the user's own library files (text extracted from the PDFs / Word files)
+  mat.library = [];
+  try { if (await libTextLoad()) for (const r of libSearch(q, 5)) { mat.library.push({file: r.title, page: r.page, text: r.text}); if (size() > budget * 0.75) { mat.library.pop(); break; } } } catch(e){}
   const T = window.CIRC_TEXT || [], seen = new Set(), cand = [];
   for (const id of cids) { const g = circItem(id); if (!g) continue; const secs = (g.sections || []).map(String);
     T.filter(x => x.c === g.circ && x.s && secs.some(s => x.s === s || x.s.startsWith(s + '.'))).slice(0, 3).forEach(x => cand.push(x)); }
@@ -1514,7 +1525,8 @@ async function aiAnswerRun(q){
     const local = circGuide().length ? circSearch(q, {nGuide: 4, nText: 10}) : {guide: [], text: [], qt: []};
     let cids = Array.isArray(c && c.circIds) ? c.circIds.map(String).filter(circItem).slice(0, 4) : [];
     if (!cids.length && local.strong) cids = local.guide.slice(0, 2).map(x => x.g.id);
-    if (!ids.length && !rolesQ && !cids.length) { box.innerHTML = aiNotFoundHTML(q, !!(c && c.safety)); return; }
+    let libHit = false; if (!ids.length && !rolesQ && !cids.length) { try { libHit = !!(await libTextLoad()) && libSearch(q, 1).length > 0; } catch(e){} }
+    if (!ids.length && !rolesQ && !cids.length && !libHit) { box.innerHTML = aiNotFoundHTML(q, !!(c && c.safety)); return; }
     if (cids.length && ids.length > 1) ids = ids.slice(0, 1);
     const maps = ids.map(id => P[id]);
     busy(`מצאתי: ${[...maps.map(p => p.icon + ' ' + p.name), ...cids.map(id => '📜 ' + circItem(id).title)].join(' · ') || 'מדריך התפקידים'}. כותב תשובה מותאמת ל${askerOf().label}…`);
@@ -1544,6 +1556,7 @@ function aiSrcHTML(s){
   if (map) { const tab = (TAB_WORDS.find(([w]) => src.split('›').pop().includes(w)) || [,'overview'])[1]; return `<a class="cite" href="#/problem/${map.id}/${tab}">(מקור: ${esc(src)} ↗)</a>`; }
   const cid = circFindCid(src);
   if (cid) return `<a class="cite" href="${circSrcHref(cid, (src.split('סעיף')[1] || ''), s.q || s.d)}">(מקור: ${esc(src)} ↗)</a>`;
+  if (/^ספרייה/.test(src) && window.LIB_TEXT) { const nm = src.replace(/^ספרייה\s*:\s*/, '').replace(/,?\s*עמוד\s*\d+.*$/, '').trim(); const pg = +((src.match(/עמוד\s*(\d+)/) || [])[1] || 1); const f = window.LIB_TEXT.files.find(x => x[1] === nm) || window.LIB_TEXT.files.find(x => nm && (x[1].includes(nm) || nm.includes(x[1]))); if (f) return `<a class="cite" href="${libSrcHref(f[0], pg, s.q || s.d)}">(מקור: ${esc(src)} ↗)</a>`; }
   if (src.includes('מדריך התפקידים')) return `<a class="cite" href="#/roles">(מקור: ${esc(src)} ↗)</a>`;
   return `<span class="pill" style="font-size:12px">📌 ${esc(src)}</span>`;
 }
@@ -1733,6 +1746,88 @@ function circSrcView(R){
     ${next ? `<details class="panel"><summary class="muted">המשך הסעיף</summary><div class="circ-text">${esc(next.t)}</div></details>` : ''}
     <p class="muted" style="font-size:13px">הטקסט חולץ מקובץ ה-PDF של החוזר; בטבלאות הסדר עלול להשתבש. בהחלטה מחייבת בודקים בקובץ המקורי.</p>`;
   return {title: 'מקור · ' + m.title, html: h, after(){ const e = $('#hl'); if (e) setTimeout(() => e.scrollIntoView({block: 'center'}), 60); }};
+}
+/* ================= library full-text search (text extracted from the files) ================= */
+let libTxtP = null;
+function libTextLoad(){
+  if (window.LIB_TEXT) return Promise.resolve(window.LIB_TEXT);
+  if (libTxtP) return libTxtP;
+  libTxtP = (async () => {
+    try {
+      if (WEB && !ARTIFACT && !LITE) { if (Cloud.status === 'ok') { const t = await Cloud.getText('app-libtext.js'); if (t) new Function(t)(); } }
+      else if (!WEB) await new Promise(r => { const sc = document.createElement('script'); sc.src = 'lib-text.js'; sc.onload = r; sc.onerror = r; document.head.appendChild(sc); });
+    } catch(e){}
+    if (!window.LIB_TEXT) libTxtP = null;
+    return window.LIB_TEXT || null;
+  })();
+  return libTxtP;
+}
+const FINALS = {'כ':'ך','מ':'ם','נ':'ן','פ':'ף','צ':'ץ'};
+const termVars = t => { const v = [t]; const l = t.slice(-1); if (FINALS[l]) v.push(t.slice(0, -1) + FINALS[l]); return v; };
+function libSearch(q, n = 6, perFile = 2){
+  const T = window.LIB_TEXT; if (!T) return [];
+  const terms = [...new Set(toks(q))].filter(t => t.length >= 3).slice(0, 9);
+  if (!terms.length) return [];
+  const V = terms.map(termVars), C = T.chunks, N = C.length, df = new Array(terms.length).fill(0), hits = [];
+  for (let i = 0; i < N; i++) {
+    const s = C[i][2]; let m = null;
+    for (let j = 0; j < V.length; j++) { let c = 0; for (const v of V[j]) { let k = s.indexOf(v); while (k >= 0 && c < 6) { c++; k = s.indexOf(v, k + v.length); } } if (c) { (m || (m = []))[j] = c; df[j]++; } }
+    if (m) hits.push([i, m]);
+  }
+  const idf = df.map(d => Math.log(1 + N / (d + 1)));
+  const need = Math.min(2, terms.length);
+  const scored = [];
+  for (const [i, m] of hits) {
+    let sc = 0, k = 0; for (let j = 0; j < terms.length; j++) if (m[j]) { k++; sc += idf[j] * (1 + Math.log(m[j])); }
+    if (k < need) continue;
+    const f = T.files[C[i][0]]; const tt = norm(f[1]); terms.forEach((t, j) => { if (tt.includes(t)) sc += idf[j] * 0.8; });
+    sc *= (0.6 + 0.4 * k / terms.length) / Math.sqrt(Math.max(400, C[i][2].length) / 800);
+    scored.push({i, sc, k});
+  }
+  scored.sort((a, b) => b.sc - a.sc);
+  const per = {}, out = [];
+  const seenTxt = new Set();
+  for (const x of scored) { const fi = C[x.i][0]; const sig = C[x.i][2].replace(/\s+/g, '').slice(0, 90); if (seenTxt.has(sig)) continue; if ((per[fi] = (per[fi] || 0) + 1) > perFile) continue; seenTxt.add(sig); const f = T.files[fi]; out.push({id: f[0], title: String(f[1]).replace(/\^J/g, ', ').replace(/^\d{3}\s+/, '').replace(/^מצורף\s*-\s*/, '').replace(/\s*-\s*מצורף$/, ''), path: f[2], topic: f[3], page: C[x.i][1], text: C[x.i][2], sc: x.sc, ci: x.i}); if (out.length >= n) break; }
+  out.terms = terms; return out;
+}
+window.__lib = (q, n = 5) => { const r = libSearch(q, n); return r.map(x => x.title + ' | עמ׳ ' + x.page + ' | ' + x.text.replace(/\s+/g, ' ').slice(0, 110)); };
+function libExcerpt(t, terms, n = 320){
+  const lines = t.split('\n'); let best = 0, bs = -1;
+  lines.forEach((l, i) => { const sc = terms.filter(x => termVars(x).some(v => l.includes(v))).length; if (sc > bs) { bs = sc; best = i; } });
+  let out = lines.slice(Math.max(0, best - 1), best + 3).join(' ');
+  if (out.length > n) out = out.slice(0, n) + ' …';
+  return esc(out).replace(new RegExp('(' + terms.flatMap(termVars).map(reEsc).join('|') + ')', 'g'), '<mark>$1</mark>');
+}
+const libSrcHref = (id, page, snip) => `#/libsrc/${id}/${page || 1}/${encodeURIComponent(String(snip || '').slice(0, 160) || '-')}`;
+function libPanelHTML(res){
+  if (!res || !res.length) return '';
+  return `<div class="panel"><h3>📚 מה כתוב בחומרים שלך <small class="muted" style="font-weight:400">קטעים מתוך קובצי הספרייה – לחיצה פותחת את המקור</small></h3><div class="list">${res.map(r => `<a class="li" href="${libSrcHref(r.id, r.page, r.text.slice(0, 200))}" style="text-decoration:none"><span style="font-size:20px">${topicIcon(r.topic)}</span><div class="grow"><b>${esc(r.title)}</b> <span class="pill" style="font-size:12px">עמוד ${r.page}</span><div class="date" style="margin-top:4px;line-height:1.6">${libExcerpt(r.text, res.terms)}</div></div></a>`).join('')}</div></div>`;
+}
+async function libFill(q){
+  const box = $('#libPanel'); if (!box) return;
+  box.innerHTML = `<p class="muted" style="font-size:13px">📚 מחפש בתוך קובצי הספרייה…</p>`;
+  const T = await libTextLoad();
+  const b2 = $('#libPanel'); if (!b2) return;
+  b2.innerHTML = T ? (libPanelHTML(libSearch(q, 6)) || '') : '';
+}
+function libSrcView(R){
+  const id = R.id, page = +R.sub || 1, snip = R.x && R.x !== '-' ? R.x : '';
+  const T = window.LIB_TEXT;
+  if (!T) { libTextLoad().then(t => { if (t && route().r === 'libsrc') render(); }); return {title: 'מקור', html: `<div class="panel empty">⏳ טוען את טקסט הספרייה…</div>`}; }
+  const fi = T.files.findIndex(f => f[0] === id); const f = T.files[fi];
+  if (!f) return {title: 'מקור', html: `<div class="panel empty">הקובץ לא נמצא באינדקס.</div>`};
+  const mine = T.chunks.filter(c => c[0] === fi);
+  const near = mine.filter(c => Math.abs(c[1] - page) <= 1);
+  const qt = new Set(toks(snip).flatMap(termVars));
+  let best = null; (near.length ? near : mine).forEach(c => { c[2].split('\n').forEach((l, i, arr) => { const tk = toks(l); const hits = tk.filter(t => [...qt].some(v => v.startsWith(t) || t.startsWith(v))).length; if (hits && (!best || hits > best.hits)) best = {c, i, hits}; }); });
+  const show = near.length ? near : mine.slice(0, 3);
+  const body = show.map(c => `<div class="panel"><div class="muted" style="font-size:13px;margin-bottom:6px">עמוד ${c[1]}</div><div class="circ-text" style="max-height:none">${c[2].split('\n').map((l, i) => best && best.c === c && Math.abs(i - best.i) <= 1 ? `<mark ${i === best.i ? 'id="hl"' : ''}>${esc(l)}</mark>` : esc(l)).join('\n')}</div></div>`).join('');
+  const canOpen = !LITE && !ARTIFACT;
+  const h = `<div class="panel" style="border-inline-start:5px solid var(--brand)"><h3>📖 המקור: ${esc(f[1])}</h3>
+    <div class="actions" style="margin:0 0 8px"><span class="pill brand">עמוד ${page}</span><span class="pill">${topicIcon(f[3])} ${esc(topicName(f[3]) || '')}</span></div>
+    <div class="actions">${canOpen ? `<button class="btn primary" data-act="libpdf" data-path="${esc(f[2])}" data-p="${page}" data-title="${esc(f[1])}">📄 פתיחת הקובץ המקורי בעמוד ${page}</button>` : ''}<button class="btn" data-act="back">← חזרה</button></div></div>${body}
+    <p class="muted" style="font-size:13px">הטקסט חולץ אוטומטית מהקובץ; בטבלאות ובקבצים סרוקים הוא עלול להשתבש. בודקים בקובץ המקורי.</p>`;
+  return {title: 'מקור · ' + f[1], html: h, after(){ const e = $('#hl'); if (e) setTimeout(() => e.scrollIntoView({block: 'center'}), 60); }};
 }
 /* pages */
 let circQ = '', circScope = '', circKind = '';
@@ -1990,9 +2085,11 @@ document.addEventListener('click', async e => {
     case 'fullscreen': { const st = $('#stage'); if (document.fullscreenElement) document.exitFullscreen(); else if (st && st.requestFullscreen) st.requestFullscreen(); break; }
     case 'area': areaFilter = d.v; render(); break;
     case 'arch': showArchived = d.v === '1'; render(); break;
-    case 'libtopic': libTopic = d.v; render(); break;
+    case 'libtopic': libTopic = d.v; libSub = ''; render(); break;
+    case 'libsub': libSub = d.v; render(); break;
     case 'circkind': circKind = d.v; circQ = ''; render(); break;
     case 'back': history.back(); break;
+    case 'libpdf': { const pg = +d.p || 0, f = d.path; if (WEB) Cloud.openFileAt(f, pg); else viewer(d.title, href(f) + (pg && /\.pdf$/i.test(f) ? '#page=' + pg : ''), ftype(f)[0]); break; }
     case 'circpdf': { const f = circFile(d.c), pg = +d.p || 0; if (!f) break; if (WEB) Cloud.openFileAt(f, pg); else viewer(circMeta(d.c).title, href(f) + (pg ? '#page=' + pg : ''), ftype(f)[0]); break; }
     case 'libopen': if (e.target.closest('[data-act="attopen"]')) return; if (WEB) Cloud.openFile(d.pdf); else viewer(d.title, href(d.pdf), 'pdf'); break;
     case 'attopen': e.preventDefault(); e.stopPropagation(); if (WEB) Cloud.openFile(d.path); else viewer(d.title, href(d.path), ftype(d.path)[0]); break;
@@ -2027,11 +2124,12 @@ document.addEventListener('click', async e => {
     case 'delmeasure': e.preventDefault(); if (await uiConfirm('למחוק את הציון?')) { s.measures = s.measures.filter(x => x.id !== d.id); save(); render(); } break;
     case 'delwork': if (await uiConfirm('למחוק?')) { s[d.k] = s[d.k].filter(x => x.id !== d.id); save(); render(); } break;
     case 'toolsave': toolSave(d.k); break;
-    case 'asker': ASKER = d.v; ls.set('cbtapp.asker', ASKER); aiFast = false; render(); break;
+    case 'asker': ASKER = d.v; ls.set('cbtapp.asker', ASKER); aiFast = true; render(); break;
     case 'copyq': try { navigator.clipboard.writeText(d.v).then(() => toast('השאלה הועתקה – הדביקו אותה בעמוד של Claude'), () => {}); } catch(err){} break;
     case 'ai-stop': if (aiCtl) aiCtl.abort(); break;
     case 'ai-retry': if (lastAsk || route().id) aiAnswerRun(route().id || lastAsk); break;
     case 'ai-fast': e.preventDefault(); aiFast = true; render(); break;
+    case 'ai-go': aiFast = false; render(); break;
     case 'askex': location.hash = '#/ask/' + encodeURIComponent(d.v); break;
     case 'stage': { const st = STAGES.find(x => x.id === d.id); s.stages = s.stages || {}; s.stages[st.id] = !stageDone(s, st); save(); render(); break; }
     // tools
