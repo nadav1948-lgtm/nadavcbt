@@ -1502,7 +1502,7 @@ async function aiCircMaterial(q, maps, rolesQ, cids, local, noLib){
   while (mat.items.length > 1 && size() > budget) mat.items.pop();
   // excerpts from the user's own library files (text extracted from the PDFs / Word files)
   mat.library = [];
-  if (!noLib) try { if (await libTextLoad()) for (const r of libSearch(q, 5)) { mat.library.push({file: r.title, page: r.page, text: r.text}); if (size() > budget * 0.75) { mat.library.pop(); break; } } } catch(e){}
+  if (!noLib) try { if (await libTextLoad()) for (const r of await libSearchAsync(q, 5)) { mat.library.push({file: r.title, page: r.page, text: r.text}); if (size() > budget * 0.75) { mat.library.pop(); break; } } } catch(e){}
   const T = window.CIRC_TEXT || [], seen = new Set(), cand = [];
   for (const id of cids) { const g = circItem(id); if (!g) continue; const secs = (g.sections || []).map(String);
     T.filter(x => x.c === g.circ && x.s && secs.some(s => x.s === s || x.s.startsWith(s + '.'))).slice(0, 3).forEach(x => cand.push(x)); }
@@ -1527,7 +1527,7 @@ async function aiAnswerRun(q){
     const local = circGuide().length ? circSearch(q, {nGuide: 4, nText: 10}) : {guide: [], text: [], qt: []};
     let cids = Array.isArray(c && c.circIds) ? c.circIds.map(String).filter(circItem).slice(0, 4) : [];
     if (!cids.length && local.strong) cids = local.guide.slice(0, 2).map(x => x.g.id);
-    let libHit = false; if (!ids.length && !rolesQ && !cids.length) { try { libHit = !!(await libTextLoad()) && libSearch(q, 1).length > 0; } catch(e){} }
+    let libHit = false; if (!ids.length && !rolesQ && !cids.length) { try { libHit = !!(await libTextLoad()) && (await libSearchAsync(q, 1)).length > 0; } catch(e){} }
     if (!ids.length && !rolesQ && !cids.length && !libHit) { box.innerHTML = aiNotFoundHTML(q, !!(c && c.safety)); return; }
     if (cids.length && ids.length > 1) ids = ids.slice(0, 1);
     const maps = ids.map(id => P[id]);
@@ -1545,10 +1545,43 @@ async function aiAnswerRun(q){
     box.innerHTML = `<div class="note warn" style="margin-bottom:12px">🤖 ${esc(msg)}${AI.available() ? ` <button class="btn sm" data-act="ai-retry">נסו שוב</button>` : ''}</div>` + (AI.available() ? '' : answerHTML(answer(q)));
   }
 }
+/* ---- when the user's materials don't cover a question: ask before going to general knowledge ---- */
+function aiGeneralOfferHTML(q, full){
+  if (!AI.available()) return '';
+  return `<div class="note" style="margin-top:12px;display:flex;gap:10px;align-items:center;flex-wrap:wrap"><span>${full ? '🔎 לא מצאתי בחומרים שלך תשובה לשאלה הזו. לחפש גם בידע מקצועי כללי?' : '🔎 התשובה לא מספיקה? אפשר להשלים מידע מקצועי כללי.'}</span><button class="btn primary sm" data-act="ai-general" data-v="${esc(q)}">לחפש גם בידע כללי</button><span class="muted" style="font-size:13px">התשובה תסומן כ״לא מהחומרים שלך״</span></div><div id="aiGeneral"></div>`;
+}
+function aiGeneralPrompt(q){
+  return `אתה עוזר מקצועי ליועץ/ת חינוכי/ת ולצוות בבית ספר יסודי בישראל. השאלה לא נמצאה בחומרים הפנימיים של המשתמש, והוא ביקש במפורש להשלים מידע מקצועי כללי.
+ענה מהידע המקצועי הכללי שלך (ייעוץ חינוכי, CBT, עבודה עם צוות והורים, מדיניות משרד החינוך באופן כללי), והבא מקורות לדבריך: לכל פריט ציין בשדה src מקור מקצועי מוכר שעליו הוא נשען – ספר או מאמר (מחבר, שם, שנה), גישה/פרוטוקול מבוסס מחקר, ארגון מקצועי, או אתר רשמי (למשל אתר משרד החינוך / שפ״י, משרד הבריאות). ציין מקור רק אם אתה בטוח שהוא קיים ורלוונטי; אם אינך בטוח – כתוב ״מקור כללי – לבדיקה״. כללים: אל תמציא מספרי חוזרים, סעיפים, תאריכים, כתובות אינטרנט מדויקות או ציטוטים. כשמדובר בחובה או בנוהל של משרד החינוך – כתוב שיש לוודא בחוזר המנכ״ל העדכני או מול הפיקוח/השפ״ח. הפרד בין הטיפולי/חינוכי לבין המשמעתי/מסגרתי/מנהלי.
+
+מי שואל/ת: ${askerOf().label}
+השאלה: """${q}"""
+
+כתוב בעברית פשוטה ומעשית. השב אך ורק ב-JSON:
+{"headline": "משפט אחד – השורה התחתונה", "therapeutic": [{"t": "", "d": "", "src": "מקור מקצועי מוכר"}], "framework": [{"t": "", "d": "", "src": "מקור", "verify": "איפה כדאי לוודא (בלי להמציא מספרים)"}], "sources": ["רשימת המקורות שהוזכרו – מחבר, שם, שנה / גוף רשמי"], "caution": "מה לא ודאי / מה חשוב לבדוק", "safety": false}`;
+}
+async function aiGeneralRun(q){
+  const box = $('#aiGeneral'); if (!box) return;
+  box.innerHTML = `<div class="panel"><p class="muted" style="margin:0">🤖 Claude כותב תשובה מהידע המקצועי הכללי…</p></div>`;
+  box.scrollIntoView({behavior: 'smooth', block: 'start'});
+  try {
+    const A = await AI.ask(aiGeneralPrompt(q), {});
+    const li = (arr, f) => (Array.isArray(arr) ? arr : []).map(s => `<li><b>${esc(s.t || '')}:</b> ${esc(s.d || '')}${s.src ? `<div style="font-size:13px">📚 מקור: ${esc(s.src)}</div>` : ''}${f && s.verify ? `<div class="muted" style="font-size:13px">🔍 לוודא: ${esc(s.verify)}</div>` : ''}</li>`).join('');
+    box.innerHTML = `<div class="panel" style="border:2px dashed var(--accent)"><h3>🌐 מידע מקצועי כללי – לא מהחומרים שלך</h3>
+      <p class="note warn" style="margin:0 0 10px">התשובה הזו אינה מבוססת על מפות הטיפול, החוזרים או הספרייה שבאתר, אלא על הידע הכללי של Claude. המקורות שהוא מציין הם מהידע שלו ולא נבדקו מול האינטרנט – חשוב לוודא לפני שמסתמכים עליהם.</p>
+      ${A && A.headline ? `<p style="margin:0 0 10px"><b>${esc(A.headline)}</b></p>` : ''}
+      <div class="split2"><div class="half ther"><h4>🧠 טיפולי / חינוכי</h4><ol style="margin:0;padding-inline-start:20px">${li(A && A.therapeutic) || '<li class="muted">—</li>'}</ol></div>
+      <div class="half fram"><h4>📋 משמעתי / מסגרתי / מנהלי</h4><ol style="margin:0;padding-inline-start:20px">${li(A && A.framework, true) || '<li class="muted">—</li>'}</ol></div></div>
+      ${A && Array.isArray(A.sources) && A.sources.length ? `<div style="margin-top:10px"><b>📚 מקורות (מהידע של Claude – מומלץ לבדוק):</b><ul class="clean">${A.sources.map(x => `<li>${esc(x)}</li>`).join('')}</ul></div>` : ''}
+      ${A && A.caution ? `<div class="note" style="margin-top:10px">⚠️ ${esc(A.caution)}</div>` : ''}</div>`;
+  } catch(e){
+    box.innerHTML = `<div class="note warn">🤖 ${esc(AI_ERR[(e && e.code) || 'upstream_error'] || AI_ERR.upstream_error)}</div>`;
+  }
+}
 function aiNotFoundHTML(q, safety){
   return (safety ? answerHTML({safety: true, top: null, others: [], snip: [], intents: [], roles: false, q}).split('<div class="panel"><h3>🤔')[0] : '') +
     `<div class="panel"><h3>🤔 השאלה לא מכוסה במפות הטיפול</h3><p style="margin:0 0 8px">Claude קרא את השאלה ולא מצא מפה שעונה עליה. כדי לא לתת תשובה לא מדויקת, אין כאן ניחוש.</p>
-    <p class="muted" style="margin:0;font-size:14px">אפשר לנסח שוב (מי מתקשה, מה קורה, מתי), או לעיין ברשימת המפות.</p><div class="actions" style="margin-top:12px"><a class="btn" href="#/problems">🧭 כל המפות</a><a class="btn" href="#/roles">👥 מי פונה למי</a></div></div>`;
+    <p class="muted" style="margin:0;font-size:14px">אפשר לנסח שוב (מי מתקשה, מה קורה, מתי), או לעיין ברשימת המפות.</p><div class="actions" style="margin-top:12px"><a class="btn" href="#/problems">🧭 כל המפות</a><a class="btn" href="#/roles">👥 מי פונה למי</a></div></div>` + aiGeneralOfferHTML(q, true);
 }
 const TAB_WORDS = [['סימנים','overview'],['הערכה','assess'],['מטרות','overview'],['מפגש','sessions'],['טכניקות','techniques'],['טכניקה','techniques'],['הורים','partners'],['צוות','partners'],['מתי להפנות','overview'],['המשגה','overview'],['מי עושה מה','roles']];
 function aiSrcHTML(s){
@@ -1587,7 +1620,8 @@ function aiAnswerHTML(q, A, maps, rolesQ){  if (!A || typeof A !== 'object') ret
     const lib = libFor(q, p);
     if (lib.length) h += `<div class="panel"><h3>📚 חומרים מהספרייה שלך</h3><div class="list">${lib.map(libItem).join('')}</div></div>`;
   }
-  h += `<p class="muted" style="font-size:13px">התשובה נכתבה על ידי Claude מתוך מפות הטיפול, המדריך וחוזרי המנכ״ל שבאפליקציה בלבד. היא כלי עזר, ושיקול הדעת המקצועי נשאר של השואל/ת. <a href="#" data-act="ai-fast">להצגת התשובה מהמנוע המהיר</a></p>`;
+  h += aiGeneralOfferHTML(q, false);
+  h += `<p class="muted" style="font-size:13px">התשובה נכתבה על ידי Claude מתוך מפות הטיפול, המדריך, חוזרי המנכ״ל והספרייה שבאפליקציה בלבד. היא כלי עזר, ושיקול הדעת המקצועי נשאר של השואל/ת. <a href="#" data-act="ai-fast">להצגת התשובה מהמנוע המהיר</a></p>`;
   return h;
 }
 
@@ -1764,23 +1798,62 @@ function circSrcView(R){
 }
 /* ================= library full-text search (text extracted from the files) ================= */
 let libTxtP = null;
+const LIB_SHARDS = {};
+async function libFetchText(rel, assetUrl){
+  if (assetUrl) { const r = await fetch(assetUrl); if (!r.ok) throw new Error('asset ' + r.status); return await r.text(); }
+  if (WEB && !ARTIFACT && !LITE && Cloud.status === 'ok') return await Cloud.getText(rel);
+  return null;
+}
+// the whole library: full text on the computer; an index + 48 packages (loaded on demand) on the phone and the Claude page
 function libTextLoad(){
-  if (window.LIB_TEXT) return Promise.resolve(window.LIB_TEXT);
+  if (window.LIB_TEXT || window.LIB_IDX) return Promise.resolve(window.LIB_TEXT || window.LIB_IDX);
   if (libTxtP) return libTxtP;
   libTxtP = (async () => {
     try {
-      if (WEB && !ARTIFACT && !LITE) { if (Cloud.status === 'ok') { const t = await Cloud.getText('app-libtext.js'); if (t) new Function(t)(); } }
-      else if (!WEB) await new Promise(r => { const sc = document.createElement('script'); sc.src = 'lib-text.js'; sc.onload = r; sc.onerror = r; document.head.appendChild(sc); });
+      if (!WEB && !ARTIFACT && !LITE) await new Promise(r => { const sc = document.createElement('script'); sc.src = 'lib-text.js'; sc.onload = r; sc.onerror = r; document.head.appendChild(sc); });
+      else { const t = await libFetchText('libtext/libidx.js', window.LIB_ASSETS && window.LIB_ASSETS.idx); if (t) new Function(t)(); }
     } catch(e){}
-    if (!window.LIB_TEXT) libTxtP = null;
-    return window.LIB_TEXT || null;
+    if (!window.LIB_TEXT && !window.LIB_IDX) libTxtP = null;
+    return window.LIB_TEXT || window.LIB_IDX || null;
   })();
   return libTxtP;
 }
+async function libShard(k){
+  if (LIB_SHARDS[k]) return LIB_SHARDS[k];
+  const name = 'libshard_' + String(k).padStart(2, '0') + '.js';
+  const t = await libFetchText('libtext/' + name, window.LIB_ASSETS && window.LIB_ASSETS.shards && window.LIB_ASSETS.shards[k]);
+  if (t) { window.__libShard = (i, arr) => { LIB_SHARDS[i] = arr; }; new Function(t)(); }
+  return LIB_SHARDS[k] || [];
+}
+async function libSearchAsync(q, n = 6, perFile = 2){
+  await libTextLoad();
+  if (window.LIB_TEXT) return libSearch(q, n, perFile);
+  const I = window.LIB_IDX; if (!I) return [];
+  const terms = [...new Set(toks(q))].filter(t => t.length >= 3).slice(0, 9);
+  if (!terms.length) return [];
+  const cnt = new Array(I.n).fill(0);
+  const hits = new Array(I.n).fill(0);
+  for (const t of terms) { const s = new Set(); for (const v of termVars(t)) for (const c of (I.idx[v] || '')) s.add(c.charCodeAt(0) - 48); const w = s.size ? Math.log(1 + I.n / s.size) : 0; s.forEach(k => { cnt[k] += w; hits[k]++; }); }
+  const need = Math.min(2, terms.length);
+  const pick = cnt.map((c, k) => [k, c]).filter(x => hits[x[0]] >= need).sort((a, b) => b[1] - a[1]).slice(0, 8).map(x => x[0]);
+  if (!pick.length) return [];
+  const arrs = await Promise.all(pick.map(libShard));
+  const T = {files: I.files, chunks: arrs.flat().map(c => [c[1], c[2], c[3]])};
+  return libSearch(q, n, perFile, T);
+}
+async function libFileChunks(id){
+  await libTextLoad();
+  if (window.LIB_TEXT) { const T = window.LIB_TEXT, fi = T.files.findIndex(f => f[0] === id); return {f: T.files[fi], chunks: T.chunks.filter(c => c[0] === fi)}; }
+  const I = window.LIB_IDX; if (!I) return {f: null, chunks: []};
+  const fi = I.files.findIndex(f => f[0] === id); if (fi < 0) return {f: null, chunks: []};
+  const ks = [...(I.fsh[fi] || '')].map(c => c.charCodeAt(0) - 48);
+  const arrs = await Promise.all(ks.map(libShard));
+  return {f: I.files[fi], chunks: arrs.flat().filter(c => c[1] === fi).map(c => [c[1], c[2], c[3]])};
+}
 const FINALS = {'כ':'ך','מ':'ם','נ':'ן','פ':'ף','צ':'ץ'};
 const termVars = t => { const v = [t]; const l = t.slice(-1); if (FINALS[l]) v.push(t.slice(0, -1) + FINALS[l]); return v; };
-function libSearch(q, n = 6, perFile = 2){
-  const T = window.LIB_TEXT; if (!T) return [];
+function libSearch(q, n = 6, perFile = 2, T0){
+  const T = T0 || window.LIB_TEXT; if (!T) return [];
   const terms = [...new Set(toks(q))].filter(t => t.length >= 3).slice(0, 9);
   if (!terms.length) return [];
   const V = terms.map(termVars), C = T.chunks, N = C.length, df = new Array(terms.length).fill(0), hits = [];
@@ -1823,15 +1896,16 @@ async function libFill(q){
   box.innerHTML = `<p class="muted" style="font-size:13px">📚 מחפש בתוך קובצי הספרייה…</p>`;
   const T = await libTextLoad();
   const b2 = $('#libPanel'); if (!b2) return;
-  b2.innerHTML = T ? (libPanelHTML(libSearch(q, 6)) || '') : '';
+  b2.innerHTML = T ? (libPanelHTML(await libSearchAsync(q, 6)) || '') : '';
 }
+const LIB_SRC_CACHE = {};
 function libSrcView(R){
   const id = R.id, page = +R.sub || 1, snip = R.x && R.x !== '-' ? R.x : '';
-  const T = window.LIB_TEXT;
-  if (!T) { libTextLoad().then(t => { if (t && route().r === 'libsrc') render(); }); return {title: 'מקור', html: `<div class="panel empty">⏳ טוען את טקסט הספרייה…</div>`}; }
-  const fi = T.files.findIndex(f => f[0] === id); const f = T.files[fi];
+  const cached = LIB_SRC_CACHE[id];
+  if (!cached) { libFileChunks(id).then(r => { LIB_SRC_CACHE[id] = r; if (route().r === 'libsrc') render(); }).catch(() => {}); return {title: 'מקור', html: `<div class="panel empty">⏳ טוען את הקטע מהספרייה…</div>`}; }
+  const f = cached.f;
   if (!f) return {title: 'מקור', html: `<div class="panel empty">הקובץ לא נמצא באינדקס.</div>`};
-  const mine = T.chunks.filter(c => c[0] === fi);
+  const mine = cached.chunks;
   const near = mine.filter(c => Math.abs(c[1] - page) <= 1);
   const qt = new Set(toks(snip).flatMap(termVars));
   let best = null; (near.length ? near : mine).forEach(c => { c[2].split('\n').forEach((l, i, arr) => { const tk = toks(l); const hits = tk.filter(t => [...qt].some(v => v.startsWith(t) || t.startsWith(v))).length; if (hits && (!best || hits > best.hits)) best = {c, i, hits}; }); });
@@ -1915,7 +1989,7 @@ async function aiCircOnlyRun(q){
     const local = circSearch(q, {nGuide: 4, nText: 10});
     let cids = Array.isArray(c && c.circIds) ? c.circIds.map(String).filter(circItem).slice(0, 4) : [];
     if (!cids.length) cids = local.guide.slice(0, 2).map(x => x.g.id);
-    if (!cids.length && !local.text.length) { box.innerHTML = `<div class="panel"><h3>🤔 החוזרים לא עונים על השאלה הזו</h3><p class="muted" style="margin:0">Claude לא מצא בחוזרי המנכ״ל מענה, ולכן אין כאן ניחוש.</p></div>`; return; }
+    if (!cids.length && !local.text.length) { box.innerHTML = `<div class="panel"><h3>🤔 החוזרים לא עונים על השאלה הזו</h3><p class="muted" style="margin:0">Claude לא מצא בחוזרי המנכ״ל מענה, ולכן אין כאן ניחוש.</p></div>` + aiGeneralOfferHTML(q, true); return; }
     busy(`מצאתי: ${cids.map(id => '📜 ' + circItem(id).title).join(' · ')}. כותב תשובה מתוך החוזרים בלבד…`);
     const mat = await aiCircMaterial(q, [], false, cids, local, true);
     const ans = await AI.ask(aiCircOnlyPrompt(q, mat), {signal: aiCtl.signal});
@@ -2189,6 +2263,7 @@ document.addEventListener('click', async e => {
     case 'circkind': circKind = d.v; circQ = ''; render(); break;
     case 'back': history.back(); break;
     case 'circ-ai': if (AI.available()) aiCircOnlyRun(d.v); break;
+    case 'ai-general': if (AI.available()) aiGeneralRun(d.v); break;
     case 'libpdf': { const pg = +d.p || 0, f = d.path; if (WEB) Cloud.openFileAt(f, pg); else viewer(d.title, href(f) + (pg && /\.pdf$/i.test(f) ? '#page=' + pg : ''), ftype(f)[0]); break; }
     case 'circpdf': { const f = circFile(d.c), pg = +d.p || 0; if (!f) break; if (WEB) Cloud.openFileAt(f, pg); else viewer(circMeta(d.c).title, href(f) + (pg ? '#page=' + pg : ''), ftype(f)[0]); break; }
     case 'libopen': if (e.target.closest('[data-act="attopen"]')) return; if (WEB) Cloud.openFile(d.pdf); else viewer(d.title, href(d.pdf), 'pdf'); break;
