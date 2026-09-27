@@ -1617,6 +1617,7 @@ function circIndex(){
   return CIRC_IDX = {G, T, dfG, dfT, avg, nG: G0.length, nT: T0.length};
 }
 function circSearch(q, opt = {}){
+  q = String(q).replace(/ו?ואטס\s?אפ|ו?וטסאפ|ו?ואצאפ|ו?וצאפ|whatsapp/gi, 'וואטסאפ');
   const X = circIndex(), nq = norm(q), qt = [...new Set(toks(q))];
   const idfG = t => X.dfG[t] ? Math.log(1 + X.G.length / X.dfG[t]) : 2.5;
   const qIdf = qt.reduce((n, t) => n + idfG(t), 0) || 1;
