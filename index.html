@@ -679,7 +679,7 @@ function render(){
   if (out.after) out.after();
   ui();
 }
-window.addEventListener('hashchange', () => { aiFast = true; if (aiCtl) aiCtl.abort(); render(); window.scrollTo({top:0}); });
+window.addEventListener('hashchange', () => { aiFast = !ARTIFACT; if (aiCtl) aiCtl.abort(); render(); window.scrollTo({top:0}); });
 
 /* ================= shared pieces ================= */
 function problemCard(p, i){
@@ -1264,7 +1264,7 @@ function answerHTML(A){
   return h;
 }
 const ASK_EXAMPLES = ['ילד בכיתה ב׳ בוכה כל בוקר בשער ולא מוכן להיפרד מאמא','מה אומרים למחנכת על ילד שמתפרץ ומכה בהפסקות','ילדה עם כאבי בטן לפני מבחנים והולכת לאחות','איך מתחילים מפגש ראשון עם ילד שיש לו טיקים','תלמיד שמחרימים אותו בקבוצת הוואטסאפ של הכיתה','ילד שאבא שלו נהרג – מה עושים בבית הספר','אילו שאלונים יש לחרדה','מתי להפנות ילד עם הרטבה לרופא','תלמיד קילל מורה באמצע השיעור – מה עושים?','מתי מותר להשעות תלמיד ומי מחליט','אבא גרוש מבקש לקבל את התעודה','ילד כתב במחברת שהוא רוצה למות – מה חובה לעשות'];
-let lastAsk = '', aiFast = true;
+let lastAsk = '', aiFast = !(window.claude && typeof window.claude.use === 'function');
 function ask(R){
   const q = R.id ? R.id : lastAsk;
   const hist = ls.get('cbtapp.asks', []);
@@ -1618,9 +1618,18 @@ function circIndex(){
   const avg = T.reduce((n, d) => n + d.len, 0) / (T.length || 1);
   return CIRC_IDX = {G, T, dfG, dfT, avg, nG: G0.length, nT: T0.length};
 }
+// the main actor(s) of a sentence: child / parent / staff
+function circSubjects(t){
+  const n = norm(t), out = new Set();
+  if (/\s[והבלמשכ]{0,2}(ילד|ילדה|ילדים|תלמיד|תלמידה|תלמידים|הבן|הבת|בנו|בתו|נער|נערה|חניך)\s/.test(n)) out.add('child');
+  if (/\s[והבלמשכ]{0,2}(הורה|הורים|אמא|אבא|האם|האב|אב|אם|הוריו|הוריה|משמורן|גרוש|גרושה|גרושים)\s/.test(n)) out.add('parent');
+  if (/\s[והבלמשכ]{0,2}(מורה|מורים|מורות|מחנך|מחנכת|מחנכים|גננת|איש צוות|אנשי צוות|עובד הוראה|עובדי הוראה|צוות|סייעת|יועץ|יועצת|מנהל|מנהלת)\s/.test(n)) out.add('staff');
+  return out;
+}
 function circSearch(q, opt = {}){
   q = String(q).replace(/ו?ואטס\s?אפ|ו?וטסאפ|ו?ואצאפ|ו?וצאפ|whatsapp/gi, 'וואטסאפ');
   const X = circIndex(), nq = norm(q), qt = [...new Set(toks(q))];
+  const subj = circSubjects(q);
   const idfG = t => X.dfG[t] ? Math.log(1 + X.G.length / X.dfG[t]) : 2.5;
   const qIdf = qt.reduce((n, t) => n + idfG(t), 0) || 1;
   const spedQ = /חינוך מיוחד|חנ״מ|שילוב|משולב|גן |גננת|ילדי גן|לקות|אוטיזם|על הרצף|כיתה מקדמת|תקשורת|מוגבלות|ועדת/.test(q);
@@ -1631,6 +1640,8 @@ function circSearch(q, opt = {}){
     const cov = Math.min(1, tok / qIdf); s += 10 * cov;
     if (opt.circ && g.circ === opt.circ) s *= 1.3;
     if (g.circ === 'c04') s *= 1.08;
+    // who is the question about? a situation about someone else (e.g. "parents refuse" when the CHILD refuses) is pushed down
+    if (subj.size) { const gs = circSubjects(g.title); if (gs.size && ![...gs].some(x => subj.has(x))) s *= 0.3; }
     if (!spedQ && (/^c04d-(sped|gan)/.test(g.id) || g.kind === 'special-ed' && g.circ === 'c04')) s *= 0.75;
     return {g, s, why, cov};
   }).filter(x => x.s >= 4).sort((a, b) => b.s - a.s);
@@ -1685,6 +1696,7 @@ function circTextHTML(list, qt){
 }
 /* the circulars block inside an answer */
 function circAnswerHTML(C, q){
+  if (C) C = {...C, guide: C.guide.filter((x, i) => x.why.length > 0 || x.cov >= 0.62 || (i === 0 && x.s >= 7))};
   if (!C || !C.guide.length) return '';
   const [first, ...rest] = C.guide;
   const second = rest[0] && rest[0].s >= first.s * 0.8 ? rest.shift() : null;
@@ -1842,12 +1854,18 @@ function circAskView(R){
   let h = `<div class="panel" style="margin-top:4px;border-inline-start:5px solid var(--brand)"><h3>📜 שאלה על חוזרי המנכ״ל בלבד</h3>${askerChips()}${circAskFormHTML(q)}
     <p class="muted" style="margin:10px 0 0;font-size:13.5px">התשובה כאן נשענת <b>רק</b> על ${circList().length} חוזרי המנכ״ל – בלי מפות הטיפול ובלי הספרייה – בהפרדה בין הטיפולי למשמעתי / מסגרתי / מנהלי, ועם קישור לסעיף המדויק בכל פריט.</p></div>`;
   if (!q) return {title: 'שאלה על החוזרים', html: h + `<div class="actions"><a class="btn" href="#/circ">← לכל החוזרים</a></div>`, after: circAskAfter};
-  const C = circSearch(q, {nGuide: 8, nText: 6});
+  const C0 = circSearch(q, {nGuide: 8, nText: 6});
+  // only situations that really match (a phrase that fits, or most of the question's words); weak word-overlaps are hidden
+  const good = C0.guide.filter(x => x.why.length > 0 || x.cov >= 0.62);
+  const weak = C0.guide.filter(x => !good.includes(x)).slice(0, 4);
+  const C = {...C0, guide: good, text: good.length ? C0.text : []};
   let claudeEnd = '';
-  if (AI.available()) claudeEnd += `<div class="note" style="margin-bottom:12px;display:flex;gap:10px;align-items:center;flex-wrap:wrap"><span>🤖 התשובה לא מספיקה?</span><button class="btn primary sm" data-act="circ-ai" data-v="${esc(q)}">🤖 תשובה מלאה מ-Claude – רק מהחוזרים</button><span class="muted" style="font-size:13px">רק בלחיצה – נספר במכסת המנוי</span></div><div id="circAi"></div>`;
+  const autoAI = ARTIFACT && AI.available() && !aiFast;
+  if (autoAI) h += '<div id="circAi"></div><h2 class="sec">⚡ ומה מצא המנוע המהיר</h2>';
+  if (AI.available() && !autoAI) claudeEnd += `<div class="note" style="margin-bottom:12px;display:flex;gap:10px;align-items:center;flex-wrap:wrap"><span>🤖 התשובה לא מספיקה?</span><button class="btn primary sm" data-act="circ-ai" data-v="${esc(q)}">🤖 תשובה מלאה מ-Claude – רק מהחוזרים</button><span class="muted" style="font-size:13px">רק בלחיצה – נספר במכסת המנוי</span></div><div id="circAi"></div>`;
   const askClaude = !AI.available() && !ARTIFACT ? `<a class="btn primary sm" href="https://claude.ai/artifact/VR9R29KShiqhmHX7NTqbjT" target="_blank" rel="noopener" data-act="copyq" data-v="${esc(q)}">🤖 שאל את Claude</a>` : '';
   if (askClaude) claudeEnd += `<div class="note" style="margin-bottom:12px;display:flex;gap:10px;align-items:center;flex-wrap:wrap"><span>🤖 התשובה לא מספיקה? אפשר לשאול את Claude עצמו.</span>${askClaude}<span class="muted" style="font-size:13px">השאלה מועתקת. בעמוד שנפתח נכנסים ל״חוזרי מנכ״ל״, מדביקים בתיבה ולוחצים ״תשובה מלאה מ-Claude – רק מהחוזרים״</span></div>`;
-  if (!C.guide.length && !C.text.length) h += `<div class="panel empty">לא מצאתי בחוזרים תשובה לשאלה הזו. אפשר לנסח אחרת, או לשאול את Claude בתחתית הדף.</div>`;
+  if (!C.guide.length && !C.text.length) h += `<div class="panel"><h3>🤔 לא מצאתי בחוזרים התייחסות ישירה לשאלה הזו</h3><p style="margin:0">כדי לא לתת תשובה לא מדויקת, לא מוצגים כאן מצבים שרק דומים במילים. אפשר לנסח אחרת, או לשאול את Claude בתחתית הדף – הוא קורא את השאלה ומבין את ההקשר.</p>${weak.length ? `<details style="margin-top:10px"><summary class="muted">מצבים שאולי קשורים (התאמה חלשה)</summary><div class="list" style="margin-top:8px">${weak.map(x => circRowHTML(x.g)).join('')}</div></details>` : ''}</div>`;
   else {
     const top = C.guide[0] ? C.guide[0].s : 0;
     const strong = C.guide.filter((x, i) => i === 0 || x.s >= top * 0.55).slice(0, 4);
@@ -1859,7 +1877,7 @@ function circAskView(R){
   }
   h += claudeEnd;
   h += `<div class="actions"><a class="btn" href="#/circ">← לכל החוזרים</a></div>`;
-  return {title: 'שאלה על החוזרים', html: h, after: circAskAfter};
+  return {title: 'שאלה על החוזרים', html: h, after(){ circAskAfter(); if (autoAI) aiCircOnlyRun(q); }};
 }
 function aiCircOnlyClassify(q){
   return `אתה מסווג שאלות של צוות בית ספר יסודי בישראל לפי ״מצבים״ מתוך חוזרי מנכ״ל של משרד החינוך.
@@ -2206,7 +2224,7 @@ document.addEventListener('click', async e => {
     case 'delmeasure': e.preventDefault(); if (await uiConfirm('למחוק את הציון?')) { s.measures = s.measures.filter(x => x.id !== d.id); save(); render(); } break;
     case 'delwork': if (await uiConfirm('למחוק?')) { s[d.k] = s[d.k].filter(x => x.id !== d.id); save(); render(); } break;
     case 'toolsave': toolSave(d.k); break;
-    case 'asker': ASKER = d.v; ls.set('cbtapp.asker', ASKER); aiFast = true; render(); break;
+    case 'asker': ASKER = d.v; ls.set('cbtapp.asker', ASKER); aiFast = !ARTIFACT; render(); break;
     case 'copyq': try { navigator.clipboard.writeText(d.v).then(() => toast('השאלה הועתקה – הדביקו אותה בעמוד של Claude'), () => {}); } catch(err){} break;
     case 'ai-stop': if (aiCtl) aiCtl.abort(); break;
     case 'ai-retry': if (lastAsk || route().id) aiAnswerRun(route().id || lastAsk); break;
