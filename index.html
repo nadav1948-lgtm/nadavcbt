@@ -1279,7 +1279,7 @@ function ask(R){
   const useAI = q && AI.available() && !aiFast;
   if (useAI) h += '<div id="aiPanel"></div>';
   let claudeBox = '';
-  if (q && !useAI && !AI.available() && !ARTIFACT) claudeBox += `<div class="note" style="margin-bottom:12px;display:flex;gap:10px;align-items:center;flex-wrap:wrap"><span>🤖 התשובה לא מספיקה? אפשר לשאול את Claude עצמו.</span><a class="btn primary sm" href="https://claude.ai/artifact/VR9R29KShiqhmHX7NTqbjT" target="_blank" rel="noopener" data-act="copyq" data-v="${esc(q)}">שאל את Claude</a><span class="muted" style="font-size:13px">השאלה מועתקת – מדביקים אותה בעמוד שנפתח</span></div>`;
+  if (q && !useAI && !AI.available() && !ARTIFACT) claudeBox += `<div class="note" style="margin-bottom:12px;display:flex;gap:10px;align-items:center;flex-wrap:wrap"><span>🤖 התשובה לא מספיקה? אפשר לשאול את Claude בפרויקט ״ייעוץ חינוכי״.</span><a class="btn primary sm" href="https://claude.ai/code/project/chan_01CFpYoDVdzGd2AtMmFxgTNk" target="_blank" rel="noopener" data-act="copyq" data-v="${esc(q)}">שאל את Claude בפרויקט</a><span class="muted" style="font-size:13px">השאלה מועתקת. בפרויקט שנפתח מדביקים אותה בתיבת השאלה ושולחים. נספר במנוי.</span></div>`;
   if (q && !useAI && AI.available()) claudeBox += `<div class="note" style="margin-bottom:12px;display:flex;gap:10px;align-items:center;flex-wrap:wrap"><span>🤖 התשובה לא מספיקה?</span><button class="btn primary sm" data-act="ai-go">🤖 תשובה מלאה מ-Claude</button><span class="muted" style="font-size:13px">רק בלחיצה – נספר במכסת המנוי</span></div>`;
   if (q && !useAI && semAvailable() && !SEM_Q[q]) h += '<p id="semNote" class="muted" style="font-size:13px;margin:0 0 10px"></p>';
   if (q && !useAI) h += (AI.status === 'off' && AI.err ? `<div class="note warn" style="margin-bottom:12px">🤖 ${esc(AI_ERR[AI.err] || 'Claude לא זמין כרגע – התשובה מהמנוע המהיר.')}</div>` : '') + answerHTML(answer(q));
@@ -2033,8 +2033,8 @@ function circAskView(R){
   const autoAI = ARTIFACT && AI.available() && !aiFast;
   if (autoAI) h += '<div id="circAi"></div><h2 class="sec">⚡ ומה מצא המנוע המהיר</h2>';
   if (AI.available() && !autoAI) claudeEnd += `<div class="note" style="margin-bottom:12px;display:flex;gap:10px;align-items:center;flex-wrap:wrap"><span>🤖 התשובה לא מספיקה?</span><button class="btn primary sm" data-act="circ-ai" data-v="${esc(q)}">🤖 תשובה מלאה מ-Claude – רק מהחוזרים</button><span class="muted" style="font-size:13px">רק בלחיצה – נספר במכסת המנוי</span></div><div id="circAi"></div>`;
-  const askClaude = !AI.available() && !ARTIFACT ? `<a class="btn primary sm" href="https://claude.ai/artifact/VR9R29KShiqhmHX7NTqbjT" target="_blank" rel="noopener" data-act="copyq" data-v="${esc(q)}">🤖 שאל את Claude</a>` : '';
-  if (askClaude) claudeEnd += `<div class="note" style="margin-bottom:12px;display:flex;gap:10px;align-items:center;flex-wrap:wrap"><span>🤖 התשובה לא מספיקה? אפשר לשאול את Claude עצמו.</span>${askClaude}<span class="muted" style="font-size:13px">השאלה מועתקת. בעמוד שנפתח נכנסים ל״חוזרי מנכ״ל״, מדביקים בתיבה ולוחצים ״תשובה מלאה מ-Claude – רק מהחוזרים״</span></div>`;
+  const askClaude = !AI.available() && !ARTIFACT ? `<a class="btn primary sm" href="https://claude.ai/code/project/chan_01CFpYoDVdzGd2AtMmFxgTNk" target="_blank" rel="noopener" data-act="copyq" data-v="${esc(q + '\nענה רק מתוך חוזרי המנכ״ל שבקבצי הפרויקט, עם מקור לכל טענה.')}">🤖 שאל את Claude בפרויקט</a>` : '';
+  if (askClaude) claudeEnd += `<div class="note" style="margin-bottom:12px;display:flex;gap:10px;align-items:center;flex-wrap:wrap"><span>🤖 התשובה לא מספיקה? אפשר לשאול את Claude בפרויקט ״ייעוץ חינוכי״.</span>${askClaude}<span class="muted" style="font-size:13px">השאלה מועתקת, עם בקשה לענות רק מהחוזרים. בפרויקט שנפתח מדביקים אותה בתיבת השאלה ושולחים. נספר במנוי.</span></div>`;
   if (!C.guide.length && !C.text.length) h += `<div class="panel"><h3>🤔 לא מצאתי בחוזרים התייחסות ישירה לשאלה הזו</h3><p style="margin:0">כדי לא לתת תשובה לא מדויקת, לא מוצגים כאן מצבים שרק דומים במילים. אפשר לנסח אחרת, או לשאול את Claude בתחתית הדף – הוא קורא את השאלה ומבין את ההקשר.</p>${weak.length ? `<details style="margin-top:10px"><summary class="muted">מצבים שאולי קשורים (התאמה חלשה)</summary><div class="list" style="margin-top:8px">${weak.map(x => circRowHTML(x.g)).join('')}</div></details>` : ''}</div>`;
   else {
     const top = C.guide[0] ? C.guide[0].s : 0;
@@ -2397,7 +2397,7 @@ document.addEventListener('click', async e => {
     case 'delwork': if (await uiConfirm('למחוק?')) { s[d.k] = s[d.k].filter(x => x.id !== d.id); save(); render(); } break;
     case 'toolsave': toolSave(d.k); break;
     case 'asker': ASKER = d.v; ls.set('cbtapp.asker', ASKER); aiFast = !ARTIFACT; render(); break;
-    case 'copyq': try { navigator.clipboard.writeText(d.v).then(() => toast('השאלה הועתקה – הדביקו אותה בעמוד של Claude'), () => {}); } catch(err){} break;
+    case 'copyq': try { navigator.clipboard.writeText(d.v).then(() => toast('השאלה הועתקה – הדביקו אותה בפרויקט של Claude'), () => {}); } catch(err){} break;
     case 'ai-stop': if (aiCtl) aiCtl.abort(); break;
     case 'ai-retry': if (lastAsk || route().id) aiAnswerRun(route().id || lastAsk); break;
     case 'ai-fast': e.preventDefault(); aiFast = true; render(); break;
