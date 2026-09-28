@@ -2948,7 +2948,7 @@ function addPlanFrom(s, pid){
 
 /* ================= therapeutic games: one integrative game per treatment problem, each with its own link (#/game/<id>) =================
    Content lives in app/games-data.js (window.GAMES). A game = stages; each stage has a type: sort · match · story · detective · catch · ladder · wheel · board */
-const GAMES = () => window.GAMES || [];
+const GAMES = () => { const m = new Map(); (window.GAMES || []).forEach(g => m.set(g.id, g)); return [...m.values()]; };   // content may load twice on the web – one card per game
 const GAME = id => GAMES().find(g => g.id === id);
 let GS = {};                                   // progress per game during this visit
 let GTIMERS = [];                              // running timers of the catch game – cleared whenever the view changes
