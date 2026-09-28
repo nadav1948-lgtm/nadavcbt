@@ -1778,7 +1778,7 @@ function circLocate(cid, sec, snip){
   const scan = list => { let best = null; list.forEach(x => segs(x.t).forEach(g => { const txt = x.t.substr(g.off, g.len); const tk = toks(txt); if (tk.length < 2) return; const hits = new Set(tk.filter(t => qt.has(t))).size; const sc = hits + hits / (tk.length + 4); if (hits && (!best || sc > best.sc)) best = {x, off: g.off, len: txt.trimEnd().length, sc, hits}; })); return best; };
   let best = qt.size ? scan(cands) : null;
   if ((!best || best.hits < 2) && qt.size) { const b2 = scan(all); if (b2 && (!best || b2.hits > best.hits + 1)) { best = b2; cands = [b2.x]; } }
-  const chunk = best ? best.x : cands[0] || all[0];
+  const chunk = best ? best.x : cands.find(x => x.t.length > 300) || cands[0] || all[0];   // skip table-of-contents stubs
   return {chunk, best, all, cands};
 }
 const pageAt = (x, off) => { let p = x.p || 0; (x.pg || []).forEach(([o, pp]) => { if (o <= off) p = pp; }); return p; };
