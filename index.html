@@ -400,6 +400,120 @@ details.panel>summary{cursor:pointer}
 .cite:hover{text-decoration:underline}
 mark#hl{background:#ffda2a;color:#171717;padding:2px 3px;border-radius:4px;box-shadow:0 0 0 3px rgba(255,218,42,.35)}
 
+/* ---------- therapeutic games ---------- */
+.banner.game{margin-bottom:12px}
+.gstages{display:flex;gap:8px;flex-wrap:wrap;margin:0 0 12px}
+.gst{border:2px solid var(--line);background:var(--panel);color:var(--ink);border-radius:999px;padding:8px 14px;font-size:15px;cursor:pointer;font-family:inherit}
+.gst b{display:inline-grid;place-items:center;width:22px;height:22px;border-radius:50%;background:var(--line);margin-inline-end:4px;font-size:13px}
+.gst.on{border-color:var(--brand-text);background:var(--brand-soft)}
+.gst.on b{background:var(--brand);color:#1f2937}
+.gguidebox summary{cursor:pointer;font-weight:700}
+.gguidebox h4{margin:12px 0 4px}
+.gstage{position:relative;overflow:hidden}
+.gguide{display:flex;align-items:flex-end;gap:10px;justify-content:center;margin:4px auto 14px;max-width:640px}
+.gface{flex:none;width:78px}
+.gface.big{width:120px}
+.kidmini{width:100%;height:auto;display:block;animation:k-idle 3.2s ease-in-out infinite}
+.kidmini .k-eyes{transform-box:fill-box;transform-origin:center;animation:k-blink 4.2s infinite}
+.kidmini .k-look{animation:k-look 6s ease-in-out infinite}
+.kidmini .k-tear{animation:k-fall 1.6s ease-in infinite}
+.kidmini .k-sweat{animation:k-fall 2s ease-in infinite}
+.kidmini .k-stars path{transform-box:fill-box;transform-origin:center;animation:k-twinkle 1.2s ease-in-out infinite}
+.gsay{position:relative;background:#fff;color:#1f2937;border:2px solid #e2e8f0;border-radius:18px;border-bottom-right-radius:4px;padding:10px 14px;font-size:17px;line-height:1.5;box-shadow:0 4px 14px rgba(15,23,42,.12);max-width:520px}
+.pop{animation:k-pop .45s ease}
+.gprog{height:10px;background:var(--line);border-radius:99px;overflow:hidden;max-width:520px;margin:0 auto 14px}
+.gprog i{display:block;height:100%;background:linear-gradient(90deg,#34d399,#22c55e);transition:width .5s}
+.gcard{max-width:520px;margin:0 auto 16px;background:linear-gradient(135deg,#fff7ed,#fef3c7);color:#1f2937;border:3px solid #fbbf24;border-radius:20px;padding:22px 18px;font-size:22px;font-weight:700;text-align:center;box-shadow:0 8px 22px rgba(15,23,42,.15);line-height:1.45}
+.gcard.clue{background:linear-gradient(135deg,#eff6ff,#e0e7ff);border-color:#818cf8}
+.gcard.ok{border-color:#22c55e;animation:g-ok .5s}
+.gcard.no{border-color:#f97316;animation:g-shake .45s}
+.gbins{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-bottom:12px}
+.gbin{--c:#60a5fa;border:3px solid var(--c);background:color-mix(in srgb,var(--c) 18%,var(--panel));color:var(--ink);border-radius:18px;padding:12px 16px;min-width:130px;font-size:17px;font-weight:700;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:4px;font-family:inherit;transition:transform .15s}
+.gbin span{font-size:28px}
+.gbin:hover:not(:disabled){transform:translateY(-3px)}
+.gbin:disabled{opacity:.55;cursor:default}
+.gmem{display:grid;grid-template-columns:repeat(auto-fill,minmax(120px,1fr));gap:10px;max-width:760px;margin:0 auto;perspective:900px}
+.gm{position:relative;height:120px;border:0;background:none;cursor:pointer;transform-style:preserve-3d;transition:transform .5s;padding:0;font-family:inherit}
+.gm.up{transform:rotateY(180deg)}
+.gm .f{position:absolute;inset:0;display:grid;place-items:center;border-radius:16px;backface-visibility:hidden;padding:8px;font-size:15px;font-weight:700;line-height:1.35;box-shadow:0 4px 12px rgba(15,23,42,.15)}
+.gm .back{background:linear-gradient(135deg,#6366f1,#8b5cf6);color:#fff;font-size:34px}
+.gm .front{transform:rotateY(180deg);background:#fff;color:#1f2937;border:3px solid #a5b4fc}
+.gm .front.b{border-color:#fcd34d;background:#fffbeb}
+.gm.got .front{border-color:#22c55e;background:#f0fdf4;animation:g-ok .5s}
+.gstory{display:flex;gap:14px;align-items:center;max-width:680px;margin:0 auto 16px;background:linear-gradient(135deg,#f0f9ff,#ecfeff);color:#1f2937;border-radius:22px;padding:16px;border:2px solid #bae6fd}
+.gtext{font-size:19px;line-height:1.6}
+.gchoices{display:grid;gap:10px;max-width:620px;margin:0 auto 12px}
+.gchoice{border:2px solid var(--line);background:var(--panel);color:var(--ink);border-radius:16px;padding:14px 16px;font-size:17px;text-align:start;cursor:pointer;font-family:inherit;transition:transform .15s,border-color .15s}
+.gchoice:hover{transform:translateX(-4px);border-color:var(--brand-text)}
+.gchoice.ok{border-color:#22c55e;background:color-mix(in srgb,#22c55e 14%,var(--panel))}
+.gchoice.no{border-color:#f97316;background:color-mix(in srgb,#f97316 12%,var(--panel))}
+.gcase{max-width:620px;margin:0 auto 14px;background:var(--bg);border:2px dashed var(--line);border-radius:16px;padding:12px 16px;font-size:16px;line-height:1.6}
+.gthought{margin-top:8px;background:#fff;color:#1f2937;border-radius:22px;padding:10px 14px;font-size:19px;font-weight:700;display:inline-block;box-shadow:0 3px 10px rgba(15,23,42,.12)}
+.gdet{max-width:620px;margin:0 auto}
+.gmeter{display:flex;align-items:center;gap:10px;max-width:420px;margin:0 auto 14px;font-weight:700}
+.gmeter .bar,.abcbar .bar{flex:1;height:18px;background:var(--line);border-radius:99px;overflow:hidden}
+.gmeter .bar i,.abcbar .bar i{display:block;height:100%;border-radius:99px;transition:width .9s cubic-bezier(.34,1.4,.64,1),background .6s}
+.gscore{text-align:center;font-size:20px;margin-bottom:8px}
+.garena{position:relative;height:380px;border-radius:22px;overflow:hidden;background:linear-gradient(#7cc4f5,#d9f0ff 70%,#bbf7d0);display:grid;place-items:center;max-width:760px;margin:0 auto 10px}
+.gbub{position:absolute;bottom:-90px;max-width:36%;padding:12px 14px;border-radius:26px;border:3px solid rgba(255,255,255,.9);background:radial-gradient(circle at 30% 25%,#fff,#e0f2fe 60%,#bae6fd);color:#0f172a;font-size:15px;font-weight:700;line-height:1.35;cursor:pointer;box-shadow:0 6px 16px rgba(15,23,42,.18);animation:g-rise 11s linear forwards;font-family:inherit}
+.gbub.got{animation:g-burst .6s forwards!important}
+.gbub.flip{background:radial-gradient(circle at 30% 25%,#fff,#dcfce7 60%,#86efac);border-color:#22c55e;animation-play-state:paused}
+.glegend{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;margin:8px 0}
+.glegend .b{padding:4px 10px;border-radius:99px;font-size:14px;background:#e2e8f0;color:#1f2937}
+.glegend .b.good{background:#bae6fd}
+.glegend .b.bad{background:#fed7aa}
+.gladder{max-width:620px;margin:0 auto;display:grid;gap:6px;position:relative;padding-inline-start:10px;border-inline-start:6px solid #a78bfa}
+.ggoal{text-align:center;font-weight:800;font-size:19px;background:linear-gradient(135deg,#fef3c7,#fde68a);color:#1f2937;border-radius:14px;padding:10px}
+.grung{display:flex;gap:10px;align-items:center;background:var(--panel);border:2px solid var(--line);border-radius:14px;padding:8px 12px;transition:transform .3s}
+.grung.done{border-color:#22c55e;background:color-mix(in srgb,#22c55e 12%,var(--panel));transform:translateX(-6px)}
+.grung .suds{color:#fff;font-weight:800;border-radius:10px;min-width:30px;text-align:center;padding:4px}
+.gwheel{max-width:340px;margin:0 auto}
+.gwheel svg{width:100%;height:auto;overflow:visible;filter:drop-shadow(0 8px 18px rgba(15,23,42,.25))}
+#gWheel{transform-box:view-box;transform-origin:150px 150px}
+.gboard{display:grid;grid-template-columns:repeat(6,1fr);gap:6px;max-width:620px;margin:0 auto 8px}
+.gsq{--c:#e2e8f0;position:relative;aspect-ratio:1;border-radius:14px;background:radial-gradient(circle at 30% 25%,#fff,var(--c) 70%);border:2px solid rgba(15,23,42,.12);display:grid;place-items:center;box-shadow:0 3px 8px rgba(15,23,42,.12)}
+.gsq .n{position:absolute;top:3px;inset-inline-start:6px;font-size:11px;color:#475569}
+.gsq .ic{font-size:22px}
+.gsq .tok{position:absolute;bottom:2px;font-size:22px;animation:g-hop .3s}
+.gsq .tok.t0{inset-inline-end:4px}.gsq .tok.t1{inset-inline-start:4px}
+.gdie{font-size:52px;line-height:1;display:inline-block}
+.gdie.roll{animation:g-roll .7s linear infinite}
+.btn.big{font-size:19px;padding:12px 24px}
+.gdone{text-align:center;margin:14px auto;max-width:520px;background:linear-gradient(135deg,#fef9c3,#dcfce7);color:#1f2937;border-radius:22px;padding:18px;border:3px solid #facc15}
+.gdone h3{margin:6px 0 10px}
+.gconf{position:fixed;inset:0;pointer-events:none;z-index:99;overflow:hidden}
+.gconf i{position:absolute;top:-20px;width:10px;height:16px;border-radius:3px;animation:g-conf 2.4s ease-in forwards}
+.gamecard .sub{font-size:13px}
+@keyframes g-ok{0%{transform:scale(1)}40%{transform:scale(1.06)}100%{transform:scale(1)}}
+@keyframes g-shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-8px)}75%{transform:translateX(8px)}}
+@keyframes g-rise{from{transform:translateY(0)}to{transform:translateY(-500px)}}
+@keyframes g-burst{to{transform:scale(1.6);opacity:0}}
+@keyframes g-hop{0%{transform:translateY(0)}50%{transform:translateY(-10px)}100%{transform:translateY(0)}}
+@keyframes g-roll{from{transform:rotate(0)}to{transform:rotate(360deg)}}
+@keyframes g-conf{to{transform:translateY(105vh) rotate(720deg)}}
+/* מודל אפר״ת */
+.abcflow{display:grid;grid-template-columns:1fr auto 1fr auto 1.25fr auto 1fr;gap:8px;align-items:stretch}
+.abcbox{border-radius:18px;padding:12px;border:3px solid;background:var(--panel)}
+.abcbox h3{margin:0 0 4px;display:flex;align-items:center;gap:8px}
+.abcbox .muted{font-size:13px;margin:0 0 6px}
+.abcbox textarea{min-height:90px}
+.abcbox .L{display:inline-grid;place-items:center;width:32px;height:32px;border-radius:50%;color:#fff;font-weight:800}
+.abcbox.a{border-color:#60a5fa}.abcbox.a .L{background:#3b82f6}
+.abcbox.p{border-color:#a78bfa}.abcbox.p .L{background:#8b5cf6}
+.abcbox.r{border-color:#f472b6}.abcbox.r .L{background:#ec4899}
+.abcbox.t{border-color:#34d399}.abcbox.t .L{background:#10b981}
+.abcarr{align-self:center;font-size:22px;color:var(--muted)}
+.abcemo{display:flex;gap:8px;align-items:flex-start}
+.abcface{width:70px;flex:none}
+.emos.sm{gap:4px;margin-bottom:6px;justify-content:flex-start}
+.emos.sm button{padding:4px 8px;font-size:13px;border-radius:10px}
+.abcalt{display:flex;gap:10px;align-items:flex-start;background:var(--panel);border:2px solid #a78bfa;border-radius:18px;padding:12px;margin-bottom:10px}
+.abcaltnum{flex:none;width:34px;height:34px;border-radius:50%;background:#8b5cf6;color:#fff;display:grid;place-items:center;font-weight:800}
+.abcbars{display:grid;gap:8px;max-width:620px}
+.abcbar{display:grid;grid-template-columns:130px 1fr 90px;align-items:center;gap:8px;font-size:15px}
+@media (max-width:900px){.abcflow{grid-template-columns:1fr}.abcarr{transform:rotate(-90deg);justify-self:center}}
+@media (max-width:600px){.gbub{max-width:60%;font-size:14px}.gm{height:104px}.gm .f{font-size:13px}.gface{width:62px}.gsay{font-size:15px}.gcard{font-size:19px}.abcbar{grid-template-columns:90px 1fr 70px;font-size:13px}}
+
 </style>
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="apple-touch-icon" href="icon-192.png">
@@ -427,6 +541,7 @@ mark#hl{background:#ffda2a;color:#171717;padding:2px 3px;border-radius:4px;box-s
 </div>
 <nav class="tabbar" id="tabbar"></nav>
 <div class="modal" id="modal"></div>
+
 
 
 
@@ -495,6 +610,7 @@ function ftype(name){ const e = (String(name).split('.').pop() || '').toLowerCas
 const TOOLS = [
   {id:'thermometer', name:'מדחום רגשות', icon:'🌡️', desc:'הילד מזהה רגש ומדרג את עוצמתו מ-0 עד 10', h:10},
   {id:'breathing', name:'נשימה מונחית', icon:'🎈', desc:'נשימת בלון, נשימת ריבוע ו״מריחים פרח – מכבים נר״', h:170},
+  {id:'abc', name:'מודל אפר״ת', icon:'🧩', desc:'אירוע ← פרשנות ← רגש ← תגובה, ופרשנויות נוספות שמשנות את הרגש', h:280},
   {id:'thoughts', name:'בלש המחשבות', icon:'🕵️', desc:'מצב ← מחשבה ← רגש ← התנהגות, ושאלות בלש למחשבה חלופית', h:215},
   {id:'trafficlight', name:'רמזור לפתרון בעיות', icon:'🚦', desc:'עוצרים, חושבים על פתרונות, בוחרים ועושים', h:45},
   {id:'ladder', name:'סולם חשיפה', icon:'🪜', desc:'בונים מדרגות מהקל לקשה ומסמנים כל מדרגה שטיפסנו', h:260},
@@ -648,13 +764,19 @@ const Cloud = {
   // open the file itself – never OneDrive's "open in…" page: PDF/images straight from the file, Office files in a read-only viewer
   async openFile(rel, page){
     if (this.status !== 'ok') return toast('כדי לפתוח קבצים מהספרייה צריך להתחבר עם חשבון מיקרוסופט');
-    const w = window.open('', '_blank');
+    // phone / installed app: no new tab (the browser blocks it and asks "show?") – the file opens right here, "back" returns to the app
+    const phone = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent) || (window.matchMedia && matchMedia('(display-mode: standalone)').matches);
+    const w = phone ? null : window.open('', '_blank');
     try { if (w) w.document.write('<body dir="rtl" style="font:18px Arial;padding:30px;color:#475569">⏳ פותח את הקובץ…</body>'); } catch(_){}
+    if (phone) toast('⏳ פותח את הקובץ…');
     const go = u => { if (w) w.location.href = u; else location.href = u; };
     try {
       const r = await this.g(this.itemPath(rel));
       if (!r.ok) throw new Error('הקובץ לא נמצא ב-OneDrive');
       const j = await r.json(), dl = j['@microsoft.graph.downloadUrl'], ext = (rel.match(/\.([a-z0-9]+)$/i) || [])[1] || '';
+      if (phone && /^(pdf|docx?|pptx?|xlsx?|rtf|odt|odp|txt)$/i.test(ext)) {        // a phone can't show a PDF from memory – the OneDrive viewer shows every document inline
+        try { const p = await this.g('/me/drive/items/' + j.id + '/preview', {method: 'POST', headers: {'Content-Type': 'application/json'}, body: page ? JSON.stringify({page: String(page)}) : '{}'}); if (p.ok) { const pj = await p.json(); if (pj.getUrl) { go(pj.getUrl); return; } } } catch(_){}
+      }
       const TYPES = {pdf: 'application/pdf', jpg: 'image/jpeg', jpeg: 'image/jpeg', png: 'image/png', gif: 'image/gif', webp: 'image/webp', txt: 'text/plain;charset=utf-8', mp4: 'video/mp4', mp3: 'audio/mpeg'};
       const type = TYPES[ext.toLowerCase()];
       if (type) { const b = await (await fetch(dl)).blob(); go(URL.createObjectURL(new Blob([b], {type})) + (page && type === 'application/pdf' ? '#page=' + page : '')); return; }
@@ -760,7 +882,7 @@ function ui(){
 }
 
 /* ================= routing & shell ================= */
-const NAV = [['home','🏠','בית'],['ask','💬','שאל שאלה'],['problems','🧭','מנווט בעיות'],['students','🧒','תלמידים'],['workflow','🗺️','סדר עבודה'],['roles','👥','מי פונה למי'],['circ','📜','חוזרי מנכ״ל'],['tools','🧰','כלים לילדים'],['library','📚','ספרייה'],['settings','⚙️','הגדרות']];
+const NAV = [['home','🏠','בית'],['ask','💬','שאל שאלה'],['problems','🧭','מנווט בעיות'],['students','🧒','תלמידים'],['workflow','🗺️','סדר עבודה'],['roles','👥','מי פונה למי'],['circ','📜','חוזרי מנכ״ל'],['tools','🧰','כלים לילדים'],['games','🎲','משחקים טיפוליים'],['library','📚','ספרייה'],['settings','⚙️','הגדרות']];
 function route(){ const h = location.hash.replace(/^#\/?/, '').split('/').map(decodeURIComponent); return {r: h[0] || 'home', id: h[1], sub: h[2], x: h[3]}; }
 let timers = [];
 function clearTimers(){ timers.forEach(t => { clearTimeout(t); clearInterval(t); }); timers = []; }
@@ -779,7 +901,7 @@ function render(){
   document.body.classList.toggle('locked', isLocked());
   if (isLocked()) { const o = lockView(); $('#title').textContent = ''; $('#view').innerHTML = `<div class="page">${o.html}</div>`; document.title = 'CBT בבית הספר'; return; }
   if (WEB && !ARTIFACT && !LITE && !PROBLEMS.length) { $('#title').textContent = ''; $('#view').innerHTML = `<div class="empty" style="padding-top:120px"><span class="big">⏳</span>${Cloud.status === 'error' ? esc(Cloud.err) + ' <br><br><button class="btn primary" data-act="cloud-retry">נסו שוב</button>' : 'טוען את התוכן מ-OneDrive…'}</div>`; return; }
-  const views = LITE ? {home: liteHome, problems, problem: problemView, tools, tool: toolView, settings: liteSettings, ask, workflow, roles: rolesView, circ: circView, circsrc: circSrcView, libsrc: libSrcView, circask: circAskView, find: findView, more: moreView} : {home, problems, problem: problemView, students, student: studentView, tools, tool: toolView, library, settings, ask, workflow, roles: rolesView, circ: circView, circsrc: circSrcView, libsrc: libSrcView, circask: circAskView, find: findView, more: moreView};
+  const views = LITE ? {home: liteHome, problems, problem: problemView, tools, tool: toolView, settings: liteSettings, ask, workflow, roles: rolesView, circ: circView, circsrc: circSrcView, libsrc: libSrcView, circask: circAskView, find: findView, more: moreView, games: gamesView, game: gameView} : {home, problems, problem: problemView, students, student: studentView, tools, tool: toolView, library, settings, ask, workflow, roles: rolesView, circ: circView, circsrc: circSrcView, libsrc: libSrcView, circask: circAskView, find: findView, more: moreView, games: gamesView, game: gameView};
   const fn = views[R.r] || home;
   const out = fn(R);
   $('#title').textContent = out.title;
@@ -918,7 +1040,7 @@ function problemView(R){
   else body = (sec[tab] || sec.overview) + (tab === 'overview' ? sec.sources : '');
   const h = `<a class="back no-print" href="#/problems">→ כל הבעיות</a>
     <div class="banner" style="--h:${hueOf(p.area)}"><span class="emoji">${p.icon}</span><div><div style="opacity:.85;font-size:14px">${esc(p.area)} · כיתות א–ו</div><h1>${esc(p.name)}</h1></div>
-    <div class="actions no-print"><button class="btn" data-act="planfor" data-id="${p.id}">📋 תוכנית לתלמיד</button><button class="btn" data-act="printproblem" data-id="${p.id}">🖨️ הדפסה</button></div></div>
+    <div class="actions no-print">${GAME(p.id) ? `<a class="btn primary" href="#/game/${p.id}">🎲 המשחק</a>` : ''}<button class="btn" data-act="planfor" data-id="${p.id}">📋 תוכנית לתלמיד</button><button class="btn" data-act="printproblem" data-id="${p.id}">🖨️ הדפסה</button></div></div>
     <nav class="tabs">${TABS.map(([k, l]) => `<a href="#/problem/${p.id}/${k}" class="${k === tab ? 'on' : ''}">${l}</a>`).join('')}</nav>${body}`;
   return {title:p.name, html:h, after(){ if (tab === 'print') setTimeout(() => { window.print(); history.back(); }, 300); }};
 }
@@ -1030,6 +1152,7 @@ function initTool(id, itemId){
   if (id === 'ladder') { const ex = a && itemId && a.ladders.find(l => l.id === itemId); Object.assign(T, ex ? JSON.parse(JSON.stringify(ex)) : {id:null, title:'', steps:[]}); }
   if (id === 'rewards') { const ex = a && itemId && a.rewards.find(l => l.id === itemId); Object.assign(T, ex ? JSON.parse(JSON.stringify(ex)) : {id:null, title:'', goal:10, filled:0, prize:'', sticker:'⭐'}); }
   if (id === 'pmr') Object.assign(T, {i:-1, phase:'', running:false});
+  if (id === 'abc') Object.assign(T, {event:'', interp:'', emo:'פחד', lvl:7, react:'', alts:[]});
   if (id === 'copingcard') { const ex = a && itemId && a.cards.find(l => l.id === itemId); Object.assign(T, ex ? JSON.parse(JSON.stringify(ex)) : {id:null, feeling:'לחוץ', items:[], color:'#fde2a6'}); }
 }
 const lvlColor = l => `hsl(${130 - l * 13} 65% 45%)`;
@@ -1224,8 +1347,30 @@ const TOOLRENDER = {
       <p class="muted" style="text-align:center" id="bcycles">${T.cycles ? `סבבים: ${T.cycles}` : ''}</p>
       <div class="actions" style="justify-content:center"><button class="btn primary" data-act="br-toggle">${T.running ? '⏸ עצירה' : '▶ התחלה'}</button></div>`;
   },
-  thoughts(){
-    const f = (k, label, ph, ta) => `<label class="f">${label}${ta ? `<textarea class="inp" data-bind="T.${k}" placeholder="${ph}">${esc(T[k])}</textarea>` : `<input class="inp" data-bind="T.${k}" value="${esc(T[k])}" placeholder="${ph}">`}</label>`;
+  abc(){
+    const Q = ABC_Q.map(q => `<button class="chip" data-act="abc-add" data-v="${esc(q)}">💡 ${esc(q)}</button>`).join('');
+    return `<h2>🧩 מודל אפר״ת</h2><p class="lead">מה קרה? מה אמרתי לעצמי? מה הרגשתי? מה עשיתי? – ואיך פרשנות אחרת משנה את הרגש</p>
+      <div class="abcflow">
+        <div class="abcbox a"><h3><span class="L">א</span> אירוע</h3><p class="muted">מה קרה? (רק העובדות, כמו מצלמה)</p><textarea class="inp" data-abc="event" data-i="-1" placeholder="למשל: המורה לא בחר בי לענות">${esc(T.event)}</textarea></div>
+        <div class="abcarr">◀</div>
+        <div class="abcbox p"><h3><span class="L">פ</span> פרשנות</h3><p class="muted">מה אמרתי לעצמי? מה חשבתי?</p><textarea class="inp" data-abc="interp" data-i="-1" placeholder="למשל: הוא לא אוהב אותי">${esc(T.interp)}</textarea></div>
+        <div class="abcarr">◀</div>
+        <div class="abcbox r"><h3><span class="L">ר</span> רגש</h3>${abcRow(-1)}</div>
+        <div class="abcarr">◀</div>
+        <div class="abcbox t"><h3><span class="L">ת</span> תגובה</h3><p class="muted">מה עשיתי, או מה רציתי לעשות?</p><textarea class="inp" data-abc="react" data-i="-1" placeholder="למשל: הפסקתי להקשיב והסתכלתי מהחלון">${esc(T.react)}</textarea></div>
+      </div>
+      <h2 class="sec" style="margin-top:22px">🔄 ואולי אפשר לפרש את זה אחרת?</h2>
+      <div class="chips no-print" style="margin-bottom:12px">${Q}</div>
+      ${T.alts.map((x, i) => `<div class="abcalt pop"><div class="abcaltnum">${i + 2}</div><div style="flex:1;display:grid;gap:8px">
+        <label class="f">פרשנות אחרת${x.q ? ` <span class="muted" style="font-weight:400">(${esc(x.q)})</span>` : ''}<textarea class="inp" data-abc="t" data-i="${i}" placeholder="מה עוד אפשר לחשוב?">${esc(x.t)}</textarea></label>
+        ${abcRow(i)}
+        <label class="f">ואז מה הייתי עושה?<input class="inp" data-abc="react" data-i="${i}" value="${esc(x.react)}" placeholder="למשל: הייתי מרים יד שוב בשאלה הבאה"></label></div>
+        <button class="btn ghost sm no-print" data-act="abc-del" data-i="${i}" title="מחיקה">✕</button></div>`).join('')}
+      <div class="actions no-print" style="justify-content:center"><button class="btn primary" data-act="abc-add">＋ פרשנות נוספת</button></div>
+      <h2 class="sec">📊 איך הפרשנות משנה את הרגש</h2><div id="abcBars">${abcBars()}</div>
+      ${saveBar('abc')}`;
+  },
+  thoughts(){    const f = (k, label, ph, ta) => `<label class="f">${label}${ta ? `<textarea class="inp" data-bind="T.${k}" placeholder="${ph}">${esc(T[k])}</textarea>` : `<input class="inp" data-bind="T.${k}" value="${esc(T[k])}" placeholder="${ph}">`}</label>`;
     const rng = (k, label) => `<label class="f">${label}: <b id="v-${k}">${T[k]}</b><input type="range" min="0" max="10" value="${T[k]}" data-bind="T.${k}" data-num="1" style="accent-color:var(--brand)"></label>`;
     return `<h2>🕵️ בלש המחשבות</h2><p class="lead">בודקים את המחשבה כמו בלש: האם היא באמת נכונה?</p>
       <div class="detective">
@@ -1338,6 +1483,7 @@ function toolSave(kind){
   const a = active(); if (!a) return toast('בחרו תלמיד בראש המסך');
   const d = today();
   if (kind === 'thermometer') { if (T.level == null) return toast('בוחרים קודם רמה'); a.ratings.push({id:uid(), date:d, emotion:T.emotion, level:T.level}); }
+  if (kind === 'abc') { if (!T.event && !T.interp) return toast('ממלאים לפחות אירוע ופרשנות'); const best = T.alts.filter(x => x.t).sort((x, y) => x.lvl - y.lvl)[0]; a.thoughts.push({id:uid(), date:d, situation:T.event, thought:T.interp, feeling:T.emo, before:T.lvl, behavior:T.react, alt:best ? best.t : '', after:best ? best.lvl : '', alts:T.alts.filter(x => x.t).map(x => ({t:x.t, emo:x.emo, lvl:x.lvl, react:x.react})), model:'אפר״ת'}); }
   if (kind === 'thoughts') { if (!T.situation && !T.thought) return toast('ממלאים לפחות מצב ומחשבה'); a.thoughts.push({id:uid(), date:d, situation:T.situation, thought:T.thought, feeling:T.feeling, before:T.before, behavior:T.behavior, alt:T.alt, after:T.after}); }
   if (kind === 'trafficlight') { if (!T.problem) return toast('כותבים קודם מה הבעיה'); a.solutions.push({id:uid(), date:d, feel:T.feel, problem:T.problem, options:T.options, chosen:T.chosen, plan:T.plan}); }
   const upsert = (arr, obj) => { if (!obj.id) obj.id = uid(); const i = arr.findIndex(x => x.id === obj.id); if (i >= 0) arr[i] = obj; else arr.push(obj); };
@@ -2733,6 +2879,11 @@ document.addEventListener('click', async e => {
     case 'delmeasure': e.preventDefault(); if (await uiConfirm('למחוק את הציון?')) { s.measures = s.measures.filter(x => x.id !== d.id); save(); render(); } break;
     case 'delwork': if (await uiConfirm('למחוק?')) { s[d.k] = s[d.k].filter(x => x.id !== d.id); save(); render(); } break;
     case 'toolsave': toolSave(d.k); break;
+    case 'abc-emo': { const i = +d.i, r = i < 0 ? T : T.alts[i]; r.emo = d.v; render(); break; }
+    case 'abc-add': T.alts.push({t:'', emo:T.emo, lvl:Math.max(0, T.lvl - 3), react:'', q:d.v || ''}); render(); setTimeout(() => { const x = document.querySelectorAll('[data-abc="t"]'); if (x.length) x[x.length - 1].focus(); }, 60); break;
+    case 'abc-del': T.alts.splice(+d.i, 1); render(); break;
+    case 'g-stage': case 'g-again': case 'g-sort': case 'g-next': case 'g-flip': case 'g-choice': case 'g-clue': case 'g-opt': case 'g-catchgo': case 'g-rung': case 'g-rungadd': case 'g-spin': case 'g-roll': case 'g-cardok': gameAct(act, d, e); break;
+    case 'g-link': { const url = location.href.split('#')[0] + '#/game/' + d.id; try { navigator.clipboard.writeText(url).then(() => toast('🔗 הקישור למשחק הועתק'), () => prompt('הקישור למשחק:', url)); } catch(err){ prompt('הקישור למשחק:', url); } break; }
     case 'asker': ASKER = d.v; ls.set('cbtapp.asker', ASKER); aiFast = !ARTIFACT; render(); break;
     case 'copyq': try { navigator.clipboard.writeText(d.v).then(() => toast('השאלה הועתקה – הדביקו אותה בפרויקט של Claude'), () => {}); } catch(err){} break;
     case 'ai-stop': if (aiCtl) aiCtl.abort(); break;
@@ -2794,6 +2945,269 @@ function addPlanFrom(s, pid){
   p.sessions.forEach(x => s.plan.push({title:x.title, goals:(x.goals || []).slice(), activities:(x.activities || []).slice(), homework:x.homework || '', tool:x.tool || null, done:false, date:'', notes:'', from:pid}));
   save();
 }
+
+/* ================= therapeutic games: one integrative game per treatment problem, each with its own link (#/game/<id>) =================
+   Content lives in app/games-data.js (window.GAMES). A game = stages; each stage has a type: sort · match · story · detective · catch · ladder · wheel · board */
+const GAMES = () => window.GAMES || [];
+const GAME = id => GAMES().find(g => g.id === id);
+let GS = {};                                   // progress per game during this visit
+let GTIMERS = [];                              // running timers of the catch game – cleared whenever the view changes
+const gClear = () => { GTIMERS.forEach(t => { clearTimeout(t); clearInterval(t); }); GTIMERS = []; };
+const shuffle = a => { const b = a.slice(); for (let i = b.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [b[i], b[j]] = [b[j], b[i]]; } return b; };
+const pickOne = a => a[Math.floor(Math.random() * a.length)];
+// the same Hardal boy as in the thermometer, head only – a small guide who reacts to the game
+function kidMini(emotion, level, cls = ''){
+  const F = kidFace(emotion, level);
+  const peyah = d => `<path d="M${100 + 54 * d},92 c${6 * d},10 ${-9 * d},16 ${-2 * d},26 c${7 * d},10 ${-9 * d},16 ${-2 * d},26 c${6 * d},9 ${-7 * d},15 ${-1 * d},23" stroke="#3b2717" stroke-width="6.5" fill="none" stroke-linecap="round"/>`;
+  return `<svg class="kidmini ${cls}" viewBox="20 0 160 196" aria-hidden="true"><defs>
+    <radialGradient id="kSkin" cx=".38" cy=".32" r=".8"><stop offset="0" stop-color="#fde4cb"/><stop offset=".6" stop-color="#f2c8a0"/><stop offset="1" stop-color="#d49d72"/></radialGradient>
+    <radialGradient id="kIris" cx=".35" cy=".35" r=".7"><stop offset="0" stop-color="#a47148"/><stop offset="1" stop-color="#4a2c16"/></radialGradient>
+    <radialGradient id="kKip" cx=".4" cy=".3" r=".9"><stop offset="0" stop-color="#ffffff"/><stop offset=".7" stop-color="#f1efe6"/><stop offset="1" stop-color="#cfcab8"/></radialGradient>
+    <linearGradient id="kHair" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#6b4a33"/><stop offset="1" stop-color="#2e1d12"/></linearGradient></defs>
+    <path d="M36,196 Q40,170 100,166 Q160,170 164,196Z" fill="#fff" stroke="#cbd5e1"/><path d="M88,168 L100,180 L112,168" fill="none" stroke="#cbd5e1" stroke-width="2"/>
+    <circle cx="42" cy="112" r="11" fill="url(#kSkin)" stroke="#c9936a"/><circle cx="158" cy="112" r="11" fill="url(#kSkin)" stroke="#c9936a"/>
+    <circle cx="100" cy="110" r="58" fill="url(#kSkin)" stroke="#c9936a" stroke-width="1.5"/>
+    <path d="M43,100 Q44,46 100,45 Q156,46 157,100 Q146,74 100,71 Q54,74 43,100Z" fill="url(#kHair)"/>${peyah(-1)}${peyah(1)}${KIPPAH}
+    <g>${F.face}</g><g>${F.fx}</g></svg>`;
+}
+const gGuide = (say, emo = 'שמחה', lvl = 4) => `<div class="gguide"><div class="gface">${kidMini(emo, lvl)}</div><div class="gsay pop">${say}</div></div>`;
+function gConfetti(){
+  const box = document.createElement('div'); box.className = 'gconf';
+  box.innerHTML = Array.from({length: 26}, (_, i) => `<i style="left:${Math.random() * 100}%;animation-delay:${(Math.random() * .6).toFixed(2)}s;background:hsl(${Math.random() * 360} 85% 60%)"></i>`).join('');
+  document.body.appendChild(box); setTimeout(() => box.remove(), 2600);
+}
+const gStar = g => { const s = GS[g.id]; s.stars = (s.stars || 0) + 1; };
+const gDoneBox = (g, text, again = true) => `<div class="gdone pop"><div style="font-size:54px">🏆</div><h3>${text}</h3><div class="actions" style="justify-content:center">${again ? `<button class="btn" data-act="g-again">🔁 שוב</button>` : ''}${GS[g.id].stage < g.stages.length - 1 ? `<button class="btn primary" data-act="g-stage" data-v="${GS[g.id].stage + 1}">לשלב הבא ◀</button>` : ''}</div></div>`;
+
+/* ---------- the eight game types ---------- */
+const GM = {
+  sort: {
+    init: d => ({order: shuffle(d.cards.map((_, i) => i)), i: 0, ok: 0, fb: null}),
+    render(g, d, st){
+      if (st.i >= st.order.length) return gGuide(`סיימת! ${st.ok} מתוך ${st.order.length} נכון.`, 'שמחה', 8) + gDoneBox(g, 'כל הכבוד – מיינת את כל הכרטיסים!');
+      const c = d.cards[st.order[st.i]];
+      return `${st.fb ? gGuide(esc(st.fb.ok ? '👍 ' + (c.why || 'נכון!') : '🤔 ' + (c.why || 'כמעט…') + (st.fb.ok ? '' : ` (התשובה: ${esc(d.bins.find(b => b.id === c.bin).label)})`)), st.fb.ok ? 'שמחה' : 'דאגה', st.fb.ok ? 7 : 3) : gGuide(esc(d.prompt || 'לאן שייך הכרטיס?'), 'רוגע', 3)}
+        <div class="gprog"><i style="width:${Math.round(100 * st.i / st.order.length)}%"></i></div>
+        <div class="gcard ${st.fb ? (st.fb.ok ? 'ok' : 'no') : 'pop'}">${esc(c.t)}</div>
+        <div class="gbins">${d.bins.map(b => `<button class="gbin" style="--c:${b.color || '#60a5fa'}" data-act="g-sort" data-v="${esc(b.id)}" ${st.fb ? 'disabled' : ''}><span>${b.icon || ''}</span>${esc(b.label)}</button>`).join('')}</div>
+        ${st.fb ? `<div class="actions" style="justify-content:center"><button class="btn primary" data-act="g-next">הבא ◀</button></div>` : ''}`;
+    }
+  },
+  match: {
+    init: d => ({deck: shuffle(d.pairs.flatMap((p, k) => [{k, t: p.a, s: 'a'}, {k, t: p.b, s: 'b'}])), open: [], got: [], moves: 0}),
+    render(g, d, st){
+      const done = st.got.length === st.deck.length;
+      return `${gGuide(done ? `מצאת את כל הזוגות ב-${st.moves} ניסיונות!` : esc(d.prompt || 'הופכים שני קלפים ומחפשים זוג שמתאים'), done ? 'שמחה' : 'רוגע', done ? 8 : 3)}
+        <div class="gmem">${st.deck.map((c, i) => { const up = st.open.includes(i) || st.got.includes(i); return `<button class="gm ${up ? 'up' : ''} ${st.got.includes(i) ? 'got' : ''}" data-act="g-flip" data-i="${i}"><span class="f back">❓</span><span class="f front ${c.s}">${esc(c.t)}</span></button>`; }).join('')}</div>
+        ${done ? `<div class="panel" style="margin-top:12px"><h3>🔎 מה למדנו</h3><ul class="clean">${d.pairs.map(p => `<li><b>${esc(p.a)}</b> ↔ ${esc(p.b)}${p.why ? ` – <span class="muted">${esc(p.why)}</span>` : ''}</li>`).join('')}</ul></div>${gDoneBox(g, 'זיכרון של אלופים!')}` : ''}`;
+    }
+  },
+  story: {
+    init: d => ({node: d.start, pend: null}),
+    render(g, d, st){
+      const n = d.nodes[st.node], m = n.mood || ['רוגע', 3];
+      if (st.pend) return `${gGuide(esc(st.pend.fb || ''), st.pend.good ? 'שמחה' : 'דאגה', st.pend.good ? 6 : 5)}<div class="actions" style="justify-content:center"><button class="btn primary" data-act="g-next">המשך ◀</button></div>`;
+      return `<div class="gstory pop"><div class="gface big">${kidMini(m[0], m[1])}</div><div class="gtext">${esc(n.text)}</div></div>
+        ${n.end ? gDoneBox(g, esc(n.title || 'סוף הסיפור')) : `<div class="gchoices">${n.choices.map((c, i) => `<button class="gchoice" data-act="g-choice" data-i="${i}">${esc(c.t)}</button>`).join('')}</div>`}`;
+    }
+  },
+  detective: {
+    init: d => ({phase: 'clues', order: shuffle(d.clues.map((_, i) => i)), i: 0, ok: 0, fb: null, pick: null}),
+    render(g, d, st){
+      const head = `<div class="gcase"><div>🗂️ <b>התיק:</b> ${esc(d.case)}</div><div class="gthought">💭 ״${esc(d.thought)}״</div></div>`;
+      if (st.phase === 'clues') {
+        if (st.i >= st.order.length) { st.phase = 'balance'; return GM.detective.render(g, d, st); }
+        const c = d.clues[st.order[st.i]];
+        return `${head}${st.fb ? gGuide(esc(st.fb.ok ? '🔍 נכון! ' + (c.why || '') : '🔍 בוא נבדוק שוב: ' + (c.why || '')), st.fb.ok ? 'שמחה' : 'דאגה', st.fb.ok ? 6 : 3) : gGuide('בלש, האם הרמז הזה <b>תומך</b> במחשבה, או <b>לא תומך</b> בה?', 'רוגע', 3)}
+          <div class="gprog"><i style="width:${Math.round(100 * st.i / st.order.length)}%"></i></div>
+          <div class="gcard clue ${st.fb ? (st.fb.ok ? 'ok' : 'no') : 'pop'}">🔎 ${esc(c.t)}</div>
+          <div class="gbins"><button class="gbin" style="--c:#f97316" data-act="g-clue" data-v="for" ${st.fb ? 'disabled' : ''}><span>📌</span>תומך במחשבה</button><button class="gbin" style="--c:#22c55e" data-act="g-clue" data-v="against" ${st.fb ? 'disabled' : ''}><span>❌</span>לא תומך</button></div>
+          ${st.fb ? `<div class="actions" style="justify-content:center"><button class="btn primary" data-act="g-next">הרמז הבא ◀</button></div>` : ''}`;
+      }
+      const p = st.pick != null ? d.options[st.pick] : null, lvl = p && p.good ? (d.after ?? 3) : (d.before ?? 8);
+      return `${head}<div class="gdet">${gGuide(p ? esc(p.fb || '') : 'אספנו את כל הרמזים. איזו מחשבה <b>מאוזנת ונכונה יותר</b>?', d.emotion || 'דאגה', lvl)}
+        <div class="gmeter"><span>${esc(d.emotion || 'הרגש')}</span><div class="bar"><i style="width:${lvl * 10}%;background:${lvlColor(lvl)}"></i></div><b>${lvl}</b></div></div>
+        <div class="gchoices">${d.options.map((o, i) => `<button class="gchoice ${st.pick === i ? (o.good ? 'ok' : 'no') : ''}" data-act="g-opt" data-i="${i}">${esc(o.t)}</button>`).join('')}</div>
+        ${p && p.good ? gDoneBox(g, 'פתרת את התיק! המחשבה החדשה הורידה את הרגש.') : ''}`;
+    }
+  },
+  catch: {
+    init: () => ({running: false, done: false, score: 0, reframes: []}),
+    render(g, d, st){
+      if (st.done) return `${gGuide(`תפסת ${st.score} מחשבות מועילות והפכת ${st.reframes.length} מחשבות מכשילות!`, 'שמחה', 8)}
+        ${st.reframes.length ? `<div class="panel"><h3>🔄 מחשבות שהפכנו</h3><ul class="clean">${st.reframes.map(r => `<li><s class="muted">${esc(r.t)}</s> ← <b>${esc(r.alt)}</b></li>`).join('')}</ul></div>` : ''}${gDoneBox(g, 'אלוף תפיסת המחשבות!')}`;
+      return `${gGuide(esc(d.prompt || 'לוחצים על הבועות: מחשבה מועילה – תופסים ⭐. מחשבה מכשילה – הופכים אותה!'), 'רוגע', 3)}
+        <div class="gscore">⭐ <b id="gSc">${st.score}</b> · 🔄 <b id="gRf">${st.reframes.length}</b> · ⏱️ <b id="gTm">${d.seconds || 50}</b></div>
+        <div class="garena" id="gArena">${st.running ? '' : `<button class="btn primary big" data-act="g-catchgo">▶ מתחילים!</button>`}</div>
+        <div class="glegend"><span class="b good">${esc(d.helpfulLabel || 'מחשבה מועילה')}</span><span class="b bad">${esc(d.unhelpfulLabel || 'מחשבה מכשילה')}</span></div>`;
+    }
+  },
+  ladder: {
+    init: d => ({done: [], custom: [], txt: '', suds: 5}),
+    render(g, d, st){
+      const steps = d.steps.map((s, i) => ({...s, key: 'd' + i})).concat(st.custom.map((s, i) => ({...s, key: 'c' + i}))).sort((a, b) => a.suds - b.suds);
+      const top = steps.filter(s => st.done.includes(s.key)).length, all = top === steps.length && steps.length;
+      return `${gGuide(all ? esc(d.reward || 'טיפסת עד הפסגה! 🏔️') : esc(d.prompt || 'מטפסים מהמדרגה הקלה למעלה. כל מדרגה שעשית – מסמנים ⭐'), all ? 'שמחה' : 'רוגע', all ? 9 : 3 + Math.min(4, top))}
+        <div class="gladder"><div class="ggoal">🏆 ${esc(d.goal)}</div>${steps.slice().reverse().map(s => `<div class="grung ${st.done.includes(s.key) ? 'done' : ''}"><span class="suds" style="background:${lvlColor(s.suds)}">${s.suds}</span><span class="grow">${esc(s.t)}</span><button class="btn sm ${st.done.includes(s.key) ? 'primary' : ''}" data-act="g-rung" data-v="${s.key}">${st.done.includes(s.key) ? '⭐ עשיתי!' : 'עשיתי?'}</button></div>`).join('')}</div>
+        <div class="no-print" style="display:flex;gap:8px;flex-wrap:wrap;align-items:end;margin-top:12px"><label class="f" style="flex:1;min-width:180px">מדרגה משלי<input class="inp" id="gRungT" placeholder="למשל: לענות על שאלה אחת בכיתה"></label><label class="f">כמה קשה (0–10)<input class="inp" id="gRungS" type="number" min="0" max="10" value="5" style="width:80px"></label><button class="btn" data-act="g-rungadd">＋ הוספה</button></div>
+        ${all ? gDoneBox(g, 'הגעת לפסגה!', false) : ''}`;
+    }
+  },
+  wheel: {
+    init: () => ({angle: 0, pick: null, spinning: false, used: {}}),
+    render(g, d, st){
+      const n = d.slices.length, A = 360 / n, R = 140;
+      const sl = d.slices.map((s, k) => { const a0 = (k * A - 90) * Math.PI / 180, a1 = ((k + 1) * A - 90) * Math.PI / 180, am = ((k + .5) * A - 90) * Math.PI / 180;
+        return `<path d="M150,150 L${150 + R * Math.cos(a0)},${150 + R * Math.sin(a0)} A${R},${R} 0 0 1 ${150 + R * Math.cos(a1)},${150 + R * Math.sin(a1)}Z" fill="${s.color || `hsl(${k * 360 / n} 75% 62%)`}" stroke="#fff" stroke-width="3"/>
+          <text x="${150 + R * .62 * Math.cos(am)}" y="${150 + R * .62 * Math.sin(am)}" text-anchor="middle" dominant-baseline="middle" font-size="26">${s.icon || ''}</text>`; }).join('');
+      const p = st.pick;
+      return `${gGuide(p ? `<b>${esc(d.slices[p.k].label)}:</b> ${esc(p.item)}` : esc(d.prompt || 'מסובבים את הגלגל ועושים את מה שיוצא!'), p ? 'שמחה' : 'רוגע', p ? 6 : 3)}
+        <div class="gwheel"><svg viewBox="0 0 300 312"><g id="gWheel" style="transform:rotate(${st.angle}deg)">${sl}<circle cx="150" cy="150" r="20" fill="#fff" stroke="#cbd5e1" stroke-width="3"/></g><path d="M150,6 L138,-14 L162,-14Z" transform="translate(0,22) rotate(180 150 0)" fill="#1e293b"/></svg>
+        <div class="glegend">${d.slices.map(s => `<span class="b" style="background:${s.color || '#e2e8f0'}">${s.icon || ''} ${esc(s.label)}</span>`).join('')}</div></div>
+        <div class="actions" style="justify-content:center"><button class="btn primary big" data-act="g-spin" ${st.spinning ? 'disabled' : ''}>🎡 סובבו!</button></div>`;
+    }
+  },
+  board: {
+    init: d => ({pos: [0, 0], turn: 0, die: null, card: null, busy: false, win: null, used: {}}),
+    render(g, d, st){
+      const keys = Object.keys(d.deck), N = d.spaces || 24;
+      const sq = i => i === 0 ? {k: 'start', icon: '🚩', color: '#e2e8f0'} : i === N ? {k: 'end', icon: '🏁', color: '#fde68a'} : (() => { const k = (d.pattern || keys)[(i - 1) % (d.pattern || keys).length]; return {k, icon: d.deck[k].icon, color: d.deck[k].color}; })();
+      const cols = 6, cells = [];
+      for (let i = 0; i <= N; i++) { const r = Math.floor(i / cols), c = r % 2 ? cols - 1 - (i % cols) : i % cols; const s = sq(i);
+        cells.push(`<div class="gsq" style="grid-row:${r + 1};grid-column:${c + 1};--c:${s.color}"><span class="n">${i || ''}</span><span class="ic">${s.icon}</span>${st.pos.map((p, pi) => p === i ? `<span class="tok t${pi}">${pi ? '🟠' : '🔵'}</span>` : '').join('')}</div>`); }
+      const names = d.players || ['אני', 'המנחה'];
+      const c = st.card;
+      return `${gGuide(st.win != null ? `🎉 ${esc(names[st.win])} הגיע לסוף הדרך!` : c ? `<b>${esc(d.deck[c.k].label)}:</b> ${esc(c.item)}` : `התור של <b>${esc(names[st.turn])}</b> ${st.turn ? '🟠' : '🔵'} – מטילים קובייה!`, st.win != null ? 'שמחה' : 'רוגע', st.win != null ? 9 : c ? 5 : 3)}
+        <div class="gboard" style="grid-template-rows:repeat(${Math.ceil((N + 1) / cols)},1fr)">${cells.join('')}</div>
+        <div class="glegend">${keys.map(k => `<span class="b" style="background:${d.deck[k].color}">${d.deck[k].icon} ${esc(d.deck[k].label)}</span>`).join('')}</div>
+        <div class="actions" style="justify-content:center;align-items:center"><span class="gdie ${st.busy ? 'roll' : ''}" id="gDie">${st.die ? '⚀⚁⚂⚃⚄⚅'[st.die - 1] : '🎲'}</span>
+          ${st.win != null ? `<button class="btn" data-act="g-again">🔁 משחק חדש</button>` : c ? `<button class="btn primary" data-act="g-cardok">✔ עשינו! התור עובר</button>` : `<button class="btn primary big" data-act="g-roll" ${st.busy ? 'disabled' : ''}>🎲 מטילים</button>`}</div>`;
+    }
+  }
+};
+
+/* ---------- views ---------- */
+function gamesView(){
+  const list = GAMES();
+  if (!list.length) return {title: 'משחקים טיפוליים', html: '<div class="empty">⏳ המשחקים נטענים…</div>'};
+  const byArea = {}; list.forEach(g => { const a = (P[g.id] && P[g.id].area) || g.area || 'עוד'; (byArea[a] = byArea[a] || []).push(g); });
+  return {title: 'משחקים טיפוליים', html: `<div class="note" style="margin:4px 0 16px">🎲 לכל בעיה טיפולית – משחק משלב (CBT, ויסות וגוף, ערכים וחוזקות, משחק ויצירה) עם כמה שלבים. לכל משחק יש <b>קישור נפרד</b> – לוחצים ״🔗 קישור״ והוא מועתק. בתוך כל משחק יש ״📋 למנחה״ עם מטרות ודרך הפעלה.</div>
+    ${Object.entries(byArea).map(([a, gs]) => `<h2 class="sec">${esc(a)}</h2><div class="grid">${gs.map(g => `<div class="card gamecard"><a href="#/game/${g.id}" style="text-decoration:none;color:inherit;display:flex;flex-direction:column;gap:6px"><span class="emoji">${g.icon}</span><span class="name">${esc(g.title)}</span><span class="sub">${esc(P[g.id] ? P[g.id].name : g.tagline || '')}</span><span class="sub">${g.stages.map(s => GTYPE[s.type] || '').join(' · ')}</span></a><div class="actions" style="margin-top:6px"><a class="btn sm primary" href="#/game/${g.id}">▶ למשחק</a><button class="btn sm" data-act="g-link" data-id="${g.id}">🔗 קישור</button></div></div>`).join('')}</div>`).join('')}
+    <h2 class="sec">🧩 וגם</h2><div class="grid">${toolCard(TOOL.abc)}</div>`};
+}
+const GTYPE = {sort: '🗂️ מיון', match: '🃏 זיכרון', story: '📖 סיפור בחירה', detective: '🕵️ בלש', catch: '🫧 תופסים מחשבות', ladder: '🪜 סולם', wheel: '🎡 גלגל', board: '🎲 לוח'};
+function gameView(R){
+  gClear();
+  const g = GAME(R.id); if (!g) return {title: 'משחק', html: `<div class="empty">${GAMES().length ? 'המשחק לא נמצא.' : '⏳ המשחקים נטענים…'} <a href="#/games">לכל המשחקים</a></div>`};
+  const G0 = GS[g.id] || (GS[g.id] = {stage: 0, st: {}, stars: 0});
+  if (R.sub != null && /^\d+$/.test(R.sub)) G0.stage = Math.min(g.stages.length - 1, Math.max(0, +R.sub - 1));
+  const s = g.stages[G0.stage], st = G0.st[G0.stage] || (G0.st[G0.stage] = GM[s.type].init(s.data));
+  const guide = g.guide || {};
+  const html = `<a class="back no-print" href="#/games">→ כל המשחקים</a>
+    <div class="banner game" style="--h:${hueOf(g.title)}"><span class="emoji">${g.icon}</span><div><div style="opacity:.85;font-size:14px">${esc(P[g.id] ? P[g.id].name : g.tagline || '')}</div><h1>${esc(g.title)}</h1></div>
+      <div class="actions no-print"><span class="pill">⭐ ${G0.stars || 0}</span><button class="btn sm" data-act="g-link" data-id="${g.id}">🔗 קישור</button><button class="btn sm" data-act="fullscreen">⛶ מסך מלא</button></div></div>
+    <div class="gstages">${g.stages.map((x, i) => `<button class="gst ${i === G0.stage ? 'on' : ''}" data-act="g-stage" data-v="${i}"><b>${i + 1}</b> ${GTYPE[x.type] ? GTYPE[x.type].split(' ')[0] : ''} ${esc(x.title)}</button>`).join('')}</div>
+    <details class="panel gguidebox no-print"><summary>📋 למנחה – מטרות, הפעלה ושאלות לשיחה</summary>
+      ${guide.goals ? `<h4>🎯 מטרות</h4><ul class="clean">${guide.goals.map(x => `<li>${esc(x)}</li>`).join('')}</ul>` : ''}
+      ${guide.run ? `<h4>▶ איך מפעילים</h4><ol>${guide.run.map(x => `<li>${esc(x)}</li>`).join('')}</ol>` : ''}
+      ${guide.approaches ? `<h4>🧩 הגישות במשחק</h4><ul class="clean">${guide.approaches.map(x => `<li>${esc(x)}</li>`).join('')}</ul>` : ''}
+      ${guide.talk ? `<h4>💬 שאלות לשיחה אחרי המשחק</h4><ul class="clean">${guide.talk.map(x => `<li>${esc(x)}</li>`).join('')}</ul>` : ''}
+      ${guide.note ? `<p class="muted" style="font-size:14px">${esc(guide.note)}</p>` : ''}
+      ${P[g.id] ? `<a class="btn sm" href="#/problem/${g.id}">🧭 מפת הטיפול לבעיה הזו</a>` : ''}</details>
+    <div class="toolstage kid gstage" id="stage"><h2>${esc(s.title)}</h2>${s.intro ? `<p class="lead">${esc(s.intro)}</p>` : ''}${GM[s.type].render(g, s.data, st)}</div>`;
+  return {title: g.title, html, after(){ if (s.type === 'catch' && st.running) catchRun(g, s.data, st); }};
+}
+const gCur = () => { const g = GAME(route().id), G0 = GS[g.id], s = g.stages[G0.stage]; return {g, G0, s, d: s.data, st: G0.st[G0.stage]}; };
+function catchRun(g, d, st){
+  const ar = $('#gArena'); if (!ar) return;
+  let left = d.seconds || 50;
+  const pool = shuffle(d.helpful.map(t => ({t, good: true})).concat(d.unhelpful.map(u => ({t: u.t, alt: u.alt, good: false}))));
+  let k = 0;
+  const spawn = () => {
+    const it = pool[k++ % pool.length], b = document.createElement('button');
+    b.className = 'gbub'; b.textContent = it.t; b.style.left = (4 + Math.random() * 58) + '%'; b.style.animationDuration = (d.speed || 11) + 's';
+    b.onclick = () => {
+      if (b.dataset.done) return; b.dataset.done = 1;
+      if (it.good) { st.score++; b.classList.add('got'); $('#gSc').textContent = st.score; setTimeout(() => b.remove(), 600); }
+      else { st.reframes.push({t: it.t, alt: it.alt}); b.textContent = '✨ ' + it.alt; b.classList.add('flip'); $('#gRf').textContent = st.reframes.length; setTimeout(() => b.remove(), 2600); }
+    };
+    b.addEventListener('animationend', () => b.remove());
+    ar.appendChild(b);
+  };
+  spawn(); GTIMERS.push(setInterval(spawn, d.every || 1700));
+  GTIMERS.push(setInterval(() => { left--; const t = $('#gTm'); if (t) t.textContent = left; if (left <= 0) { gClear(); st.running = false; st.done = true; gStar(g); gConfetti(); render(); } }, 1000));
+}
+function gameAct(act, d, e){
+  const {g, G0, s, st} = gCur(), D = s.data;
+  if (act === 'g-stage') { gClear(); G0.stage = +d.v; render(); return; }
+  if (act === 'g-again') { gClear(); G0.st[G0.stage] = GM[s.type].init(D); render(); return; }
+  if (act === 'g-sort') { const c = D.cards[st.order[st.i]]; st.fb = {ok: c.bin === d.v}; if (st.fb.ok) st.ok++; render(); return; }
+  if (act === 'g-next') {
+    if (s.type === 'story') { st.node = st.pend.next; st.pend = null; if (D.nodes[st.node] && D.nodes[st.node].end) { gStar(g); gConfetti(); } render(); return; }
+    st.i++; st.fb = null; if (s.type === 'sort' && st.i >= st.order.length) { gStar(g); gConfetti(); } render(); return;
+  }
+  if (act === 'g-flip') {
+    const i = +d.i; if (st.open.length >= 2 || st.open.includes(i) || st.got.includes(i)) return;
+    st.open.push(i); render();
+    if (st.open.length === 2) { st.moves++; const [a, b] = st.open.map(x => st.deck[x]);
+      if (a.k === b.k && a.s !== b.s) { st.got.push(...st.open); st.open = []; setTimeout(() => { if (st.got.length === st.deck.length) { gStar(g); gConfetti(); } render(); }, 450); }
+      else setTimeout(() => { st.open = []; render(); }, 1100); }
+    return;
+  }
+  if (act === 'g-choice') { st.pend = D.nodes[st.node].choices[+d.i]; render(); return; }
+  if (act === 'g-clue') { const c = D.clues[st.order[st.i]]; st.fb = {ok: c.side === d.v}; if (st.fb.ok) st.ok++; render(); return; }
+  if (act === 'g-opt') { st.pick = +d.i; if (D.options[st.pick].good) { gStar(g); gConfetti(); } render(); return; }
+  if (act === 'g-catchgo') { st.running = true; st.score = 0; st.reframes = []; render(); return; }
+  if (act === 'g-rung') { const k = d.v; st.done = st.done.includes(k) ? st.done.filter(x => x !== k) : st.done.concat(k); const total = D.steps.length + st.custom.length; if (st.done.length === total) { gStar(g); gConfetti(); } render(); return; }
+  if (act === 'g-rungadd') { const t = ($('#gRungT').value || '').trim(); if (!t) return toast('כותבים מדרגה'); st.custom.push({t, suds: Math.max(0, Math.min(10, +$('#gRungS').value || 5))}); render(); return; }
+  if (act === 'g-spin') {
+    if (st.spinning) return; const n = D.slices.length, A = 360 / n, k = Math.floor(Math.random() * n);
+    const base = st.angle - (st.angle % 360) + 360 * 5; st.angle = base + (360 - (k + .5) * A); st.spinning = true; st.pick = null;
+    const w = $('#gWheel'); if (w) { w.style.transition = 'transform 3.6s cubic-bezier(.17,.67,.2,1)'; w.style.transform = `rotate(${st.angle}deg)`; }
+    const b = e.target.closest('button'); if (b) b.disabled = true;
+    setTimeout(() => { const sl = D.slices[k], used = st.used[k] = st.used[k] || [], fresh = sl.items.filter(x => !used.includes(x)); const item = pickOne(fresh.length ? fresh : sl.items); used.push(item); st.pick = {k, item}; st.spinning = false; render(); }, 3700);
+    return;
+  }
+  if (act === 'g-roll') {
+    if (st.busy || st.win != null) return; st.busy = true; render();
+    const N = D.spaces || 24, keys = D.pattern || Object.keys(D.deck);
+    setTimeout(() => {
+      const n = 1 + Math.floor(Math.random() * 6); st.die = n; let steps = n;
+      const walk = () => {
+        if (steps <= 0 || st.pos[st.turn] >= N) {
+          st.busy = false; const p = st.pos[st.turn];
+          if (p >= N) { st.win = st.turn; gStar(g); gConfetti(); render(); return; }
+          const k = keys[(p - 1) % keys.length], deck = D.deck[k], used = st.used[k] = st.used[k] || [], fresh = deck.items.filter(x => !used.includes(x));
+          const item = pickOne(fresh.length ? fresh : deck.items); used.push(item); st.card = {k, item}; render(); return;
+        }
+        st.pos[st.turn]++; steps--; render(); GTIMERS.push(setTimeout(walk, 260));
+      };
+      walk();
+    }, 700);
+    return;
+  }
+  if (act === 'g-cardok') { st.card = null; st.turn = 1 - st.turn; render(); return; }
+}
+
+/* ---------- מודל אפר״ת: event → interpretation → feeling → reaction, plus other interpretations that change the feeling ---------- */
+const ABC_Q = ['איך מישהו אחר היה מסביר את מה שקרה?', 'מה עוד יכול להיות הסיבה?', 'מה הייתי אומר לחבר טוב במצב כזה?', 'מה ההוכחות שזה נכון? ומה ההוכחות שלא?', 'איך אראה את זה בעוד שבוע?', 'מה הכי סביר שקרה באמת?'];
+function abcFace(i){ const r = i < 0 ? T : T.alts[i]; return kidMini(r.emo, r.lvl); }
+function abcBars(){
+  const rows = [{label: 'הפרשנות הראשונה', emo: T.emo, lvl: T.lvl}].concat(T.alts.map((a, i) => ({label: 'פרשנות ' + (i + 2), emo: a.emo, lvl: a.lvl})));
+  return `<div class="abcbars">${rows.map(r => `<div class="abcbar"><span>${esc(r.label)}</span><div class="bar"><i style="width:${r.lvl * 10}%;background:${thColor(r.emo, r.lvl)}"></i></div><b>${esc(r.emo)} ${r.lvl}</b></div>`).join('')}</div>`;
+}
+function abcRow(i){
+  const r = i < 0 ? T : T.alts[i], k = i < 0 ? 'm' : i;
+  return `<div class="abcemo"><div class="abcface" id="abcFace-${k}">${abcFace(i)}</div><div style="flex:1">
+    <div class="emos sm">${EMOS.map(([e, ic]) => `<button class="${r.emo === e ? 'on' : ''}" data-act="abc-emo" data-i="${i}" data-v="${e}">${ic} ${e}</button>`).join('')}</div>
+    <label class="f">כמה חזק? <b id="abcLv-${k}">${r.lvl}</b><input type="range" min="0" max="10" value="${r.lvl}" data-abc="lvl" data-i="${i}"></label></div></div>`;
+}
+function abcRefresh(i){ const k = i < 0 ? 'm' : i, f = $('#abcFace-' + k), l = $('#abcLv-' + k), b = $('#abcBars'); if (f) f.innerHTML = abcFace(i); if (l) l.textContent = (i < 0 ? T : T.alts[i]).lvl; if (b) b.innerHTML = abcBars(); }
+document.addEventListener('input', e => {
+  const el = e.target; if (!el.dataset || !el.dataset.abc) return;
+  const i = +el.dataset.i, r = i < 0 ? T : T.alts[i], f = el.dataset.abc;
+  r[f] = f === 'lvl' ? +el.value : el.value; if (f === 'lvl') abcRefresh(i);
+});
 
 /* ================= boot ================= */
 { const t = ls.get('cbtapp.theme', null); if (t) document.documentElement.dataset.theme = t; }
