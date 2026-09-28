@@ -616,6 +616,11 @@ mark#hl{background:#ffda2a;color:#171717;padding:2px 3px;border-radius:4px;box-s
 .vwrap iframe,.vwrap video{position:absolute;inset:0;width:100%;height:100%;border:0;background:#000}
 .vwrap .empty{color:#e2e8f0}
 .ft.vid{background:#fee2e2;color:#991b1b}
+.kidico{display:inline-block;width:1.25em;height:1.25em;vertical-align:-0.25em}
+.kidico .kidmini{width:100%;height:100%;animation:none}
+.pmrkid{display:flex;align-items:center;justify-content:center;gap:14px}
+.trlink{font-weight:700}
+
 </style>
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="apple-touch-icon" href="icon-192.png">
@@ -865,7 +870,7 @@ const Cloud = {
   schedule(){ if (this.status !== 'ok') return ui(); clearTimeout(this.timer); this.timer = setTimeout(() => this.push().catch(e => { this.status = 'error'; this.err = e.message; ui(); }), 1000); },
   openFileAt(rel, page){ return this.openFile(rel, page); },
   // open the file itself – never OneDrive's "open in…" page: PDF/images straight from the file, Office files in a read-only viewer
-  async openFile(rel, page){
+  async openFile(rel, page, orig){
     if (this.status !== 'ok') return toast('כדי לפתוח קבצים מהספרייה צריך להתחבר עם חשבון מיקרוסופט');
     // phone / installed app: no new tab (the browser blocks it and asks "show?") – the file opens right here, "back" returns to the app
     const phone = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent) || (window.matchMedia && matchMedia('(display-mode: standalone)').matches);
@@ -874,7 +879,8 @@ const Cloud = {
     if (phone) toast('⏳ פותח את הקובץ…');
     const go = u => { if (w) w.location.href = u; else location.href = u; };
     try {
-      const r = await this.g(this.itemPath(rel));
+      let r = await this.g(this.itemPath(rel));
+      if (!r.ok && orig) { rel = orig; r = await this.g(this.itemPath(rel)); }   // no PDF copy yet → the original in the Office viewer
       if (!r.ok) throw new Error('הקובץ לא נמצא ב-OneDrive');
       const j = await r.json(), dl = j['@microsoft.graph.downloadUrl'], ext = (rel.match(/\.([a-z0-9]+)$/i) || [])[1] || '';
       if (phone && /^(pdf|docx?|pptx?|xlsx?|rtf|odt|odp|txt)$/i.test(ext)) {        // a phone can't show a PDF from memory – the OneDrive viewer shows every document inline
@@ -1012,6 +1018,7 @@ function render(){
   const navKey = {problem:'problems', student:'students', tool:'tools', circsrc:'circ', libsrc:'library', circask:'circ'}[R.r] || R.r;
   document.querySelectorAll('[data-nav]').forEach(a => a.classList.toggle('on', a.dataset.nav === navKey));
   document.title = out.title + ' · CBT בבית הספר';
+  try { kidifyEmojis($('#view')); } catch(e){}
   if (out.after) out.after();
   ui();
 }
@@ -1529,9 +1536,9 @@ const TOOLRENDER = {
     const cur = PMR[T.i];
     return `<h2>🐢 הרפיית שרירים</h2><p class="lead">מכווצים חזק… ומשחררים. מרגישים את ההבדל?</p>
       <div class="progress" style="max-width:520px;margin:0 auto 20px"><i style="width:${Math.max(0, Math.round(100 * (T.i + (T.phase === 'relax' ? 1 : 0.5)) / PMR.length))}%"></i></div>
-      <div class="pmr" style="text-align:center">${cur ? `<div style="font-size:84px">${cur[0]}</div><div class="step"><b>${cur[1]}</b></div>
+      <div class="pmr" style="text-align:center">${cur ? `<div class="pmrkid"><div class="gface big">${kidMini(T.phase === 'tense' ? 'כעס' : 'רוגע', T.phase === 'tense' ? 7 : 6)}</div><div style="font-size:70px">${cur[0]}</div></div><div class="step"><b>${cur[1]}</b></div>
         <div class="bigtext" style="color:${T.phase === 'tense' ? 'var(--danger)' : 'var(--ok)'}">${T.phase === 'tense' ? '💪 ' + cur[2] : '😌 ' + cur[3]}</div><div class="muted" id="pmrcount"></div>`
-        : T.i >= PMR.length ? `<div style="font-size:84px">🌈</div><div class="bigtext">כל הגוף רגוע ונעים. כל הכבוד!</div>` : `<div style="font-size:84px">🧘</div><div class="bigtext">יושבים בנוח, עוצמים עיניים אם רוצים</div>`}</div>
+        : T.i >= PMR.length ? `<div class="gface big" style="margin:0 auto">${kidMini('שמחה', 7)}</div><div class="bigtext">כל הגוף רגוע ונעים. כל הכבוד!</div>` : `<div class="gface big" style="margin:0 auto">${kidMini('רוגע', 5)}</div><div class="bigtext">יושבים בנוח, עוצמים עיניים אם רוצים</div>`}</div>
       <div class="actions" style="justify-content:center;margin-top:18px"><button class="btn primary" data-act="pmr-go">${T.running ? '⏸ עצירה' : T.i >= 0 && T.i < PMR.length ? '▶ המשך' : '▶ התחלה'}</button>${T.i >= 0 ? '<button class="btn" data-act="pmr-reset">↺ מההתחלה</button>' : ''}</div>`;
   },
   copingcard(){
@@ -2874,10 +2881,17 @@ function modal(title, html, onsubmit){
   $('#mform').onsubmit = e => { e.preventDefault(); const fd = new FormData(e.target); const o = {}; for (const [k, v] of fd.entries()) { if (o[k] !== undefined) { o[k] = [].concat(o[k], v); } else o[k] = v; } if (onsubmit(o) !== false) closeModal(); };
   const first = m.querySelector('input,textarea,select'); if (first) first.focus();
 }
-function viewer(title, url, kind){
+// Word / PowerPoint open as their PDF copy (files/_pdf/…​.pdf, made by office2pdf.ps1) – viewing, not downloading; the original is a separate "download to edit"
+const OFFICE_RX = /\.(docx?|pptx?|rtf)$/i;
+const pdfCopy = rel => 'files/_pdf/' + String(rel).replace(/^files\//, '') + '.pdf';
+function openDoc(title, rel, page){
+  if (OFFICE_RX.test(rel)) { if (WEB) return Cloud.openFile(pdfCopy(rel), page, rel); return viewer(title, href(pdfCopy(rel)) + (page ? '#page=' + page : ''), 'pdf', href(rel)); }
+  if (WEB) return Cloud.openFile(rel, page); viewer(title, href(rel) + (page && /\.pdf$/i.test(rel) ? '#page=' + page : ''), ftype(rel)[0]);
+}
+function viewer(title, url, kind, orig){
   if (kind !== 'pdf' && kind !== 'img') { window.open(url, '_blank'); return; }   // Word / PowerPoint: straight to the file, no in-between window
   const m = $('#modal'); m.className = 'modal open big';
-  m.innerHTML = `<div class="box"><div class="mhead"><h3>${esc(title)}</h3><a class="btn sm" href="${url}" target="_blank">↗ לשונית חדשה</a><button class="iconbtn" data-act="close">✕</button></div>
+  m.innerHTML = `<div class="box"><div class="mhead"><h3>${esc(title)}</h3>${orig ? `<a class="btn sm" href="${orig}" download>⬇ הורדה לעריכה</a>` : ''}<a class="btn sm" href="${url}" target="_blank">↗ לשונית חדשה</a><button class="iconbtn" data-act="close">✕</button></div>
     ${kind === 'pdf' || kind === 'img' ? `<iframe src="${url}"></iframe>` : `<div class="empty"><span class="big">📂</span>את הקובץ הזה לא ניתן להציג בדפדפן.<br><br><a class="btn primary" href="${url}" target="_blank">פתיחה בתוכנה</a></div>`}</div>`;
 }
 function closeModal(){ const m = $('#modal'); m.className = 'modal'; m.innerHTML = ''; }
@@ -2952,10 +2966,10 @@ document.addEventListener('click', async e => {
     case 'findtopic': libTopic = d.v; libSub = ''; libQ = ''; location.hash = '#/library'; break;
     case 'circ-ai': if (AI.available()) aiCircOnlyRun(d.v); break;
     case 'ai-general': if (AI.available()) aiGeneralRun(d.v); break;
-    case 'libpdf': { const pg = +d.p || 0, f = d.path; if (WEB) Cloud.openFileAt(f, pg); else viewer(d.title, href(f) + (pg && /\.pdf$/i.test(f) ? '#page=' + pg : ''), ftype(f)[0]); break; }
+    case 'libpdf': { openDoc(d.title, d.path, +d.p || 0); break; }
     case 'circpdf': { const f = circFile(d.c), pg = +d.p || 0; if (!f) break; if (WEB) Cloud.openFileAt(f, pg); else viewer(circMeta(d.c).title, href(f) + (pg ? '#page=' + pg : ''), ftype(f)[0]); break; }
     case 'libopen': if (e.target.closest('[data-act="attopen"]')) return; if (WEB) Cloud.openFile(d.pdf); else viewer(d.title, href(d.pdf), 'pdf'); break;
-    case 'attopen': e.preventDefault(); e.stopPropagation(); if (WEB) Cloud.openFile(d.path); else viewer(d.title, href(d.path), ftype(d.path)[0]); break;
+    case 'attopen': e.preventDefault(); e.stopPropagation(); openDoc(d.title, d.path); break;
     case 'cloud-login': Cloud.login(); break;
     case 'art-sync': await ArtSync.pull().catch(err => { ArtSync.status = 'error'; ArtSync.err = err.message || err.code; }); render(); toast('סונכרן'); break;
     case 'cloud-logout': if (await uiConfirm('להתנתק מחשבון המיקרוסופט במכשיר הזה?')) Cloud.logout(); break;
@@ -3367,7 +3381,9 @@ const trKey = id => (active() ? active().id : 'general') + ':' + id;
 const trData = id => { S.tracks = S.tracks || {}; return S.tracks[trKey(id)] = S.tracks[trKey(id)] || {}; };
 const FIVEP = [['predisposing', 'גורמים מקדימים', 'מה הכין את הקרקע? (מזג, רקע, היסטוריה)', '#e9d5ff'], ['precipitating', 'גורמים מזרזים', 'מה הדליק את הבעיה עכשיו?', '#fde68a'], ['presenting', 'הבעיה כפי שהיא מוצגת', 'מה רואים? מה מדאיג?', '#fecaca'], ['perpetuating', 'גורמים משמרים', 'מה מחזיק את הבעיה? (הימנעות, תגובות סביבה, מחשבות)', '#fbcfe8'], ['protective', 'גורמים מגינים', 'חוזקות, תמיכה, משאבים', '#bbf7d0']];
 const DAYS = ['ראשון', 'שני', 'שלישי', 'רביעי', 'חמישי', 'שישי'];
-function trStepHTML(t, s, D){
+const trLink = h => h.replace(/(?<![="'\/\w])#\/(track|game|problem|tool|groups|transitions|programs|newteachers|videos)(\/[\w-]+)?/g, (m, r, id) => { const x = id && r === 'track' ? TRACK(id.slice(1)) : id && r === 'game' ? GAME(id.slice(1)) : null; return `<a href="${m}" class="trlink">${x ? esc(x.title) : m}</a>`; });
+function trStepHTML(t, s, D){ const h0 = trStepHTML0(t, s, D); return ['form', 'fivep', 'cycle', 'plan'].includes(s.kind) ? h0 : trLink(h0); }
+function trStepHTML0(t, s, D){
   const v = (f) => esc((D[s.id] || {})[f] || '');
   const inp = (f, ph, long) => long ? `<textarea class="inp" data-tr="${s.id}.${f}" placeholder="${esc(ph || '')}">${v(f)}</textarea>` : `<input class="inp" data-tr="${s.id}.${f}" value="${v(f)}" placeholder="${esc(ph || '')}">`;
   const intro = s.intro ? `<p class="lead" style="text-align:start">${esc(s.intro)}</p>` : '';
@@ -3395,10 +3411,11 @@ function trStepHTML(t, s, D){
 }
 function trStepDone(s, D){ const d = D[s.id]; if (!d) return false; return Object.values(d).some(x => x && (typeof x !== 'object' || Object.keys(x).length)); }
 function groupsView(){
-  const all = TRACKS().filter(t => t.group), guide = all.find(t => t.id === 'grp-guide'), list = all.filter(t => t.id !== 'grp-guide');
+  const all = TRACKS().filter(t => t.group), guide = all.find(t => t.id === 'grp-guide'), list = all.filter(t => t.id !== 'grp-guide' && !t.deep), deep = all.filter(t => t.deep);
   return {title: 'הנחיית קבוצות', html: `${gGuide('בקבוצה לומדים אחד מהשני – בוא נבנה קבוצה טובה! 👥', 'שמחה', 6)}
     <div class="note" style="margin:4px 0 16px">👥 מדור להנחיית קבוצות ילדים ונוער: המדריך המלא (בנייה, מיון, חוזה, שלבי קבוצה, מבנה מפגש, מיומנויות מנחה, מצבים מאתגרים, הערכה וסיום) ומתווים טיפוליים קבוצתיים לפי נושאים – כל מתווה עם מיון, פנייה להורים, מפגשים מפורטים, מדדים לפני ואחרי ומעקב. לכל עמוד יש קישור משלו.</div>
     ${guide ? `<a class="card" href="#/track/${guide.id}" style="margin-bottom:16px;border:2px solid var(--brand)"><span class="emoji">${guide.icon || '👥'}</span><span class="name">${esc(guide.title)}</span><span class="sub">${guide.steps.length} פרקים · מתחילים כאן</span></a>` : ''}
+    ${deep.length ? `<h2 class="sec">🎓 העמקה – מתוך קורס הנחיית הקבוצות (יעל מלמד)</h2><div class="grid" style="margin-bottom:16px">${deep.map(t => `<a class="card" href="#/track/${t.id}"><span class="emoji">${t.icon || '🎓'}</span><span class="name">${esc(t.title)}</span><span class="sub">${t.steps.length} שלבים</span></a>`).join('')}</div>` : ''}
     <h2 class="sec">📚 מתווים טיפוליים קבוצתיים לפי נושאים</h2>
     ${list.length ? `<div class="grid">${list.map(t => `<a class="card" href="#/track/${t.id}"><span class="emoji">${t.icon || '👥'}</span><span class="name">${esc(t.title)}</span><span class="sub">${esc(t['for'] || '')}</span><span class="sub">${(t.steps.find(s => s.kind === 'sessions') || {sessions: []}).sessions.length} מפגשים</span></a>`).join('')}</div>` : '<div class="empty">⏳ המתווים נטענים…</div>'}`};
 }
@@ -3501,6 +3518,18 @@ async function playVideo(d){
     else w.innerHTML = `<video src="${j['@microsoft.graph.downloadUrl']}" controls autoplay playsinline preload="auto"></video>`;
   } catch(e){ const w = w0(); if (w) w.innerHTML = `<div class="empty">לא הצלחתי לפתוח את הסרטון: ${esc(e.message)}</div>`; }
 }
+/* every child shown in the app is the boy from the user's video: child/person emoji in text become a small drawing of him; families with a girl become a home */
+const KID_EMOJI_RX = /(\u{1F468}|\u{1F469})(\u200D(\u{1F468}|\u{1F469}))?\u200D(\u{1F467}|\u{1F466})(\u200D(\u{1F467}|\u{1F466}))?|\u{1F9D1}\u200D\u{1F91D}\u200D\u{1F9D1}|[\u{1F9D2}\u{1F466}\u{1F467}\u{1F9CD}\u{1F64B}\u{1F938}\u{1F9D8}\u{1F3C3}\u{1F9D7}\u{1F9CE}\u{1F6B6}](\u200D[\u2640\u2642]\uFE0F?)?[\u{1F3FB}-\u{1F3FF}]?/gu;
+let KID_ICON = '';
+function kidifyEmojis(root){
+  if (!root) return; if (!KID_ICON) KID_ICON = kidMini('שמחה', 3, 'kidicon');
+  const w = document.createTreeWalker(root, NodeFilter.SHOW_TEXT, {acceptNode: n => n.parentElement && n.parentElement.closest('svg,textarea,script,style,input,select,option') ? NodeFilter.FILTER_REJECT : (KID_EMOJI_RX.test(n.nodeValue) ? NodeFilter.FILTER_ACCEPT : NodeFilter.FILTER_SKIP)});
+  const nodes = []; while (w.nextNode()) nodes.push(w.currentNode);
+  for (const n of nodes) {
+    KID_EMOJI_RX.lastIndex = 0; const html = esc(n.nodeValue).replace(KID_EMOJI_RX, m => /^[\u{1F468}\u{1F469}]/u.test(m) ? '🏡' : m.startsWith('\u{1F9D1}\u200D') ? '🤝' : `<span class="kidico">${KID_ICON}</span>`);
+    const span = document.createElement('span'); span.innerHTML = html; n.replaceWith(...span.childNodes);
+  }
+}
 /* ================= boot ================= */
 { const t = ls.get('cbtapp.theme', null); if (t) document.documentElement.dataset.theme = t; }
 $('#nav').innerHTML = NAV.filter(n => !LITE || !['students','library'].includes(n[0])).map(([k, i, l]) => `<a href="#/${k}" data-nav="${k}"><span class="i">${i}</span>${l}</a>`).join('');
@@ -3508,6 +3537,7 @@ $('#nav').innerHTML = NAV.filter(n => !LITE || !['students','library'].includes(
 const TABBAR = LITE ? ['home', 'ask', 'circ', 'tools'] : ['home', 'ask', 'circ', 'library', 'tools'];
 $('#tabbar').innerHTML = TABBAR.map(k => NAV.find(n => n[0] === k)).map(([k, i, l]) => `<a href="#/${k}" data-nav="${k}"><span class="i">${i}</span>${l}</a>`).join('') + `<a href="#/more" data-nav="more"><span class="i">☰</span>עוד</a>`;
 render();
+try { kidifyEmojis($('#nav')); kidifyEmojis($('#tabbar')); } catch(e){}
 AI.init().then(() => { if (route().r === 'ask') render(); });
 document.body.classList.toggle('artifact', ARTIFACT); document.body.classList.toggle('lite', LITE);
 SYNC.init();
