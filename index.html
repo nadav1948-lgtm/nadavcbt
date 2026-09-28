@@ -1178,6 +1178,109 @@ body,body *{overflow-wrap:normal!important;word-break:normal!important;hyphens:m
 body.sharemode .side,body.sharemode .tabbar,body.sharemode .topbar{display:none!important}body.sharemode .shell{grid-template-columns:1fr}body.sharemode #view{max-width:1000px;margin:0 auto;padding:16px}
 .sharehead{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px;margin:0 0 12px;padding:10px 14px;border-radius:14px;background:var(--brand-soft);font-size:14px}.shlink{text-decoration:none;cursor:default}
 
+#selview{display:none}@media print{body.selprint>*:not(#selview){display:none!important}body.selprint #selview{display:block!important}}
+
+/* ---------- aklim hub (tracks-aklim.js): ladder, event finder, criteria meter, suspension bars, class survey ---------- */
+.akladder,.akevgrid,.akpanel,.akcrit,.akbars,.aksv,.aksvin,.aksvq{word-break:normal;overflow-wrap:normal;hyphens:none}
+.akc{white-space:nowrap}
+.akladder{display:grid;grid-template-columns:1fr;gap:14px;align-items:start}
+.akrungs{display:flex;flex-direction:column;align-items:center;gap:7px;padding:10px 6px;border-radius:18px;background:linear-gradient(0deg,color-mix(in srgb,#22c55e 10%,var(--panel)),color-mix(in srgb,#ef4444 12%,var(--panel)));border:1px solid var(--line)}
+.akup,.akdown{font-size:12.5px;font-weight:700;color:var(--muted)}
+.akrung{position:relative;display:flex;align-items:center;gap:10px;width:min(100%,calc(var(--w) * 0.9 + 60px));min-width:0;padding:9px 12px;border-radius:14px;cursor:pointer;background:color-mix(in srgb,var(--c) 18%,var(--panel));border:2px solid color-mix(in srgb,var(--c) 55%,transparent);transition:transform .12s,box-shadow .12s}
+.akrung:hover{transform:translateX(-3px)}
+.akrung.on{background:var(--c);color:#111;box-shadow:0 6px 18px color-mix(in srgb,var(--c) 45%,transparent);border-color:var(--c)}
+.akrung input,.akev input,.akvt input{position:absolute;opacity:0;pointer-events:none}
+.akrung:has(input:focus-visible),.akev:has(input:focus-visible),.akvt:has(input:focus-visible){outline:3px solid var(--brand);outline-offset:2px}
+.akrb{flex:none;display:grid;place-items:center;min-width:34px;height:34px;padding:0 6px;border-radius:10px;background:var(--c);color:#111;font-weight:800;font-size:15px}
+.akrung.on .akrb{background:#111;color:var(--c)}
+.akrt{display:grid;line-height:1.3}.akrt b{font-size:14.5px}.akrt small{font-size:12px;opacity:.85}
+.akpanel{border-radius:18px;padding:14px;background:color-mix(in srgb,var(--c) 8%,var(--panel));border:1px solid color-mix(in srgb,var(--c) 45%,var(--line));border-top:7px solid var(--c);display:grid;gap:12px;min-width:0}
+.akph{display:flex;gap:12px;align-items:flex-start}.akph h4{margin:0 0 4px;font-size:18px}.akph p{margin:0;line-height:1.6}
+.akbadge{flex:none;display:grid;place-items:center;min-width:46px;height:46px;padding:0 8px;border-radius:14px;background:var(--c);color:#111;font-weight:900;font-size:20px}
+.akex b{display:block;margin-bottom:6px}.akex>div{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:4px}
+.akchip{padding:4px 10px;border-radius:999px;background:color-mix(in srgb,var(--c) 22%,var(--panel));border:1px solid color-mix(in srgb,var(--c) 50%,transparent);font-size:13.5px}
+.akfacts{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:8px}
+.akfact{border-radius:12px;padding:8px 10px;background:var(--panel);border:1px solid var(--line);border-inline-start:4px solid var(--c)}
+.akfact b{font-size:13.5px}.akfact p{margin:3px 0 2px;font-size:14px;line-height:1.5}.akfi{margin-inline-end:4px}
+.aktwo{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.akcol{border-radius:14px;padding:10px 12px;border-top:6px solid var(--k)}
+.akcol.ther{--k:#34d399;background:color-mix(in srgb,#34d399 12%,var(--panel))}
+.akcol.disc{--k:#60a5fa;background:color-mix(in srgb,#60a5fa 12%,var(--panel))}
+.akcol h5{margin:0 0 6px;font-size:15.5px}
+.akul{margin:0;padding:0;display:grid;gap:6px}.akul li{font-size:14.5px;line-height:1.55;padding-inline-start:14px;position:relative}
+.akul li::before{content:'•';position:absolute;inset-inline-start:0;color:var(--k,var(--c));font-weight:900}
+.akmust{background:color-mix(in srgb,#ef4444 20%,var(--panel));color:var(--ink);font-weight:700}
+.akopt{background:var(--bg2);color:var(--muted)}
+.akgk{background:color-mix(in srgb,#a78bfa 22%,var(--panel));color:var(--ink)}
+.aknote{margin:0;padding:8px 12px;border-radius:12px;background:color-mix(in srgb,#f59e0b 14%,var(--panel));font-size:14px;line-height:1.55}
+.aksits{display:flex;flex-wrap:wrap;gap:6px;align-items:center;font-size:13.5px}
+.aksit{padding:4px 10px;border-radius:999px;background:var(--bg2);border:1px solid var(--line);text-decoration:none}
+.aksit:hover{border-color:var(--brand-text)}
+.akevgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:8px;margin-bottom:12px}
+.akev{position:relative;display:grid;gap:2px;justify-items:center;text-align:center;padding:12px 8px;border-radius:16px;cursor:pointer;background:color-mix(in srgb,var(--c) 14%,var(--panel));border:2px solid color-mix(in srgb,var(--c) 45%,transparent);transition:transform .12s}
+.akev:hover{transform:translateY(-2px)}.akev.on{background:var(--c);color:#111;border-color:var(--c)}
+.akevi{font-size:30px;line-height:1.1}.akev b{font-size:14.5px;line-height:1.3}.akev small{font-size:12px;opacity:.85}
+.akvtabs{display:flex;flex-wrap:wrap;gap:6px}
+.akvt{position:relative;display:flex;gap:6px;align-items:center;padding:6px 12px;border-radius:999px;cursor:pointer;border:2px solid var(--c);background:var(--panel);font-size:14px}
+.akvt.on{background:var(--c);color:#111;font-weight:700}
+.akvb{display:inline-grid;place-items:center;min-width:26px;height:26px;padding:0 5px;border-radius:8px;background:var(--c);color:#111;font-weight:800;font-size:13px}
+.akvt.on .akvb{background:#111;color:var(--c)}
+.aklevel{display:flex;gap:10px;align-items:flex-start;padding:10px 12px;border-radius:14px;background:color-mix(in srgb,var(--c) 18%,var(--panel));border-inline-start:6px solid var(--c)}
+.aklevel p{margin:2px 0 0;font-size:14px}
+.aknowwrap{display:grid;grid-template-columns:1fr 150px;gap:12px;align-items:start}
+.aknowwrap h5{margin:0 0 6px;font-size:15.5px}
+.aknow{list-style:none;margin:0;padding:0;display:grid;gap:6px}
+.aknow li label{display:flex;gap:10px;align-items:flex-start;padding:8px 10px;border-radius:12px;cursor:pointer;background:var(--panel);border:1px solid var(--line);border-inline-start:5px solid var(--c)}
+.aknow li input{position:absolute;opacity:0;pointer-events:none}
+.aknow li.on label{background:color-mix(in srgb,#34d399 14%,var(--panel))}
+.aknow li.on .akst>span:first-child{opacity:.8}
+.aksn{flex:none;display:grid;place-items:center;width:28px;height:28px;border-radius:50%;background:var(--c);color:#111;font-weight:800}
+.aknow li.on .aksn{background:#34d399}
+.akst{font-size:14.5px;line-height:1.55}
+.akring{width:130px;height:130px;margin:0}
+.akcrit{display:grid;gap:10px}
+.akmeter{height:18px;border-radius:999px;background:linear-gradient(to left,#22c55e,#eab308,#f97316,#ef4444);position:relative;overflow:hidden}
+.akmeter i{position:absolute;inset-block:0;inset-inline-end:0;background:var(--bg2);transition:width .3s}
+.akmtext{margin:0;font-size:15px}
+.akcritl{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:6px}
+.akck{display:flex;gap:8px;align-items:flex-start;padding:8px 10px;border-radius:12px;cursor:pointer;background:var(--panel);border:1px solid var(--line);font-size:14.5px}
+.akck.on{background:color-mix(in srgb,#f97316 16%,var(--panel));border-color:#f97316}
+.akci{font-size:18px}
+.akbars{display:grid;gap:8px;position:relative}
+.akscale{position:relative;height:18px;margin-inline-start:min(38%,300px);font-size:11px;color:var(--muted)}
+.akscale span{position:absolute;transform:translateX(50%)}
+.akbar{display:grid;grid-template-columns:min(38%,300px) 1fr;gap:10px;align-items:center}
+.akbl{display:grid;line-height:1.35}.akbl b{font-size:14px}.akbl small{font-size:12.5px;color:var(--muted)}
+.akbt{position:relative;height:22px;border-radius:8px;background:var(--bg2);overflow:hidden}
+.akbt i{position:absolute;inset-block:0}
+.akbt i.base{background:var(--c);border-radius:6px}
+.akbt i.ext{background:repeating-linear-gradient(45deg,var(--c) 0 5px,transparent 5px 10px);border:2px solid var(--c);border-radius:6px;box-sizing:border-box}
+.akbt i.none{background:repeating-linear-gradient(90deg,var(--line) 0 2px,transparent 2px 8px)}
+.akleg{display:flex;gap:14px;flex-wrap:wrap;font-size:12.5px;color:var(--muted)}
+.aksv{display:grid;gap:10px}
+.aksvl{display:flex;gap:12px;flex-wrap:wrap;font-size:13.5px}.aksvl span{color:var(--c);font-weight:700}
+.aksvd{border-radius:14px;padding:8px 12px;background:color-mix(in srgb,var(--c) 10%,var(--panel));border-inline-start:6px solid var(--c);display:grid;gap:4px}
+.aksvh{display:flex;gap:8px;align-items:center}.aksvh span{font-size:20px}
+.aksvb{display:grid;grid-template-columns:70px 1fr 48px;gap:8px;align-items:center;font-size:13px}
+.aksvb .bt{height:14px;border-radius:999px;background:var(--bg2);overflow:hidden}
+.aksvb .bt i{display:block;height:100%;border-radius:999px;background:var(--rc)}
+.aksvb.z-r b{color:#ef4444}.aksvb.z-y b{color:#eab308}.aksvb.z-g b{color:#22c55e}
+.aklow{display:grid;gap:8px}.aklow h4{margin:4px 0 0}
+.aklow section{border-radius:12px;padding:8px 12px;background:var(--panel);border:1px solid var(--line);border-top:5px solid var(--c)}
+.aksvin{display:grid;gap:4px}
+.aksvrow{display:grid;grid-template-columns:1fr repeat(2,90px);gap:8px;align-items:center;font-size:14px}
+.aksvrow.dh{margin-top:8px;padding:4px 8px;border-radius:10px;background:color-mix(in srgb,var(--c) 14%,var(--panel))}
+.aksvq ol{margin:6px 0;padding-inline-start:22px;display:grid;gap:6px}
+@media (max-width:760px){
+  .akladder{grid-template-columns:1fr}.akrungs{position:static}.akrung{width:100%;min-width:0}
+  .aktwo,.aknowwrap{grid-template-columns:1fr}.akring{margin:0 auto}
+  .akbar{grid-template-columns:1fr}.akscale{margin-inline-start:0}
+  .aksvrow{grid-template-columns:1fr repeat(2,64px)}
+}
+@media print{.akrungs{position:static}.akrung input,.akev input{display:none}}
+
+#printbrand{display:none}@media print{#printbrand{display:block!important;text-align:center;font-weight:800;font-size:15px;padding:4px 0 8px;margin-bottom:8px;border-bottom:2px solid #999}}
+
 </style>
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="apple-touch-icon" href="icon-192.png">
@@ -1394,6 +1497,29 @@ function css(){
 .so-form ol.names{columns:3;column-gap:18px;font-size:14px;margin:8px 0 0}
 .so-form .conf{font-size:13.5px;background:#f4f4f4;border-radius:10px;padding:8px 12px;margin:8px 0 14px}
 .so-print-only{display:none}
+.so-helpbtn{border:1px dashed var(--brand-text);background:var(--brand-soft);color:var(--brand-text);border-radius:999px;padding:7px 13px;font-size:14px;cursor:pointer;font-weight:700;white-space:nowrap}
+.so-guide>summary{cursor:pointer;display:flex;align-items:center;gap:8px;font-size:17px;list-style:none}
+.so-guide>summary::-webkit-details-marker{display:none}
+.so-guide[open]>summary{margin-bottom:12px}
+.so-gmap{display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin:0 0 12px}
+.so-gmap a,.so-gmap button{display:inline-flex;align-items:center;gap:6px;border:1px solid var(--line);background:hsl(var(--h) var(--soft-s) var(--soft-l));color:var(--ink);border-radius:999px;padding:5px 11px 5px 7px;font-size:13.5px;text-decoration:none;cursor:pointer;white-space:nowrap}
+.so-gmap button.on{outline:2px solid hsl(var(--h) 70% 50%)}
+.so-gmap .arr{color:var(--muted)}
+.so-gL{display:inline-grid;place-items:center;width:24px;height:24px;border-radius:50%;background:hsl(var(--h) 70% 52%);color:#fff;font-weight:800;font-size:13px;flex:0 0 auto}
+.so-gsec{border-inline-start:5px solid hsl(var(--h) 70% 55%);background:var(--bg2);border-radius:14px;padding:12px 14px;margin:0 0 12px;scroll-margin-top:80px}
+.so-ghead{display:flex;gap:10px;align-items:center;margin-bottom:8px}
+.so-ghead .so-gL{width:32px;height:32px;font-size:16px}
+.so-gi{font-size:24px}
+.so-gsteps{list-style:none;margin:0;padding:0;display:grid;gap:8px;counter-reset:s}
+.so-gsteps li{display:grid;grid-template-columns:34px minmax(0,1fr);gap:10px;align-items:start;background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:8px 10px;font-size:14.5px;position:relative}
+.so-gsteps li:not(:last-child)::after{content:"";position:absolute;inset-inline-start:26px;bottom:-9px;height:9px;border-inline-start:2px dashed hsl(var(--h) 60% 55%)}
+.so-gsteps .si{width:34px;height:34px;border-radius:10px;display:grid;place-items:center;background:hsl(var(--h) var(--soft-s) var(--soft-l));font-size:17px}
+.so-scripts{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(240px,100%),1fr));gap:10px;margin-top:10px}
+.so-scripts>div{background:var(--panel);border:1px solid var(--line);border-top:4px solid hsl(var(--h) 70% 55%);border-radius:12px;padding:10px 12px;font-size:14px}
+.so-scripts p{margin:6px 0 0}
+.so-scripts .say{background:hsl(var(--h) var(--soft-s) var(--soft-l));border-radius:10px;padding:8px 10px;font-size:14.5px;line-height:1.7}
+.so-tip{display:flex;flex-wrap:wrap;gap:6px 10px;align-items:center;background:var(--brand-soft);border-radius:12px;padding:8px 12px;margin:0 0 12px;font-size:14px;font-weight:600}
+.so-tip .arr{color:var(--brand-text)}
 @media (max-width:860px){.so-map,.so-entry,.so-grid2{grid-template-columns:1fr}.so-side{position:static;max-height:none}.so-plist{flex-direction:row;flex-wrap:wrap;max-height:180px}.so-pbtn{padding:5px 9px;font-size:13.5px}.so-qrow{grid-template-columns:auto minmax(0,1fr);}.so-qrow .inp.s{grid-column:2}}
 @media (max-width:600px){.so-svgbox:not(.big) .so-svg .so-n .l{font-size:21px;stroke-width:5px}.so-svgbox:not(.big) .so-svg .so-n .c{font-size:16px}.so-svgbox:not(.big) .so-svg .so-ringlbl{font-size:19px}}
 @media (max-width:520px){.so-form ol.names{columns:2}.so-bars .r{grid-template-columns:80px minmax(0,1fr) 54px;font-size:13px}}
@@ -1703,13 +1829,82 @@ function view(R){
   if (U.q !== 'all' && !posQs(c).some(q => q.id === U.q)) U.q = 'all';
   return {title: 'מיפוי חברתי · ' + c.name, html: `<div id="socio" class="socio">${inner(c)}</div>`};
 }
-const TABS = [['setup', '⚙️ הגדרה'], ['entry', '✍️ הזנת תשובות'], ['map', '🕸️ סוציוגרם'], ['people', '👤 פרופיל תלמיד'], ['class', '📊 נתוני הכיתה'], ['recs', '💡 המלצות'], ['time', '📈 לאורך זמן'], ['print', '🖨️ דוח וטופס'], ['about', 'ℹ️ על הכלי']];
+/* ---------- 📘 the step-by-step guide: how to run the questionnaire (panel on home/setup + ❓ on every tab) ---------- */
+const GK = ' <span class="muted" style="font-size:12px">(ידע כללי)</span>';
+const GUIDE = [
+  {id: 'before', L: 'א', icon: '🧭', h: 205, title: 'לפני – מטרה, אתיקה ותזמון', lead: 'שאלון חברתי הוא כלי רגיש. מתכננים אותו כמו התערבות, לא כמו ״סקר״.', steps: [
+    ['🎯', 'מטרה ברורה', 'לשם מה? למשל: לאתר ילדים שקופים או דחויים, לתכנן ישיבה וקבוצות, או לבדוק אחרי התערבות אם משהו השתנה. בלי מטרה – לא מעבירים.' + GK],
+    ['🔒', 'אתיקה וחיסיון', 'התשובות חסויות. רק היועץ רואה אותן. התוצאות לא מוצגות לתלמידים לעולם, וגם המחנך מקבל המלצות – לא מפה.'],
+    ['📅', 'מתי', 'אחרי כ-6 שבועות מתחילת השנה, כשהילדים כבר מכירים זה את זה. לא מיד אחרי ריב או אירוע חברתי בכיתה, ולא ביום לחוץ. חוזרים באמצע השנה (אחרי 3–4 חודשים) כדי לראות שינוי.' + GK],
+    ['🤝', 'הסכמות', 'מתאמים עם המנהל ועם המחנך. ״אם המחנך מסכים – סוציומטריה כיתתית בדיסקרטיות מלאה״ (מסלול הדחייה החברתית באפליקציה). יידוע הורים – לפי מדיניות בית הספר.'],
+    ['⚠️', 'שאלה שלילית', 'כבויה כברירת מחדל. מפעילים רק עם מטרה ברורה (למשל חשד לדחייה פעילה), בתיאום, בהתאם להנחיות שפ״י ולמדיניות בית הספר.']]},
+  {id: 'setup', L: 'ב', icon: '⚙️', h: 145, title: 'הגדרת הכיתה בכלי', lead: 'חמש דקות עבודה, פעם אחת לכל כיתה.', steps: [
+    ['＋', 'יוצרים מפה', 'בדף הראשי של הכלי: שם הכיתה (למשל ד׳1), שכבה ותאריך ← ״יצירת המפה״.'],
+    ['📋', 'מדביקים שמות', 'בלשונית ⚙️ הגדרה: מדביקים רשימה – שם אחד בכל שורה – ולוחצים ״הוספה לרשימה״. אפשר שם פרטי, כינוי, ראשי תיבות או מספר. המספר של כל ילד מופיע גם בטופס המודפס.'],
+    ['❓', 'בוחרים שאלות', 'שלוש שאלות חיוביות מוכנות: ישיבה, הפסקה, עבודה בקבוצה. אפשר לשנות נוסח ולהוסיף שאלה. שאלת ״מי לדעתך יבחר בך?״ – רשות, לבדיקת תפיסה מול מציאות.'],
+    ['🔢', 'מספר בחירות', 'ברירת המחדל: 3 בחירות לשאלה. בכיתות א׳–ב׳ אפשר 2.' + GK],
+    ['🚫', 'שאלה שלילית', 'רק עם מטרה ברורה. בלעדיה הכלי עדיין מזהה ילדים שקופים ובעלי מקובלות נמוכה.']]},
+  {id: 'run', L: 'ג', icon: '🏫', h: 35, title: 'העברה בכיתה', lead: 'כ-15 דקות. היועץ מעביר, או המחנך אחרי תדריך קצר.', steps: [
+    ['🖨️', 'מדפיסים', 'לשונית 🖨️ דוח וטופס ← ״טופס ריק לכיתה״ או ״טופס אישי לכל תלמיד״ (עם השם מודפס) ← 🖨️ הדפסה.'],
+    ['🪑', 'מושיבים מרווח', 'כל ילד לבד, רחוק מהשכן, או עם מחיצה (תיק או קלסר). השולחנות נקיים.'],
+    ['🗣️', 'מקריאים את ההוראות', 'בנוסח שמתאים לגיל (ראה למטה): ״אין מדברים, התשובות סודיות, לא מראים לחבר״.'],
+    ['✍️', 'ממלאים', 'עד 3 שמות בכל שאלה. אפשר לכתוב את המספר מהרשימה. מי שלא רוצה לבחור בשאלה – לא חייב.'],
+    ['📥', 'אוספים מיד', 'אוספים הפוכים, בלי להסתכל ליד הילדים, ומכניסים לתיק. תלמיד שנעדר – ממלא לבד בהזדמנות אחרת או מסומן ״נעדר״.'],
+    ['🎈', 'פעילות נעימה אחרי', 'מיד ממשיכים לפעילות כיפית, כדי שהשיחה לא תמשיך ל״את מי בחרת?״.' + GK]],
+    extra: () => `<div class="so-scripts">
+      <div style="--h:145"><b>🧒 כיתות א׳–ב׳ – בעל-פה, אחד-אחד</b><p>בגיל הזה עדיף להעביר בשיחה אישית קצרה (2–3 דקות לילד) בפינה שקטה, והיועץ רושם.${GK}</p><p class="say">״אני רוצה להכיר את הכיתה שלכם טוב יותר. אני אשאל אותך כמה שאלות על החברים בכיתה. אין תשובות נכונות או לא נכונות. מה שתגיד נשאר רק אצלי – אני לא אספר לאף אחד. עם מי היית רוצה לשבת? ועוד מישהו?״</p></div>
+      <div style="--h:35"><b>📘 כיתות ג׳–ד׳</b><p class="say">״היום נמלא שאלון קצר על החברים בכיתה. הוא עוזר לי לתכנן דברים טובים לכיתה. התשובות סודיות: רק אני אראה אותן – לא החברים ולא המורים. אין מדברים ולא מסתכלים אצל השכן. בכל שאלה כותבים עד שלושה שמות של ילדים מהכיתה, או את המספר שלהם מהרשימה. את עצמך לא כותבים. מי שלא רוצה לענות על שאלה – מדלג. כשמסיימים – הופכים את הדף ומחכים בשקט.״</p></div>
+      <div style="--h:285"><b>🎓 כיתות ה׳–ו׳</b><p class="say">״אני מבקש מכם למלא שאלון קצר על הקשרים בכיתה. המטרה – לעזור לי ולמחנך לבנות כיתה שכל אחד מרגיש בה טוב. התשובות חסויות לגמרי: רק אני קורא אותן, ואף אחד לא יודע מה כתבתם. חשוב: אחרי השאלון לא מדברים על מה שכתבתם – גם לא בהפסקה ולא בוואטסאפ. זה עניין של כבוד לכל אחד מהכיתה. כותבים עד שלושה שמות בכל שאלה. אפשר לדלג.״</p></div></div>`},
+  {id: 'entry', L: 'ד', icon: '✍️', h: 285, title: 'הזנת התשובות', lead: 'בערך דקה לילד. הכול בלחיצות.', steps: [
+    ['1️⃣', 'פותחים ״הזנת תשובות״', 'לשונית ✍️ בכלי.'],
+    ['👆', 'בוחרים תלמיד', 'מהרשימה בצד (בטלפון – למעלה). הסימנים: ✓ הושלם · ◐ חלקי · ✖ נעדר · ○ עוד לא.'],
+    ['🔢', 'לוחצים על השמות לפי הסדר', 'בכל שאלה לוחצים על הילדים שהוא כתב, לפי הסדר שכתב (הבחירה הראשונה = 1). לחיצה נוספת מבטלת. אי אפשר לבחור את עצמו או פעמיים את אותו ילד.'],
+    ['✖', 'נעדר', 'מי שלא מילא – ״נעדר / לא ענה״. הבחירות שלו לא נספרות, אבל עדיין אפשר לבחור בו.'],
+    ['✅', 'סיימתי – הבא', 'עובר אוטומטית לילד הבא שעוד לא הוזן.'],
+    ['📊', 'בודקים התקדמות', 'הפס הצהוב והמונה ״מילאו X/Y״. כשכולם מוזנים מופיע הכפתור ״לסוציוגרם״. אם ענו פחות מ-70% – התמונה חלקית.']]},
+  {id: 'read', L: 'ה', icon: '🕸️', h: 190, title: 'קריאת התוצאות', lead: 'מתחילים מהילדים, ורק אחר כך עוברים לכיתה.', steps: [
+    ['👀', 'קודם כול – מי שקוף ומי דחוי', 'שקוף = אף אחד לא בחר בו. דחוי = הרבה בחירות שליליות. ״מהשקיפות קל יותר לצאת מאשר מהדחייה״ (יעל אברהם, הרצאה ליועצים – בספרייה). הם מסומנים במסגרת אדומה.'],
+    ['🤝', 'קשרים הדדיים', 'ילד עם חבר הדדי אחד קרוב ברווחה שלו ל״מלך הכיתה״ (יעל אברהם בשם Favazza). ילד בלי אף קשר הדדי – למעקב.'],
+    ['🕸️', 'סוציוגרם', 'לוחצים על ילד ← רואים במי בחר (צהוב) ומי בחר בו (כחול). ״מטרה״ = מי במרכז ומי בשוליים; ״כוחות״ = קבוצות ואשכולות.'],
+    ['👤', 'פרופיל תלמיד', 'לכל ילד: בחירות לפי שאלה, הדדיים, תפיסה מול מציאות, פרשנות ליועץ וצעדים הבאים.'],
+    ['📊', 'נתוני הכיתה', 'לכידות, הדדיות, תת-קבוצות, קליקות וגשרים, סוציומטריצה, והשוואה בין השאלות (נבחר לעבודה ולא למשחק?).'],
+    ['💡', 'המלצות', 'מי צריך תשומת לב, זוגות לישיבה, חלוקה לקבוצות והתערבות כיתתית.'],
+    ['🧪', 'השערה, לא אבחנה', 'מצליבים עם תצפית בהפסקה, שיחה עם הילד והמחנך ומידע מההורים.']]},
+  {id: 'after', L: 'ו', icon: '🛡️', h: 0, title: 'אחרי – מה עושים ומה לא', lead: 'המיפוי שווה רק את מה שעושים בעקבותיו.', steps: [
+    ['⛔', 'לעולם לא', 'לא מראים תוצאות לתלמידים. לא אומרים ״בגלל השאלון הושבנו אותך כאן״ – שינוי ישיבה מוצג כשינוי רגיל. לא מראים למחנך את המפה או את התשובות של ילד מסוים.'],
+    ['📝', 'תוכנית מעקב', 'לכל ילד שזקוק לתשומת לב: תצפית, שיחה אישית, שותף לישיבה, תפקיד בכיתה – ומסלול טיפול לפי הצורך (דחייה חברתית, מיומנויות חברתיות, המודל של יעל אברהם).'],
+    ['🏫', 'עבודה עם הכיתה', 'לכידות נמוכה או קבוצות סגורות ← פעילות כיתתית, SEL וכישורי חיים. דחייה מרוכזת בילד אחד ← לבדוק פגיעה מכוונת או חרם.'],
+    ['📅', 'מדידה חוזרת', 'קובעים כבר עכשיו תאריך – בעוד 3–4 חודשים. ⚙️ הגדרה ← ״מדידה חוזרת״, ואז ״📈 לאורך זמן״.'],
+    ['🗄️', 'שמירה ומחיקה', 'הטפסים המודפסים – בארון נעול, ואחרי ההזנה גורסים אותם. בכלי: שמות פרטיים או קודים בלבד. בסוף השנה, או כשאין בהם צורך – מוחקים את המפה (⚙️ הגדרה ← מחיקה).' + GK]]}
+];
+const HELP_OF = {setup: 'setup', entry: 'entry', map: 'read', people: 'read', class: 'read', recs: 'read', time: 'after', print: 'run', about: 'before'};
+const lsGet = k => { try { return localStorage.getItem(k); } catch(e){ return null; } }, lsSet = (k, v) => { try { localStorage.setItem(k, v); } catch(e){} };
+function guideSection(g){
+  return `<div class="so-gsec" id="so-g-${g.id}" style="--h:${g.h}"><div class="so-ghead"><span class="so-gL">${g.L}</span><span class="so-gi">${g.icon}</span><div><b>${esc(g.title)}</b><div class="muted" style="font-size:13.5px">${esc(g.lead)}</div></div></div>
+    <ol class="so-gsteps">${g.steps.map(([i, t, d]) => `<li><span class="si">${i}</span><div><b>${esc(t)}</b><div>${d}</div></div></li>`).join('')}</ol>${g.extra ? g.extra() : ''}</div>`;
+}
+function guidePanel(){
+  const open = lsGet('cbtapp.socio.guide') !== 'closed';
+  return `<details class="panel so-guide no-print" id="so-guide" ${open ? 'open' : ''}><summary><span style="font-size:20px">📘</span> <b>איך ממלאים – מדריך צעד אחר צעד</b><span class="muted" style="font-size:13px;margin-inline-start:auto">${open ? 'לחיצה מקפלת' : 'לחיצה פותחת'}</span></summary>
+    <div class="so-gmap">${GUIDE.map(g => `<a href="#so-g-${g.id}" data-act="so-gjump" data-v="${g.id}" style="--h:${g.h}"><span class="so-gL">${g.L}</span>${g.icon} ${esc(g.title.split(' – ')[0])}</a>`).join('<span class="arr">←</span>')}</div>
+    ${GUIDE.map(guideSection).join('')}<p class="muted" style="font-size:12.5px;margin:6px 0 0">מקורות: יעל אברהם – הרצאה ליועצים ״אין מצב שמפנים את הגב״ והמודל לעבודה עם ילדים דחויים (בספרייה); מסלול ״טיפול מובנה – דחייה חברתית״; שאר ההנחיות – ידע כללי מקובל בעבודה סוציומטרית (Moreno ואילך). <a href="${BASE}/__about">עוד על השיטה והמקורות</a></p></details>`;
+}
+function helpModal(id){
+  const g = GUIDE.find(x => x.id === id) || GUIDE[0], m = document.getElementById('modal'); if (!m) return;
+  m.className = 'modal open';
+  m.innerHTML = `<div class="box socio" style="max-width:720px;max-height:88vh;overflow:auto"><div class="actions" style="margin-bottom:8px"><h3 style="margin:0">❓ הדרכה</h3><span style="margin-inline-start:auto"></span><button class="btn sm" data-act="close">✕ סגירה</button></div>
+    <div class="so-gmap">${GUIDE.map(x => `<button class="${x.id === g.id ? 'on' : ''}" data-act="so-help" data-v="${x.id}" style="--h:${x.h}"><span class="so-gL">${x.L}</span>${x.icon} ${esc(x.title.split(' – ')[0])}</button>`).join('')}</div>${guideSection(g)}</div>`;
+}
+const helpBtn = tab => `<button class="so-helpbtn no-print" data-act="so-help" data-v="${HELP_OF[tab] || 'before'}">❓ הדרכה</button>`;
+document.addEventListener('toggle', e => { if (e.target && e.target.id === 'so-guide') { lsSet('cbtapp.socio.guide', e.target.open ? 'open' : 'closed'); const s = e.target.querySelector('summary .muted'); if (s) s.textContent = e.target.open ? 'לחיצה מקפלת' : 'לחיצה פותחת'; } }, true);
+
+const TABS = [['about', 'ℹ️ על הכלי'], ['guide', '📘 הדרכה – איך ממלאים'], ['setup', '⚙️ הגדרה'], ['entry', '✍️ הזנת תשובות'], ['map', '🕸️ סוציוגרם'], ['people', '👤 פרופיל תלמיד'], ['class', '📊 נתוני הכיתה'], ['recs', '💡 המלצות'], ['time', '📈 לאורך זמן'], ['print', '🖨️ דוח וטופס']];
 function inner(c){
   const r = roundOf(c), done = c.pupils.filter(p => ['done', 'absent'].includes(pstate(c, r, p.id))).length;
   const head = `<a class="back no-print" href="${BASE}">→ כל המפות החברתיות</a>
     <div class="banner so-hero no-print"><span class="emoji">🕸️</span><div><div style="opacity:.85;font-size:14px">שאלון סוציומטרי – מיפוי חברתי${c.grade ? ' · כיתה ' + esc(c.grade) : ''}</div><h1>${esc(c.name)}</h1><p>${c.pupils.length} תלמידים · ${esc(r.label || '')} ${r.date ? '· ' + fmtDate(r.date) : ''} · מילאו ${done}/${c.pupils.length}</p></div></div>
     <nav class="so-tabs">${TABS.map(([k, l]) => `<a href="${BASE}/${c.id}/${k}" class="${U.tab === k ? 'on' : ''}">${l}</a>`).join('')}</nav>`;
-  const fn = {setup: setupTab, entry: entryTab, map: mapTab, people: peopleTab, class: classTab, recs: recsTab, time: timeTab, print: printTab, about: aboutTab}[U.tab] || mapTab;
+  const fn = {setup: setupTab, entry: entryTab, map: mapTab, people: peopleTab, class: classTab, recs: recsTab, time: timeTab, print: printTab, about: aboutTab, guide: () => `<div class="note" style="margin-bottom:10px">📘 כל שלבי העבודה עם השאלון – מההכנה ועד אחרי. לחיצה על כל אות קופצת לחלק.</div>${GUIDE.map(guideSection).join('')}`}[U.tab] || mapTab;
   return head + fn(c, r);
 }
 const roundSel = c => `<select class="inp" id="so-round" style="width:auto;padding:5px 10px">${c.rounds.map(x => `<option value="${x.id}" ${x.id === U.round ? 'selected' : ''}>${esc(x.label)} · ${fmtDate(x.date)}</option>`).join('')}</select>`;
@@ -1720,7 +1915,7 @@ function filterBar(c, opts){
     ${rounds.length > 1 && !opts.noRound ? `<span class="lbl">מדידה:</span>${roundSel(c)}` : ''}
     ${opts.extra || ''}</div>`;
 }
-const needData = (c, A) => !A.resp.size ? `<div class="panel empty"><span class="big">✍️</span>עוד אין תשובות במדידה הזו. <a class="btn primary" href="${BASE}/${c.id}/entry">להזנת התשובות</a></div>` : '';
+const needData = (c, A) => !A.resp.size ? `<div class="panel empty"><span class="big">🌱</span><b>עוד אין נתונים – התחל ב…</b><ol class="so-steps" style="text-align:start;max-width:440px;margin:10px auto">${c.pupils.length ? '' : '<li>⚙️ הגדרה – הדבקת רשימת התלמידים</li>'}<li>🖨️ דוח וטופס – הדפסת שאלון ריק והעברתו בכיתה</li><li>✍️ הזנת תשובות – לוחצים על השמות שכל ילד בחר</li><li>והתוצאות יופיעו כאן מעצמן.</li></ol><div class="actions" style="justify-content:center"><a class="btn primary" href="${BASE}/${c.id}/${c.pupils.length ? 'entry' : 'setup'}">${c.pupils.length ? '✍️ להזנת התשובות' : '⚙️ להגדרת הכיתה'}</a><button class="btn" data-act="so-help" data-v="run">❓ איך מעבירים את השאלון</button></div></div>` : '';
 const lowResp = A => A.resp.size && A.resp.size < A.N * 0.7 ? `<div class="note warn" style="margin-bottom:12px">⚠️ ענו רק ${A.resp.size} מתוך ${A.N} תלמידים. התמונה חלקית – ילד שלא ענה לא יכול ״להחזיר״ בחירה, ולכן יש פחות קשרים הדדיים ממה שיש באמת.</div>` : '';
 
 function listView(){
@@ -1733,14 +1928,15 @@ function listView(){
   return `<a class="back no-print" href="#/tools">→ כל הכלים</a>
     <div class="banner so-hero"><span class="emoji">🕸️</span><div><div style="opacity:.85;font-size:14px">כלי ליועץ · כיתות א׳–ו׳</div><h1>שאלון סוציומטרי – מיפוי חברתי</h1><p>מי מחובר, מי שקוף, מי דחוי – ואיפה אפשר לבנות קשר. סוציוגרם אינטראקטיבי, מעמד חברתי, מדדי לכידות והמלצות ישיבה.</p></div></div>
     <div class="note" style="margin-bottom:14px">🔒 <b>פרטיות וחיסיון:</b> הנתונים נשמרים רק במכשיר הזה ובסנכרון הפרטי שלך. מומלץ לרשום שמות פרטיים בלבד, כינויים או מספרים. השאלון חסוי, והתוצאות לא מוצגות לתלמידים לעולם – גם לא למחנך בצורת מפה.</div>
+    <a class="card no-print" href="${BASE}/__about" style="margin-bottom:12px;flex-direction:row;align-items:center;gap:10px"><span class="emoji" style="font-size:26px">ℹ️</span><span class="name">על הכלי – מה זה מיפוי סוציומטרי, השיטה והמקורות</span></a>
+    ${guidePanel()}
     <div class="so-stats">${[['1️⃣', 'יוצרים מפה', 'שם הכיתה ורשימת התלמידים'], ['2️⃣', 'מעבירים שאלון', 'טופס מודפס או בעל-פה, בדיסקרטיות'], ['3️⃣', 'מזינים תשובות', 'לוחצים על שמות – זה מהיר'], ['4️⃣', 'מנתחים ופועלים', 'סוציוגרם, פרופילים והמלצות']].map(([i, t, s], k) => `<div class="so-stat" style="--h:${[190, 145, 35, 285][k]}"><b>${i} ${t}</b><span>${s}</span></div>`).join('')}</div>
     <div class="panel no-print"><h3>＋ מפה חברתית חדשה</h3><div class="form"><div class="row2">
       <label class="f">שם הכיתה<input class="inp" id="so-nname" placeholder="למשל: ד׳1"></label>
       <label class="f">שכבה<select class="inp" id="so-ngrade"><option value="">—</option>${GR.map(g => `<option>${g}</option>`).join('')}</select></label></div>
       <div class="row2"><label class="f">תאריך השאלון<input class="inp" type="date" id="so-ndate" value="${today()}"></label><div style="display:flex;align-items:end"><button class="btn primary" data-act="so-create">יצירת המפה ←</button></div></div></div></div>
     <h2 class="sec">🗂️ המפות שלי <small>${L.length}</small></h2>
-    ${L.length ? `<div class="grid">${L.map(card).join('')}</div>` : '<div class="panel empty"><span class="big">🌱</span>עוד אין מפות. יוצרים מפה ראשונה למעלה.</div>'}
-    <p class="muted" style="margin-top:16px;font-size:14px"><a href="${BASE}/__about">ℹ️ על הכלי, השיטה והמקורות</a></p>`;
+    ${L.length ? `<div class="grid">${L.map(card).join('')}</div>` : '<div class="panel empty"><span class="big">🌱</span>עוד אין מפות. יוצרים מפה ראשונה למעלה.</div>'}`;
 }
 
 function setupTab(c, r){
@@ -1749,7 +1945,7 @@ function setupTab(c, r){
     return `<div class="so-qrow" style="--qh:${h}"><label><input type="checkbox" data-so-qon="${q.id}" ${q.on ? 'checked' : ''}> ${kl}</label>
       <input class="inp" data-so-qt="${q.id}" value="${esc(q.t)}" aria-label="נוסח השאלה"><input class="inp s" data-so-qs="${q.id}" value="${esc(q.s)}" title="שם קצר לגרפים" aria-label="שם קצר">
       ${q.custom ? `<button class="btn ghost sm" data-act="so-qdel" data-id="${q.id}" title="מחיקת השאלה">✕</button>` : '<span></span>'}</div>`; };
-  return `<div class="so-grid2"><div>
+  return `<p class="no-print" style="margin:0 0 10px"><a class="btn sm" href="${BASE}/${c.id}/guide">📘 איך ממלאים? – ללשונית ההדרכה</a></p>${!c.pupils.length ? '<div class="note" style="margin-bottom:12px">👇 <b>מתחילים כאן:</b> מדביקים את רשימת התלמידים בתיבה ״התלמידים״ ולוחצים ״הוספה לרשימה״. אחר כך בודקים את השאלות – ועוברים ל-🖨️ דוח וטופס כדי להדפיס שאלון ריק.</div>' : ''}<div class="so-grid2"><div>
     <div class="panel"><h3>🏫 פרטי המפה</h3><div class="form"><div class="row2">
       <label class="f">שם הכיתה<input class="inp" data-so-f="name" value="${esc(c.name)}"></label>
       <label class="f">שכבה<select class="inp" data-so-f="grade"><option value="">—</option>${GR.map(g => `<option ${c.grade === g ? 'selected' : ''}>${g}</option>`).join('')}</select></label></div></div></div>
@@ -1786,6 +1982,7 @@ function entryTab(c, r){
       <div class="so-chips">${c.pupils.filter(p => p.id !== me).map(p => { const o = sel.indexOf(p.id); return `<button class="so-chip ${o >= 0 ? 'on' : ''} ${q.kind === 'neg' ? 'neg' : ''}" data-act="so-pick" data-q="${q.id}" data-id="${p.id}" ${o < 0 && full ? 'disabled' : ''}>${o >= 0 ? `<span class="ord">${o + 1}</span>` : `<span class="n">${no(c, p.id)}</span>`}${esc(p.n)}</button>`; }).join('')}</div></div>`; };
   return `${c.rounds.length > 1 ? `<div class="so-bar2 no-print"><span class="lbl">מזינים את:</span>${roundSel(c)}</div>` : ''}
     <div class="progress" style="margin:0 0 12px" title="מילאו ${done} מתוך ${c.pupils.length}"><i style="width:${Math.round(100 * done / c.pupils.length)}%"></i></div>
+    <div class="so-tip no-print"><span>👆 בחר תלמיד מהרשימה</span><span class="arr">←</span><span>🔢 לחץ על שמות הילדים שבחר, לפי הסדר</span><span class="arr">←</span><span>✅ ״סיימתי – הבא״</span><button class="btn sm ghost" data-act="so-help" data-v="entry">❓ עוד</button></div>
     <div class="so-entry"><div class="panel" style="padding:10px"><div class="muted" style="font-size:13px;margin:0 4px 6px">מילאו ${done}/${c.pupils.length} · ✓ הושלם ◐ חלקי ✖ נעדר</div>
       <div class="so-plist">${c.pupils.map((p, i) => { const s = pstate(c, r, p.id); return `<button class="so-pbtn ${s} ${p.id === me ? 'on' : ''}" data-act="so-pupil" data-id="${p.id}"><span class="no">${i + 1}</span><span class="nm">${esc(p.n)}</span><span class="mk">${MARK[s]}</span></button>`; }).join('')}</div></div>
     <div><div class="panel" style="margin-bottom:12px"><div class="actions"><h3 style="margin:0;font-size:22px">${k}. ${esc(nm(c, me))}</h3>${stt === 'absent' ? '<span class="so-flag">נעדר / לא ענה</span>' : stt === 'done' ? '<span class="pill brand">✓ הושלם</span>' : ''}
@@ -2025,6 +2222,8 @@ document.addEventListener('click', async e => {
     const date = $('#so-ndate').value || today(), c = {id: uid(), name, grade: $('#so-ngrade').value, date, created: Date.now(), pupils: [], qs: DEFQ(), k: 3, kn: 1, rounds: [{id: uid(), date, label: 'מדידה 1', ans: {}}]};
     store().push(c); api.save(); location.hash = BASE + '/' + c.id + '/setup'; return;
   }
+  if (act === 'so-help') { helpModal(d.v); return; }
+  if (act === 'so-gjump') { e.preventDefault(); const x = document.getElementById('so-g-' + d.v); if (x) x.scrollIntoView({behavior: 'smooth', block: 'start'}); return; }
   const c = cur(); if (!c) return; const r = roundOf(c);
   switch (act) {
     case 'so-addp': { const t = $('#so-paste'), have = new Set(c.pupils.map(p => p.n)); let n = 0, dup = 0;
@@ -2421,7 +2620,7 @@ function ui(){
 }
 
 /* ================= routing & shell ================= */
-const NAV = [['home','🏠','בית'],['ask','💬','שאל שאלה'],['problems','🧭','מנווט בעיות'],['students','🧒','תלמידים'],['workflow','🗺️','סדר עבודה'],['roles','👥','מי פונה למי'],['circ','📜','חוזרי מנכ״ל'],['tools','🧰','כלים לילדים'],['tracks','🧭','טיפול מובנה'],['distress','🚨','סימני מצוקה'],['talk','🗣️','ראיון ושיח רגשי'],['sel','💞','למידה רגשית-חברתית'],['mafteach','🧩','כישורי חיים ומפתח הל״ב'],['sped','🧩','חינוך מיוחד והכלה'],['tzalach','🛟','צל״ח – צוות חירום'],['develop','🌳','התפתחות הילד'],['groups','👥','הנחיית קבוצות'],['programs','🏗️','תוכניות התערבות'],['transitions','🚪','מעברים'],['newteachers','🌱','מורים חדשים'],['parents','🤝','הורים'],['reports','🎓','תעודות'],['games','🎲','משחקים טיפוליים'],['videos','🎬','סרטונים'],['library','📚','ספרייה'],['settings','⚙️','הגדרות']];
+const NAV = [['home','🏠','בית'],['ask','💬','שאל שאלה'],['problems','🧭','מנווט בעיות'],['students','🧒','תלמידים'],['workflow','🗺️','סדר עבודה'],['roles','👥','מי פונה למי'],['circ','📜','חוזרי מנכ״ל'],['aklim','⚖️','אקלים ומדרג התגובות'],['tools','🧰','כלים לילדים'],['tracks','🧭','טיפול מובנה'],['distress','🚨','סימני מצוקה'],['talk','🗣️','ראיון ושיח רגשי'],['sel','💞','למידה רגשית-חברתית'],['mafteach','🧩','כישורי חיים ומפתח הל״ב'],['sped','🧩','חינוך מיוחד והכלה'],['tzalach','🛟','צל״ח – צוות חירום'],['develop','🌳','התפתחות הילד'],['cbtclass','🏫','יישום CBT בכיתה'],['groups','👥','הנחיית קבוצות'],['programs','🏗️','תוכניות התערבות'],['transitions','🚪','מעברים'],['newteachers','🌱','מורים חדשים'],['parents','🤝','הורים'],['reports','🎓','תעודות'],['games','🎲','משחקים טיפוליים'],['videos','🎬','סרטונים'],['library','📚','ספרייה'],['settings','⚙️','הגדרות']];
 function route(){ const h = location.hash.replace(/^#\/?/, '').split('/').map(decodeURIComponent); return {r: h[0] || 'home', id: h[1], sub: h[2], x: h[3]}; }
 let timers = [];
 function clearTimers(){ timers.forEach(t => { clearTimeout(t); clearInterval(t); }); timers = []; }
@@ -2441,7 +2640,7 @@ function render(){
   document.body.classList.toggle('locked', isLocked());
   if (isLocked()) { const o = lockView(); $('#title').textContent = ''; $('#view').innerHTML = `<div class="page">${o.html}</div>`; document.title = 'CBT בבית הספר'; return; }
   if (WEB && !ARTIFACT && !LITE && !PROBLEMS.length) { $('#title').textContent = ''; $('#view').innerHTML = `<div class="empty" style="padding-top:120px"><span class="big">⏳</span>${Cloud.status === 'error' ? esc(Cloud.err) + ' <br><br><button class="btn primary" data-act="cloud-retry">נסו שוב</button>' : 'טוען את התוכן מ-OneDrive…'}</div>`; return; }
-  const views = LITE ? {home: liteHome, problems, problem: problemView, tools, tool: toolView, settings: liteSettings, ask, workflow, roles: rolesView, circ: circView, circsrc: circSrcView, libsrc: libSrcView, circask: circAskView, find: findView, more: moreView, games: gamesView, game: gameView, tracks: tracksView, track: trackView, groups: groupsView, transitions: hubView, newteachers: hubView, programs: hubView, distress: hubView, talk: hubView, parents: hubView, reports: hubView, sel: hubView, mafteach: hubView, sped: hubView, tzalach: hubView,develop: hubView, videos: videosView} : {home, problems, problem: problemView, students, student: studentView, tools, tool: toolView, library, settings, ask, workflow, roles: rolesView, circ: circView, circsrc: circSrcView, libsrc: libSrcView, circask: circAskView, find: findView, more: moreView, games: gamesView, game: gameView, tracks: tracksView, track: trackView, groups: groupsView, transitions: hubView, newteachers: hubView, programs: hubView, distress: hubView, talk: hubView, parents: hubView, reports: hubView, sel: hubView, mafteach: hubView, sped: hubView, tzalach: hubView,develop: hubView, videos: videosView};
+  const views = LITE ? {home: liteHome, problems, problem: problemView, tools, tool: toolView, settings: liteSettings, ask, workflow, roles: rolesView, circ: circView, circsrc: circSrcView, libsrc: libSrcView, circask: circAskView, find: findView, more: moreView, games: gamesView, game: gameView, tracks: tracksView, track: trackView, groups: groupsView, transitions: hubView, newteachers: hubView, programs: hubView, distress: hubView, talk: hubView, parents: hubView, reports: hubView, sel: hubView, mafteach: hubView, sped: hubView, tzalach: hubView, aklim: hubView,develop: hubView, cbtclass: hubView, videos: videosView} : {home, problems, problem: problemView, students, student: studentView, tools, tool: toolView, library, settings, ask, workflow, roles: rolesView, circ: circView, circsrc: circSrcView, libsrc: libSrcView, circask: circAskView, find: findView, more: moreView, games: gamesView, game: gameView, tracks: tracksView, track: trackView, groups: groupsView, transitions: hubView, newteachers: hubView, programs: hubView, distress: hubView, talk: hubView, parents: hubView, reports: hubView, sel: hubView, mafteach: hubView, sped: hubView, tzalach: hubView, aklim: hubView,develop: hubView, cbtclass: hubView, videos: videosView};
   const fn = views[R.r] || home;
   const out = fn(R);
   $('#title').textContent = out.title;
@@ -4147,7 +4346,7 @@ function circView(R){
   const list = circList(), G = circGuide();
   let h = `<section class="hero"><h1>📜 חוזרי מנכ״ל</h1><p>${list.length} חוזרים ומסמכים, ובהם ${G.length} מצבים מעשיים. בכל מצב יש הפרדה בין <b>המענה הטיפולי</b> לבין <b>המענה המשמעתי / מסגרתי / מנהלי</b>, עם הפניה לסעיף בחוזר.</p>
     <div style="margin-top:18px;max-width:760px">${circAskFormHTML('')}<p style="margin:8px 0 0;font-size:14px">💬 כאן עונים <b>רק מתוך חוזרי המנכ״ל</b> – בלי מפות הטיפול ובלי הספרייה.</p></div>
-    <div class="actions"><a class="btn" href="#/circ/c04">⚖️ חוזר האקלים והמשמעת</a><a class="btn" href="#/ask">💬 שאלה מלאה לעוזר</a><a class="btn" href="${MANKAL_URL}" target="_blank" rel="noopener">🌐 אתר חוזרי המנכ״ל של משרד החינוך</a></div></section>`;
+    <div class="actions"><a class="btn primary" href="#/aklim">⚖️ אקלים ומדרג התגובות – המדור המלא</a><a class="btn" href="#/circ/c04">📜 חוזר האקלים והמשמעת</a><a class="btn" href="#/ask">💬 שאלה מלאה לעוזר</a><a class="btn" href="${MANKAL_URL}" target="_blank" rel="noopener">🌐 אתר חוזרי המנכ״ל של משרד החינוך</a></div></section>`;
   if (!G.length) h += `<div class="panel empty">⏳ תוכן החוזרים עדיין נטען…</div>`;
   if (circQ && !circScope) h += circResultsHTML(circQ, '');
   h += `<div class="chips" style="margin:16px 0 10px"><button class="chip ${!circKind ? 'on' : ''}" data-act="circkind" data-v="">כל החוזרים</button>${Object.entries(KIND).filter(([k]) => G.some(g => g.kind === k)).map(([k, v]) => `<button class="chip ${circKind === k ? 'on' : ''}" data-act="circkind" data-v="${k}">${v[0]} ${v[1]} <small>${G.filter(g => g.kind === k).length}</small></button>`).join('')}</div>`;
@@ -4178,7 +4377,7 @@ function circOneView(id){
     ${m.applies ? `<p style="margin:0 0 8px"><b>תחולה:</b> ${esc(m.applies)}</p>` : ''}<p style="margin:0">${esc(m.summary || '')}</p>
     ${m.forCounselor ? `<div class="note" style="margin-top:12px">🧭 <b>ליועץ/ת ולצוות:</b> ${esc(m.forCounselor)}</div>` : ''}
     <div class="actions" style="margin-top:12px">${circOpenBtn(id, 'btn primary')}<a class="btn" href="${MANKAL_URL}" target="_blank" rel="noopener" title="לבדיקת הגרסה העדכנית של החוזר">🌐 באתר משרד החינוך${m.number ? ' (' + esc(m.number) + ')' : ''}</a><a class="btn" href="#/circ">← כל החוזרים</a></div></div>
-    <div class="panel"><h3>🔎 חיפוש בחוזר הזה</h3><form id="circform" style="display:flex;gap:8px"><input class="inp" id="circq" value="${esc(circScope === id ? circQ : '')}" placeholder="מה רוצים לברר?" style="flex:1"><button class="btn primary" type="submit">חיפוש</button></form></div>`;
+    ${id === 'c04' ? `<a class="card" href="#/aklim" style="margin-bottom:16px;border:2px solid var(--brand)"><span class="emoji">⚖️</span><span class="name">מדרג התגובות ואקלים חינוכי – המדור המלא</span><span class="sub">הסולם הצבעוני (שגרה, א׳–ד׳, רשת וצוות), ״מה עושים כש…״, אמצעי משמעת, תפקיד היועץ, טפסים ושאלון אקלים כיתתי – כל כלל עם הסעיף בחוזר</span></a>` : ''}<div class="panel"><h3>🔎 חיפוש בחוזר הזה</h3><form id="circform" style="display:flex;gap:8px"><input class="inp" id="circq" value="${esc(circScope === id ? circQ : '')}" placeholder="מה רוצים לברר?" style="flex:1"><button class="btn primary" type="submit">חיפוש</button></form></div>`;
   if (circQ && circScope === id) h += circResultsHTML(circQ, id);
   if ((m.chapters || []).length) h += `<details class="panel"><summary><b>📑 מבנה החוזר – ${m.chapters.length} פרקים וסעיפים</b></summary><div class="list" style="margin-top:10px">${m.chapters.map(c => `<div class="li"><span class="pill brand">${esc(c.s)}</span><div class="grow">${esc(c.t)}</div></div>`).join('')}</div></details>`;
   const kinds = [...new Set(G.map(g => g.kind))];
@@ -4830,9 +5029,9 @@ const trKey = id => (active() ? active().id : 'general') + ':' + id;
 const trData = id => { S.tracks = S.tracks || {}; return S.tracks[trKey(id)] = S.tracks[trKey(id)] || {}; };
 const FIVEP = [['predisposing', 'גורמים מקדימים', 'מה הכין את הקרקע? (מזג, רקע, היסטוריה)', '#e9d5ff'], ['precipitating', 'גורמים מזרזים', 'מה הדליק את הבעיה עכשיו?', '#fde68a'], ['presenting', 'הבעיה כפי שהיא מוצגת', 'מה רואים? מה מדאיג?', '#fecaca'], ['perpetuating', 'גורמים משמרים', 'מה מחזיק את הבעיה? (הימנעות, תגובות סביבה, מחשבות)', '#fbcfe8'], ['protective', 'גורמים מגינים', 'חוזקות, תמיכה, משאבים', '#bbf7d0']];
 const DAYS = ['ראשון', 'שני', 'שלישי', 'רביעי', 'חמישי', 'שישי'];
-const trLink = h => h.replace(/(?<![="'\/\w])#\/(track|game|problem|tool|groups|transitions|programs|newteachers|distress|talk|parents|reports|sped|sel|mafteach|develop|tzalach|videos|circ)((?:\/[\w-]+){0,2})/g, (m, r, p) => { const [id, sub] = p.split('/').slice(1); const x = id && r === 'track' ? TRACK(id) : id && r === 'game' ? GAME(id) : null;
+const trLink = h => akSrcLinks(h).replace(/(?<![="'\/\w])#\/(track|game|problem|tool|groups|transitions|programs|newteachers|distress|talk|parents|reports|sped|sel|mafteach|develop|tzalach|aklim|cbtclass|videos|circ)((?:\/[\w-]+){0,2})/g, (m, r, p) => { const [id, sub] = p.split('/').slice(1); const x = id && r === 'track' ? TRACK(id) : id && r === 'game' ? GAME(id) : null;
   const cg = r === 'circ' && sub ? circGuide().find(g => g.id === sub) : null, cm = r === 'circ' && id && !cg ? (window.CIRC_META || []).find(c => c.id === id) : null;
-  const lab = x ? x.title : r === 'problem' && id && P[id] ? '🧭 ' + P[id].name : r === 'tool' && id && TOOL[id] ? TOOL[id].icon + ' ' + TOOL[id].name : cg ? '📜 ' + cg.title : cm ? '📜 ' + cm.title : r === 'distress' && !id ? '🚨 ' + HUBS.distress.title : (r === 'mafteach' || r === 'sel' || r === 'develop' || r === 'transitions') && !id ? HUBS[r].icon + ' ' + HUBS[r].title : (r === 'parents' || r === 'reports' || r === 'sped' || r === 'tzalach') && !id ? HUBS[r].icon + ' ' + HUBS[r].title : null;
+  const lab = x ? x.title : r === 'problem' && id && P[id] ? '🧭 ' + P[id].name : r === 'tool' && id && TOOL[id] ? TOOL[id].icon + ' ' + TOOL[id].name : cg ? '📜 ' + cg.title : cm ? '📜 ' + cm.title : r === 'distress' && !id ? '🚨 ' + HUBS.distress.title : (r === 'mafteach' || r === 'sel' || r === 'develop' || r === 'transitions') && !id ? HUBS[r].icon + ' ' + HUBS[r].title : (r === 'parents' || r === 'reports' || r === 'sped' || r === 'tzalach' || r === 'aklim' || r === 'cbtclass') && !id ? HUBS[r].icon + ' ' + HUBS[r].title : null;
   return `<a href="${m}" class="trlink">${lab ? esc(lab) : m}</a>`; }).replace(/(?<![="'\/\w])#\/file\/([\w-]+)/g, (m, k) => trFile(k) ? trFileBtn(k) : m);   // #/file/<key> → opens a file from window.TRFILES (tracks-sped.js)
 function trStepHTML(t, s, D){ const h0 = trStepHTML0(t, s, D) + (s.src ? `<p class="wfsrc">📚 ${trLink(esc(s.src))}</p>` : ''); return ['form', 'fivep', 'cycle', 'plan', 'viz'].includes(s.kind) ? h0 : trLink(h0); }
 function trStepHTML0(t, s, D){
@@ -4887,6 +5086,8 @@ const HUBS = {
   mafteach: {flag: 'mafteach', guide: 'ks-guide', title: 'כישורי חיים ומפתח הל״ב', icon: '🔑', say: 'שיעור טוב מתחיל במעגל – חוויה, שיתוף, המשגה ויישום. בוא נתכונן יחד! 🧩', intro: '🧩🔑 שתי השעות החברתיות-רגשיות של השבוע: כישורי חיים (תוכנית ״הכ״חות שבדרך״ של שפ״י לחמ״ד ולחברה החרדית, גרסת בנים – כל השיעורים לפי שכבה, בסדר של אתר שפ״י, וכל מצגת נפתחת בלחיצה) ומפתח הל״ב לשעת החינוך (הערך של כל תקופה, ארבעת המעגלים, לפי תקופה ולפי שכבה). מתחילים במדריך ״איך מעבירים שיעור כישורי חיים״.', extra: [['#/sel', '💞', 'מדור SEL – למידה רגשית-חברתית'], ['#/circ/c09', '📜', 'חוזר כישורי חיים (0351)']], areas: [['ks', '🧩', 'כישורי חיים (חמ״ד)'], ['mh', '🔑', 'מפתח הל״ב']]},
   sped: {flag: 'sped', guide: 'sped-guide', title: 'חינוך מיוחד והכלה', icon: '🧩', say: 'כל ילד לומד אחרת – בוא נמצא יחד את הדרך שלו 🧩', intro: '🧩 חינוך מיוחד והכלה: מפת התהליך המלאה (איתור ← תמיכה בבית הספר ← צוות רב-מקצועי ← ועדת זכאות ואפיון ← חידוש זכאות ← תח״י/תל״א) עם הטופס של כל שלב, ערכת כל הטפסים שלך (נפתחים בלחיצה), הכנה לוועדה, חידוש זכאות וקיצור יום, כלי הערכת הקריאה והאוריינות לכיתות א׳–ג׳ עם נקודות החתך, הכלה בכיתה ומחוננים – לפי חוזר 0287 והחומרים שלך. הצד הטיפולי והצד המנהלי מופרדים, ולכל פריט מצוין המקור.', extra: [['#/circ/c02', '📜', 'חוזר ועדות חינוך מיוחד (0287)'], ['#/circ/c16', '📜', 'מוסדות חינוך מכילים (0483)'], ['#/circ/c02/c02-iep-personal-program', '📜', 'תוכנית אישית – תח״י (0287)'],['#/track/prog-guide', '🏗️', 'בניית תוכנית התערבות']]},
   develop: {flag: 'develop', guide: 'dev-guide', title: 'התפתחות הילד', icon: '🌳', say: 'כל ילד גדל בקצב שלו – בוא נבין מה צפוי בגיל הזה ומתי כדאי לבדוק 🌳', intro: '🌳 התפתחות הילד מהגן ועד כיתה ו׳: המדריך (שבעת תחומי ההתפתחות, טבע וסביבה, ציר הזמן, טווח תקין מול דגל אדום ואיך היועץ משתמש במבט התפתחותי), מסלול לכל שכבת גיל – גן ובשלות לכיתה א׳, א׳–ב׳, ג׳–ד׳, ה׳–ו׳ וראשית ההתבגרות – עם מה צפוי בכל תחום, דאגות נפוצות (תקין או לבדוק), דגלים אדומים, שיחה עם הילד והנחיות להורים ולמחנכים; תיאוריות (פיאז׳ה, אריקסון, התקשרות וניופלד, ויגוצקי, קולברג, ברונפנברנר, מושג המוות), העמקה לפי תחומים, מתי מפנים ולמי, והדרכת הורים לפי גיל. לכל פריט מצוין המקור, ומה שאינו מהחומרים מסומן ״ידע מקצועי כללי״.', extra: [['#/transitions', '🚪', 'מעברים'], ['#/sped', '🧩', 'חינוך מיוחד והכלה'], ['#/distress', '🚨', 'זיהוי סימני מצוקה'], ['#/sel', '💞', 'למידה רגשית-חברתית'], ['#/parents', '🤝', 'הורים']]},
+  cbtclass: {flag: 'cbtclass', guide: 'cbtc-guide', title: 'יישום CBT בכיתה', icon: '🏫', say: 'כל הכיתה לומדת לחשוב, להרגיש ולפעול אחרת – בוא נביא את ה-CBT לכיתה 🏫', intro: '🏫 יישום CBT בכיתה (א׳–⁠ו׳): המדריך (למה CBT בכיתה כמניעה לכולם, משולש המחשבה-הרגש-ההתנהגות לילדים, פירמידת שלוש הרמות – כיתה, קבוצה ופרטני – ומה תפקיד היועץ ומה תפקיד המורה, השיחה המכבדת והמאתגרת, והפרדה בין הטיפולי למשמעתי), סדרת שיעורים מוכנה לפי שכבות גיל עם כלים ומשחקים מהאפליקציה, המורה כמאמן CBT (שפה משותפת, בנק משפטים, שבח שבונה מסוגלות, חרדה בכיתה בלי מלכודת ההימנעות, פרוטוקול להתפרצות כעס וכרטיסי עזר), ניהול התנהגות (ניתוח ABC, סדרי חיזוק, כלכלת אסימונים, שגרות והקו של חוזר 0470), תוכנית כיתתית לחרדת מבחנים, אקלים כיתתי ופעילויות קבוצתיות, ומעגל ההתייעצות עם המורה עם טפסים. לפי ״CBT מערכתי בעצימות נמוכה לחינוכיים״ של יששכר עשת ושאר חומרי הספרייה; מה שאינו מהחומרים מסומן ״ידע מקצועי כללי״.', extra: [['#/track/teacher-consult', '🧭', 'הדרכת מורה בניהול כיתה'], ['#/track/class-climate', '🌈', 'אקלים כיתתי'], ['#/sel', '💞', 'למידה רגשית-חברתית'], ['#/mafteach', '🔑', 'כישורי חיים ומפתח הל״ב'], ['#/programs', '🏗️', 'תוכניות התערבות'], ['#/tool/sociometry', '🕸️', 'שאלון סוציומטרי'], ['#/circ/c04', '📜', 'חוזר 0470 – אקלים חינוכי מיטבי']]},
+  aklim: {flag: 'aklim', guide: 'ak-guide', title: 'אקלים חינוכי – חוזר 0470 ומדרג התגובות', icon: '⚖️', say: 'גבולות ברורים לצד טיפול רגשי – בוא נמצא יחד את השלב המדויק במדרג ⚖️', intro: '⚖️ אקלים חינוכי – חוזר 0470 ומדרג התגובות: המדריך (עקרונות, סטנדרטים, חובות בית הספר, עץ התפקידים וזרימת הטיפול), מדרג התגובות המלא בסולם צבעוני (שגרה, חלקים א׳–ד׳, פגיעה ברשת ו׳–ח׳ ופגיעה בצוות) עם התבחינים לחומרה, ״מה עושים כש…״ לפי סוג אירוע עם רשימה וטבעת התקדמות, אמצעי משמעת והשעיה, תפקיד היועץ, טפסים, בניית אקלים, שאלון אקלים כיתתי אנונימי ומדריך למחנך. כל כלל מקושר למשפט בחוזר; הצד החינוכי-טיפולי והצד המשמעתי-מנהלי מוצגים זה לצד זה.', extra: [['#/circ/c04', '📜', 'חוזר 0470 – דף החוזר'], ['#/circ/c11', '📜', 'אובדנות (0473)'], ['#/circ/c07', '📜', 'הקשר עם ההורים (0482)'], ['#/circ/c08', '📜', 'חוק זכויות התלמיד'], ['#/track/prog-climate', '🏗️', 'תכנית התערבות לאקלים'], ['#/track/prog-bullying', '🛡️', 'מניעת בריונות'], ['#/tool/sociometry', '🕸️', 'מיפוי חברתי'], ['#/sel', '💞', 'למידה רגשית-חברתית']]},
   tzalach: {flag: 'tzalach', guide: 'tz-guide', title: 'צל״ח – צוות לשעת חירום', icon: '🛟', say: 'היערכות מקדימה מצילה חיים – בוא נכין את הצוות יחד, צעד אחרי צעד 🛟', intro: '🛟 צל״ח – צוות לשעת חירום: המדריך (מה זה צל״ח, עץ התפקידים – המנהל, היועץ, המחנכים, הפסיכולוג, הרב, המזכיר ורכז הביטחון – מעגל השגרה והחירום, ארבעת השלבים, קמ״צ, גשר הרציפויות, גש״ר מאח״ד, מעש״ה ומעגלי הפגיעות), היערכות בשגרה עם רשימת מוכנות וטבעת התקדמות, ״מה עושים מחר בבוקר״ – השעות והיום הראשון, תרחישים (מוות של תלמיד, הורה או מורה, תאונה, אזעקות, אובדנות בקהילה, אלימות, אסון, מחלה קשה) עם מה אומרים לכל גיל והיבטים דתיים, הדרכת המחנכים לשיחה בכיתה, ומעקב אחרי האירוע – זיכרון, הצוות והפקת לקחים. לפי חוזרי 0449, 0472 ו-0473 ומסמכי שפ״י; הצד הטיפולי והצד הניהולי מופרדים, ולכל פריט מצוין המקור.', extra: [['#/circ/c13', '📜', 'נוהלי שעת חירום (0449)'], ['#/circ/c10', '📜', 'ליווי תלמידים במשבר מתמשך (0472)'], ['#/circ/c11', '📜', 'אובדנות – מניעה והתערבות (0473)'], ['#/track/prog-emergency', '🛡️', 'תוכנית התערבות: חוסן, חירום ומשבר'], ['#/track/dist-trauma', '🚨', 'זיהוי תגובות דחק וטראומה'], ['#/track/grief', '🕯️', 'מסלול טיפול: אבל ואובדן'], ['#/track/grp-resilience', '👥', 'קבוצת חוסן'], ['#/track/talk-hard', '🗣️', 'רגעים קשים בשיחה'], ['#/distress', '🚨', 'זיהוי סימני מצוקה']]}
 };
 function hubView(R){
@@ -4899,7 +5100,7 @@ function hubView(R){
     : list.length ? `<div class="grid">${list.map(card).join('')}</div>` : '<div class="empty">🛠️ התוכן של המדור הזה בהכנה ויעלה בקרוב.</div>'}
     ${h.extra.length ? `<h2 class="sec">🔗 עוד בנושא</h2><div class="actions">${h.extra.map(([u, i, l]) => `<a class="btn" href="${u}">${i} ${esc(l)}</a>`).join('')}</div>` : ''}`};
 }
-const HUBOF = t => t.workflow ? (active() ? ['student/' + active().id, 'סדר העבודה של ' + esc(active().alias)] : ['workflow', 'סדר עבודה']) : t.group ?['groups', 'הנחיית קבוצות'] : t.transition ? ['transitions', 'מעברים'] : t.newteachers ? ['newteachers', 'ליווי מורים חדשים'] : t.program ? ['programs', 'בניית תוכנית התערבות'] : t.distress ? ['distress', 'זיהוי סימני מצוקה'] : t.talk ? ['talk', 'ראיון ושיח רגשי'] : t.parents ? ['parents', 'הורים'] : t.reports ? ['reports', 'תעודות'] : t.sel ? ['sel', 'SEL – למידה רגשית-חברתית'] : t.mafteach ? ['mafteach', 'כישורי חיים ומפתח הל״ב'] : t.sped ? ['sped', 'חינוך מיוחד והכלה'] : t.develop ? ['develop', 'התפתחות הילד'] : t.tzalach ? ['tzalach', 'צל״ח – צוות לשעת חירום'] : ['tracks', 'כל המסלולים'];function tracksView(){  const list = TRACKS().filter(t => !t.group && !t.transition && !t.newteachers && !t.program && !t.distress && !t.talk && !t.parents && !t.reports && !t.workflow && !t.sel && !t.sped && !t.mafteach && !t.develop && !t.tzalach);
+const HUBOF = t => t.workflow ? (active() ? ['student/' + active().id, 'סדר העבודה של ' + esc(active().alias)] : ['workflow', 'סדר עבודה']) : t.group ?['groups', 'הנחיית קבוצות'] : t.transition ? ['transitions', 'מעברים'] : t.newteachers ? ['newteachers', 'ליווי מורים חדשים'] : t.program ? ['programs', 'בניית תוכנית התערבות'] : t.distress ? ['distress', 'זיהוי סימני מצוקה'] : t.talk ? ['talk', 'ראיון ושיח רגשי'] : t.parents ? ['parents', 'הורים'] : t.reports ? ['reports', 'תעודות'] : t.sel ? ['sel', 'SEL – למידה רגשית-חברתית'] : t.mafteach ? ['mafteach', 'כישורי חיים ומפתח הל״ב'] : t.sped ? ['sped', 'חינוך מיוחד והכלה'] : t.develop ? ['develop', 'התפתחות הילד'] : t.tzalach ? ['tzalach', 'צל״ח – צוות לשעת חירום'] : t.aklim ? ['aklim', 'אקלים חינוכי – חוזר 0470'] : t.cbtclass ? ['cbtclass', 'יישום CBT בכיתה'] : ['tracks', 'כל המסלולים'];function tracksView(){  const list = TRACKS().filter(t => !t.group && !t.transition && !t.newteachers && !t.program && !t.distress && !t.talk && !t.parents && !t.reports && !t.workflow && !t.sel && !t.sped && !t.mafteach && !t.develop && !t.tzalach && !t.aklim && !t.cbtclass);
   return {title: 'טיפול מובנה', html: `${hubHero('tracks', '🧭', 'טיפול מובנה', list.length)}${gGuide('בחר בעיה, ונעבור יחד שלב אחרי שלב – מהאבחון ועד סיום הטיפול 🧭', 'רוגע', 3)}
     <div class="note" style="margin:4px 0 16px">🧭 לכל בעיה – מסלול טיפול מובנה ואינטראקטיבי: אבחון והערכה, הסבר פסיכו-חינוכי, פורמולציה (5P ומעגל משמר), מטרות, טכניקות, תוכנית פעולה ואקטיבציה, פרוטוקול מפגשים ומניעת הישנות. ${active() ? `הכול נשמר בתיק של <b>${esc(active().alias)}</b>.` : 'בחרו תלמיד בראש המסך כדי שהמילוי יישמר בתיק שלו (בלי תלמיד – נשמר ב״כללי״).'}</div>
     ${list.length ? `<div class="grid">${list.map(t => `<a class="card accent hubc" href="#/track/${t.id}" style="--h:${t.hue ?? hueOf(t.title)}"><span class="emoji">${t.icon || '🧭'}</span><span class="name">${esc(t.title)}</span><span class="sub">${esc(t.for || '')} · ${t.steps.length} שלבים</span></a>`).join('')}</div>` : '<div class="empty">⏳ המסלולים נטענים…</div>'}`};
@@ -5048,7 +5249,7 @@ function diagramHTML(g, o = {}){
     ${g.note ? `<p class="dgnote">📌 ${esc(g.note)}</p>` : ''}${o.src !== false && g.src ? `<p class="wfsrc">📚 ${esc(g.src)}</p>` : ''}</figure>`;
 }
 /* hub color identity: one hue per hub – its hero band, its cards, its map and the headers of its tracks */
-const HUB_HUE = {transitions: 200, newteachers: 135, programs: 28, distress: 0, talk: 265, parents: 330, reports: 45, sel: 300, sped: 180, develop: 140, tzalach: 12,groups: 220, tracks: 160, workflow: 90, games: 20, videos: 350, tools: 190, circ: 40, library: 250, problems: 170, roles: 100, ask: 210, students: 55};
+const HUB_HUE = {transitions: 200, newteachers: 135, programs: 28, distress: 0, talk: 265, parents: 330, reports: 45, sel: 300, sped: 180, develop: 140, tzalach: 12, aklim: 60, cbtclass: 285,groups: 220, tracks: 160, workflow: 90, games: 20, videos: 350, tools: 190, circ: 40, library: 250, problems: 170, roles: 100, ask: 210, students: 55};
 const hubHue = k => HUB_HUE[k] ?? hueOf(k);
 function hubHero(k, icon, title, n){ return `<div class="banner hubhero" style="--h:${hubHue(k)}"><span class="emoji">${icon}</span><div><h1>${esc(title)}</h1>${n ? `<p>${n} מסלולים · בוחרים מסלול ומתקדמים שלב אחרי שלב</p>` : ''}</div></div>`; }
 function hubMap(list, H){ if (list.length < 3 || list.length > 40) return '';
@@ -5232,6 +5433,72 @@ const WV = {
     draw(t, s, D, d, o){ return `<div class="pbank">${s.domains.map((x, i) => `<section class="pbd" style="--c:${x.color}"><h4><span>${x.icon}</span> ${esc(x.label)}</h4><ul>${x.phrases.map(p => `<li>${esc(p)}</li>`).join('')}</ul>${x.avoid ? `<p class="pbav">🚫 ${esc(x.avoid)}</p>` : ''}${o.ro ? '' : `<label class="spck"><input type="checkbox" data-trc="${s.id}.d${i}" ${d['d' + i] ? 'checked' : ''}> השתמשתי</label>`}</section>`).join('')}</div>${s.note ? `<p class="muted wvhint">${esc(s.note)}</p>` : ''}`; }
   }
 };
+/* ================= aklim hub (tracks-aklim.js): graded-response ladder, event finder, severity criteria, suspension bars, class climate survey =================
+   every rule carries a cite {s: 'section as shown', q: 'words from the circular', at?: 'section of the text chunk', cid?: 'c04'} → #/circsrc link that highlights the sentence;
+   items: {t, m: 1 (חובה) | 0 (לשיקול דעת) | undefined, c: cite, k: 1 = general professional knowledge (not from the circular)} */
+const akSrcLinks = h => h.replace(/(?<![="'\/\w])#\/circsrc\/(c\d+\w*)\/([\d.]+|-)\/([^\s<>"'()]+)/g, (m, cid, sec, sn) => `<a class="cite akc" href="${circSrcHref(cid, sec === '-' ? '' : sec, sn.replace(/_/g, ' '))}" title="לשון החוזר – המשפט יודגש">📜 לשון החוזר ↗</a>`);   // track texts: #/circsrc/<cid>/<sec>/<words_joined_by_underscores>
+const akCite = c => c ? `<a class="cite akc" href="${circSrcHref(c.cid || 'c04', c.at || c.s, c.q)}" title="${esc('לשון החוזר: ״' + c.q + '״')}">📜 ${esc(c.s)}&nbsp;↗</a>` : '';
+const akTag = x => x.k ? '<span class="pill akgk">ידע מקצועי כללי</span>' : x.m === 1 ? '<span class="pill akmust">חובה</span>' : x.m === 0 ? '<span class="pill akopt">לשיקול דעת</span>' : '';
+const akLi = x => typeof x === 'string' ? `<li>${esc(x)}</li>` : `<li><span>${esc(x.t)}</span> ${akTag(x)} ${akCite(x.c)}</li>`;
+const akUl = a => a && a.length ? `<ul class="clean akul">${a.map(akLi).join('')}</ul>` : '<p class="muted">—</p>';
+const akSits = ids => (ids || []).length ? `<div class="aksits"><b>📜 המצבים המעשיים בחוזרים:</b>${ids.map(id => { const g = (typeof circGuide === 'function' ? circGuide() : []).find(x => x.id === id), c = g ? g.circ : id.split('-')[0].replace(/d$/, ''); return `<a class="aksit" href="#/circ/${c}/${id}">${esc(g ? g.title : id)}</a>`; }).join('')}</div>` : '';
+const akTwo = (th, di) => `<div class="aktwo"><section class="akcol ther"><h5>🧠 הצד החינוכי-טיפולי</h5>${akUl(th)}</section><section class="akcol disc"><h5>📋 הצד המשמעתי-מנהלי</h5>${akUl(di)}</section></div>`;
+const akFacts = F => (F || []).length ? `<div class="akfacts">${F.map(f => `<div class="akfact"><span class="akfi">${f.icon}</span><b>${esc(f.h)}</b><p>${esc(f.t)}</p>${akCite(f.c)}</div>`).join('')}</div>` : '';
+const akRingSVG = (n, of) => { const p = of ? n / of : 0, C = 2 * Math.PI * 42; return `<div class="pring akring"><svg viewBox="0 0 100 100" role="img" aria-label="בוצעו ${n} מתוך ${of}"><circle cx="50" cy="50" r="42" class="pr0"/><circle cx="50" cy="50" r="42" class="pr1" style="stroke-dasharray:${(C * p).toFixed(1)} ${C.toFixed(1)}"/></svg><div class="prc"><b>${Math.round(100 * p)}%</b><small>${n} מתוך ${of}</small></div></div>`; };
+Object.assign(WV, {
+  /* the graded-response scale: rungs from mild (bottom, green) to severe (top, red); the chosen rung opens its full card */
+  akladder: {
+    draw(t, s, D, d, o){ const L = s.levels, sel = L.find(x => x.id === d.sel) || L[0], n = 'akl-' + t.id + '-' + s.id;
+      const rungs = L.map((x, i) => `<label class="akrung ${x === sel ? 'on' : ''}" style="--c:${x.color};--w:${58 + 42 * i / Math.max(1, L.length - 1)}%"><input type="radio" name="${n}" value="${x.id}" data-tr="${s.id}.sel" ${x === sel ? 'checked' : ''}><span class="akrb">${esc(x.badge)}</span><span class="akrt"><b>${esc(x.title)}</b><small>${esc(x.short)}</small></span></label>`).reverse().join('');
+      const panel = `<section class="akpanel" style="--c:${sel.color}"><header class="akph"><span class="akbadge">${esc(sel.badge)}</span><div><h4>${esc(sel.title)}</h4><p>${esc(sel.def)} ${akCite(sel.defc)}</p></div></header>
+        ${(sel.examples || []).length ? `<div class="akex"><b>🔎 דוגמאות מהחוזר</b><div>${sel.examples.map(e => `<span class="akchip">${esc(e)}</span>`).join('')}</div>${akCite(sel.exc)}</div>` : ''}
+        ${akFacts(sel.facts)}${akTwo(sel.ther, sel.disc)}${sel.note ? `<p class="aknote">⚠️ ${esc(sel.note)}</p>` : ''}${akSits(sel.sits)}</section>`;
+      return `<div class="akladder"><div class="akrungs" role="radiogroup" aria-label="${esc(s.title || 'מדרג')}"><div class="akup">⬆ ${esc(s.up || 'חומרה עולה')}</div>${rungs}<div class="akdown">${esc(s.down || 'אירוע קל')}</div></div>${panel}</div>`; }
+  },
+  /* severity criteria (3.1.1 ו׳): ticking criteria fills the meter – the circular sets no numeric threshold */
+  akcrit: {
+    draw(t, s, D, d, o){ const N = s.items.length, n = s.items.filter((_, i) => d['k' + i]).length;
+      return `<div class="akcrit"><div class="akmeter" aria-label="${n} מתוך ${N} תבחינים"><i style="width:${100 - Math.round(100 * n / N)}%"></i></div><p class="akmtext"><b>${n}</b> מתוך ${N} תבחינים מתקיימים באירוע${n ? ' – ' + esc(n >= Math.ceil(N / 2) ? s.many : s.few) : ''}</p>
+        <div class="akcritl">${s.items.map((x, i) => `<label class="akck ${d['k' + i] ? 'on' : ''}"><input type="checkbox" data-trc="${s.id}.k${i}" ${d['k' + i] ? 'checked' : ''}><span class="akci">${x.icon}</span><span>${esc(x.t)} ${akCite(x.c)}</span></label>`).join('')}</div>
+        <p class="aknote">⚖️ ${esc(s.warn)}</p></div>`; }
+  },
+  /* "what do I do when…": event cards → severity variant → checklist with a progress ring, the two sides, reporting and documentation */
+  akevents: {
+    draw(t, s, D, d, o){ const E = s.events, ev = E.find(x => x.id === d.sel), n = 'ake-' + t.id + '-' + s.id;
+      const grid = `<div class="akevgrid">${E.map(x => `<label class="akev ${x === ev ? 'on' : ''}" style="--c:${x.color}"><input type="radio" name="${n}" value="${x.id}" data-tr="${s.id}.sel" ${x === ev ? 'checked' : ''}><span class="akevi">${x.icon}</span><b>${esc(x.title)}</b><small>${esc(x.sub || '')}</small></label>`).join('')}</div>`;
+      if (!ev) return grid + '<p class="muted wvhint">👆 בוחרים את סוג האירוע – ונפתח ״מה עושים עכשיו״, צעד אחרי צעד.</p>';
+      const vi = Math.max(0, Math.min(+(d['v_' + ev.id] || 0) || 0, ev.vars.length - 1)), v = ev.vars[vi];
+      const tabs = ev.vars.length > 1 ? `<div class="akvtabs" role="radiogroup" aria-label="דרגת החומרה">${ev.vars.map((x, i) => `<label class="akvt ${i === vi ? 'on' : ''}" style="--c:${x.color}"><input type="radio" name="${n}-${ev.id}" value="${i}" data-tr="${s.id}.v_${ev.id}" ${i === vi ? 'checked' : ''}><span class="akvb">${esc(x.badge)}</span><span>${esc(x.label)}</span></label>`).join('')}</div>` : '';
+      const key = k => ev.id + '_' + vi + '_' + k, done = v.now.filter((_, k) => d[key(k)]).length;
+      const now = `<ol class="aknow">${v.now.map((x, k) => `<li class="${d[key(k)] ? 'on' : ''}"><label><input type="checkbox" data-trc="${s.id}.${key(k)}" ${d[key(k)] ? 'checked' : ''}><span class="aksn">${d[key(k)] ? '✓' : k + 1}</span><span class="akst">${esc(x.t)} ${akTag(x)} ${akCite(x.c)}</span></label></li>`).join('')}</ol>`;
+      return grid + `<section class="akpanel akevp" style="--c:${v.color}"><header class="akph"><span class="akbadge">${ev.icon}</span><div><h4>${esc(ev.title)}</h4><p>${esc(ev.lead || '')}</p></div></header>${tabs}
+        <div class="aklevel" style="--c:${v.color}"><span class="akvb">${esc(v.badge)}</span><div><b>${esc(v.level)}</b><p>${esc(v.def || '')} ${akCite(v.defc)}</p></div></div>
+        <div class="aknowwrap"><div><h5>⏱️ מה עושים עכשיו – לפי הסדר</h5>${now}</div>${akRingSVG(done, v.now.length)}</div>${done === v.now.length ? '<p class="tlmsg">✅ כל הצעדים המיידיים סומנו. ממשיכים למעקב (סעיף 3.10) ולתיעוד.</p>' : ''}
+        ${akFacts(v.facts)}${akTwo(v.ther, v.disc)}${v.note ? `<p class="aknote">⚠️ ${esc(v.note)}</p>` : ''}${akSits(v.sits)}</section>`; }
+  },
+  /* suspension and removal ranges for the elementary school, drawn to scale (days); ext = extra days only by the district director */
+  akbars: {
+    draw(t, s, D, d, o){ const M = s.max, pc = x => (100 * x / M).toFixed(2) + '%';
+      return `<div class="akbars"><div class="akscale">${Array.from({length: M + 1}, (_, i) => `<span style="inset-inline-start:${pc(i)}">${i}</span>`).join('')}</div>${s.rows.map(r => `<div class="akbar" style="--c:${r.color}"><div class="akbl"><b>${r.icon || ''} ${esc(r.label)}</b><small>${esc(r.txt)}</small> ${akCite(r.c)}</div><div class="akbt">${r.to ? `<i class="base" style="inset-inline-start:${pc(r.from - 1)};width:${pc(r.to - r.from + 1)}"></i>` : `<i class="none" style="width:100%"></i>`}${r.ext ? `<i class="ext" style="inset-inline-start:${pc(r.to)};width:${pc(r.ext)}" title="הארכה – רק בבקשה מנומקת למנהל המחוז"></i>` : ''}</div></div>`).join('')}
+        <div class="akleg"><span class="b">■ טווח בסמכות בית הספר</span><span class="e">▨ הארכה – רק בבקשה מנומקת למנהל המחוז</span></div>${s.note ? `<p class="aknote">⚠️ ${esc(s.note)}</p>` : ''}</div>`; }
+  },
+  /* anonymous class climate survey: counts only (how many pupils answered ״כן, בדרך כלל״), two rounds, a bar per domain and actions for the low domains */
+  aksurvey: {
+    draw(t, s, D, d, o){ const R = s.rounds, pct = (r, it) => { const N = wvNum(d['n_' + r.id]), c = wvNum(d[r.id + '_' + it.id]); return N && c != null ? Math.max(0, Math.min(100, Math.round(100 * c / N))) : null; };
+      const dom = s.domains.map(x => ({x, v: R.map(r => { const a = x.items.map(it => pct(r, it)).filter(v => v != null); return a.length ? Math.round(a.reduce((p, q) => p + q, 0) / a.length) : null; })}));
+      const zone = v => v == null ? 'none' : v >= s.good ? 'g' : v >= s.mid ? 'y' : 'r';
+      const lastI = [...R.keys()].reverse().find(i => dom.some(z => z.v[i] != null)), low = lastI == null ? [] : dom.filter(z => z.v[lastI] != null).sort((a, b) => a.v[lastI] - b.v[lastI]).slice(0, 2).filter(z => z.v[lastI] < s.good);
+      return `<div class="aksv"><div class="aksvl">${R.map(r => `<span style="--c:${r.color}">● ${esc(r.t)}${wvNum(d['n_' + r.id]) ? ` · ${d['n_' + r.id]} משיבים` : ''}</span>`).join('')}</div>
+        ${dom.map(z => `<div class="aksvd" style="--c:${z.x.color}"><div class="aksvh"><span>${z.x.icon}</span><b>${esc(z.x.t)}</b></div>${R.map((r, i) => `<div class="aksvb z-${zone(z.v[i])}"><small>${esc(r.t)}</small><div class="bt"><i style="width:${z.v[i] ?? 0}%;--rc:${r.color}"></i></div><b>${z.v[i] == null ? '—' : z.v[i] + '%'}</b></div>`).join('')}</div>`).join('')}
+        <p class="muted wvhint">🟢 ${s.good}% ומעלה · 🟡 ${s.mid}–${s.good - 1}% · 🔴 מתחת ל-${s.mid}% – ${esc(s.zoneNote)}</p>
+        ${low.length ? `<div class="aklow"><h4>🎯 כדאי להתחיל כאן (התחומים הנמוכים במדידה האחרונה)</h4>${low.map(z => `<section style="--c:${z.x.color}"><b>${z.x.icon} ${esc(z.x.t)} – ${z.v[lastI]}%</b>${akUl(z.x.act)}</section>`).join('')}</div>` : '<p class="muted wvhint">רושמים כמה תלמידים ענו, ולכל היגד – כמה ענו ״כן, בדרך כלל״. העמודות מתציירות מיד.</p>'}</div>`; },
+    inputs(t, s, D){ const R = s.rounds;
+      return `<details class="wvmore"><summary>📄 השאלון לתלמידים – להקראה או להדפסה (אנונימי, בלי שמות)</summary><div class="aksvq"><p>${esc(s.pupilIntro)}</p><ol>${s.domains.flatMap(x => x.items).map(it => `<li>${esc(it.t)} <span class="muted">☐ כן, בדרך כלל ☐ לפעמים ☐ כמעט אף פעם</span></li>`).join('')}</ol></div></details>
+        <details class="wvmore" open><summary>✏️ הזנת התוצאות – רק מספרים, בלי שמות</summary><div class="aksvin"><div class="aksvrow h"><span></span>${R.map(r => `<b style="color:${r.color}">${esc(r.t)}</b>`).join('')}</div>
+        <div class="aksvrow"><span><b>כמה תלמידים ענו על השאלון?</b></span>${R.map(r => wvI(D, s.id, 'n_' + r.id, 'מספר', {num: 1, max: 60})).join('')}</div>
+        ${s.domains.map(x => `<div class="aksvrow dh" style="--c:${x.color}"><span>${x.icon} <b>${esc(x.t)}</b></span>${R.map(() => '<span></span>').join('')}</div>${x.items.map(it => `<div class="aksvrow"><span>${esc(it.t)}</span>${R.map(r => wvI(D, s.id, r.id + '_' + it.id, '״כן״', {num: 1, max: 60})).join('')}</div>`).join('')}`).join('')}</div></details>`; }
+  }
+});
 
 /* ================= videos: every video file and video link in the materials, by topic; clicking plays it right here ================= */
 const VIDEO_RX = /\.(mp4|m4v|webm|mov)$/i;
@@ -5330,13 +5597,43 @@ function outMenu(btn){
   document.body.appendChild(m);
   const r = btn.getBoundingClientRect(); m.style.top = (r.bottom + 6) + 'px'; m.style.left = Math.max(8, r.left - 120) + 'px';
   m.onclick = e => { const b = e.target.closest('[data-out]'); if (!b) return; m.remove(); const k = b.dataset.out;
+    const R0 = route(); if (R0.r === 'track' && TRACK(R0.id) && !OUT_SEL.picked) return pickSteps(TRACK(R0.id), R0, k);
+    doOut(k); };
+  setTimeout(() => document.addEventListener('click', function off(e){ if (!e.target.closest('#outmenu') && !e.target.closest('[data-act="outmenu"]')) { const x = $('#outmenu'); if (x) x.remove(); document.removeEventListener('click', off); } }), 0);
+}
+/* a track: print / share only this step, the whole guide, or chosen steps */
+const OUT_SEL = {steps: null, picked: false};
+function pickSteps(tr, R, k){
+  const cur = Math.min(tr.steps.length - 1, Math.max(0, R.sub && /^\d+$/.test(R.sub) ? +R.sub - 1 : 0));
+  const verb = {print: 'להדפסה', pdf: 'ל-PDF', slides: 'למצגת', share: 'לקובץ שיתוף', link: 'לקישור לצוות'}[k] || '';
+  const m = $('#modal'); m.className = 'modal open';
+  m.innerHTML = `<div class="box"><div class="mhead"><h3>מה לקחת ${verb}?</h3><button class="iconbtn" data-act="close">✕</button></div>
+    <div class="list" style="gap:8px"><button class="btn primary" data-pk="one" style="justify-content:flex-start">📄 רק השלב הזה: <b style="margin-inline-start:6px">${esc(tr.steps[cur].title)}</b></button>
+    <button class="btn" data-pk="all" style="justify-content:flex-start">📚 כל המדריך – ${tr.steps.length} השלבים וכל תתי הסעיפים</button></div>
+    <details style="margin-top:12px"><summary><b>☑️ לבחור שלבים מסוימים</b></summary><div style="margin:8px 0;display:flex;flex-direction:column;gap:4px;max-height:45vh;overflow:auto">${tr.steps.map((s, i) => `<label style="display:flex;gap:8px;align-items:center;cursor:pointer"><input type="checkbox" value="${i}" ${i === cur ? 'checked' : ''}> ${i + 1}. ${s.icon || ''} ${esc(s.title)}</label>`).join('')}</div>
+    <button class="btn primary" data-pk="some">✔ המשך עם השלבים שסימנתי</button></details></div>`;
+  m.onclick = e => { const b = e.target.closest('[data-pk]'); if (!b) return; const w = b.dataset.pk;
+    const steps = w === 'one' ? [cur] : w === 'all' ? tr.steps.map((_, i) => i) : [...m.querySelectorAll('input[type=checkbox]:checked')].map(x => +x.value);
+    if (!steps.length) return toast('לא סומן אף שלב');
+    m.onclick = null; closeModal(); OUT_SEL.steps = steps; OUT_SEL.picked = true;
+    try { doOut(k); } finally { setTimeout(() => { OUT_SEL.steps = null; OUT_SEL.picked = false; }, 1500); } };
+}
+function selTrack(){ const R = route(); return R.r === 'track' && TRACK(R.id) && OUT_SEL.steps ? TRACK(R.id) : null; }
+function selTitle(){ const tr = selTrack(); if (!tr) return $('#title').textContent || document.title; const st = OUT_SEL.steps;
+  return st.length === 1 ? `${tr.title} – ${tr.steps[st[0]].title}` : st.length === tr.steps.length ? tr.title : `${tr.title} (${st.length} שלבים נבחרים)`; }
+// the chosen steps rendered as one page (own answers for print; empty for sharing)
+function selHTML(withData){ const tr = selTrack(); const D = withData ? trData(tr.id) : {};
+  return `<h1>${tr.icon || ''} ${esc(selTitle())}</h1>` + OUT_SEL.steps.map(i => `<div class="panel trprint"><h3>${i + 1}. ${tr.steps[i].icon || ''} ${esc(tr.steps[i].title)}</h3>${trStepHTML(tr, tr.steps[i], D)}</div>`).join(''); }
+function doOut(k){
+    if (!$('#printbrand')) document.body.insertAdjacentHTML('afterbegin', '<div id="printbrand">ייעוץ חינוכי · נדב דוד</div>');
     if (k === 'slides') return slideShow();
     if (k === 'share') return sharePage();
     if (k === 'link') return shareLink();
+    let sel = null;
+    if (selTrack()) { sel = document.createElement('div'); sel.id = 'selview'; sel.className = 'page'; sel.innerHTML = selHTML(true); document.body.appendChild(sel); document.body.classList.add('selprint'); }
     document.querySelectorAll('#view details').forEach(d => { d.dataset.wasOpen = d.open ? '1' : ''; d.open = true; });
     if (k === 'pdf') toast('בחלון שנפתח בחרו ביעד: "שמירה כ-PDF" (Save as PDF)');
-    setTimeout(() => { window.print(); document.querySelectorAll('#view details').forEach(d => { d.open = !!d.dataset.wasOpen; }); }, k === 'pdf' ? 900 : 50); };
-  setTimeout(() => document.addEventListener('click', function off(e){ if (!e.target.closest('#outmenu') && !e.target.closest('[data-act="outmenu"]')) { const x = $('#outmenu'); if (x) x.remove(); document.removeEventListener('click', off); } }), 0);
+    setTimeout(() => { window.print(); document.querySelectorAll('#view details').forEach(d => { d.open = !!d.dataset.wasOpen; }); if (sel) { sel.remove(); document.body.classList.remove('selprint'); } }, k === 'pdf' ? 900 : 50);
 }
 const SHARE_BASE = 'https://nadav1948-lgtm.github.io/nadavcbt/';
 function shareBlocked(){ const r = route().r; if (['student', 'students', 'settings'].includes(r) || (r === 'tool' && route().id === 'sociometry')) { toast('⛔ מהעמוד הזה אי אפשר לשתף – יש בו מידע על תלמידים.'); return true; } return false; }
@@ -5344,7 +5641,8 @@ function shareSnapshot(){
   document.querySelectorAll('#view details').forEach(d => d.open = true);
   let clone = $('#view .page').cloneNode(true);
   const R = route();
-  if (R.r === 'track' && TRACK(R.id)) {   // a whole track: every step, empty (never a pupil's answers)
+  if (selTrack()) { clone = document.createElement('div'); clone.className = 'page'; clone.innerHTML = selHTML(false); }   // chosen steps, empty (never a pupil's answers)
+  else if (R.r === 'track' && TRACK(R.id)) {   // a whole track: every step, empty (never a pupil's answers)
     const tr = TRACK(R.id); clone = document.createElement('div'); clone.className = 'page';
     try { clone.innerHTML = `<h1>${tr.icon || ''} ${esc(tr.title)}</h1>` + tr.steps.map((s, i) => `<div class="panel trprint"><h3>${i + 1}. ${s.icon || ''} ${esc(s.title)}</h3>${trStepHTML(tr, s, {})}</div>`).join(''); } catch(e){ clone = $('#view .page').cloneNode(true); }
   }
@@ -5359,7 +5657,7 @@ const unb64u = s => { s = s.replace(/-/g, '+').replace(/_/g, '/'); while (s.leng
 async function zip(str, inflate){ const cs = inflate ? new DecompressionStream('deflate-raw') : new CompressionStream('deflate-raw'); const w = cs.writable.getWriter(); w.write(inflate ? str : new TextEncoder().encode(str)); w.close(); const buf = await new Response(cs.readable).arrayBuffer(); return inflate ? new TextDecoder().decode(buf) : new Uint8Array(buf); }
 async function shareLink(){
   if (shareBlocked()) return;
-  const title = $('#title').textContent || document.title;
+  const title = selTitle();
   const data = b64u(await zip(JSON.stringify({t: title, h: shareSnapshot(), d: new Date().toLocaleDateString('he-IL')})));
   const url = SHARE_BASE + '#share=' + data;
   const m = $('#modal'); m.className = 'modal open';
@@ -5374,7 +5672,7 @@ const SHARE_MODE = /^#share=/.test(location.hash);
 async function shareView(){
   document.body.classList.add('sharemode');
   try { const o = JSON.parse(await zip(unb64u(location.hash.slice(7)), true)); document.title = o.t;
-    $('#title').textContent = o.t; $('#view').innerHTML = `<div class="sharehead"><b>${esc(o.t)}</b><span>ייעוץ חינוכי · מעלות רם${o.d ? ' · ' + esc(o.d) : ''}</span></div>${o.h}`; try { kidifyEmojis($('#view')); } catch(e){} }
+    $('#title').textContent = o.t; $('#view').innerHTML = `<div class="sharehead"><b>${esc(o.t)}</b><span>ייעוץ חינוכי · נדב דוד${o.d ? ' · ' + esc(o.d) : ''}</span></div>${o.h}`; try { kidifyEmojis($('#view')); } catch(e){} }
   catch(e){ $('#view').innerHTML = '<div class="empty" style="padding-top:100px">הקישור פגום או לא שלם. בקשו מהיועץ לשלוח אותו שוב.</div>'; }
 }/* one page → a standalone, interactive HTML file for the staff: no sign-in, no link to the account, the library or pupils' files */
 async function sharePage(){
@@ -5384,16 +5682,16 @@ async function sharePage(){
   clone.querySelectorAll('[data-act="attopen"], [data-act="libopen"], [data-act="tfdl"]').forEach(x => { const s = document.createElement('span'); s.className = x.className; s.innerHTML = x.innerHTML; x.replaceWith(s); });   // files need the counselor's account – shown as titles only
   clone.querySelectorAll('a[href^="#/"]').forEach(a => { const s = document.createElement('span'); s.className = a.className + ' shlink'; s.innerHTML = a.innerHTML; a.replaceWith(s); });   // in-app links lead nowhere outside the app
   let css = ''; for (const sh of document.styleSheets) { try { for (const r of sh.cssRules) css += r.cssText + '\n'; } catch(e){} }
-  const title = $('#title').textContent || document.title;
+  const title = selTitle();
   const theme = document.documentElement.dataset.theme || '';
   const js = `document.addEventListener('click',function(e){var b=e.target.closest('.dg button.dgn, .dg button.dgall');if(b){var box=b.closest('.dg');if(b.classList.contains('dgall')){var on=box.classList.toggle('showall');box.querySelectorAll('.dgdet').forEach(function(x){x.classList.toggle('on',on)});return;}var id=b.getAttribute('aria-controls');var d=id&&document.getElementById(id);if(d){var o=!d.classList.contains('on');d.classList.toggle('on',o);b.classList.toggle('sel',o);b.setAttribute('aria-expanded',o);}return;}var t=e.target.closest('[data-toggle]');if(t){var x=document.getElementById(t.dataset.toggle);if(x)x.hidden=!x.hidden;}});`;
   const html = `<!doctype html><html lang="he" dir="rtl"${theme ? ` data-theme="${theme}"` : ''}><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>${esc(title)}</title><style>${css}\nbody{margin:0}.sharewrap{max-width:1000px;margin:0 auto;padding:16px}.sharehead{display:flex;justify-content:space-between;align-items:center;gap:10px;margin:0 0 12px;padding:10px 14px;border-radius:14px;background:var(--brand-soft);font-size:14px}.shlink{text-decoration:none;cursor:default}</style></head>
-<body><div class="sharewrap"><div class="sharehead"><b>${esc(title)}</b><span>ייעוץ חינוכי · מעלות רם · ${new Date().toLocaleDateString('he-IL')}</span></div>${clone.outerHTML}</div><script>${js}<\/script></body></html>`;
+<body><div class="sharewrap"><div class="sharehead"><b>${esc(title)}</b><span>ייעוץ חינוכי · נדב דוד · ${new Date().toLocaleDateString('he-IL')}</span></div>${clone.outerHTML}</div><script>${js}<\/script></body></html>`;
   const blob = new Blob([html], {type: 'text/html;charset=utf-8'}); const a = document.createElement('a');
   a.href = URL.createObjectURL(blob); a.download = (title.replace(/[\\/:*?"<>|]/g, '').trim() || 'עמוד') + '.html'; document.body.appendChild(a); a.click(); setTimeout(() => { URL.revokeObjectURL(a.href); a.remove(); }, 4000);
   toast('📤 הקובץ נשמר בהורדות – אפשר לשלוח אותו לצוות בווטסאפ או במייל. פותחים אותו בדפדפן.');
 }function slideBlocks(){
-  const page = $('#view .page'); if (!page) return [];
+  const page = $('#selslides') || $('#view .page'); if (!page) return [];
   const H = window.innerHeight * 0.8, out = [];
   const walk = (el, depth) => { if (!el || el.matches('script,style,.no-print,.outmenu')) return; const kids = [...el.children].filter(k => k.offsetHeight > 0);
     if (el.offsetHeight > H && kids.length > 1 && depth < 3) kids.forEach(k => walk(k, depth + 1)); else if (el.offsetHeight > 0 && el.textContent.trim()) out.push(el); };
@@ -5405,9 +5703,9 @@ async function sharePage(){
 }
 function slideShow(){
   document.querySelectorAll('#view details').forEach(d => d.open = true);
-  const groups = slideBlocks(); if (!groups.length) return;
-  const title = $('#title').textContent || document.title;
-  const slides = [`<div class="sl-title"><div class="sl-emo">🎞️</div><h1>${esc(title)}</h1><p>ייעוץ חינוכי · מעלות רם</p></div>`].concat(groups.map(g => g.map(el => el.outerHTML).join('')));
+  let tmp = null; if (selTrack()) { tmp = document.createElement('div'); tmp.id = 'selslides'; tmp.className = 'page'; tmp.style.cssText = 'position:absolute;left:-20000px;top:0;width:' + ($('#view').clientWidth || 900) + 'px'; tmp.innerHTML = selHTML(true); document.body.appendChild(tmp); }
+  const groups = slideBlocks(); const title = selTitle(); if (tmp) { groups.forEach(g => g.forEach((el, i) => { g[i] = el.cloneNode(true); })); tmp.remove(); } if (!groups.length) return;
+  const slides = [`<div class="sl-title"><div class="sl-emo">🎞️</div><h1>${esc(title)}</h1><p>ייעוץ חינוכי · נדב דוד</p></div>`].concat(groups.map(g => g.map(el => el.outerHTML).join('')));
   let i = 0; const o = document.createElement('div'); o.className = 'slideshow'; o.tabIndex = -1;
   const show = () => { o.innerHTML = `<div class="sl-stage"><div class="sl-body">${slides[i]}</div></div>
     <div class="sl-bar"><button data-sl="close" title="יציאה (Esc)">✕</button><button data-sl="prev" ${i ? '' : 'disabled'}>→ הקודם</button><span>${i + 1} / ${slides.length}</span><button data-sl="next" ${i < slides.length - 1 ? '' : 'disabled'}>הבא ←</button></div>`;
