@@ -1139,7 +1139,7 @@ const INTENTS = [
   {id:'homework', label:'🏠 משימות בית', field:'homework', words:['משימה','משימות','שיעורי בית','תרגול בבית','בין המפגשים']},
   {id:'model', label:'🧠 המשגה', field:'model', words:['המשגה','למה','מה משמר','מודל','מחשבות','מה עובר עליו']}
 ];
-const SAFETY = ['להתאבד','התאבדות','אובדני','אובדנות','לא רוצה לחיות','רוצה למות','לחתוך','חותך','פגיעה עצמית','פוגע בעצמו','מכים אותו בבית','מרביצים לו בבית','התעללות','מתעללים בו בבית','פגיעה מינית','נגעו בו','הזנחה','רעב','סכנה'];
+const SAFETY = ['אין טעם לחיות','אין לי בשביל מה לחיות','לא שווה לחיות','רוצה להיעלם','עדיף שלא אהיה','עדיף שאמות','לסיים את החיים','לשים סוף','להתאבד','התאבדות','אובדני','אובדנות','לא רוצה לחיות','רוצה למות','לחתוך','חותך','פגיעה עצמית','פוגע בעצמו','מכים אותו בבית','מרביצים לו בבית','התעללות','מתעללים בו בבית','פגיעה מינית','נגעו בו','הזנחה','רעב','סכנה'];
 const FIELD_LABEL = {signs:'סימנים', assessment:'הערכה', goals:'יעדים', parents:'הורים', teachers:'צוות', redFlags:'מתי להפנות', techniques:'טכניקות', sessions:'מפגשים', model:'המשגה'};
 const FIELD_TAB = {signs:'overview', assessment:'assess', goals:'overview', parents:'partners', teachers:'partners', redFlags:'overview', techniques:'techniques', sessions:'sessions', model:'overview'};
 let ASK_INDEX = null;
@@ -1172,12 +1172,15 @@ function answer(q){
   const idf = t => Math.log(1 + X.N / (X.df[t] || X.N));
   const adult = /(^|\s)[והבלמשכ]{0,2}(מורה|מורים|מורות|מחנכ|מחנכת|מחנך|הצוות|צוות|הורים|ההורים|אמא|אבא|מנהל|מנהלת|סייעת)\s+(ש|לא|כועס|מאשימ|מתקש|צועק|מותש|מספר|מרגיש|חוזר|בוכה|שחוק|שבור|בדיכאון|בלחץ)|איך מדריכים|להדריך (את|מורה|הורים|צוות)|מדריכים (אותו|אותה|אותם)/.test(nq);
   const child = /(^|\s)[והבלמשכ]{0,2}(ילד|ילדה|תלמיד|תלמידה)\s+(ש|מכיתה|בכיתה|עם)/.test(nq);
+  const semRaw = SEM_Q[q], semQ = semRaw && semRaw._mm >= 0.875 ? Object.fromEntries(Object.entries(semRaw).filter(([k]) => k[0] === 'm' || k[0] === '_').map(([k, v]) => [k.startsWith('m:') ? k.slice(2) : k, v])) : null;
   const scores = PROBLEMS.map(p => {
     let s = 0; const why = [];
     for (const ph of SYN[p.id] || []) if (hasPh(nq, ph)) { s += 6 + norm(ph).trim().split(' ').length; why.push(ph); }
     let tok = 0; for (const t of qt) { if (X.bag[p.id] && X.bag[p.id].has(t)) tok += idf(t) * 0.5; if (X.nameTk[p.id].has(t)) tok += 2; }
     s += Math.min(tok, 6);
     if (adult) { if (p.area === STAFF_AREA) s += 5; else if (!why.length) s *= 0.6; }
+    // meaning-based boost from the on-device model (only when the question is clearly about one of the maps)
+    if (semQ && semQ[p.id] != null) s += 14 * Math.max(0, (semQ[p.id] - (semQ._mm - 0.03)) / 0.03);
     else if (child && p.area === STAFF_AREA) s *= 0.6;
     return {p, s, why};
   }).sort((a, b) => b.s - a.s);
@@ -1276,6 +1279,7 @@ function ask(R){
   let claudeBox = '';
   if (q && !useAI && !AI.available() && !ARTIFACT) claudeBox += `<div class="note" style="margin-bottom:12px;display:flex;gap:10px;align-items:center;flex-wrap:wrap"><span>🤖 התשובה לא מספיקה? אפשר לשאול את Claude עצמו.</span><a class="btn primary sm" href="https://claude.ai/artifact/VR9R29KShiqhmHX7NTqbjT" target="_blank" rel="noopener" data-act="copyq" data-v="${esc(q)}">שאל את Claude</a><span class="muted" style="font-size:13px">השאלה מועתקת – מדביקים אותה בעמוד שנפתח</span></div>`;
   if (q && !useAI && AI.available()) claudeBox += `<div class="note" style="margin-bottom:12px;display:flex;gap:10px;align-items:center;flex-wrap:wrap"><span>🤖 התשובה לא מספיקה?</span><button class="btn primary sm" data-act="ai-go">🤖 תשובה מלאה מ-Claude</button><span class="muted" style="font-size:13px">רק בלחיצה – נספר במכסת המנוי</span></div>`;
+  if (q && !useAI && semAvailable() && !SEM_Q[q]) h += '<p id="semNote" class="muted" style="font-size:13px;margin:0 0 10px"></p>';
   if (q && !useAI) h += (AI.status === 'off' && AI.err ? `<div class="note warn" style="margin-bottom:12px">🤖 ${esc(AI_ERR[AI.err] || 'Claude לא זמין כרגע – התשובה מהמנוע המהיר.')}</div>` : '') + answerHTML(answer(q));
   else if (!q) h += `<h2 class="sec">💡 דוגמאות לשאלות</h2><div class="actions">${ASK_EXAMPLES.map(e => `<button class="chip" data-act="askex" data-v="${esc(e)}">${esc(e)}</button>`).join('')}</div>`;
   if (q) h += '<div id="libPanel"></div>';
@@ -1288,6 +1292,7 @@ function ask(R){
     if (!q) i.focus();
     if (q && $('#aiPanel')) aiAnswerRun(q);
     if (q) libFill(q);
+    if (q && !useAI) semRefine(q);
   }};
 }
 
@@ -1796,6 +1801,66 @@ function circSrcView(R){
     <p class="muted" style="font-size:13px">הטקסט חולץ מקובץ ה-PDF של החוזר; בטבלאות הסדר עלול להשתבש. בהחלטה מחייבת בודקים בקובץ המקורי.</p>`;
   return {title: 'מקור · ' + m.title, html: h, after(){ const e = $('#hl'); if (e) setTimeout(() => e.scrollIntoView({block: 'center'}), 60); }};
 }
+/* ================= understanding engine: a small language model running on the device (no Claude, no tokens) ================= */
+const SEM = {status: 'idle'}, SEM_Q = {};
+window.__semQ = SEM_Q;
+const SEM_MODEL_URL = 'https://cbt-model.local/';
+function semAvailable(){ return WEB && !ARTIFACT && !LITE && Cloud.status === 'ok' && SEM.status !== 'error'; }
+function installModelFetch(){
+  if (window.__modelFetch) return; window.__modelFetch = true;
+  const orig = window.fetch.bind(window);
+  // the model files live in the user's OneDrive (next to the site) and are kept in the device cache after the first time
+  window.fetch = async (input, init) => {
+    const url = typeof input === 'string' ? input : (input && input.url) || '';
+    if (!url.startsWith(SEM_MODEL_URL)) return orig(input, init);
+    let cache = null; try { cache = await caches.open('cbt-model-v1'); const hit = await cache.match(url); if (hit) return hit; } catch(e){}
+    const rel = 'model/' + decodeURIComponent(url.slice(SEM_MODEL_URL.length));
+    const r = await Cloud.g(Cloud.itemPath(rel)); if (!r.ok) return new Response('', {status: 404});
+    const j = await r.json(); const res = await orig(j['@microsoft.graph.downloadUrl']);
+    if (cache && res.ok) { try { await cache.put(url, res.clone()); } catch(e){} }
+    return res;
+  };
+}
+async function semLoad(){
+  if (SEM.status === 'ready') return true;
+  if (SEM.p) return SEM.p;
+  if (!semAvailable()) return false;
+  SEM.status = 'loading';
+  SEM.p = (async () => {
+    try {
+      if (!window.SEM_VECS) { const t = await Cloud.getText('app-semvecs.js'); if (t) new Function(t)(); }
+      const V = window.SEM_VECS, bin = atob(V.b64), a = new Int8Array(bin.length);
+      for (let i = 0; i < bin.length; i++) a[i] = (bin.charCodeAt(i) << 24) >> 24;
+      SEM.vecs = a; SEM.dim = V.dim; SEM.keys = V.keys;
+      installModelFetch();
+      const T = await import('https://cdn.jsdelivr.net/npm/@huggingface/transformers@3.1.2');
+      T.env.allowRemoteModels = false; T.env.allowLocalModels = true; T.env.localModelPath = SEM_MODEL_URL; T.env.useBrowserCache = false;
+      SEM.ext = await T.pipeline('feature-extraction', 'Xenova/multilingual-e5-small', {dtype: 'q8'});
+      SEM.status = 'ready'; return true;
+    } catch(e){ SEM.status = 'error'; SEM.err = String(e && e.message || e); SEM.p = null; return false; }
+  })();
+  return SEM.p;
+}
+// similarity of the question to every map / circular situation (best matching phrasing per item)
+async function semScores(q){
+  if (SEM_Q[q]) return SEM_Q[q];
+  if (!(await semLoad())) return null;
+  const out = await SEM.ext(['query: ' + q], {pooling: 'mean', normalize: true});
+  const qv = out.data, D = SEM.dim, best = {};
+  for (let i = 0; i < SEM.keys.length; i++) { let s = 0; const o = i * D; for (let j = 0; j < D; j++) s += SEM.vecs[o + j] * qv[j]; s /= 127; const k = SEM.keys[i]; if (!(best[k] >= s)) best[k] = s; }
+  let mm = 0, mc = 0; for (const k in best) { if (k[0] === 'm') mm = Math.max(mm, best[k]); else mc = Math.max(mc, best[k]); }
+  best._mm = mm; best._mc = mc;
+  return SEM_Q[q] = best;
+}
+// after the first (instant) answer is shown, let the model re-rank and redraw
+function semRefine(q){
+  if (!semAvailable() || SEM_Q[q]) return;
+  const h = location.hash;
+  const note = $('#semNote'); if (note) note.textContent = '🧠 מנוע ההבנה בודק את משמעות השאלה…' + (SEM.status === 'loading' || SEM.status === 'idle' ? ' (בפעם הראשונה הוא נטען – זה לוקח קצת זמן)' : '');
+  semScores(q).then(r => { if (r && location.hash === h) render(); else { const n = $('#semNote'); if (n) n.textContent = ''; } });
+}
+window.__sem = async q => { const r = await semScores(q); return r ? Object.entries(r).filter(([k]) => k[0] !== '_').sort((a, b) => b[1] - a[1]).slice(0, 6).map(([k, v]) => k + ' ' + v.toFixed(3)) : SEM.err || 'לא זמין'; };
+
 /* ================= library full-text search (text extracted from the files) ================= */
 let libTxtP = null;
 const LIB_SHARDS = {};
