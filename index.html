@@ -602,6 +602,20 @@ mark#hl{background:#ffda2a;color:#171717;padding:2px 3px;border-radius:4px;box-s
 .trsess.done summary{color:#15803d}
 @media (max-width:900px){.trlayout{grid-template-columns:1fr}.trsteps{position:static;grid-auto-flow:column;grid-auto-columns:max-content;overflow-x:auto}.trweek{grid-template-columns:repeat(2,1fr)}
   .fivep{grid-template-columns:1fr;grid-template-rows:none}.p5,.p5-presenting{grid-column:1!important;grid-row:auto!important}.p5arrow{display:none}.trsrow{grid-template-columns:1fr 110px 30px}}
+/* videos */
+.vgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:12px}
+.vcard{display:flex;flex-direction:column;gap:6px;text-align:start;background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:8px;cursor:pointer;color:var(--ink);font-family:inherit;transition:transform .15s,box-shadow .15s}
+.vcard:hover{transform:translateY(-2px);box-shadow:var(--shadow)}
+.vthumb{position:relative;aspect-ratio:16/9;border-radius:10px;overflow:hidden;background:linear-gradient(135deg,#1e293b,#334155);display:grid;place-items:center}
+.vthumb img{width:100%;height:100%;object-fit:cover}
+.vfile{font-size:40px}
+.vplay{position:absolute;inset:auto;width:46px;height:46px;border-radius:50%;background:rgba(0,0,0,.6);color:#fff;display:grid;place-items:center;font-size:20px}
+.vt{font-weight:700;font-size:15px;line-height:1.35}
+.vs{color:var(--muted);font-size:12.5px}
+.vwrap{position:relative;width:100%;aspect-ratio:16/9;background:#000;border-radius:12px;overflow:hidden;display:grid;place-items:center}
+.vwrap iframe,.vwrap video{position:absolute;inset:0;width:100%;height:100%;border:0;background:#000}
+.vwrap .empty{color:#e2e8f0}
+.ft.vid{background:#fee2e2;color:#991b1b}
 </style>
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="apple-touch-icon" href="icon-192.png">
@@ -971,7 +985,7 @@ function ui(){
 }
 
 /* ================= routing & shell ================= */
-const NAV = [['home','🏠','בית'],['ask','💬','שאל שאלה'],['problems','🧭','מנווט בעיות'],['students','🧒','תלמידים'],['workflow','🗺️','סדר עבודה'],['roles','👥','מי פונה למי'],['circ','📜','חוזרי מנכ״ל'],['tools','🧰','כלים לילדים'],['tracks','🧭','טיפול מובנה'],['groups','👥','הנחיית קבוצות'],['games','🎲','משחקים טיפוליים'],['library','📚','ספרייה'],['settings','⚙️','הגדרות']];
+const NAV = [['home','🏠','בית'],['ask','💬','שאל שאלה'],['problems','🧭','מנווט בעיות'],['students','🧒','תלמידים'],['workflow','🗺️','סדר עבודה'],['roles','👥','מי פונה למי'],['circ','📜','חוזרי מנכ״ל'],['tools','🧰','כלים לילדים'],['tracks','🧭','טיפול מובנה'],['groups','👥','הנחיית קבוצות'],['programs','🏗️','תוכניות התערבות'],['transitions','🚪','מעברים'],['newteachers','🌱','מורים חדשים'],['games','🎲','משחקים טיפוליים'],['videos','🎬','סרטונים'],['library','📚','ספרייה'],['settings','⚙️','הגדרות']];
 function route(){ const h = location.hash.replace(/^#\/?/, '').split('/').map(decodeURIComponent); return {r: h[0] || 'home', id: h[1], sub: h[2], x: h[3]}; }
 let timers = [];
 function clearTimers(){ timers.forEach(t => { clearTimeout(t); clearInterval(t); }); timers = []; }
@@ -990,7 +1004,7 @@ function render(){
   document.body.classList.toggle('locked', isLocked());
   if (isLocked()) { const o = lockView(); $('#title').textContent = ''; $('#view').innerHTML = `<div class="page">${o.html}</div>`; document.title = 'CBT בבית הספר'; return; }
   if (WEB && !ARTIFACT && !LITE && !PROBLEMS.length) { $('#title').textContent = ''; $('#view').innerHTML = `<div class="empty" style="padding-top:120px"><span class="big">⏳</span>${Cloud.status === 'error' ? esc(Cloud.err) + ' <br><br><button class="btn primary" data-act="cloud-retry">נסו שוב</button>' : 'טוען את התוכן מ-OneDrive…'}</div>`; return; }
-  const views = LITE ? {home: liteHome, problems, problem: problemView, tools, tool: toolView, settings: liteSettings, ask, workflow, roles: rolesView, circ: circView, circsrc: circSrcView, libsrc: libSrcView, circask: circAskView, find: findView, more: moreView, games: gamesView, game: gameView, tracks: tracksView, track: trackView, groups: groupsView} : {home, problems, problem: problemView, students, student: studentView, tools, tool: toolView, library, settings, ask, workflow, roles: rolesView, circ: circView, circsrc: circSrcView, libsrc: libSrcView, circask: circAskView, find: findView, more: moreView, games: gamesView, game: gameView, tracks: tracksView, track: trackView, groups: groupsView};
+  const views = LITE ? {home: liteHome, problems, problem: problemView, tools, tool: toolView, settings: liteSettings, ask, workflow, roles: rolesView, circ: circView, circsrc: circSrcView, libsrc: libSrcView, circask: circAskView, find: findView, more: moreView, games: gamesView, game: gameView, tracks: tracksView, track: trackView, groups: groupsView, transitions: hubView, newteachers: hubView, programs: hubView, videos: videosView} : {home, problems, problem: problemView, students, student: studentView, tools, tool: toolView, library, settings, ask, workflow, roles: rolesView, circ: circView, circsrc: circSrcView, libsrc: libSrcView, circask: circAskView, find: findView, more: moreView, games: gamesView, game: gameView, tracks: tracksView, track: trackView, groups: groupsView, transitions: hubView, newteachers: hubView, programs: hubView, videos: videosView};
   const fn = views[R.r] || home;
   const out = fn(R);
   $('#title').textContent = out.title;
@@ -1038,7 +1052,7 @@ function libItem(p){
   return `<div class="lib-item" ${open} data-title="${esc(first ? first.name : p.title)}">
     <span style="font-size:22px">${topicIcon(p.topic)}</span>
     <div class="grow"><div class="t">${esc(p.title)}</div><div class="s">${esc(topicName(p.topic))}${p.src ? ' · ' + esc(p.sub ? p.section + ' › ' + p.sub : p.section) : ''}</div></div>
-    ${p.attachments.map(a => { const [c, l] = ftype(a.name); return `<a class="ft ${c}" href="${href(a.path)}" target="_blank" data-act="attopen" data-path="${esc(a.path)}" data-title="${esc(a.name)}" title="${esc(a.name)}">${l}</a>`; }).join(' ')}
+    ${p.attachments.map(a => { const [c, l] = ftype(a.name); if (VIDEO_RX.test(a.path)) return `<a class="ft vid" href="${href(a.path)}" data-act="vplay" data-k="file" data-src="${esc(a.path)}" data-title="${esc(a.name)}" title="${esc(a.name)}">▶ וידאו</a>`; return `<a class="ft ${c}" href="${href(a.path)}" target="_blank" data-act="attopen" data-path="${esc(a.path)}" data-title="${esc(a.name)}" title="${esc(a.name)}">${l}</a>`; }).join(' ')}
     ${first && p.pdf ? `<a class="ft" href="${href(p.pdf)}" target="_blank" data-act="libopen" data-pdf="${esc(p.pdf)}" data-title="${esc(p.title)}" title="דף המחברת עצמו">📓</a>` : ''}
   </div>`;
 }
@@ -2979,6 +2993,7 @@ document.addEventListener('click', async e => {
     case 'g-stage': case 'g-again': case 'g-sort': case 'g-next': case 'g-flip': case 'g-choice': case 'g-clue': case 'g-opt': case 'g-catchgo': case 'g-rung': case 'g-rungadd': case 'g-spin': case 'g-roll': case 'g-cardok': gameAct(act, d, e); break;
     case 'cyc-cut': case 'cyc-better': cycAct(act, d, e); break;
     case 'tr-day': case 'tr-idea': case 'tr-add': case 'tr-done': case 'tr-del': trackAct(act, d, e); break;
+    case 'vplay': e.preventDefault(); playVideo(d); break;
     case 'g-link': { const url = location.href.split('#')[0] + '#/game/' + d.id; try { navigator.clipboard.writeText(url).then(() => toast('🔗 הקישור למשחק הועתק'), () => prompt('הקישור למשחק:', url)); } catch(err){ prompt('הקישור למשחק:', url); } break; }
     case 'asker': ASKER = d.v; ls.set('cbtapp.asker', ASKER); aiFast = !ARTIFACT; render(); break;
     case 'copyq': try { navigator.clipboard.writeText(d.v).then(() => toast('השאלה הועתקה – הדביקו אותה בפרויקט של Claude'), () => {}); } catch(err){} break;
@@ -3387,7 +3402,21 @@ function groupsView(){
     <h2 class="sec">📚 מתווים טיפוליים קבוצתיים לפי נושאים</h2>
     ${list.length ? `<div class="grid">${list.map(t => `<a class="card" href="#/track/${t.id}"><span class="emoji">${t.icon || '👥'}</span><span class="name">${esc(t.title)}</span><span class="sub">${esc(t['for'] || '')}</span><span class="sub">${(t.steps.find(s => s.kind === 'sessions') || {sessions: []}).sessions.length} מפגשים</span></a>`).join('')}</div>` : '<div class="empty">⏳ המתווים נטענים…</div>'}`};
 }
-function tracksView(){  const list = TRACKS().filter(t => !t.group);
+/* sections built from tracks: transitions, new teachers, intervention programs (and groups above) */
+const HUBS = {
+  transitions: {flag: 'transition', title: 'מעברים', icon: '🚪', say: 'מעבר הוא הזדמנות לצמוח – בוא נתכונן אליו יחד! 🚪', intro: '🚪 ליווי מעברים: מהגן לכיתה א׳, מכיתה ו׳ לחטיבה ומכיתה ח׳ לתיכון או לישיבה. בכל מעבר: המשמעות ההתפתחותית, לוח זמנים שנתי (לפני, בזמן ואחרי), איתור ילדים שצריכים ליווי, הדרכת הורים ומחנכים, פעילויות לילדים, העברת מידע בין מסגרות לפי חוזר 0370 ומעקב.', extra: [['#/game/transition-k1', '🎲', 'משחק: הצעד הגדול לכיתה א׳'], ['#/track/grp-transition', '👥', 'קבוצה: מעבר לחטיבה'], ['#/track/prog-transitions', '🏗️', 'תוכנית התערבות בית-ספרית למעברים']]},
+  newteachers: {flag: 'newteachers', title: 'ליווי מורים חדשים', icon: '🌱', say: 'שנה ראשונה בהוראה – לא לבד! 🌱', intro: '🌱 ליווי מורים חדשים: מסע השנה הראשונה (צרכים, תוכנית שנתית, מה חובה לדעת, ניהול כיתה, הורים, תצפיות ורווחה אישית) וערכת עבודה למורה החונך.', extra: [['#/track/teacher-consult', '🧑‍🏫', 'מסלול הדרכת מורה'], ['#/track/teacher-stress', '🧯', 'מסלול דחק ושחיקה']]},
+  programs: {flag: 'program', guide: 'prog-guide', title: 'בניית תוכנית התערבות', icon: '🏗️', say: 'תוכנית טובה מתחילה במיפוי – בוא נבנה אותה שלב אחרי שלב 🏗️', intro: '🏗️ בניית תוכנית התערבות ומניעה בית-ספרית: המדריך המלא (מיפוי צרכים, רמות התערבות, מטרות, מודל לוגי, רכיבים, שותפים, תוכנית שנתית, הטמעה והערכה) ותוכניות התערבות מוכנות לפי נושאים – כל אחת עם מיפוי, שלוש רמות התערבות, לוח שנתי, מערכי שיעור, צוות, הורים ומדדים.', extra: []}
+};
+function hubView(R){
+  const h = HUBS[R.r]; const all = TRACKS().filter(t => t[h.flag]), guide = h.guide && all.find(t => t.id === h.guide), list = all.filter(t => t !== guide);
+  const card = t => `<a class="card" href="#/track/${t.id}"><span class="emoji">${t.icon || h.icon}</span><span class="name">${esc(t.title)}</span><span class="sub">${esc(t['for'] || '')} · ${t.steps.length} שלבים</span></a>`;
+  return {title: h.title, html: `${gGuide(h.say, 'שמחה', 6)}<div class="note" style="margin:4px 0 16px">${h.intro} ${active() ? `הכול נשמר בתיק של <b>${esc(active().alias)}</b>.` : ''}</div>
+    ${guide ? `<a class="card" href="#/track/${guide.id}" style="margin-bottom:16px;border:2px solid var(--brand)"><span class="emoji">${guide.icon}</span><span class="name">${esc(guide.title)}</span><span class="sub">${guide.steps.length} שלבים · מתחילים כאן</span></a><h2 class="sec">📚 לפי נושאים</h2>` : ''}
+    ${list.length ? `<div class="grid">${list.map(card).join('')}</div>` : '<div class="empty">🛠️ התוכן של המדור הזה בהכנה ויעלה בקרוב.</div>'}
+    ${h.extra.length ? `<h2 class="sec">🔗 עוד בנושא</h2><div class="actions">${h.extra.map(([u, i, l]) => `<a class="btn" href="${u}">${i} ${esc(l)}</a>`).join('')}</div>` : ''}`};
+}
+const HUBOF = t => t.group ? ['groups', 'הנחיית קבוצות'] : t.transition ? ['transitions', 'מעברים'] : t.newteachers ? ['newteachers', 'ליווי מורים חדשים'] : t.program ? ['programs', 'בניית תוכנית התערבות'] : ['tracks', 'כל המסלולים'];function tracksView(){  const list = TRACKS().filter(t => !t.group && !t.transition && !t.newteachers && !t.program);
   return {title: 'טיפול מובנה', html: `${gGuide('בחר בעיה, ונעבור יחד שלב אחרי שלב – מהאבחון ועד סיום הטיפול 🧭', 'רוגע', 3)}
     <div class="note" style="margin:4px 0 16px">🧭 לכל בעיה – מסלול טיפול מובנה ואינטראקטיבי: אבחון והערכה, הסבר פסיכו-חינוכי, פורמולציה (5P ומעגל משמר), מטרות, טכניקות, תוכנית פעולה ואקטיבציה, פרוטוקול מפגשים ומניעת הישנות. ${active() ? `הכול נשמר בתיק של <b>${esc(active().alias)}</b>.` : 'בחרו תלמיד בראש המסך כדי שהמילוי יישמר בתיק שלו (בלי תלמיד – נשמר ב״כללי״).'}</div>
     ${list.length ? `<div class="grid">${list.map(t => `<a class="card" href="#/track/${t.id}"><span class="emoji">${t.icon || '🧭'}</span><span class="name">${esc(t.title)}</span><span class="sub">${esc(t.for || '')} · ${t.steps.length} שלבים</span></a>`).join('')}</div>` : '<div class="empty">⏳ המסלולים נטענים…</div>'}`};
@@ -3398,7 +3427,7 @@ function trackView(R){
   if (R.sub === 'print') return {title: t.title, html: `<a class="back no-print" href="#/track/${t.id}">→ חזרה למסלול</a><h1>${esc(t.title)}</h1>${active() ? `<p>תלמיד: ${esc(active().alias)}</p>` : ''}${t.steps.map((s, i) => `<div class="panel trprint"><h3>${i + 1}. ${s.icon || ''} ${esc(s.title)}</h3>${trStepHTML(t, s, D)}</div>`).join('')}`, after(){ setTimeout(() => window.print(), 400); }};
   const i = Math.min(t.steps.length - 1, Math.max(0, R.sub ? +R.sub - 1 : 0)), s = t.steps[i];
   const done = t.steps.filter(x => trStepDone(x, D)).length;
-  return {title: t.title, html: `<a class="back no-print" href="#/${t.group ? 'groups' : 'tracks'}">→ ${t.group ? 'הנחיית קבוצות' : 'כל המסלולים'}</a>
+  return {title: t.title, html: `<a class="back no-print" href="#/${HUBOF(t)[0]}">→ ${HUBOF(t)[1]}</a>
     <div class="banner" style="--h:${hueOf(t.title)}"><span class="emoji">${t.icon || '🧭'}</span><div><div style="opacity:.85;font-size:14px">${esc(t['for'] || '')}${active() ? ' · ⭐ ' + esc(active().alias) : ''}</div><h1>${esc(t.title)}</h1></div>
       <div class="actions no-print">${P[t.id] ? `<a class="btn sm" href="#/problem/${t.id}">🧭 מפת הטיפול</a>` : ''}${GAME(t.id) ? `<a class="btn sm" href="#/game/${t.id}">🎲 המשחק</a>` : ''}<a class="btn sm" href="#/track/${t.id}/print">🖨️ סיכום להדפסה</a></div></div>
     ${t.intro && i === 0 ? `<p class="lead" style="text-align:start">${esc(t.intro)}</p>` : ''}
@@ -3427,6 +3456,43 @@ function trackAct(act, d, e){
   save(); render();
 }
 
+/* ================= videos: every video file and video link in the materials, by topic; clicking plays it right here ================= */
+const VIDEO_RX = /\.(mp4|m4v|webm|mov)$/i;
+const ytIdOf = u => { const m = String(u || '').match(/(?:youtu\.be\/|[?&]v=|\/embed\/|\/shorts\/)([\w-]{11})/); return m ? m[1] : ''; };
+const ytList = u => (String(u || '').match(/[?&]list=([\w-]+)/) || [])[1] || '';
+const ytStart = u => { const m = String(u || '').match(/[?&](?:t|start)=(\d+)/); return m ? +m[1] : 0; };
+function allVideos(){
+  const out = [], seen = new Set();
+  for (const p of LIBDATA) {
+    for (const a of p.attachments) if (VIDEO_RX.test(a.path) && !seen.has(a.path)) { seen.add(a.path); out.push({kind: 'file', src: a.path, title: a.name.replace(/\.[^.]+$/, '').replace(/^\d{3}\s+/, ''), topic: p.topic, from: p.title}); }
+    for (const l of (p.links || [])) { const id = ytIdOf(l.url), list = ytList(l.url); const key = id || list; if (!key || seen.has(key)) continue; seen.add(key);
+      out.push({kind: 'yt', id, list, start: ytStart(l.url), url: l.url, title: (l.text && !/^https?:/.test(l.text) ? l.text : '') || p.title, topic: p.topic, from: p.title}); }
+  }
+  return out;
+}
+function videosView(){
+  const v = allVideos();
+  if (!v.length) return {title: 'סרטונים', html: `<div class="empty">${LIBDATA.length ? 'לא נמצאו סרטונים בחומרים.' : '⏳ הספרייה נטענת…'}</div>`};
+  const by = {}; v.forEach(x => { const k = topicName(x.topic) || 'כללי'; (by[k] = by[k] || []).push(x); });
+  const card = x => `<button type="button" class="vcard" data-act="vplay" data-k="${x.kind}" data-src="${esc(x.src || '')}" data-id="${esc(x.id || '')}" data-list="${esc(x.list || '')}" data-start="${x.start || 0}" data-title="${esc(x.title)}">
+      <span class="vthumb">${x.kind === 'yt' && x.id ? `<img src="https://i.ytimg.com/vi/${esc(x.id)}/mqdefault.jpg" alt="" loading="lazy">` : `<span class="vfile">🎬</span>`}<span class="vplay">▶</span></span>
+      <span class="vt">${esc(x.title)}</span><span class="vs">${x.kind === 'yt' ? (x.list && !x.id ? 'רשימת השמעה ביוטיוב' : 'יוטיוב') : 'קובץ וידאו'}${x.from && x.from !== x.title ? ' · ' + esc(x.from) : ''}</span></button>`;
+  return {title: 'סרטונים', html: `${gGuide('בוא נצפה ונלמד! לוחצים על סרטון – והוא מתנגן כאן 🎬', 'שמחה', 5)}<div class="note" style="margin:4px 0 16px">🎬 ${v.length} סרטונים מכל החומרים שלך – קובצי וידאו מהספרייה וסרטוני יוטיוב מתוך הדפים – לפי נושאים. לחיצה מנגנת את הסרטון מיד, בתוך האפליקציה.</div>
+    ${Object.entries(by).sort((a, b) => b[1].length - a[1].length).map(([k, xs]) => `<h2 class="sec">${esc(k)} <span class="muted" style="font-size:14px;font-weight:600">${xs.length}</span></h2><div class="vgrid">${xs.map(card).join('')}</div>`).join('')}`};
+}
+async function playVideo(d){
+  const m = $('#modal'); m.className = 'modal open big';
+  const head = `<div class="mhead"><h3>${esc(d.title || 'סרטון')}</h3><button class="iconbtn" data-act="close">✕</button></div>`;
+  if (d.k === 'yt') {
+    const src = d.id ? `https://www.youtube-nocookie.com/embed/${encodeURIComponent(d.id)}?autoplay=1&rel=0${+d.start ? '&start=' + +d.start : ''}${d.list ? '&list=' + encodeURIComponent(d.list) : ''}` : `https://www.youtube-nocookie.com/embed/videoseries?list=${encodeURIComponent(d.list)}&autoplay=1`;
+    m.innerHTML = `<div class="box">${head}<div class="vwrap"><iframe src="${src}" allow="autoplay; fullscreen; encrypted-media; picture-in-picture" allowfullscreen></iframe></div></div>`; return;
+  }
+  m.innerHTML = `<div class="box">${head}<div class="vwrap"><div class="empty">⏳ טוען את הסרטון…</div></div></div>`;
+  let src = href(d.src);
+  if (WEB) { try { if (Cloud.status !== 'ok') throw new Error('צריך להתחבר עם חשבון מיקרוסופט'); const r = await Cloud.g(Cloud.itemPath(d.src)); if (!r.ok) throw new Error('הסרטון לא נמצא ב-OneDrive'); const j = await r.json(); src = j['@microsoft.graph.downloadUrl']; } catch(e){ m.querySelector('.vwrap').innerHTML = `<div class="empty">לא הצלחתי לפתוח את הסרטון: ${esc(e.message)}</div>`; return; } }
+  const w = m.querySelector('.vwrap'); if (!w) return;
+  w.innerHTML = `<video src="${src}" controls autoplay playsinline preload="auto"></video>`;
+}
 /* ================= boot ================= */
 { const t = ls.get('cbtapp.theme', null); if (t) document.documentElement.dataset.theme = t; }
 $('#nav').innerHTML = NAV.filter(n => !LITE || !['students','library'].includes(n[0])).map(([k, i, l]) => `<a href="#/${k}" data-nav="${k}"><span class="i">${i}</span>${l}</a>`).join('');
