@@ -779,7 +779,7 @@ function render(){
   document.body.classList.toggle('locked', isLocked());
   if (isLocked()) { const o = lockView(); $('#title').textContent = ''; $('#view').innerHTML = `<div class="page">${o.html}</div>`; document.title = 'CBT בבית הספר'; return; }
   if (WEB && !ARTIFACT && !LITE && !PROBLEMS.length) { $('#title').textContent = ''; $('#view').innerHTML = `<div class="empty" style="padding-top:120px"><span class="big">⏳</span>${Cloud.status === 'error' ? esc(Cloud.err) + ' <br><br><button class="btn primary" data-act="cloud-retry">נסו שוב</button>' : 'טוען את התוכן מ-OneDrive…'}</div>`; return; }
-  const views = LITE ? {home: liteHome, problems, problem: problemView, tools, tool: toolView, settings: liteSettings, ask, workflow, roles: rolesView, circ: circView, circsrc: circSrcView, libsrc: libSrcView, circask: circAskView, find: findView} : {home, problems, problem: problemView, students, student: studentView, tools, tool: toolView, library, settings, ask, workflow, roles: rolesView, circ: circView, circsrc: circSrcView, libsrc: libSrcView, circask: circAskView, find: findView};
+  const views = LITE ? {home: liteHome, problems, problem: problemView, tools, tool: toolView, settings: liteSettings, ask, workflow, roles: rolesView, circ: circView, circsrc: circSrcView, libsrc: libSrcView, circask: circAskView, find: findView, more: moreView} : {home, problems, problem: problemView, students, student: studentView, tools, tool: toolView, library, settings, ask, workflow, roles: rolesView, circ: circView, circsrc: circSrcView, libsrc: libSrcView, circask: circAskView, find: findView, more: moreView};
   const fn = views[R.r] || home;
   const out = fn(R);
   $('#title').textContent = out.title;
@@ -816,6 +816,10 @@ function mainFile(p){
   const at = (p.attachments || []).filter(a => OPENABLE.test(a.path || a.name || ''));
   const rank = a => /\.pdf$/i.test(a.path) ? 0 : /\.docx?$/i.test(a.path) ? 1 : /\.pptx?$/i.test(a.path) ? 2 : 3;
   return at.length ? at.slice().sort((a, b) => rank(a) - rank(b))[0] : null;
+}
+function moreView(){
+  const items = NAV.filter(n => !(LITE && ['students', 'library'].includes(n[0]))).concat([['find', '🔍', 'חיפוש באתר']]);
+  return {title: 'כל האזורים', html: `<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:10px">${items.map(([k, i, l]) => `<a class="card" href="#/${k}" style="padding:14px;gap:6px;align-items:center;text-align:center"><span style="font-size:30px">${i}</span><span class="name" style="font-size:16px">${l}</span></a>`).join('')}</div>`};
 }
 function libItem(p){
   const first = mainFile(p) || (!p.pdf && p.attachments[0]);
@@ -2794,7 +2798,9 @@ function addPlanFrom(s, pid){
 /* ================= boot ================= */
 { const t = ls.get('cbtapp.theme', null); if (t) document.documentElement.dataset.theme = t; }
 $('#nav').innerHTML = NAV.filter(n => !LITE || !['students','library'].includes(n[0])).map(([k, i, l]) => `<a href="#/${k}" data-nav="${k}"><span class="i">${i}</span>${l}</a>`).join('');
-$('#tabbar').innerHTML = NAV.filter(n => !['library','settings','workflow','roles'].concat(LITE ? ['students'] : []).includes(n[0])).map(([k, i, l]) => `<a href="#/${k}" data-nav="${k}"><span class="i">${i}</span>${l}</a>`).join('');
+// phone bottom bar: the main five + "עוד", which opens every other area (the side menu is hidden on a phone)
+const TABBAR = LITE ? ['home', 'ask', 'circ', 'tools'] : ['home', 'ask', 'circ', 'library', 'tools'];
+$('#tabbar').innerHTML = TABBAR.map(k => NAV.find(n => n[0] === k)).map(([k, i, l]) => `<a href="#/${k}" data-nav="${k}"><span class="i">${i}</span>${l}</a>`).join('') + `<a href="#/more" data-nav="more"><span class="i">☰</span>עוד</a>`;
 render();
 AI.init().then(() => { if (route().r === 'ask') render(); });
 document.body.classList.toggle('artifact', ARTIFACT); document.body.classList.toggle('lite', LITE);
