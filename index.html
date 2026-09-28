@@ -190,40 +190,114 @@ label.f input:focus,label.f select:focus,label.f textarea:focus,.inp:focus{borde
 .emos{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin-bottom:18px}
 .emos button{border:2px solid var(--line);background:var(--bg);border-radius:14px;padding:8px 14px;font-size:17px;cursor:pointer}
 .emos button.on{border-color:var(--brand-text);background:var(--brand-soft)}
+/* the living scene: a Hardal boy in a park next to a big thermometer; everything follows data-emo + --k (0–1) */
+.scenewrap{position:relative;max-width:640px;margin:0 auto}
+.scene{width:100%;height:auto;display:block;border-radius:22px;box-shadow:0 10px 30px rgba(15,23,42,.25);touch-action:none;user-select:none}
+.scene .thermo{cursor:pointer}
+.scene .thtick:hover text{fill:#2563eb}
+#thMerc{transform-box:fill-box;transform-origin:50% 100%;transition:transform 1s cubic-bezier(.34,1.56,.64,1),fill .7s}
+#thBulb{transition:fill .7s}
+.bubble{position:relative;display:table;margin:0 auto 14px;max-width:92%;z-index:2;background:#fff;color:#1f2937;border:2px solid #e2e8f0;border-radius:18px;padding:9px 13px;font-size:16px;line-height:1.45;text-align:center;box-shadow:0 6px 18px rgba(15,23,42,.18)}
+.bubble:after{content:'';position:absolute;bottom:-11px;left:50%;margin-left:-10px;border:10px solid transparent;border-top-color:#fff;border-bottom:0}
+.bubble.pop{animation:k-pop .45s ease}
 .emos button{transition:transform .15s}
 .emos button:active{transform:scale(.94)}
 .emos button .em{display:inline-block}
 .emos button.on .em{animation:k-pop .5s ease}
-/* animated thermometer + the kid character */
-.thermo2{display:flex;gap:18px;justify-content:center;align-items:flex-start;flex-wrap:wrap}
-.thtube{width:150px;height:360px;touch-action:none;cursor:pointer;user-select:none;flex:none}
-#thMerc{transform-box:fill-box;transform-origin:50% 100%;transition:transform .9s cubic-bezier(.34,1.56,.64,1),fill .6s}
-#thBulb{transition:fill .6s}
-.thtick text{transition:font-size .2s}
-.thtick:hover text{fill:var(--brand-text)}
-.thkid{display:flex;flex-direction:column;align-items:center;gap:8px;min-width:230px;max-width:320px}
-.kidchar{width:210px;height:auto;animation:k-bob 3.2s ease-in-out infinite;overflow:visible}
-.kidchar.k-shake{animation:k-shake .35s linear infinite}
-.kidchar .k-eyes{transform-box:fill-box;transform-origin:center;animation:k-blink 4.5s infinite}
-.kidchar .k-tear{animation:k-fall 1.8s ease-in infinite}
-.kidchar .k-sweat{animation:k-fall 2.2s ease-in infinite}
-.kidchar .k-steam circle{animation:k-rise 1.6s ease-out infinite}
-.kidchar .k-steam circle:nth-child(even){animation-delay:.8s}
-.kidchar .k-stars path{transform-box:fill-box;transform-origin:center;animation:k-twinkle 1.4s ease-in-out infinite}
-.kidchar .k-stars path:nth-child(2n){animation-delay:.7s}
-.kidchar .k-glow{transform-box:fill-box;transform-origin:center;animation:k-glow 3s ease-in-out infinite}
-.bubble{position:relative;background:#fff;color:#1f2937;border:2px solid var(--line);border-radius:18px;padding:10px 14px;font-size:17px;line-height:1.5;text-align:center;animation:k-pop .45s ease;box-shadow:var(--shadow)}
-.bubble:after{content:'';position:absolute;bottom:-11px;left:50%;margin-left:-10px;border:10px solid transparent;border-top-color:#fff;border-bottom:0}
-@keyframes k-bob{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}
-@keyframes k-shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-2px)}75%{transform:translateX(2px)}}
-@keyframes k-blink{0%,92%,100%{transform:scaleY(1)}95%{transform:scaleY(.1)}}
-@keyframes k-fall{0%{transform:translateY(0);opacity:0}15%{opacity:1}100%{transform:translateY(34px);opacity:0}}
-@keyframes k-rise{0%{transform:translateY(8px);opacity:0}30%{opacity:.9}100%{transform:translateY(-22px);opacity:0}}
-@keyframes k-twinkle{0%,100%{transform:scale(.7) rotate(0);opacity:.6}50%{transform:scale(1.15) rotate(20deg);opacity:1}}
-@keyframes k-glow{0%,100%{transform:scale(.96);opacity:.35}50%{transform:scale(1.04);opacity:.8}}
+/* poses: arm angles, head tilt */
+.scene{--aR:-6deg;--aL:6deg;--hy:0px;--ht:0deg}
+.scene .armL,.scene .armR,.scene .headg,.scene .kidmove{transform-box:view-box}
+.scene .armR{transform-origin:0 0;transform:rotate(var(--aR));transition:transform .8s cubic-bezier(.34,1.3,.64,1)}
+.scene .armL{transform-origin:0 0;transform:rotate(var(--aL));transition:transform .8s cubic-bezier(.34,1.3,.64,1)}
+.scene .headg{transform-origin:0 -112px;transform:translateY(var(--hy)) rotate(var(--ht));transition:transform .8s ease}
+.scene .kidmove{transform-origin:0 0;animation:k-idle 3.2s ease-in-out infinite}
+.scene[data-emo="שמחה"]{--aR:calc(-35deg - 115deg * var(--k));--aL:calc(35deg + 115deg * var(--k));--ht:calc(-4deg * var(--k))}
+.scene[data-emo="רוגע"]{--aR:-16deg;--aL:16deg}
+.scene[data-emo="פחד"]{--aR:calc(30deg + 128deg * var(--k));--aL:calc(-30deg - 128deg * var(--k));--hy:calc(4px * var(--k))}
+.scene[data-emo="דאגה"]{--aR:calc(18deg + 28deg * var(--k));--aL:calc(-18deg - 28deg * var(--k));--ht:calc(-7deg * var(--k))}
+.scene[data-emo="כעס"]{--aR:calc(-8deg - 22deg * var(--k));--aL:calc(8deg + 22deg * var(--k))}
+.scene[data-emo="עצב"]{--aR:4deg;--aL:-4deg;--hy:calc(8px * var(--k));--ht:calc(10deg * var(--k))}
+.scene[data-emo="בושה"]{--aR:calc(50deg + 115deg * var(--k));--aL:-8deg;--hy:calc(6px * var(--k));--ht:calc(-12deg * var(--k))}
+.scene[data-emo="תסכול"]{--aR:calc(-30deg - 75deg * var(--k));--aL:calc(30deg + 75deg * var(--k));--ht:calc(5deg * var(--k))}
+/* movement: the stronger the feeling, the bigger the motion */
+.scene[data-emo="שמחה"] .kidmove{animation:k-jump .75s ease-in-out infinite}
+.scene[data-emo="רוגע"] .kidmove{animation:k-breathe 4.5s ease-in-out infinite}
+.scene[data-emo="פחד"] .kidmove{animation:k-tremble .11s linear infinite alternate}
+.scene[data-emo="דאגה"] .kidmove{animation:k-pace 3s ease-in-out infinite}
+.scene[data-emo="כעס"] .kidmove{animation:k-stomp .55s ease-in-out infinite}
+.scene[data-emo="עצב"] .kidmove{animation:k-slump 4s ease-in-out infinite}
+.scene[data-emo="בושה"] .kidmove{animation:k-shrink 3s ease-in-out infinite}
+.scene[data-emo="תסכול"] .kidmove{animation:k-stomp .9s ease-in-out infinite}
+@keyframes k-idle{0%,100%{transform:translateY(0)}50%{transform:translateY(-3px)}}
+@keyframes k-jump{0%,100%{transform:translateY(0) scaleY(1)}12%{transform:translateY(0) scaleY(calc(1 - .05 * var(--k)))}50%{transform:translateY(calc(-30px * var(--k))) scaleY(1.02)}}
+@keyframes k-breathe{0%,100%{transform:scale(1,1)}50%{transform:scale(1.01,1.035)}}
+@keyframes k-tremble{from{transform:translateX(calc(-3px * var(--k)))}to{transform:translateX(calc(3px * var(--k)))}}
+@keyframes k-pace{0%,100%{transform:translateX(calc(-20px * var(--k)))}50%{transform:translateX(calc(20px * var(--k)))}}
+@keyframes k-stomp{0%,100%{transform:translateY(0) rotate(0)}30%{transform:translateY(calc(-9px * var(--k))) rotate(calc(-3deg * var(--k)))}60%{transform:translateY(0) rotate(calc(3deg * var(--k)))}}
+@keyframes k-slump{0%,100%{transform:translateY(calc(5px * var(--k))) rotate(-1.5deg)}50%{transform:translateY(calc(7px * var(--k))) rotate(1.5deg)}}
+@keyframes k-shrink{0%,100%{transform:scale(calc(1 - .07 * var(--k)))}50%{transform:scale(calc(1 - .09 * var(--k))) translateX(-2px)}}
+/* face life: blinking and looking around */
+.scene .k-eyes{transform-box:fill-box;transform-origin:center;animation:k-blink 4.2s infinite}
+.scene .k-look{animation:k-look 6s ease-in-out infinite}
+.scene .k-tear{animation:k-fall 1.6s ease-in infinite}
+.scene .k-sweat{animation:k-fall 2s ease-in infinite}
+.scene .k-d2{animation-delay:.8s}
+.scene .k-steam circle{animation:k-rise 1.4s ease-out infinite}
+.scene .k-steam circle:nth-child(even){animation-delay:.7s}
+.scene .k-stars path{transform-box:fill-box;transform-origin:center;animation:k-twinkle 1.2s ease-in-out infinite}
+.scene .k-stars path:nth-child(2n){animation-delay:.6s}
+.scene .tzitzit{animation:k-swing 1.6s ease-in-out infinite;transform-box:fill-box;transform-origin:50% 0}
+/* weather and background */
+.scene .sky-gray,.scene .sky-hot,.scene .sky-night,.scene .sky-dim,.scene .night,.scene .darkclouds,.scene .rain,.scene .heat,.scene .storm,.scene .birds,.scene .rainbow{opacity:0;transition:opacity 1.1s}
+.scene .sun{transition:opacity 1.1s;opacity:1}
+.scene .rays{transform-box:fill-box;transform-origin:center;animation:k-spin 24s linear infinite}
+.scene .cloud{animation:k-drift 26s ease-in-out infinite alternate}
+.scene .c2{animation-duration:34s;animation-direction:alternate-reverse}
+.scene .rain line{animation:k-rain .6s linear infinite}
+.scene .tw{animation:k-twinkle 1.6s ease-in-out infinite;transform-box:fill-box;transform-origin:center}
+.scene .bolt{animation:k-flash 2.4s infinite}
+.scene .birds path{animation:k-fly 9s linear infinite}
+.scene .flower .fl{transform-box:fill-box;transform-origin:50% 100%;transform:scale(.45);transition:transform 1s cubic-bezier(.34,1.56,.64,1)}
+.scene .tree{transform-box:fill-box;transform-origin:50% 100%}
+.scene[data-emo="שמחה"] .rainbow{opacity:calc(var(--k) * 1.2 - .15)}
+.scene[data-emo="שמחה"] .birds{opacity:calc(var(--k) * 1.5 - .3)}
+.scene[data-emo="שמחה"] .flower .fl{transform:scale(calc(.5 + .8 * var(--k)))}
+.scene[data-emo="רוגע"] .flower .fl{transform:scale(.8)}
+.scene[data-emo="עצב"] .sky-gray{opacity:calc(.15 + .7 * var(--k))}
+.scene[data-emo="עצב"] .darkclouds{opacity:calc(var(--k) * 1.3)}
+.scene[data-emo="עצב"] .rain{opacity:calc((var(--k) - .3) * 1.7)}
+.scene[data-emo="עצב"] .sun{opacity:calc(1 - 1.2 * var(--k))}
+.scene[data-emo="עצב"] .flower .fl{transform:scale(.35) rotate(18deg)}
+.scene[data-emo="דאגה"] .sky-gray{opacity:calc(.1 + .45 * var(--k))}
+.scene[data-emo="דאגה"] .darkclouds{opacity:calc(var(--k) * .8)}
+.scene[data-emo="דאגה"] .sun{opacity:calc(1 - .8 * var(--k))}
+.scene[data-emo="דאגה"] .tree{animation:k-wind 1.5s ease-in-out infinite}
+.scene[data-emo="פחד"] .sky-night{opacity:calc(.2 + .75 * var(--k))}
+.scene[data-emo="פחד"] .night{opacity:calc(var(--k) * 1.4)}
+.scene[data-emo="פחד"] .sun{opacity:calc(1 - 1.4 * var(--k))}
+.scene[data-emo="פחד"] .tree{animation:k-wind 2.4s ease-in-out infinite}
+.scene[data-emo="כעס"] .sky-hot{opacity:calc(.1 + .65 * var(--k))}
+.scene[data-emo="כעס"] .heat{opacity:calc(var(--k) - .25)}
+.scene[data-emo="כעס"] .flower .fl{transform:scale(.4)}
+.scene[data-emo="בושה"] .sky-dim{opacity:calc(.1 + .8 * var(--k))}
+.scene[data-emo="תסכול"] .storm{opacity:calc(var(--k) * 1.3 - .1)}
+.scene[data-emo="תסכול"] .sky-gray{opacity:calc(.35 * var(--k))}
+@keyframes k-blink{0%,93%,100%{transform:scaleY(1)}96%{transform:scaleY(.08)}}
+@keyframes k-look{0%,40%,100%{transform:translateX(0)}50%,60%{transform:translateX(2.2px)}75%,85%{transform:translateX(-2.2px)}}
+@keyframes k-fall{0%{transform:translateY(0);opacity:0}15%{opacity:1}100%{transform:translateY(38px);opacity:0}}
+@keyframes k-rise{0%{transform:translateY(8px) scale(.6);opacity:0}30%{opacity:.95}100%{transform:translateY(-26px) scale(1.2);opacity:0}}
+@keyframes k-twinkle{0%,100%{transform:scale(.7) rotate(0);opacity:.6}50%{transform:scale(1.2) rotate(20deg);opacity:1}}
+@keyframes k-swing{0%,100%{transform:rotate(-4deg)}50%{transform:rotate(4deg)}}
+@keyframes k-spin{to{transform:rotate(360deg)}}
+@keyframes k-drift{from{transform:translateX(-30px)}to{transform:translateX(40px)}}
+@keyframes k-rain{from{transform:translateY(-20px)}to{transform:translateY(200px)}}
+@keyframes k-flash{0%,46%,54%,100%{opacity:0}48%,52%{opacity:1}}
+@keyframes k-fly{from{transform:translateX(120px)}to{transform:translateX(-340px)}}
+@keyframes k-wind{0%,100%{transform:rotate(-2.5deg)}50%{transform:rotate(3.5deg)}}
 @keyframes k-pop{0%{transform:scale(.6);opacity:0}70%{transform:scale(1.08)}100%{transform:scale(1);opacity:1}}
-@media (max-width:600px){.thermo2{flex-wrap:nowrap;gap:4px;align-items:center}.thtube{width:96px;height:250px}.thkid{min-width:0;flex:1}.kidchar{width:150px}.bubble{font-size:14.5px;padding:8px 10px}.thkid .bigtext{font-size:22px}}
-@media (prefers-reduced-motion:reduce){.kidchar,.kidchar *,.bubble,#thMerc,.emos .em{animation:none!important;transition:none!important}}
+@media (max-width:600px){.bubble{font-size:15px;padding:7px 11px}}
+@media (prefers-reduced-motion:reduce){.scene *,.bubble,.emos .em{animation:none!important;transition:none!important}}
+
 .breath{display:grid;place-items:center;height:330px}
 .breath .circle{width:120px;height:120px;border-radius:50%;background:radial-gradient(circle at 35% 35%,#bfe9df,#4a9c8a);box-shadow:0 0 0 18px rgba(74,156,138,.15),0 0 0 36px rgba(74,156,138,.08);display:grid;place-items:center;color:#fff;font-weight:700;font-size:20px;text-align:center;transition:transform 4s ease-in-out}
 .bigtext{font-size:28px;font-weight:700;text-align:center;min-height:44px}
@@ -960,58 +1034,141 @@ const PMR = [
 const DETECTIVE_Q = ['מה ההוכחות שזה נכון?','מה ההוכחות שזה לא לגמרי נכון?','מה הייתי אומר לחבר טוב שחושב ככה?','מה הכי גרוע שיכול לקרות? מה הכי טוב? ומה הכי סביר?','נפלתי למלכודת חשיבה? (הכול או כלום, קורא מחשבות, מנחש עתיד, מגדיל)','זה יהיה חשוב גם בעוד שבוע?'];
 const COPE = ['לנשום נשימת בלון 3 פעמים','לספור לאט עד 10','להגיד לעצמי: ״אני יכול להתמודד עם זה״','לבקש עזרה מהמורה','ללכת לפינה השקטה','לשתות מים','לסחוט כדור לחץ','לצייר או לשרבט','לחשוב על המקום הבטוח שלי','לספר למבוגר שאני סומך עליו','ללכת קצת ולחזור','להשתמש ברמזור: לעצור, לחשוב, לעשות'];
 
-/* the kid character: a boy with a kippah and peyot (the school is Haredi-oriented, boys only); the face follows the emotion and its strength */
+/* the kid scene: a Hardal (religious-Zionist) boy – big knitted kippah, long peyot, tzitzit out – in a park next to a big thermometer.
+   Pose, movement, face and weather all follow the chosen feeling and its strength (--k = level / 10). */
 const KIDX = {
-  'פחד':  {brow:-1,   mouth:'o',   eye:1.25, fx:'sweat'},
-  'דאגה': {brow:-0.7, mouth:-0.5,  eye:1.05, fx:'sweat'},
-  'כעס':  {brow:1,    mouth:-0.9,  eye:0.8,  fx:'steam', red:true},
-  'עצב':  {brow:-0.9, mouth:-1,    eye:0.9,  fx:'tear'},
-  'בושה': {brow:-0.4, mouth:-0.25, eye:0.75, fx:'blush', down:true},
-  'תסכול':{brow:0.75, mouth:'zig', eye:0.85, fx:'puff'},
-  'שמחה': {brow:0.1,  mouth:1,     eye:1,    fx:'stars'},
-  'רוגע': {brow:0,    mouth:0.55,  eye:'closed', fx:'glow'}
+  'פחד':  {brow:-1,   mouth:'o',   eye:1.3,  fx:'sweat'},
+  'דאגה': {brow:-0.75,mouth:-0.5,  eye:1.05, fx:'sweat'},
+  'כעס':  {brow:1,    mouth:'grit',eye:0.75, fx:'steam', red:true},
+  'עצב':  {brow:-0.95,mouth:-1,    eye:0.9,  fx:'tear', lid:true},
+  'בושה': {brow:-0.45,mouth:-0.3,  eye:0.8,  fx:'blush', down:true, lid:true},
+  'תסכול':{brow:0.8,  mouth:'zig', eye:0.85, fx:'puff'},
+  'שמחה': {brow:0.15, mouth:1,     eye:1,    fx:'stars'},
+  'רוגע': {brow:0,    mouth:0.55,  eye:'closed', fx:''}
 };
-function kidSVG(emotion, level){
-  const x = KIDX[emotion] || {brow:0, mouth:0.5, eye:1, fx:''};
-  const k = level == null ? 0.25 : level / 10, s = 0.3 + 0.7 * k, on = level != null && level >= 4;
-  const skin = '#f6d3ae', hair = '#3b2a20';
-  const bi = 86 + 7 * x.brow * s;                                   // inner end of the eyebrows
-  const eyes = x.eye === 'closed'
-    ? `<path d="M70,109 Q78,115 86,109 M114,109 Q122,115 130,109" stroke="#2b2b2b" stroke-width="3.5" fill="none" stroke-linecap="round"/>`
-    : `<g class="k-eyes">${[78, 122].map(cx => `<ellipse cx="${cx}" cy="${x.down ? 112 : 108}" rx="7.5" ry="${(9 * x.eye).toFixed(1)}" fill="#fff" stroke="#2b2b2b" stroke-width="1.5"/><circle cx="${cx + (x.down ? 0 : 1)}" cy="${x.down ? 116 : 109}" r="4.2" fill="#2b2b2b"/><circle cx="${cx + 2.5}" cy="${x.down ? 113 : 106}" r="1.5" fill="#fff"/>`).join('')}</g>`;
-  let mouth;
-  if (x.mouth === 'o') mouth = `<ellipse cx="100" cy="146" rx="${(5 + 5 * s).toFixed(1)}" ry="${(6 + 7 * s).toFixed(1)}" fill="#7a2e2e"/>`;
-  else if (x.mouth === 'zig') mouth = `<path d="M84,146 L90,141 L96,147 L102,141 L108,147 L114,141 L118,145" stroke="#7a2e2e" stroke-width="3.5" fill="none" stroke-linejoin="round" stroke-linecap="round"/>`;
-  else { const c = x.mouth * s * 16, y = 143 - Math.min(0, c) * 0.4; mouth = `<path d="M${84 - 4 * Math.max(0, x.mouth * s)},${y} Q100,${y + c} ${116 + 4 * Math.max(0, x.mouth * s)},${y}" stroke="#7a2e2e" stroke-width="4" fill="${c > 8 ? '#b94a4a' : 'none'}" stroke-linecap="round"/>`; }
-  const fx = [];
-  if (x.red) fx.push(`<circle cx="100" cy="112" r="57" fill="#ef4444" opacity="${(0.28 * k).toFixed(2)}"/>`);
-  if (x.fx === 'blush' || (emotion === 'שמחה' && level != null)) fx.push(`<ellipse cx="66" cy="128" rx="10" ry="6" fill="#f472b6" opacity="${(0.25 + 0.5 * k).toFixed(2)}"/><ellipse cx="134" cy="128" rx="10" ry="6" fill="#f472b6" opacity="${(0.25 + 0.5 * k).toFixed(2)}"/>`);
-  if (on && x.fx === 'sweat') fx.push(`<path class="k-sweat" d="M150,70 q7,12 0,17 q-7,-5 0,-17z" fill="#7dd3fc" stroke="#38bdf8"/>`);
-  if (on && x.fx === 'tear') fx.push(`<path class="k-tear" d="M76,120 q6,10 0,14 q-6,-4 0,-14z" fill="#7dd3fc" stroke="#38bdf8"/>`);
-  if (on && x.fx === 'steam') fx.push(`<g class="k-steam" fill="#cbd5e1"><circle cx="44" cy="40" r="9"/><circle cx="156" cy="40" r="9"/><circle cx="36" cy="26" r="6"/><circle cx="164" cy="26" r="6"/></g>`);
-  if (on && x.fx === 'puff') fx.push(`<g class="k-steam" fill="#e2e8f0"><circle cx="160" cy="138" r="7"/><circle cx="171" cy="131" r="5"/></g>`);
-  if (level != null && level >= 3 && x.fx === 'stars') fx.push(`<g class="k-stars" fill="#facc15">${[[30, 60], [168, 52], [26, 150], [174, 160]].map(([a, b]) => `<path d="M${a},${b - 9} L${a + 3},${b - 3} L${a + 9},${b - 3} L${a + 4},${b + 1} L${a + 6},${b + 8} L${a},${b + 4} L${a - 6},${b + 8} L${a - 4},${b + 1} L${a - 9},${b - 3} L${a - 3},${b - 3}Z"/>`).join('')}</g>`);
-  if (level != null && x.fx === 'glow') fx.push(`<circle class="k-glow" cx="100" cy="110" r="80" fill="none" stroke="#86efac" stroke-width="6"/>`);
-  const shake = on && level >= 7 && (emotion === 'פחד' || emotion === 'כעס') ? ' k-shake' : '';
-  return `<svg class="kidchar${shake}" viewBox="0 0 200 232" role="img" aria-label="ילד עם כיפה ופאות – ${esc(emotion)}${level != null ? ' ברמה ' + level : ''}">
-    <path d="M36,232 Q38,188 100,182 Q162,188 164,232Z" fill="#fff" stroke="#cbd5e1" stroke-width="2"/>
-    <path d="M86,184 L100,200 L114,184" fill="none" stroke="#cbd5e1" stroke-width="2.5"/>
-    <rect x="89" y="160" width="22" height="26" rx="8" fill="${skin}"/>
-    <circle cx="43" cy="112" r="10" fill="${skin}" stroke="#e2b48c"/><circle cx="157" cy="112" r="10" fill="${skin}" stroke="#e2b48c"/>
-    <circle cx="100" cy="110" r="58" fill="${skin}" stroke="#e2b48c" stroke-width="2"/>
-    <path d="M44,98 Q46,48 100,47 Q154,48 156,98 Q144,72 100,70 Q56,72 44,98Z" fill="${hair}"/>
-    <path d="M64,60 Q100,20 136,60 Q100,50 64,60Z" fill="#111827"/><path d="M78,46 Q100,32 120,44" stroke="#475569" stroke-width="2" fill="none" opacity=".6"/>
-    ${[46, 154].map(px => { const d = px < 100 ? -1 : 1; return `<path d="M${px},96 c${-8 * d},8 ${6 * d},14 ${-2 * d},22 c${-8 * d},8 ${6 * d},14 ${-2 * d},22 c${-7 * d},7 ${4 * d},13 ${-1 * d},19" stroke="${hair}" stroke-width="5" fill="none" stroke-linecap="round"/>`; }).join('')}
-    ${fx.filter(f => f.includes('#ef4444')).join('')}
-    <path d="M66,${86}  L88,${bi.toFixed(1)}" stroke="${hair}" stroke-width="4.5" stroke-linecap="round"/><path d="M112,${bi.toFixed(1)} L134,86" stroke="${hair}" stroke-width="4.5" stroke-linecap="round"/>
-    ${eyes}
-    <path d="M97,122 Q100,128 104,122" stroke="#d19a6f" stroke-width="2.5" fill="none" stroke-linecap="round"/>
-    ${mouth}
-    ${fx.filter(f => !f.includes('#ef4444')).join('')}
-  </svg>`;
-}
 const POSITIVE = ['שמחה', 'רוגע'];
 const thColor = (emo, l) => POSITIVE.includes(emo) ? `hsl(${150 - l * 4} 62% ${58 - l * 2}%)` : lvlColor(l);   // pleasant feelings stay green – a strong joy is not a warning
+// face parts in head coordinates (head centre 100,110, radius 58)
+function kidFace(emotion, level){
+  const x = (level != null && KIDX[emotion]) || {brow:0, mouth:0.45, eye:1, fx:''};
+  const k = level == null ? 0.2 : level / 10, s = 0.25 + 0.75 * k;
+  const bi = 85 + 9 * x.brow * s, bo = 84 - 2 * Math.abs(x.brow) * s;
+  let eyes;
+  if (x.eye === 'closed') eyes = `<path d="M69,110 Q78,${116 + 2 * k} 87,110 M113,110 Q122,${116 + 2 * k} 131,110" stroke="#3b2412" stroke-width="3.6" fill="none" stroke-linecap="round"/>`;
+  else {
+    const ry = 9.5 * x.eye, dy = x.down ? 5 * s : 0;
+    eyes = [78, 122].map(cx => `<ellipse cx="${cx}" cy="108" rx="8.5" ry="${ry.toFixed(1)}" fill="#fff" stroke="#6b4a33" stroke-width="1.3"/>
+      <g class="k-look"><circle cx="${cx}" cy="${(109 + dy).toFixed(1)}" r="5.6" fill="url(#kIris)"/><circle cx="${cx}" cy="${(109 + dy).toFixed(1)}" r="2.7" fill="#120b06"/><circle cx="${cx + 2.2}" cy="${(106.5 + dy).toFixed(1)}" r="1.7" fill="#fff"/></g>
+      ${x.lid ? `<path d="M${cx - 10},${(98).toFixed(1)} Q${cx},${(96 + 12 * s).toFixed(1)} ${cx + 10},98 L${cx + 10},96 L${cx - 10},96Z" fill="url(#kSkin)"/>` : ''}`).join('');
+    eyes = `<g class="k-eyes">${eyes}</g>`;
+  }
+  const brows = `<path d="M65,${bo.toFixed(1)} Q76,${(Math.min(bo, bi) - 3).toFixed(1)} 89,${bi.toFixed(1)}" stroke="#3b2717" stroke-width="5" fill="none" stroke-linecap="round"/><path d="M111,${bi.toFixed(1)} Q124,${(Math.min(bo, bi) - 3).toFixed(1)} 135,${bo.toFixed(1)}" stroke="#3b2717" stroke-width="5" fill="none" stroke-linecap="round"/>`;
+  let mouth;
+  if (x.mouth === 'o') mouth = `<ellipse cx="100" cy="146" rx="${(5 + 6 * s).toFixed(1)}" ry="${(6 + 9 * s).toFixed(1)}" fill="#6b1f1f"/><ellipse cx="100" cy="${(150 + 4 * s).toFixed(1)}" rx="${(3 + 3 * s).toFixed(1)}" ry="${(2 + 2 * s).toFixed(1)}" fill="#e57373"/>`;
+  else if (x.mouth === 'zig') mouth = `<path d="M83,146 L89,${140 - 2 * s} L95,${147 + 2 * s} L101,${140 - 2 * s} L107,${147 + 2 * s} L113,${140 - 2 * s} L118,145" stroke="#6b1f1f" stroke-width="3.6" fill="none" stroke-linejoin="round" stroke-linecap="round"/>`;
+  else if (x.mouth === 'grit') { const w = 12 + 8 * s; mouth = `<path d="M${100 - w},${147 - 3 * s} Q100,${140 - 3 * s} ${100 + w},${147 - 3 * s} L${100 + w},${150} Q100,${147} ${100 - w},150Z" fill="#fff" stroke="#6b1f1f" stroke-width="3"/>${[-0.5, 0, 0.5].map(f => `<line x1="${100 + f * w}" x2="${100 + f * w}" y1="${143 - 3 * s}" y2="149" stroke="#9ca3af" stroke-width="1.3"/>`).join('')}`; }
+  else {
+    const c = x.mouth * s * 20;
+    if (c > 9) mouth = `<path d="M${80 - 4 * s},139 Q100,${142 + c} ${120 + 4 * s},139 Q100,${146} ${80 - 4 * s},139Z" fill="#6b1f1f"/><path d="M${84 - 3 * s},140.5 Q100,145 ${116 + 3 * s},140.5 L${115 + 3 * s},143 Q100,147.5 ${85 - 3 * s},143Z" fill="#fff"/><ellipse cx="100" cy="${(141 + c * 0.75).toFixed(1)}" rx="${(5 + 3 * s).toFixed(1)}" ry="3" fill="#e57373"/>`;
+    else { const y = 143 - Math.min(0, c) * 0.35; mouth = `<path d="M${84 - 3 * Math.max(0, x.mouth * s)},${y} Q100,${(y + c).toFixed(1)} ${116 + 3 * Math.max(0, x.mouth * s)},${y}" stroke="#6b1f1f" stroke-width="4" fill="none" stroke-linecap="round"/>${c < -12 ? `<path d="M93,${y + 4} q7,4 14,0" stroke="#6b1f1f" stroke-width="1.5" fill="none" opacity=".5"/>` : ''}`; }
+  }
+  const on = level != null && level >= 3, fx = [];
+  if (x.red) fx.push(`<circle cx="100" cy="112" r="57" fill="#ef4444" opacity="${(0.34 * k).toFixed(2)}"/>`);
+  const blush = x.fx === 'blush' ? 0.2 + 0.6 * k : emotion === 'שמחה' && level != null ? 0.15 + 0.35 * k : 0.12;
+  fx.push(`<ellipse cx="64" cy="129" rx="11" ry="6.5" fill="#f472b6" opacity="${blush.toFixed(2)}"/><ellipse cx="136" cy="129" rx="11" ry="6.5" fill="#f472b6" opacity="${blush.toFixed(2)}"/>`);
+  if (on && x.fx === 'sweat') fx.push(`<path class="k-sweat" d="M152,70 q8,13 0,19 q-8,-6 0,-19z" fill="#bae6fd" stroke="#38bdf8"/>${level >= 7 ? `<path class="k-sweat k-d2" d="M46,78 q7,11 0,16 q-7,-5 0,-16z" fill="#bae6fd" stroke="#38bdf8"/>` : ''}`);
+  if (on && x.fx === 'tear') fx.push(`<path class="k-tear" d="M75,120 q6,10 0,15 q-6,-5 0,-15z" fill="#bae6fd" stroke="#38bdf8"/>${level >= 6 ? `<path class="k-tear k-d2" d="M125,120 q6,10 0,15 q-6,-5 0,-15z" fill="#bae6fd" stroke="#38bdf8"/>` : ''}${level >= 8 ? `<path d="M76,118 Q72,140 70,160 M124,118 Q128,140 130,160" stroke="#7dd3fc" stroke-width="3" fill="none" opacity=".7"/>` : ''}`);
+  if (on && x.fx === 'steam') fx.push(`<g class="k-steam" fill="#e2e8f0">${[[34, 44, 9], [166, 44, 9], [26, 28, 6], [174, 28, 6], [40, 16, 4], [160, 16, 4]].slice(0, level >= 7 ? 6 : 4).map(([a, b, r]) => `<circle cx="${a}" cy="${b}" r="${(r * (0.7 + 0.5 * k)).toFixed(1)}"/>`).join('')}</g>`);
+  if (on && x.fx === 'puff') fx.push(`<g class="k-steam" fill="#f1f5f9"><circle cx="160" cy="140" r="7"/><circle cx="172" cy="132" r="5"/></g>`);
+  if (level != null && level >= 3 && x.fx === 'stars') fx.push(`<g class="k-stars" fill="#facc15" stroke="#eab308">${[[24, 64], [176, 56], [18, 150], [182, 160]].slice(0, level >= 7 ? 4 : 2).map(([a, b]) => `<path d="M${a},${b - 10} L${a + 3},${b - 3} L${a + 10},${b - 3} L${a + 4},${b + 1} L${a + 6},${b + 9} L${a},${b + 4} L${a - 6},${b + 9} L${a - 4},${b + 1} L${a - 10},${b - 3} L${a - 3},${b - 3}Z"/>`).join('')}</g>`);
+  return {face: eyes + brows + `<path d="M96,121 Q100,128 105,121" stroke="#c48a5f" stroke-width="2.6" fill="none" stroke-linecap="round"/>` + mouth, fx: fx.join('')};
+}
+// the knitted kippah: a big dome with a woven border and a pattern ring
+const KIPPAH = `<g class="kippah"><path d="M52,62 Q100,6 148,62 Q100,48 52,62Z" fill="url(#kKip)" stroke="#d6d3c4" stroke-width="1.2"/>
+  <path d="M60,57 Q100,20 140,57" stroke="#2563eb" stroke-width="3.2" fill="none" stroke-dasharray="4 3"/>
+  <path d="M68,52 Q100,28 132,52" stroke="#0f766e" stroke-width="2.4" fill="none" stroke-dasharray="2 3"/>
+  <path d="M53,61 Q100,47 147,61" stroke="#1e3a8a" stroke-width="3" fill="none"/>
+  <path d="M84,24 Q100,17 114,23" stroke="#fff" stroke-width="3" fill="none" opacity=".55"/></g>`;
+const TH_Y0 = 262, TH_H = 216;                                            // thermometer: mercury bottom and full height (scene coordinates)
+function sceneSVG(emotion, level){
+  const k = level == null ? 0 : level / 10, emo = level == null ? '' : emotion, col = thColor(emotion, level == null ? 0 : level), F = kidFace(emotion, level);
+  const peyah = d => `<path d="M${100 + 54 * d},92 c${6 * d},10 ${-9 * d},16 ${-2 * d},26 c${7 * d},10 ${-9 * d},16 ${-2 * d},26 c${6 * d},9 ${-7 * d},15 ${-1 * d},23" stroke="url(#kHair)" stroke-width="6.5" fill="none" stroke-linecap="round"/>`;
+  const arm = (side) => `<g transform="translate(${31 * side},-96)"><g class="${side < 0 ? 'armL' : 'armR'}"><rect x="-7.5" y="-5" width="15" height="48" rx="7.5" fill="url(#kShirt)" stroke="#cbd5e1"/><circle cx="0" cy="49" r="8.5" fill="url(#kSkin)" stroke="#c9936a"/></g></g>`;
+  const rain = Array.from({length: 22}, (_, i) => `<line x1="${10 + i * 19}" y1="${(i * 37) % 120}" x2="${6 + i * 19}" y2="${(i * 37) % 120 + 14}" style="animation-delay:${((i * 7) % 10) / 10}s"/>`).join('');
+  const flowers = [[26, 292, '#f472b6'], [96, 300, '#facc15'], [246, 296, '#a78bfa'], [290, 304, '#fb7185'], [122, 308, '#60a5fa']].map(([fx, fy, c]) => `<g class="flower" transform="translate(${fx},${fy})"><g class="fl"><line x1="0" y1="0" x2="0" y2="-16" stroke="#15803d" stroke-width="2.5"/>${[0, 72, 144, 216, 288].map(a => `<ellipse cx="0" cy="-22" rx="3.6" ry="6" fill="${c}" transform="rotate(${a} 0 -17)"/>`).join('')}<circle cx="0" cy="-17" r="3.2" fill="#fde047"/></g></g>`).join('');
+  return `<svg id="scene" class="scene" viewBox="0 0 420 320" data-emo="${esc(emo)}" style="--k:${k}" role="img" aria-label="ילד בפארק ליד מדחום – ${esc(emotion)}${level != null ? ' ברמה ' + level : ''}">
+  <defs>
+    <linearGradient id="kSky" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#7cc4f5"/><stop offset=".75" stop-color="#d9f0ff"/></linearGradient>
+    <linearGradient id="kNight" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#0b1026"/><stop offset="1" stop-color="#312e81"/></linearGradient>
+    <linearGradient id="kHot" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#b91c1c"/><stop offset="1" stop-color="#fb923c"/></linearGradient>
+    <radialGradient id="kDim" cx=".42" cy=".62" r=".6"><stop offset=".35" stop-color="#000" stop-opacity="0"/><stop offset="1" stop-color="#000" stop-opacity=".85"/></radialGradient>
+    <linearGradient id="kHill1" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#9be58f"/><stop offset="1" stop-color="#4caf50"/></linearGradient>
+    <linearGradient id="kHill2" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#6fcf5c"/><stop offset="1" stop-color="#2e7d32"/></linearGradient>
+    <radialGradient id="kSkin" cx=".38" cy=".32" r=".8"><stop offset="0" stop-color="#fde4cb"/><stop offset=".6" stop-color="#f2c8a0"/><stop offset="1" stop-color="#d49d72"/></radialGradient>
+    <linearGradient id="kHair" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#6b4a33"/><stop offset="1" stop-color="#2e1d12"/></linearGradient>
+    <radialGradient id="kKip" cx=".4" cy=".3" r=".9"><stop offset="0" stop-color="#ffffff"/><stop offset=".7" stop-color="#f1efe6"/><stop offset="1" stop-color="#cfcab8"/></radialGradient>
+    <linearGradient id="kShirt" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#e2e8f0"/><stop offset=".35" stop-color="#ffffff"/><stop offset="1" stop-color="#cbd5e1"/></linearGradient>
+    <linearGradient id="kPants" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#1e293b"/><stop offset=".4" stop-color="#334155"/><stop offset="1" stop-color="#0f172a"/></linearGradient>
+    <radialGradient id="kShoe" cx=".35" cy=".3" r=".8"><stop offset="0" stop-color="#64748b"/><stop offset="1" stop-color="#020617"/></radialGradient>
+    <radialGradient id="kIris" cx=".35" cy=".35" r=".7"><stop offset="0" stop-color="#a47148"/><stop offset="1" stop-color="#4a2c16"/></radialGradient>
+    <linearGradient id="kGlass" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#e2e8f0"/><stop offset=".3" stop-color="#ffffff"/><stop offset="1" stop-color="#cbd5e1"/></linearGradient>
+    <radialGradient id="kSun" cx=".4" cy=".4" r=".6"><stop offset="0" stop-color="#fff7c2"/><stop offset="1" stop-color="#fbbf24"/></radialGradient>
+    <filter id="kShadow" x="-20%" y="-20%" width="140%" height="140%"><feDropShadow dx="1.5" dy="3" stdDeviation="2.5" flood-color="#0f172a" flood-opacity=".28"/></filter>
+    <clipPath id="kClip"><rect width="420" height="320" rx="22"/></clipPath>
+  </defs>
+  <g clip-path="url(#kClip)">
+    <rect width="420" height="320" fill="url(#kSky)"/>
+    <g class="sun"><g class="rays" stroke="#fcd34d" stroke-width="4" stroke-linecap="round">${Array.from({length: 10}, (_, i) => { const a = i * Math.PI / 5; return `<line x1="${(62 + Math.cos(a) * 34).toFixed(1)}" y1="${(58 + Math.sin(a) * 34).toFixed(1)}" x2="${(62 + Math.cos(a) * 46).toFixed(1)}" y2="${(58 + Math.sin(a) * 46).toFixed(1)}"/>`; }).join('')}</g><circle cx="62" cy="58" r="26" fill="url(#kSun)"/></g>
+    <g class="rainbow" fill="none" stroke-width="7">${['#ef4444', '#f97316', '#facc15', '#22c55e', '#3b82f6', '#8b5cf6'].map((c, i) => `<path d="M${40 + i * 7},250 A${170 - i * 7},${170 - i * 7} 0 0 1 ${380 - i * 7},250" stroke="${c}"/>`).join('')}</g>
+    <g class="cloud c1" fill="#fff" opacity=".95"><ellipse cx="170" cy="46" rx="30" ry="14"/><ellipse cx="190" cy="38" rx="22" ry="16"/><ellipse cx="152" cy="40" rx="16" ry="11"/></g>
+    <g class="cloud c2" fill="#fff" opacity=".85"><ellipse cx="300" cy="70" rx="26" ry="11"/><ellipse cx="316" cy="62" rx="17" ry="12"/></g>
+    <path d="M0,230 Q90,180 200,214 T420,200 L420,320 L0,320Z" fill="url(#kHill1)"/>
+    <g class="tree"><rect x="30" y="178" width="12" height="80" rx="4" fill="#8b5a2b"/><circle cx="36" cy="170" r="30" fill="#3f9142"/><circle cx="18" cy="186" r="20" fill="#358a3a"/><circle cx="56" cy="184" r="20" fill="#4aa64d"/><circle cx="30" cy="158" r="12" fill="#5cbf60" opacity=".7"/></g>
+    <path d="M0,262 Q120,236 240,256 T420,248 L420,320 L0,320Z" fill="url(#kHill2)"/>
+    ${flowers}
+    <rect class="sky-gray" width="420" height="320" fill="#475569"/>
+    <rect class="sky-hot" width="420" height="320" fill="url(#kHot)"/>
+    <rect class="sky-night" width="420" height="320" fill="url(#kNight)"/>
+    <g class="night"><circle cx="340" cy="44" r="16" fill="#fef3c7"/><circle cx="347" cy="39" r="14" fill="#1e1b4b"/>${[[40, 30], [110, 60], [200, 24], [260, 50], [150, 90], [80, 110], [300, 110]].map(([a, b], i) => `<circle class="tw" cx="${a}" cy="${b}" r="1.8" fill="#fff" style="animation-delay:${i * 0.3}s"/>`).join('')}</g>
+    <g class="darkclouds" fill="#64748b"><ellipse cx="120" cy="40" rx="50" ry="20"/><ellipse cx="160" cy="30" rx="40" ry="22"/><ellipse cx="250" cy="44" rx="55" ry="20"/><ellipse cx="300" cy="34" rx="36" ry="18"/></g>
+    <g class="rain" stroke="#93c5fd" stroke-width="2" stroke-linecap="round">${rain}</g>
+    <g class="heat" fill="none" stroke="#fde68a" stroke-width="2.5" opacity=".6"><path d="M90,250 q8,-10 0,-20 q-8,-10 0,-20"/><path d="M270,250 q8,-10 0,-20 q-8,-10 0,-20"/><path d="M310,262 q6,-8 0,-16 q-6,-8 0,-16"/></g>
+    <g class="storm"><ellipse cx="190" cy="36" rx="46" ry="18" fill="#475569"/><ellipse cx="160" cy="42" rx="28" ry="14" fill="#334155"/><ellipse cx="220" cy="42" rx="30" ry="14" fill="#334155"/><path class="bolt" d="M192,52 L182,72 L192,72 L184,92 L202,66 L192,66 L200,52Z" fill="#facc15"/></g>
+    <g class="birds" fill="none" stroke="#334155" stroke-width="2" stroke-linecap="round"><g transform="translate(240,70)"><path d="M0,0 q5,-5 10,0 q5,-5 10,0"/></g><g transform="translate(270,92)"><path d="M0,0 q4,-4 8,0 q4,-4 8,0" style="animation-delay:-3s"/></g></g>
+    <rect class="sky-dim" width="420" height="320" fill="url(#kDim)"/>
+    <ellipse class="kshadow" cx="175" cy="293" rx="40" ry="8" fill="#14532d" opacity=".35"/>
+    <g transform="translate(175,292) scale(1.18)">
+      <g class="kidmove" filter="url(#kShadow)">
+        <rect x="-21" y="-52" width="18" height="48" rx="7" fill="url(#kPants)"/><rect x="3" y="-52" width="18" height="48" rx="7" fill="url(#kPants)"/>
+        <ellipse cx="-12" cy="-4" rx="14" ry="6.5" fill="url(#kShoe)"/><ellipse cx="12" cy="-4" rx="14" ry="6.5" fill="url(#kShoe)"/>
+        <path d="M-33,-98 Q-35,-62 -29,-46 L29,-46 Q35,-62 33,-98 Q0,-110 -33,-98Z" fill="url(#kShirt)" stroke="#cbd5e1"/>
+        <rect x="-29" y="-52" width="58" height="8" rx="3" fill="#1e293b"/>
+        <g stroke="#f8fafc" stroke-width="1.8" stroke-linecap="round" class="tzitzit"><path d="M-27,-47 q-2,10 0,20 M-24,-47 q1,10 -1,19 M-21,-47 q-1,9 1,17"/><path d="M27,-47 q2,10 0,20 M24,-47 q-1,10 1,19 M21,-47 q1,9 -1,17"/></g>
+        <path d="M-11,-105 L0,-93 L11,-105" fill="#fff" stroke="#cbd5e1" stroke-width="1.5"/>
+        <circle cx="0" cy="-86" r="1.8" fill="#cbd5e1"/><circle cx="0" cy="-74" r="1.8" fill="#cbd5e1"/><circle cx="0" cy="-62" r="1.8" fill="#cbd5e1"/>
+        <rect x="-8" y="-116" width="16" height="15" rx="5" fill="url(#kSkin)"/>
+        <g class="headg"><g transform="translate(-69,-226) scale(.69)">
+          <circle cx="42" cy="112" r="11" fill="url(#kSkin)" stroke="#c9936a"/><circle cx="158" cy="112" r="11" fill="url(#kSkin)" stroke="#c9936a"/>
+          <circle cx="100" cy="110" r="58" fill="url(#kSkin)" stroke="#c9936a" stroke-width="1.5"/>
+          <path d="M43,100 Q44,46 100,45 Q156,46 157,100 Q146,74 100,71 Q54,74 43,100Z" fill="url(#kHair)"/>
+          ${peyah(-1)}${peyah(1)}
+          ${KIPPAH}
+          <g id="kFace">${F.face}</g>
+          <g id="kFx">${F.fx}</g>
+        </g></g>
+        ${arm(-1)}${arm(1)}
+      </g>
+    </g>
+    <g class="thermo">
+      <rect x="342" y="26" width="36" height="${TH_Y0 - 14}" rx="18" fill="url(#kGlass)" stroke="#94a3b8" stroke-width="2.5" filter="url(#kShadow)"/>
+      <rect id="thMerc" x="352" y="${TH_Y0 - TH_H}" width="16" height="${TH_H + 10}" rx="8" fill="${col}" style="transform:scaleY(${(T.prev == null ? 0 : T.prev) / 10 + 0.001})" data-to="${k + 0.001}"/>
+      <circle id="thBulb" cx="360" cy="${TH_Y0 + 16}" r="24" fill="${col}" stroke="#94a3b8" stroke-width="2.5" filter="url(#kShadow)"/>
+      <circle cx="352" cy="${TH_Y0 + 8}" r="7" fill="#fff" opacity=".5"/><rect x="347" y="34" width="5" height="${TH_H}" rx="2.5" fill="#fff" opacity=".6"/>
+      ${Array.from({length: 11}, (_, i) => { const y = TH_Y0 - i * TH_H / 10; return `<g data-act="th-lvl" data-v="${i}" class="thtick ${level === i ? 'on' : ''}"><rect x="296" y="${y - 10.8}" width="124" height="21.6" fill="transparent"/><line x1="330" x2="${i % 5 ? 338 : 342}" y1="${y}" y2="${y}" stroke="#334155" stroke-width="2"/><text x="318" y="${y + 5}" text-anchor="middle" font-size="${level === i ? 19 : 14}" font-weight="800" fill="${level === i ? col : '#1e293b'}" stroke="#fff" stroke-width="3" paint-order="stroke">${i}</text></g>`; }).join('')}
+    </g>
+  </g>
+</svg>`;
+}
 function thermoTip(emotion, l){
   if (l == null) return {say: 'שלום! איזה רגש יש לך עכשיו? בחר רגש, ואחר כך גע במדחום.', btn: ''};
   if (POSITIVE.includes(emotion)) return {say: l >= 4 ? `איזה יופי! ${emotion} ברמה ${l}. מה עזר לך להרגיש ככה?` : `${emotion} ברמה ${l}. מה יכול להוסיף לך עוד קצת ${emotion}?`, btn: ''};
@@ -1019,28 +1176,28 @@ function thermoTip(emotion, l){
   if (l <= 6) return {say: `${emotion} ברמה ${l}. אפשר לנשום יחד נשימת בלון, והרגש יקטן.`, btn: `<a class="btn primary" href="#/tool/breathing">🎈 בוא ננשום יחד</a>`};
   return {say: `${emotion} ברמה ${l} – רגש גדול! זה הזמן לעצור ולהשתמש בכלי ההרגעה שלנו. 💪`, btn: `<a class="btn primary" href="#/tool/breathing">🎈 נשימות</a><a class="btn" href="#/tool/pmr">🍋 הרפיית שרירים</a>`};
 }
-const TH_Y0 = 292, TH_H = 262;                                            // mercury bottom and full height in the thermometer SVG
+// update the living scene in place (no re-render), so the boy moves smoothly from one feeling to the next
+function thUpdate(){
+  const sc = $('#scene'); if (!sc) return render();
+  const l = T.level, k = l == null ? 0 : l / 10, col = thColor(T.emotion, l == null ? 0 : l), F = kidFace(T.emotion, l), tip = thermoTip(T.emotion, l);
+  sc.dataset.emo = l == null ? '' : T.emotion; sc.style.setProperty('--k', k);
+  const m = $('#thMerc'); m.style.transition = ''; m.style.transform = `scaleY(${k + 0.001})`; m.setAttribute('fill', col); $('#thBulb').setAttribute('fill', col);
+  document.querySelectorAll('#scene .thtick').forEach(g => { const on = +g.dataset.v === l, t = g.querySelector('text'); g.classList.toggle('on', on); t.setAttribute('font-size', on ? 19 : 14); t.setAttribute('fill', on ? col : '#1e293b'); });
+  $('#kFace').innerHTML = F.face; $('#kFx').innerHTML = F.fx;
+  const b = $('#thSay'); b.textContent = tip.say; b.classList.remove('pop'); void b.offsetWidth; b.classList.add('pop');
+  $('#thNum').textContent = l == null ? '👆 גע במדחום' : `${T.emotion} – ${l}`;
+  $('#thBtns').innerHTML = tip.btn;
+  document.querySelectorAll('.emos button').forEach(x => x.classList.toggle('on', x.dataset.v === T.emotion));
+}
 const TOOLRENDER = {
   thermometer(){
-    const l = T.level, p = T.prev == null ? 0 : T.prev, col = thColor(T.emotion, l == null ? 0 : l), tip = thermoTip(T.emotion, l);
+    const l = T.level, tip = thermoTip(T.emotion, l);
     return `<h2>🌡️ מדחום הרגשות</h2><p class="lead">איזה רגש יש לך עכשיו, וכמה הוא חזק?</p>
       <div class="emos">${EMOS.map(([e, i]) => `<button class="${T.emotion === e ? 'on' : ''}" data-act="th-emo" data-v="${e}"><span class="em">${i}</span> ${e}</button>`).join('')}</div>
-      <div class="thermo2">
-        <svg id="thTube" class="thtube" viewBox="0 0 150 340" role="slider" aria-label="עוצמת הרגש" aria-valuemin="0" aria-valuemax="10" aria-valuenow="${l == null ? '' : l}">
-          <rect x="48" y="18" width="34" height="${TH_Y0 - 8}" rx="17" fill="#f1f5f9" stroke="#94a3b8" stroke-width="3"/>
-          <rect id="thMerc" x="55" y="${TH_Y0 - TH_H}" width="20" height="${TH_H}" rx="10" fill="${col}" style="transform:scaleY(${p / 10})" data-to="${l == null ? 0 : l / 10}"/>
-          <circle id="thBulb" cx="65" cy="${TH_Y0 + 10}" r="28" fill="${col}" stroke="#94a3b8" stroke-width="3"/>
-          <circle cx="56" cy="${TH_Y0 + 1}" r="7" fill="#fff" opacity=".45"/>
-          ${Array.from({length: 11}, (_, i) => { const y = TH_Y0 - i * TH_H / 10; return `<g data-act="th-lvl" data-v="${i}" class="thtick ${l === i ? 'on' : ''}"><rect x="0" y="${y - 12}" width="150" height="24" fill="transparent"/><line x1="86" x2="${i % 5 ? 96 : 102}" y1="${y}" y2="${y}" stroke="#64748b" stroke-width="2"/><text x="112" y="${y + 6}" font-size="${l === i ? 21 : 16}" font-weight="700" fill="${l === i ? col : '#475569'}">${i}</text></g>`; }).join('')}
-          <text x="44" y="${TH_Y0 - TH_H + 6}" font-size="13" fill="#64748b">הכי חזק</text><text x="44" y="${TH_Y0 + 4}" font-size="13" fill="#64748b">רגוע</text>
-        </svg>
-        <div class="thkid">
-          <div class="bubble" id="thSay">${esc(tip.say)}</div>
-          ${kidSVG(T.emotion, l)}
-          <div class="bigtext" id="thNum">${l == null ? '👆 גע במדחום' : `${esc(T.emotion)} – ${l}`}</div>
-          ${tip.btn ? `<div class="actions no-print" style="justify-content:center">${tip.btn}</div>` : ''}
-        </div>
-      </div>${saveBar('thermometer')}`;
+      <div class="scenewrap"><div class="bubble pop" id="thSay">${esc(tip.say)}</div>${sceneSVG(T.emotion, l)}</div>
+      <div class="bigtext" id="thNum">${l == null ? '👆 גע במדחום' : `${esc(T.emotion)} – ${l}`}</div>
+      <div class="actions no-print" id="thBtns" style="justify-content:center">${tip.btn}</div>
+      ${saveBar('thermometer')}`;
   },
   breathing(){
     const m = BREATH[T.mode];
@@ -1120,18 +1277,19 @@ const TOOLRENDER = {
 };
 const TOOLAFTER = {
   thermometer(){
-    const m = $('#thMerc'), svg = $('#thTube'); if (!m || !svg) return;
+    const m = $('#thMerc'), svg = $('#scene'); if (!m || !svg) return;
     requestAnimationFrame(() => requestAnimationFrame(() => { m.style.transform = `scaleY(${m.dataset.to})`; }));   // mercury climbs from the previous level
-    // drag along the tube: the mercury follows the finger; the face updates when the finger lifts
+    // drag along the thermometer: the mercury follows the finger and the boy reacts live
     let drag = null;
-    const lvlAt = e => { const r = svg.getBoundingClientRect(), y = (e.clientY - r.top) * 340 / r.height; return Math.max(0, Math.min(10, Math.round((TH_Y0 - y) * 10 / TH_H))); };
-    svg.addEventListener('pointerdown', e => { drag = {y: e.clientY, moved: false, v: T.level}; });
+    const pt = e => { const p = svg.createSVGPoint(); p.x = e.clientX; p.y = e.clientY; return p.matrixTransform(svg.getScreenCTM().inverse()); };
+    const lvlAt = e => Math.max(0, Math.min(10, Math.round((TH_Y0 - pt(e).y) * 10 / TH_H)));
+    svg.addEventListener('pointerdown', e => { if (pt(e).x < 290) return; drag = {y: e.clientY, moved: false}; });
     svg.addEventListener('pointermove', e => {
       if (!drag) return; if (!drag.moved && Math.abs(e.clientY - drag.y) < 6) return;
       if (!drag.moved) { drag.moved = true; try { svg.setPointerCapture(e.pointerId); } catch(_){} }
-      drag.v = lvlAt(e); m.style.transition = 'none'; m.style.transform = `scaleY(${drag.v / 10})`; m.setAttribute('fill', thColor(T.emotion, drag.v)); $('#thBulb').setAttribute('fill', thColor(T.emotion, drag.v)); $('#thNum').textContent = `${T.emotion} – ${drag.v}`;
+      const v = lvlAt(e); if (v !== T.level) { T.prev = T.level; T.level = v; thUpdate(); }
     });
-    const end = () => { if (drag && drag.moved) { T.prev = drag.v; T.level = drag.v; drag = null; render(); } else drag = null; };
+    const end = () => { drag = null; };
     svg.addEventListener('pointerup', end); svg.addEventListener('pointercancel', end);
   },
   breathing(){ if (T.running) runBreath(); },
@@ -2569,8 +2727,8 @@ document.addEventListener('click', async e => {
     case 'askex': location.hash = '#/ask/' + encodeURIComponent(d.v); break;
     case 'stage': { const st = STAGES.find(x => x.id === d.id); s.stages = s.stages || {}; s.stages[st.id] = !stageDone(s, st); save(); render(); break; }
     // tools
-    case 'th-emo': T.emotion = d.v; T.prev = T.level; render(); break;
-    case 'th-lvl': T.prev = T.level; T.level = +d.v; render(); break;
+    case 'th-emo': T.emotion = d.v; T.prev = T.level; thUpdate(); break;
+    case 'th-lvl': T.prev = T.level; T.level = +d.v; thUpdate(); break;
     case 'br-mode': T.mode = d.v; T.running = false; T.cycles = 0; render(); break;
     case 'br-toggle': T.running = !T.running; render(); break;
     case 'dq': { const i = +d.i; T.q = el.checked ? [...T.q, i] : T.q.filter(x => x !== i); break; }
