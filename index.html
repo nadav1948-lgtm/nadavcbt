@@ -514,6 +514,18 @@ mark#hl{background:#ffda2a;color:#171717;padding:2px 3px;border-radius:4px;box-s
 @media (max-width:900px){.abcflow{grid-template-columns:1fr}.abcarr{transform:rotate(-90deg);justify-self:center}}
 @media (max-width:600px){.gbub{max-width:60%;font-size:14px}.gm{height:104px}.gm .f{font-size:13px}.gface{width:62px}.gsay{font-size:15px}.gcard{font-size:19px}.abcbar{grid-template-columns:90px 1fr 70px;font-size:13px}}
 
+/* the boy as the site's mascot */
+.hero.withkid{padding-inline-end:230px;min-height:250px}
+.heromascot{position:absolute;inset-inline-end:26px;bottom:0;width:190px;display:flex;flex-direction:column;align-items:center;gap:6px;pointer-events:none}
+.heromascot .kidmini{width:170px;filter:drop-shadow(0 10px 18px rgba(0,0,0,.35))}
+.heromascot .kidmini.wave{animation:k-hello 2.6s ease-in-out infinite;transform-origin:50% 100%}
+.hsay{background:#fff;color:#1f2937;border-radius:16px;padding:6px 12px;font-size:15px;font-weight:700;box-shadow:0 4px 12px rgba(0,0,0,.25);animation:k-pop .6s ease}
+@keyframes k-hello{0%,100%{transform:rotate(0) translateY(0)}20%{transform:rotate(-4deg) translateY(-4px)}40%{transform:rotate(3deg)}60%{transform:rotate(-2deg) translateY(-2px)}}
+.scene .waves{animation:k-wave 5s linear infinite}
+.scene .fronds{transform-box:fill-box;transform-origin:50% 50%;animation:k-frond 4s ease-in-out infinite}
+@keyframes k-wave{from{transform:translateX(0)}to{transform:translateX(-40px)}}
+@keyframes k-frond{0%,100%{transform:rotate(-3deg)}50%{transform:rotate(3deg)}}
+@media (max-width:700px){.hero.withkid{padding-inline-end:24px;padding-top:150px}.heromascot{inset-inline-end:auto;inset-inline-start:50%;transform:translateX(50%);top:8px;bottom:auto;width:130px}.heromascot .kidmini{width:110px}.hsay{display:none}}
 </style>
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="apple-touch-icon" href="icon-192.png">
@@ -971,7 +983,7 @@ function home(){
   const month = today().slice(0, 7);
   const sessMonth = act.reduce((n, s) => n + s.sessions.filter(x => (x.date || '').startsWith(month)).length, 0);
   const a = active();
-  let h = `<section class="hero"><h1>שלום! במה נטפל היום? 👋</h1>
+  let h = `<section class="hero withkid"><div class="heromascot" aria-hidden="true"><div class="hsay">שלום! בוא נתחיל 😊</div>${kidMini('שמחה', 6, 'wave')}</div><h1>שלום! במה נטפל היום? 👋</h1>
     <p>מפות טיפול CBT לבעיות נפוצות בבית הספר היסודי, מתכנן מפגשים, כלים אינטראקטיביים לילדים ותיק לכל תלמיד – יחד עם כל החומרים מהספרייה שלך.</p>
     <form id="homeask" style="display:flex;gap:8px;margin-top:18px;max-width:720px"><input class="inp" id="homeq" placeholder="💬 שאלו שאלה… למשל: ילד שבוכה כל בוקר בשער" style="flex:1;height:48px;border:0;font-size:16px"><button class="btn primary" type="submit">תשובה</button></form>
     <div class="actions"><button class="btn" data-act="newstudent">＋ תלמיד חדש</button><a class="btn" href="#/problems">🧭 בחירת בעיה</a><a class="btn" href="#/workflow">🗺️ סדר עבודה</a><a class="btn" href="#/tools">🧰 כלים לילדים</a></div></section>`;
@@ -1122,7 +1134,7 @@ function toolCard(t){
 }
 function tools(){
   const a = active();
-  return {title:'כלים לילדים', html:`<div class="note" style="margin:4px 0 16px">${a ? `⭐ עבודה עם <b>${esc(a.alias)}</b>: מה שתשמרו בכלים ייכנס לתיק שלו.` : '💡 אפשר לבחור תלמיד בראש המסך, ואז מה ששומרים בכלים נכנס לתיק שלו.'}</div><div class="grid">${TOOLS.map(toolCard).join('')}</div>`};
+  return {title:'כלים לילדים', html:`${gGuide('בחר כלי ונעבוד יחד – אני פה איתך! 😊', 'שמחה', 5)}<div class="note" style="margin:4px 0 16px">${a ? `⭐ עבודה עם <b>${esc(a.alias)}</b>: מה שתשמרו בכלים ייכנס לתיק שלו.` : '💡 אפשר לבחור תלמיד בראש המסך, ואז מה ששומרים בכלים נכנס לתיק שלו.'}</div><div class="grid">${TOOLS.map(toolCard).join('')}</div>`};
 }
 
 /* ================= kid tools ================= */
@@ -1173,10 +1185,10 @@ const PMR = [
 const DETECTIVE_Q = ['מה ההוכחות שזה נכון?','מה ההוכחות שזה לא לגמרי נכון?','מה הייתי אומר לחבר טוב שחושב ככה?','מה הכי גרוע שיכול לקרות? מה הכי טוב? ומה הכי סביר?','נפלתי למלכודת חשיבה? (הכול או כלום, קורא מחשבות, מנחש עתיד, מגדיל)','זה יהיה חשוב גם בעוד שבוע?'];
 const COPE = ['לנשום נשימת בלון 3 פעמים','לספור לאט עד 10','להגיד לעצמי: ״אני יכול להתמודד עם זה״','לבקש עזרה מהמורה','ללכת לפינה השקטה','לשתות מים','לסחוט כדור לחץ','לצייר או לשרבט','לחשוב על המקום הבטוח שלי','לספר למבוגר שאני סומך עליו','ללכת קצת ולחזור','להשתמש ברמזור: לעצור, לחשוב, לעשות'];
 
-/* the kid scene: a Hardal (religious-Zionist) boy – big knitted kippah, long peyot, tzitzit out – in a park next to a big thermometer.
-   Pose, movement, face and weather all follow the chosen feeling and its strength (--k = level / 10). */
+/* the kid: the boy from the user's video (light-brown hair, big brown eyes, cream quilted vest over a navy tee) with a big
+   Hardal knitted kippah and tzitzit. Pose, movement, face and weather follow the chosen feeling and its strength (--k = level / 10). */
 const KIDX = {
-  'פחד':  {brow:-1,   mouth:'o',   eye:1.3,  fx:'sweat'},
+  'פחד':  {brow:-1,   mouth:'o',   eye:1.25, fx:'sweat'},
   'דאגה': {brow:-0.75,mouth:-0.5,  eye:1.05, fx:'sweat'},
   'כעס':  {brow:1,    mouth:'grit',eye:0.75, fx:'steam', red:true},
   'עצב':  {brow:-0.95,mouth:-1,    eye:0.9,  fx:'tear', lid:true},
@@ -1187,69 +1199,84 @@ const KIDX = {
 };
 const POSITIVE = ['שמחה', 'רוגע'];
 const thColor = (emo, l) => POSITIVE.includes(emo) ? `hsl(${150 - l * 4} 62% ${58 - l * 2}%)` : lvlColor(l);   // pleasant feelings stay green – a strong joy is not a warning
-// face parts in head coordinates (head centre 100,110, radius 58)
+// shared gradients (head space and body) – every SVG that draws the boy includes them
+const KID_DEFS = `<radialGradient id="kSkin" cx=".4" cy=".35" r=".8"><stop offset="0" stop-color="#fff0e2"/><stop offset=".55" stop-color="#fbd9bd"/><stop offset="1" stop-color="#e7b38e"/></radialGradient>
+  <radialGradient id="kIris" cx=".38" cy=".35" r=".75"><stop offset="0" stop-color="#b98555"/><stop offset=".65" stop-color="#7a4a24"/><stop offset="1" stop-color="#3f2410"/></radialGradient>
+  <linearGradient id="kHair" x1="0" y1="0" x2=".6" y2="1"><stop offset="0" stop-color="#c18a55"/><stop offset=".55" stop-color="#9b6a3c"/><stop offset="1" stop-color="#6e4623"/></linearGradient>
+  <radialGradient id="kKip" cx=".42" cy=".3" r=".9"><stop offset="0" stop-color="#ffffff"/><stop offset=".7" stop-color="#f4f1e8"/><stop offset="1" stop-color="#d9d3c2"/></radialGradient>
+  <linearGradient id="kVest" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#e6ddcc"/><stop offset=".4" stop-color="#fbf7ef"/><stop offset="1" stop-color="#ddd3c0"/></linearGradient>
+  <linearGradient id="kTee" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#1b2640"/><stop offset=".5" stop-color="#2c3a5c"/><stop offset="1" stop-color="#18223a"/></linearGradient>
+  <pattern id="kQuilt" width="12" height="12" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><path d="M0,0 L0,12 M0,0 L12,0" stroke="#cfc3ad" stroke-width="1.3" fill="none"/></pattern>`;
+// face parts in head coordinates (head centre 100,112)
 function kidFace(emotion, level){
   const x = (level != null && KIDX[emotion]) || {brow:0, mouth:0.45, eye:1, fx:''};
   const k = level == null ? 0.2 : level / 10, s = 0.25 + 0.75 * k;
-  const bi = 85 + 9 * x.brow * s, bo = 84 - 2 * Math.abs(x.brow) * s;
+  const bi = 90 + 9 * x.brow * s, bo = 88 - 2 * Math.abs(x.brow) * s;
   let eyes;
-  if (x.eye === 'closed') eyes = `<path d="M69,110 Q78,${116 + 2 * k} 87,110 M113,110 Q122,${116 + 2 * k} 131,110" stroke="#3b2412" stroke-width="3.6" fill="none" stroke-linecap="round"/>`;
+  if (x.eye === 'closed') eyes = `<path d="M64,114 Q76,${121 + 2 * k} 88,114 M112,114 Q124,${121 + 2 * k} 136,114" stroke="#4a2c16" stroke-width="3.8" fill="none" stroke-linecap="round"/>`;
   else {
-    const ry = 9.5 * x.eye, dy = x.down ? 5 * s : 0;
-    eyes = [78, 122].map(cx => `<ellipse cx="${cx}" cy="108" rx="8.5" ry="${ry.toFixed(1)}" fill="#fff" stroke="#6b4a33" stroke-width="1.3"/>
-      <g class="k-look"><circle cx="${cx}" cy="${(109 + dy).toFixed(1)}" r="5.6" fill="url(#kIris)"/><circle cx="${cx}" cy="${(109 + dy).toFixed(1)}" r="2.7" fill="#120b06"/><circle cx="${cx + 2.2}" cy="${(106.5 + dy).toFixed(1)}" r="1.7" fill="#fff"/></g>
-      ${x.lid ? `<path d="M${cx - 10},${(98).toFixed(1)} Q${cx},${(96 + 12 * s).toFixed(1)} ${cx + 10},98 L${cx + 10},96 L${cx - 10},96Z" fill="url(#kSkin)"/>` : ''}`).join('');
+    const ry = 12.5 * x.eye, dy = x.down ? 5 * s : 0;
+    eyes = [76, 124].map(cx => `<ellipse cx="${cx}" cy="113" rx="11.5" ry="${ry.toFixed(1)}" fill="#fff" stroke="#6b4a33" stroke-width="1.2"/>
+      <g class="k-look"><circle cx="${cx}" cy="${(114 + dy).toFixed(1)}" r="8" fill="url(#kIris)"/><circle cx="${cx}" cy="${(114 + dy).toFixed(1)}" r="3.8" fill="#1a0f07"/><circle cx="${cx + 3}" cy="${(110.5 + dy).toFixed(1)}" r="2.8" fill="#fff"/><circle cx="${cx - 2.6}" cy="${(117.5 + dy).toFixed(1)}" r="1.3" fill="#fff" opacity=".85"/></g>
+      <path d="M${cx - 12},${(111 - ry * 0.55).toFixed(1)} Q${cx},${(99 - ry * 0.3).toFixed(1)} ${cx + 12},${(111 - ry * 0.55).toFixed(1)}" stroke="#4a2c16" stroke-width="2" fill="none" stroke-linecap="round"/>
+      ${x.lid ? `<path d="M${cx - 13},100 Q${cx},${(99 + 14 * s).toFixed(1)} ${cx + 13},100 L${cx + 13},98 L${cx - 13},98Z" fill="url(#kSkin)"/>` : ''}`).join('');
     eyes = `<g class="k-eyes">${eyes}</g>`;
   }
-  const brows = `<path d="M65,${bo.toFixed(1)} Q76,${(Math.min(bo, bi) - 3).toFixed(1)} 89,${bi.toFixed(1)}" stroke="#3b2717" stroke-width="5" fill="none" stroke-linecap="round"/><path d="M111,${bi.toFixed(1)} Q124,${(Math.min(bo, bi) - 3).toFixed(1)} 135,${bo.toFixed(1)}" stroke="#3b2717" stroke-width="5" fill="none" stroke-linecap="round"/>`;
+  const brows = `<path d="M62,${bo.toFixed(1)} Q74,${(Math.min(bo, bi) - 3).toFixed(1)} 88,${bi.toFixed(1)}" stroke="#8a5a30" stroke-width="4" fill="none" stroke-linecap="round"/><path d="M112,${bi.toFixed(1)} Q126,${(Math.min(bo, bi) - 3).toFixed(1)} 138,${bo.toFixed(1)}" stroke="#8a5a30" stroke-width="4" fill="none" stroke-linecap="round"/>`;
   let mouth;
-  if (x.mouth === 'o') mouth = `<ellipse cx="100" cy="146" rx="${(5 + 6 * s).toFixed(1)}" ry="${(6 + 9 * s).toFixed(1)}" fill="#6b1f1f"/><ellipse cx="100" cy="${(150 + 4 * s).toFixed(1)}" rx="${(3 + 3 * s).toFixed(1)}" ry="${(2 + 2 * s).toFixed(1)}" fill="#e57373"/>`;
-  else if (x.mouth === 'zig') mouth = `<path d="M83,146 L89,${140 - 2 * s} L95,${147 + 2 * s} L101,${140 - 2 * s} L107,${147 + 2 * s} L113,${140 - 2 * s} L118,145" stroke="#6b1f1f" stroke-width="3.6" fill="none" stroke-linejoin="round" stroke-linecap="round"/>`;
-  else if (x.mouth === 'grit') { const w = 12 + 8 * s; mouth = `<path d="M${100 - w},${147 - 3 * s} Q100,${140 - 3 * s} ${100 + w},${147 - 3 * s} L${100 + w},${150} Q100,${147} ${100 - w},150Z" fill="#fff" stroke="#6b1f1f" stroke-width="3"/>${[-0.5, 0, 0.5].map(f => `<line x1="${100 + f * w}" x2="${100 + f * w}" y1="${143 - 3 * s}" y2="149" stroke="#9ca3af" stroke-width="1.3"/>`).join('')}`; }
+  if (x.mouth === 'o') mouth = `<ellipse cx="100" cy="151" rx="${(5 + 6 * s).toFixed(1)}" ry="${(6 + 9 * s).toFixed(1)}" fill="#7b2b2b"/><ellipse cx="100" cy="${(155 + 4 * s).toFixed(1)}" rx="${(3 + 3 * s).toFixed(1)}" ry="${(2 + 2 * s).toFixed(1)}" fill="#e57373"/>`;
+  else if (x.mouth === 'zig') mouth = `<path d="M84,151 L90,${145 - 2 * s} L96,${152 + 2 * s} L102,${145 - 2 * s} L108,${152 + 2 * s} L114,${145 - 2 * s} L118,150" stroke="#7b2b2b" stroke-width="3.4" fill="none" stroke-linejoin="round" stroke-linecap="round"/>`;
+  else if (x.mouth === 'grit') { const w = 12 + 8 * s; mouth = `<path d="M${100 - w},${152 - 3 * s} Q100,${145 - 3 * s} ${100 + w},${152 - 3 * s} L${100 + w},155 Q100,152 ${100 - w},155Z" fill="#fff" stroke="#7b2b2b" stroke-width="3"/>${[-0.5, 0, 0.5].map(f => `<line x1="${100 + f * w}" x2="${100 + f * w}" y1="${148 - 3 * s}" y2="154" stroke="#9ca3af" stroke-width="1.3"/>`).join('')}`; }
   else {
     const c = x.mouth * s * 20;
-    if (c > 9) mouth = `<path d="M${80 - 4 * s},139 Q100,${142 + c} ${120 + 4 * s},139 Q100,${146} ${80 - 4 * s},139Z" fill="#6b1f1f"/><path d="M${84 - 3 * s},140.5 Q100,145 ${116 + 3 * s},140.5 L${115 + 3 * s},143 Q100,147.5 ${85 - 3 * s},143Z" fill="#fff"/><ellipse cx="100" cy="${(141 + c * 0.75).toFixed(1)}" rx="${(5 + 3 * s).toFixed(1)}" ry="3" fill="#e57373"/>`;
-    else { const y = 143 - Math.min(0, c) * 0.35; mouth = `<path d="M${84 - 3 * Math.max(0, x.mouth * s)},${y} Q100,${(y + c).toFixed(1)} ${116 + 3 * Math.max(0, x.mouth * s)},${y}" stroke="#6b1f1f" stroke-width="4" fill="none" stroke-linecap="round"/>${c < -12 ? `<path d="M93,${y + 4} q7,4 14,0" stroke="#6b1f1f" stroke-width="1.5" fill="none" opacity=".5"/>` : ''}`; }
+    if (c > 9) mouth = `<path d="M${81 - 4 * s},144 Q100,${147 + c} ${119 + 4 * s},144 Q100,151 ${81 - 4 * s},144Z" fill="#7b2b2b"/><path d="M${85 - 3 * s},145.5 Q100,150 ${115 + 3 * s},145.5 L${114 + 3 * s},148 Q100,152.5 ${86 - 3 * s},148Z" fill="#fff"/><ellipse cx="100" cy="${(146 + c * 0.75).toFixed(1)}" rx="${(5 + 3 * s).toFixed(1)}" ry="3" fill="#e57373"/>`;
+    else { const y = 148 - Math.min(0, c) * 0.35; mouth = `<path d="M${85 - 3 * Math.max(0, x.mouth * s)},${y} Q100,${(y + c).toFixed(1)} ${115 + 3 * Math.max(0, x.mouth * s)},${y}" stroke="#7b2b2b" stroke-width="3.6" fill="none" stroke-linecap="round"/>${c < -12 ? `<path d="M93,${y + 4} q7,4 14,0" stroke="#7b2b2b" stroke-width="1.5" fill="none" opacity=".5"/>` : ''}`; }
   }
   const on = level != null && level >= 3, fx = [];
-  if (x.red) fx.push(`<circle cx="100" cy="112" r="57" fill="#ef4444" opacity="${(0.34 * k).toFixed(2)}"/>`);
-  const blush = x.fx === 'blush' ? 0.2 + 0.6 * k : emotion === 'שמחה' && level != null ? 0.15 + 0.35 * k : 0.12;
-  fx.push(`<ellipse cx="64" cy="129" rx="11" ry="6.5" fill="#f472b6" opacity="${blush.toFixed(2)}"/><ellipse cx="136" cy="129" rx="11" ry="6.5" fill="#f472b6" opacity="${blush.toFixed(2)}"/>`);
-  if (on && x.fx === 'sweat') fx.push(`<path class="k-sweat" d="M152,70 q8,13 0,19 q-8,-6 0,-19z" fill="#bae6fd" stroke="#38bdf8"/>${level >= 7 ? `<path class="k-sweat k-d2" d="M46,78 q7,11 0,16 q-7,-5 0,-16z" fill="#bae6fd" stroke="#38bdf8"/>` : ''}`);
-  if (on && x.fx === 'tear') fx.push(`<path class="k-tear" d="M75,120 q6,10 0,15 q-6,-5 0,-15z" fill="#bae6fd" stroke="#38bdf8"/>${level >= 6 ? `<path class="k-tear k-d2" d="M125,120 q6,10 0,15 q-6,-5 0,-15z" fill="#bae6fd" stroke="#38bdf8"/>` : ''}${level >= 8 ? `<path d="M76,118 Q72,140 70,160 M124,118 Q128,140 130,160" stroke="#7dd3fc" stroke-width="3" fill="none" opacity=".7"/>` : ''}`);
-  if (on && x.fx === 'steam') fx.push(`<g class="k-steam" fill="#e2e8f0">${[[34, 44, 9], [166, 44, 9], [26, 28, 6], [174, 28, 6], [40, 16, 4], [160, 16, 4]].slice(0, level >= 7 ? 6 : 4).map(([a, b, r]) => `<circle cx="${a}" cy="${b}" r="${(r * (0.7 + 0.5 * k)).toFixed(1)}"/>`).join('')}</g>`);
-  if (on && x.fx === 'puff') fx.push(`<g class="k-steam" fill="#f1f5f9"><circle cx="160" cy="140" r="7"/><circle cx="172" cy="132" r="5"/></g>`);
-  if (level != null && level >= 3 && x.fx === 'stars') fx.push(`<g class="k-stars" fill="#facc15" stroke="#eab308">${[[24, 64], [176, 56], [18, 150], [182, 160]].slice(0, level >= 7 ? 4 : 2).map(([a, b]) => `<path d="M${a},${b - 10} L${a + 3},${b - 3} L${a + 10},${b - 3} L${a + 4},${b + 1} L${a + 6},${b + 9} L${a},${b + 4} L${a - 6},${b + 9} L${a - 4},${b + 1} L${a - 10},${b - 3} L${a - 3},${b - 3}Z"/>`).join('')}</g>`);
-  return {face: eyes + brows + `<path d="M96,121 Q100,128 105,121" stroke="#c48a5f" stroke-width="2.6" fill="none" stroke-linecap="round"/>` + mouth, fx: fx.join('')};
+  if (x.red) fx.push(`<ellipse cx="100" cy="114" rx="61" ry="59" fill="#ef4444" opacity="${(0.32 * k).toFixed(2)}"/>`);
+  const blush = x.fx === 'blush' ? 0.25 + 0.6 * k : emotion === 'שמחה' && level != null ? 0.25 + 0.35 * k : 0.22;
+  fx.push(`<ellipse cx="60" cy="136" rx="12" ry="7" fill="#f7a1b0" opacity="${blush.toFixed(2)}"/><ellipse cx="140" cy="136" rx="12" ry="7" fill="#f7a1b0" opacity="${blush.toFixed(2)}"/>`);
+  if (on && x.fx === 'sweat') fx.push(`<path class="k-sweat" d="M156,74 q8,13 0,19 q-8,-6 0,-19z" fill="#bae6fd" stroke="#38bdf8"/>${level >= 7 ? `<path class="k-sweat k-d2" d="M44,82 q7,11 0,16 q-7,-5 0,-16z" fill="#bae6fd" stroke="#38bdf8"/>` : ''}`);
+  if (on && x.fx === 'tear') fx.push(`<path class="k-tear" d="M73,126 q6,10 0,15 q-6,-5 0,-15z" fill="#bae6fd" stroke="#38bdf8"/>${level >= 6 ? `<path class="k-tear k-d2" d="M127,126 q6,10 0,15 q-6,-5 0,-15z" fill="#bae6fd" stroke="#38bdf8"/>` : ''}${level >= 8 ? `<path d="M74,124 Q70,146 68,166 M126,124 Q130,146 132,166" stroke="#7dd3fc" stroke-width="3" fill="none" opacity=".7"/>` : ''}`);
+  if (on && x.fx === 'steam') fx.push(`<g class="k-steam" fill="#e2e8f0">${[[30, 48, 9], [170, 48, 9], [22, 32, 6], [178, 32, 6], [36, 18, 4], [164, 18, 4]].slice(0, level >= 7 ? 6 : 4).map(([a, b, r]) => `<circle cx="${a}" cy="${b}" r="${(r * (0.7 + 0.5 * k)).toFixed(1)}"/>`).join('')}</g>`);
+  if (on && x.fx === 'puff') fx.push(`<g class="k-steam" fill="#f1f5f9"><circle cx="162" cy="146" r="7"/><circle cx="174" cy="138" r="5"/></g>`);
+  if (level != null && level >= 3 && x.fx === 'stars') fx.push(`<g class="k-stars" fill="#facc15" stroke="#eab308">${[[20, 64], [180, 56], [14, 150], [186, 160]].slice(0, level >= 7 ? 4 : 2).map(([a, b]) => `<path d="M${a},${b - 10} L${a + 3},${b - 3} L${a + 10},${b - 3} L${a + 4},${b + 1} L${a + 6},${b + 9} L${a},${b + 4} L${a - 6},${b + 9} L${a - 4},${b + 1} L${a - 10},${b - 3} L${a - 3},${b - 3}Z"/>`).join('')}</g>`);
+  return {face: eyes + brows + `<path d="M95,128 Q100,134 105,128" stroke="#d99b74" stroke-width="2.6" fill="none" stroke-linecap="round"/><ellipse cx="100" cy="129" rx="5" ry="3" fill="#fff" opacity=".25"/>` + mouth, fx: fx.join('')};
 }
-// the knitted kippah: a big dome with a woven border and a pattern ring
-const KIPPAH = `<g class="kippah"><path d="M52,62 Q100,6 148,62 Q100,48 52,62Z" fill="url(#kKip)" stroke="#d6d3c4" stroke-width="1.2"/>
-  <path d="M60,57 Q100,20 140,57" stroke="#2563eb" stroke-width="3.2" fill="none" stroke-dasharray="4 3"/>
-  <path d="M68,52 Q100,28 132,52" stroke="#0f766e" stroke-width="2.4" fill="none" stroke-dasharray="2 3"/>
-  <path d="M53,61 Q100,47 147,61" stroke="#1e3a8a" stroke-width="3" fill="none"/>
-  <path d="M84,24 Q100,17 114,23" stroke="#fff" stroke-width="3" fill="none" opacity=".55"/></g>`;
+// the knitted kippah (כיפה סרוגה) – big, white, with a blue woven border and a pattern ring, sitting on the crown
+const KIPPAH = `<g class="kippah"><path d="M50,58 Q100,-6 150,58 Q100,43 50,58Z" fill="url(#kKip)" stroke="#d6d0bf" stroke-width="1.2"/>
+  <path d="M58,52 Q100,6 142,52" stroke="#2563eb" stroke-width="3.2" fill="none" stroke-dasharray="4 3"/>
+  <path d="M68,45 Q100,15 132,45" stroke="#0e7490" stroke-width="2.4" fill="none" stroke-dasharray="2 3"/>
+  <path d="M80,37 Q100,24 120,37" stroke="#2563eb" stroke-width="2" fill="none" stroke-dasharray="3 3"/>
+  <path d="M51,57 Q100,42 149,57" stroke="#1e40af" stroke-width="3.4" fill="none"/>
+  <path d="M86,30 Q100,24 114,29" stroke="#fff" stroke-width="3" fill="none" opacity=".7"/></g>`;
+// the head in head coordinates: ears, face, soft voluminous light-brown hair with a side-swept fringe, the kippah on top
+function kidHead(F){
+  return `<circle cx="38" cy="118" r="12" fill="url(#kSkin)" stroke="#d9a47c"/><circle cx="162" cy="118" r="12" fill="url(#kSkin)" stroke="#d9a47c"/>
+    <path d="M34,112 Q28,42 100,34 Q172,42 166,112 Q162,76 100,70 Q38,76 34,112Z" fill="url(#kHair)"/>
+    <ellipse cx="100" cy="114" rx="62" ry="60" fill="url(#kSkin)" stroke="#d9a47c" stroke-width="1.4"/>
+    <g id="kFace">${F.face}</g>
+    <path d="M40,100 Q40,50 100,44 Q156,46 162,98 Q150,70 124,74 Q108,90 84,82 Q64,86 40,100Z" fill="url(#kHair)"/>
+    <path d="M60,74 Q84,58 112,60 M118,64 Q140,66 152,84 M74,80 Q92,70 108,74" stroke="#d9a56d" stroke-width="3" fill="none" stroke-linecap="round" opacity=".55"/>
+    ${KIPPAH}<g id="kFx">${F.fx}</g>`;
+}
 const TH_Y0 = 262, TH_H = 216;                                            // thermometer: mercury bottom and full height (scene coordinates)
 function sceneSVG(emotion, level){
   const k = level == null ? 0 : level / 10, emo = level == null ? '' : emotion, col = thColor(emotion, level == null ? 0 : level), F = kidFace(emotion, level);
-  const peyah = d => `<path d="M${100 + 54 * d},92 c${6 * d},10 ${-9 * d},16 ${-2 * d},26 c${7 * d},10 ${-9 * d},16 ${-2 * d},26 c${6 * d},9 ${-7 * d},15 ${-1 * d},23" stroke="url(#kHair)" stroke-width="6.5" fill="none" stroke-linecap="round"/>`;
-  const arm = (side) => `<g transform="translate(${31 * side},-96)"><g class="${side < 0 ? 'armL' : 'armR'}"><rect x="-7.5" y="-5" width="15" height="48" rx="7.5" fill="url(#kShirt)" stroke="#cbd5e1"/><circle cx="0" cy="49" r="8.5" fill="url(#kSkin)" stroke="#c9936a"/></g></g>`;
+  const arm = side => `<g transform="translate(${30 * side},-96)"><g class="${side < 0 ? 'armL' : 'armR'}"><rect x="-8" y="-6" width="16" height="20" rx="8" fill="url(#kTee)"/><rect x="-6.5" y="10" width="13" height="32" rx="6.5" fill="url(#kSkin)" stroke="#d9a47c"/><circle cx="0" cy="45" r="8.5" fill="url(#kSkin)" stroke="#d9a47c"/></g></g>`;
   const rain = Array.from({length: 22}, (_, i) => `<line x1="${10 + i * 19}" y1="${(i * 37) % 120}" x2="${6 + i * 19}" y2="${(i * 37) % 120 + 14}" style="animation-delay:${((i * 7) % 10) / 10}s"/>`).join('');
-  const flowers = [[26, 292, '#f472b6'], [96, 300, '#facc15'], [246, 296, '#a78bfa'], [290, 304, '#fb7185'], [122, 308, '#60a5fa']].map(([fx, fy, c]) => `<g class="flower" transform="translate(${fx},${fy})"><g class="fl"><line x1="0" y1="0" x2="0" y2="-16" stroke="#15803d" stroke-width="2.5"/>${[0, 72, 144, 216, 288].map(a => `<ellipse cx="0" cy="-22" rx="3.6" ry="6" fill="${c}" transform="rotate(${a} 0 -17)"/>`).join('')}<circle cx="0" cy="-17" r="3.2" fill="#fde047"/></g></g>`).join('');
-  return `<svg id="scene" class="scene" viewBox="0 0 420 320" data-emo="${esc(emo)}" style="--k:${k}" role="img" aria-label="ילד בפארק ליד מדחום – ${esc(emotion)}${level != null ? ' ברמה ' + level : ''}">
-  <defs>
-    <linearGradient id="kSky" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#7cc4f5"/><stop offset=".75" stop-color="#d9f0ff"/></linearGradient>
+  const palm = (x, y, s) => `<g transform="translate(${x},${y}) scale(${s})"><path d="M0,0 Q-6,-60 4,-120" stroke="#8b6b4a" stroke-width="7" fill="none"/><g class="fronds" transform="translate(4,-120)">${[-150, -115, -80, -45, -10, 25].map(a => `<path d="M0,0 q${(30 * Math.cos(a * Math.PI / 180)).toFixed(1)},${(30 * Math.sin(a * Math.PI / 180) - 10).toFixed(1)} ${(58 * Math.cos(a * Math.PI / 180)).toFixed(1)},${(58 * Math.sin(a * Math.PI / 180) + 14).toFixed(1)}" stroke="#2f8a4a" stroke-width="7" fill="none" stroke-linecap="round"/>`).join('')}</g></g>`;
+  const flowers = [[22, 300, '#f472b6'], [104, 306, '#facc15'], [246, 302, '#a78bfa'], [290, 312, '#fb7185']].map(([fx, fy, c]) => `<g class="flower" transform="translate(${fx},${fy})"><g class="fl"><line x1="0" y1="0" x2="0" y2="-14" stroke="#15803d" stroke-width="2.5"/>${[0, 72, 144, 216, 288].map(a => `<ellipse cx="0" cy="-20" rx="3.4" ry="5.6" fill="${c}" transform="rotate(${a} 0 -15)"/>`).join('')}<circle cx="0" cy="-15" r="3" fill="#fde047"/></g></g>`).join('');
+  return `<svg id="scene" class="scene" viewBox="0 0 420 320" data-emo="${esc(emo)}" style="--k:${k}" role="img" aria-label="ילד בטיילת ליד מדחום – ${esc(emotion)}${level != null ? ' ברמה ' + level : ''}">
+  <defs>${KID_DEFS}
+    <linearGradient id="kSky" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#6fb7ea"/><stop offset=".8" stop-color="#dcefff"/></linearGradient>
+    <linearGradient id="kSea" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#4aa3d8"/><stop offset="1" stop-color="#1f78b4"/></linearGradient>
+    <linearGradient id="kWalk" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#e9dcc6"/><stop offset="1" stop-color="#cdb99a"/></linearGradient>
     <linearGradient id="kNight" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#0b1026"/><stop offset="1" stop-color="#312e81"/></linearGradient>
     <linearGradient id="kHot" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#b91c1c"/><stop offset="1" stop-color="#fb923c"/></linearGradient>
     <radialGradient id="kDim" cx=".42" cy=".62" r=".6"><stop offset=".35" stop-color="#000" stop-opacity="0"/><stop offset="1" stop-color="#000" stop-opacity=".85"/></radialGradient>
-    <linearGradient id="kHill1" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#9be58f"/><stop offset="1" stop-color="#4caf50"/></linearGradient>
-    <linearGradient id="kHill2" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#6fcf5c"/><stop offset="1" stop-color="#2e7d32"/></linearGradient>
-    <radialGradient id="kSkin" cx=".38" cy=".32" r=".8"><stop offset="0" stop-color="#fde4cb"/><stop offset=".6" stop-color="#f2c8a0"/><stop offset="1" stop-color="#d49d72"/></radialGradient>
-    <linearGradient id="kHair" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#6b4a33"/><stop offset="1" stop-color="#2e1d12"/></linearGradient>
-    <radialGradient id="kKip" cx=".4" cy=".3" r=".9"><stop offset="0" stop-color="#ffffff"/><stop offset=".7" stop-color="#f1efe6"/><stop offset="1" stop-color="#cfcab8"/></radialGradient>
-    <linearGradient id="kShirt" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#e2e8f0"/><stop offset=".35" stop-color="#ffffff"/><stop offset="1" stop-color="#cbd5e1"/></linearGradient>
-    <linearGradient id="kPants" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#1e293b"/><stop offset=".4" stop-color="#334155"/><stop offset="1" stop-color="#0f172a"/></linearGradient>
-    <radialGradient id="kShoe" cx=".35" cy=".3" r=".8"><stop offset="0" stop-color="#64748b"/><stop offset="1" stop-color="#020617"/></radialGradient>
-    <radialGradient id="kIris" cx=".35" cy=".35" r=".7"><stop offset="0" stop-color="#a47148"/><stop offset="1" stop-color="#4a2c16"/></radialGradient>
+    <radialGradient id="kShoe" cx=".35" cy=".3" r=".8"><stop offset="0" stop-color="#94a3b8"/><stop offset="1" stop-color="#1e293b"/></radialGradient>
+    <linearGradient id="kPants" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#8d7a5c"/><stop offset=".45" stop-color="#b09a76"/><stop offset="1" stop-color="#7c6a4e"/></linearGradient>
     <linearGradient id="kGlass" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#e2e8f0"/><stop offset=".3" stop-color="#ffffff"/><stop offset="1" stop-color="#cbd5e1"/></linearGradient>
     <radialGradient id="kSun" cx=".4" cy=".4" r=".6"><stop offset="0" stop-color="#fff7c2"/><stop offset="1" stop-color="#fbbf24"/></radialGradient>
     <filter id="kShadow" x="-20%" y="-20%" width="140%" height="140%"><feDropShadow dx="1.5" dy="3" stdDeviation="2.5" flood-color="#0f172a" flood-opacity=".28"/></filter>
@@ -1257,13 +1284,17 @@ function sceneSVG(emotion, level){
   </defs>
   <g clip-path="url(#kClip)">
     <rect width="420" height="320" fill="url(#kSky)"/>
-    <g class="sun"><g class="rays" stroke="#fcd34d" stroke-width="4" stroke-linecap="round">${Array.from({length: 10}, (_, i) => { const a = i * Math.PI / 5; return `<line x1="${(62 + Math.cos(a) * 34).toFixed(1)}" y1="${(58 + Math.sin(a) * 34).toFixed(1)}" x2="${(62 + Math.cos(a) * 46).toFixed(1)}" y2="${(58 + Math.sin(a) * 46).toFixed(1)}"/>`; }).join('')}</g><circle cx="62" cy="58" r="26" fill="url(#kSun)"/></g>
-    <g class="rainbow" fill="none" stroke-width="7">${['#ef4444', '#f97316', '#facc15', '#22c55e', '#3b82f6', '#8b5cf6'].map((c, i) => `<path d="M${40 + i * 7},250 A${170 - i * 7},${170 - i * 7} 0 0 1 ${380 - i * 7},250" stroke="${c}"/>`).join('')}</g>
-    <g class="cloud c1" fill="#fff" opacity=".95"><ellipse cx="170" cy="46" rx="30" ry="14"/><ellipse cx="190" cy="38" rx="22" ry="16"/><ellipse cx="152" cy="40" rx="16" ry="11"/></g>
-    <g class="cloud c2" fill="#fff" opacity=".85"><ellipse cx="300" cy="70" rx="26" ry="11"/><ellipse cx="316" cy="62" rx="17" ry="12"/></g>
-    <path d="M0,230 Q90,180 200,214 T420,200 L420,320 L0,320Z" fill="url(#kHill1)"/>
-    <g class="tree"><rect x="30" y="178" width="12" height="80" rx="4" fill="#8b5a2b"/><circle cx="36" cy="170" r="30" fill="#3f9142"/><circle cx="18" cy="186" r="20" fill="#358a3a"/><circle cx="56" cy="184" r="20" fill="#4aa64d"/><circle cx="30" cy="158" r="12" fill="#5cbf60" opacity=".7"/></g>
-    <path d="M0,262 Q120,236 240,256 T420,248 L420,320 L0,320Z" fill="url(#kHill2)"/>
+    <g class="sun"><g class="rays" stroke="#fcd34d" stroke-width="4" stroke-linecap="round">${Array.from({length: 10}, (_, i) => { const a = i * Math.PI / 5; return `<line x1="${(62 + Math.cos(a) * 34).toFixed(1)}" y1="${(52 + Math.sin(a) * 34).toFixed(1)}" x2="${(62 + Math.cos(a) * 46).toFixed(1)}" y2="${(52 + Math.sin(a) * 46).toFixed(1)}"/>`; }).join('')}</g><circle cx="62" cy="52" r="26" fill="url(#kSun)"/></g>
+    <g class="rainbow" fill="none" stroke-width="7">${['#ef4444', '#f97316', '#facc15', '#22c55e', '#3b82f6', '#8b5cf6'].map((c, i) => `<path d="M${40 + i * 7},200 A${170 - i * 7},${150 - i * 7} 0 0 1 ${380 - i * 7},200" stroke="${c}"/>`).join('')}</g>
+    <g class="cloud c1" fill="#fff" opacity=".95"><ellipse cx="170" cy="42" rx="30" ry="13"/><ellipse cx="190" cy="34" rx="22" ry="15"/><ellipse cx="152" cy="36" rx="16" ry="10"/></g>
+    <g class="cloud c2" fill="#fff" opacity=".85"><ellipse cx="300" cy="66" rx="26" ry="10"/><ellipse cx="316" cy="58" rx="17" ry="11"/></g>
+    <rect x="0" y="176" width="420" height="44" fill="url(#kSea)"/>
+    <g class="waves" stroke="#e0f2fe" stroke-width="2" fill="none" opacity=".7"><path d="M-20,188 q10,-4 20,0 t20,0 t20,0 t20,0 t20,0 t20,0 t20,0 t20,0 t20,0 t20,0 t20,0 t20,0 t20,0 t20,0 t20,0 t20,0 t20,0 t20,0 t20,0 t20,0 t20,0 t20,0 t20,0"/><path d="M-10,204 q10,-4 20,0 t20,0 t20,0 t20,0 t20,0 t20,0 t20,0 t20,0 t20,0 t20,0 t20,0 t20,0 t20,0 t20,0 t20,0 t20,0 t20,0 t20,0 t20,0 t20,0 t20,0 t20,0 t20,0"/></g>
+    <g fill="#f1f5f9" opacity=".9"><rect x="330" y="150" width="30" height="30"/><rect x="364" y="140" width="26" height="40"/><rect x="394" y="156" width="30" height="24"/></g>
+    <path d="M0,214 L420,206 L420,320 L0,320Z" fill="url(#kWalk)"/>
+    <g stroke="#bfa98a" stroke-width="1.4" opacity=".6"><path d="M0,244 L420,236 M0,280 L420,272 M60,214 L20,320 M150,212 L130,320 M240,210 L240,320 M330,208 L350,320"/></g>
+    <g class="rail" stroke="#94a3b8" stroke-width="3" fill="none"><path d="M0,190 L150,186 M0,200 L150,196"/>${[10, 55, 100, 145].map(x => `<line x1="${x}" y1="186" x2="${x}" y2="216"/>`).join('')}</g>
+    <g class="tree">${palm(262, 214, 0.9)}${palm(300, 210, 0.75)}</g>
     ${flowers}
     <rect class="sky-gray" width="420" height="320" fill="#475569"/>
     <rect class="sky-hot" width="420" height="320" fill="url(#kHot)"/>
@@ -1272,29 +1303,22 @@ function sceneSVG(emotion, level){
     <g class="darkclouds" fill="#64748b"><ellipse cx="120" cy="40" rx="50" ry="20"/><ellipse cx="160" cy="30" rx="40" ry="22"/><ellipse cx="250" cy="44" rx="55" ry="20"/><ellipse cx="300" cy="34" rx="36" ry="18"/></g>
     <g class="rain" stroke="#93c5fd" stroke-width="2" stroke-linecap="round">${rain}</g>
     <g class="heat" fill="none" stroke="#fde68a" stroke-width="2.5" opacity=".6"><path d="M90,250 q8,-10 0,-20 q-8,-10 0,-20"/><path d="M270,250 q8,-10 0,-20 q-8,-10 0,-20"/><path d="M310,262 q6,-8 0,-16 q-6,-8 0,-16"/></g>
-    <g class="storm"><ellipse cx="190" cy="36" rx="46" ry="18" fill="#475569"/><ellipse cx="160" cy="42" rx="28" ry="14" fill="#334155"/><ellipse cx="220" cy="42" rx="30" ry="14" fill="#334155"/><path class="bolt" d="M192,52 L182,72 L192,72 L184,92 L202,66 L192,66 L200,52Z" fill="#facc15"/></g>
+    <g class="storm"><ellipse cx="190" cy="30" rx="46" ry="18" fill="#475569"/><ellipse cx="160" cy="36" rx="28" ry="14" fill="#334155"/><ellipse cx="220" cy="36" rx="30" ry="14" fill="#334155"/><path class="bolt" d="M192,46 L182,66 L192,66 L184,86 L202,60 L192,60 L200,46Z" fill="#facc15"/></g>
     <g class="birds" fill="none" stroke="#334155" stroke-width="2" stroke-linecap="round"><g transform="translate(240,70)"><path d="M0,0 q5,-5 10,0 q5,-5 10,0"/></g><g transform="translate(270,92)"><path d="M0,0 q4,-4 8,0 q4,-4 8,0" style="animation-delay:-3s"/></g></g>
     <rect class="sky-dim" width="420" height="320" fill="url(#kDim)"/>
-    <ellipse class="kshadow" cx="175" cy="293" rx="40" ry="8" fill="#14532d" opacity=".35"/>
-    <g transform="translate(175,292) scale(1.18)">
+    <ellipse class="kshadow" cx="175" cy="296" rx="40" ry="8" fill="#6b5a40" opacity=".35"/>
+    <g transform="translate(175,295) scale(1.12)">
       <g class="kidmove" filter="url(#kShadow)">
-        <rect x="-21" y="-52" width="18" height="48" rx="7" fill="url(#kPants)"/><rect x="3" y="-52" width="18" height="48" rx="7" fill="url(#kPants)"/>
-        <ellipse cx="-12" cy="-4" rx="14" ry="6.5" fill="url(#kShoe)"/><ellipse cx="12" cy="-4" rx="14" ry="6.5" fill="url(#kShoe)"/>
-        <path d="M-33,-98 Q-35,-62 -29,-46 L29,-46 Q35,-62 33,-98 Q0,-110 -33,-98Z" fill="url(#kShirt)" stroke="#cbd5e1"/>
-        <rect x="-29" y="-52" width="58" height="8" rx="3" fill="#1e293b"/>
-        <g stroke="#f8fafc" stroke-width="1.8" stroke-linecap="round" class="tzitzit"><path d="M-27,-47 q-2,10 0,20 M-24,-47 q1,10 -1,19 M-21,-47 q-1,9 1,17"/><path d="M27,-47 q2,10 0,20 M24,-47 q-1,10 1,19 M21,-47 q1,9 -1,17"/></g>
-        <path d="M-11,-105 L0,-93 L11,-105" fill="#fff" stroke="#cbd5e1" stroke-width="1.5"/>
-        <circle cx="0" cy="-86" r="1.8" fill="#cbd5e1"/><circle cx="0" cy="-74" r="1.8" fill="#cbd5e1"/><circle cx="0" cy="-62" r="1.8" fill="#cbd5e1"/>
-        <rect x="-8" y="-116" width="16" height="15" rx="5" fill="url(#kSkin)"/>
-        <g class="headg"><g transform="translate(-69,-226) scale(.69)">
-          <circle cx="42" cy="112" r="11" fill="url(#kSkin)" stroke="#c9936a"/><circle cx="158" cy="112" r="11" fill="url(#kSkin)" stroke="#c9936a"/>
-          <circle cx="100" cy="110" r="58" fill="url(#kSkin)" stroke="#c9936a" stroke-width="1.5"/>
-          <path d="M43,100 Q44,46 100,45 Q156,46 157,100 Q146,74 100,71 Q54,74 43,100Z" fill="url(#kHair)"/>
-          ${peyah(-1)}${peyah(1)}
-          ${KIPPAH}
-          <g id="kFace">${F.face}</g>
-          <g id="kFx">${F.fx}</g>
-        </g></g>
+        <rect x="-21" y="-52" width="18" height="46" rx="7" fill="url(#kPants)"/><rect x="3" y="-52" width="18" height="46" rx="7" fill="url(#kPants)"/>
+        <ellipse cx="-12" cy="-5" rx="14" ry="6.5" fill="url(#kShoe)"/><ellipse cx="12" cy="-5" rx="14" ry="6.5" fill="url(#kShoe)"/>
+        <path d="M-34,-98 Q-36,-62 -30,-46 L30,-46 Q36,-62 34,-98 Q0,-110 -34,-98Z" fill="url(#kTee)"/>
+        <path d="M-26,-100 Q-28,-64 -24,-46 L24,-46 Q28,-64 26,-100 Q14,-106 6,-104 L6,-48 L-6,-48 L-6,-104 Q-14,-106 -26,-100Z" fill="url(#kVest)" stroke="#cfc3ad" stroke-width="1.2"/>
+        <path d="M-26,-100 Q-28,-64 -24,-46 L-6,-46 L-6,-104 Q-14,-106 -26,-100Z M26,-100 Q28,-64 24,-46 L6,-46 L6,-104 Q14,-106 26,-100Z" fill="url(#kQuilt)" opacity=".8"/>
+        <line x1="0" y1="-104" x2="0" y2="-48" stroke="#b9ab92" stroke-width="1.5"/>
+        <path d="M-10,-106 Q0,-99 10,-106" fill="none" stroke="#1b2640" stroke-width="4"/>
+        <g stroke="#f8fafc" stroke-width="1.8" stroke-linecap="round" class="tzitzit"><path d="M-25,-47 q-2,10 0,20 M-22,-47 q1,10 -1,19 M-19,-47 q-1,9 1,17"/><path d="M25,-47 q2,10 0,20 M22,-47 q-1,10 1,19 M19,-47 q1,9 -1,17"/></g>
+        <rect x="-8" y="-117" width="16" height="15" rx="5" fill="url(#kSkin)"/>
+        <g class="headg"><g transform="translate(-68,-226) scale(.68)">${kidHead(F)}</g></g>
         ${arm(-1)}${arm(1)}
       </g>
     </g>
@@ -1337,15 +1361,6 @@ const TOOLRENDER = {
       <div class="bigtext" id="thNum">${l == null ? '👆 גע במדחום' : `${esc(T.emotion)} – ${l}`}</div>
       <div class="actions no-print" id="thBtns" style="justify-content:center">${tip.btn}</div>
       ${saveBar('thermometer')}`;
-  },
-  breathing(){
-    const m = BREATH[T.mode];
-    return `<h2>🎈 נושמים יחד</h2><p class="lead">עוקבים אחרי העיגול: כשהוא גדל – שואפים, כשהוא קטן – נושפים</p>
-      <div class="chips" style="justify-content:center">${Object.entries(BREATH).map(([k, v]) => `<button class="chip ${T.mode === k ? 'on' : ''}" data-act="br-mode" data-v="${k}">${v.name}</button>`).join('')}</div>
-      <div class="breath"><div class="circle" id="bcircle"><span id="bcount"></span></div></div>
-      <div class="bigtext" id="bphase">${T.running ? '' : 'מוכנים?'}</div>
-      <p class="muted" style="text-align:center" id="bcycles">${T.cycles ? `סבבים: ${T.cycles}` : ''}</p>
-      <div class="actions" style="justify-content:center"><button class="btn primary" data-act="br-toggle">${T.running ? '⏸ עצירה' : '▶ התחלה'}</button></div>`;
   },
   abc(){
     const Q = ABC_Q.map(q => `<button class="chip" data-act="abc-add" data-v="${esc(q)}">💡 ${esc(q)}</button>`).join('');
@@ -1821,7 +1836,7 @@ function cloudSettings(){
 }
 function liteHome(){
   const sessions = PROBLEMS.reduce((n, p) => n + p.sessions.length, 0);
-  let h = `<section class="hero"><h1>שלום! במה נטפל היום? 👋</h1>
+  let h = `<section class="hero withkid"><div class="heromascot" aria-hidden="true"><div class="hsay">שלום! בוא נתחיל 😊</div>${kidMini('שמחה', 6, 'wave')}</div><h1>שלום! במה נטפל היום? 👋</h1>
     <p>מפות טיפול CBT לבעיות נפוצות בבית הספר היסודי, עוזר לשאלות, סדר עבודה וכלים אינטראקטיביים לילדים.</p>
     <form id="homeask" style="display:flex;gap:8px;margin-top:18px;max-width:720px"><input class="inp" id="homeq" placeholder="💬 שאלו שאלה… למשל: ילד שבוכה כל בוקר בשער" style="flex:1;height:48px;border:0;font-size:16px"><button class="btn primary" type="submit">תשובה</button></form>
     <div class="actions"><a class="btn" href="#/problems">🧭 בחירת בעיה</a><a class="btn" href="#/workflow">🗺️ סדר עבודה</a><a class="btn" href="#/tools">🧰 כלים לילדים</a></div></section>`;
@@ -2958,19 +2973,14 @@ const pickOne = a => a[Math.floor(Math.random() * a.length)];
 // the same Hardal boy as in the thermometer, head only – a small guide who reacts to the game
 function kidMini(emotion, level, cls = ''){
   const F = kidFace(emotion, level);
-  const peyah = d => `<path d="M${100 + 54 * d},92 c${6 * d},10 ${-9 * d},16 ${-2 * d},26 c${7 * d},10 ${-9 * d},16 ${-2 * d},26 c${6 * d},9 ${-7 * d},15 ${-1 * d},23" stroke="#3b2717" stroke-width="6.5" fill="none" stroke-linecap="round"/>`;
-  return `<svg class="kidmini ${cls}" viewBox="20 0 160 196" aria-hidden="true"><defs>
-    <radialGradient id="kSkin" cx=".38" cy=".32" r=".8"><stop offset="0" stop-color="#fde4cb"/><stop offset=".6" stop-color="#f2c8a0"/><stop offset="1" stop-color="#d49d72"/></radialGradient>
-    <radialGradient id="kIris" cx=".35" cy=".35" r=".7"><stop offset="0" stop-color="#a47148"/><stop offset="1" stop-color="#4a2c16"/></radialGradient>
-    <radialGradient id="kKip" cx=".4" cy=".3" r=".9"><stop offset="0" stop-color="#ffffff"/><stop offset=".7" stop-color="#f1efe6"/><stop offset="1" stop-color="#cfcab8"/></radialGradient>
-    <linearGradient id="kHair" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#6b4a33"/><stop offset="1" stop-color="#2e1d12"/></linearGradient></defs>
-    <path d="M36,196 Q40,170 100,166 Q160,170 164,196Z" fill="#fff" stroke="#cbd5e1"/><path d="M88,168 L100,180 L112,168" fill="none" stroke="#cbd5e1" stroke-width="2"/>
-    <circle cx="42" cy="112" r="11" fill="url(#kSkin)" stroke="#c9936a"/><circle cx="158" cy="112" r="11" fill="url(#kSkin)" stroke="#c9936a"/>
-    <circle cx="100" cy="110" r="58" fill="url(#kSkin)" stroke="#c9936a" stroke-width="1.5"/>
-    <path d="M43,100 Q44,46 100,45 Q156,46 157,100 Q146,74 100,71 Q54,74 43,100Z" fill="url(#kHair)"/>${peyah(-1)}${peyah(1)}${KIPPAH}
-    <g>${F.face}</g><g>${F.fx}</g></svg>`;
-}
-const gGuide = (say, emo = 'שמחה', lvl = 4) => `<div class="gguide"><div class="gface">${kidMini(emo, lvl)}</div><div class="gsay pop">${say}</div></div>`;
+  return `<svg class="kidmini ${cls}" viewBox="14 0 172 206" aria-hidden="true"><defs>${KID_DEFS}</defs>
+    <path d="M30,206 Q34,176 100,170 Q166,176 170,206Z" fill="url(#kTee)"/>
+    <path d="M44,206 Q48,180 90,174 L90,206Z M156,206 Q152,180 110,174 L110,206Z" fill="url(#kVest)" stroke="#cfc3ad"/>
+    <path d="M44,206 Q48,180 90,174 L90,206Z M156,206 Q152,180 110,174 L110,206Z" fill="url(#kQuilt)" opacity=".8"/>
+    <path d="M86,172 Q100,182 114,172" fill="none" stroke="#1b2640" stroke-width="5"/>
+    <rect x="88" y="160" width="24" height="16" rx="7" fill="url(#kSkin)"/>
+    ${kidHead(F)}</svg>`;
+}const gGuide = (say, emo = 'שמחה', lvl = 4) => `<div class="gguide"><div class="gface">${kidMini(emo, lvl)}</div><div class="gsay pop">${say}</div></div>`;
 function gConfetti(){
   const box = document.createElement('div'); box.className = 'gconf';
   box.innerHTML = Array.from({length: 26}, (_, i) => `<i style="left:${Math.random() * 100}%;animation-delay:${(Math.random() * .6).toFixed(2)}s;background:hsl(${Math.random() * 360} 85% 60%)"></i>`).join('');
@@ -3091,7 +3101,7 @@ function gamesView(){
   const list = GAMES();
   if (!list.length) return {title: 'משחקים טיפוליים', html: '<div class="empty">⏳ המשחקים נטענים…</div>'};
   const byArea = {}; list.forEach(g => { const a = (P[g.id] && P[g.id].area) || g.area || 'עוד'; (byArea[a] = byArea[a] || []).push(g); });
-  return {title: 'משחקים טיפוליים', html: `<div class="note" style="margin:4px 0 16px">🎲 לכל בעיה טיפולית – משחק משלב (CBT, ויסות וגוף, ערכים וחוזקות, משחק ויצירה) עם כמה שלבים. לכל משחק יש <b>קישור נפרד</b> – לוחצים ״🔗 קישור״ והוא מועתק. בתוך כל משחק יש ״📋 למנחה״ עם מטרות ודרך הפעלה.</div>
+  return {title: 'משחקים טיפוליים', html: `${gGuide('בחר משחק – ונשחק ביחד! 🎲', 'שמחה', 7)}<div class="note" style="margin:4px 0 16px">🎲 לכל בעיה טיפולית – משחק משלב (CBT, ויסות וגוף, ערכים וחוזקות, משחק ויצירה) עם כמה שלבים. לכל משחק יש <b>קישור נפרד</b> – לוחצים ״🔗 קישור״ והוא מועתק. בתוך כל משחק יש ״📋 למנחה״ עם מטרות ודרך הפעלה.</div>
     ${Object.entries(byArea).map(([a, gs]) => `<h2 class="sec">${esc(a)}</h2><div class="grid">${gs.map(g => `<div class="card gamecard"><a href="#/game/${g.id}" style="text-decoration:none;color:inherit;display:flex;flex-direction:column;gap:6px"><span class="emoji">${g.icon}</span><span class="name">${esc(g.title)}</span><span class="sub">${esc(P[g.id] ? P[g.id].name : g.tagline || '')}</span><span class="sub">${g.stages.map(s => GTYPE[s.type] || '').join(' · ')}</span></a><div class="actions" style="margin-top:6px"><a class="btn sm primary" href="#/game/${g.id}">▶ למשחק</a><button class="btn sm" data-act="g-link" data-id="${g.id}">🔗 קישור</button></div></div>`).join('')}</div>`).join('')}
     <h2 class="sec">🧩 וגם</h2><div class="grid">${toolCard(TOOL.abc)}</div>`};
 }
