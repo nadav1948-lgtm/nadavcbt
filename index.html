@@ -640,6 +640,7 @@ mark#hl{background:#ffda2a;color:#171717;padding:2px 3px;border-radius:4px;box-s
 
 
 
+
 <script>
 /* CBT app – school counseling. Plain JS, no dependencies. */
 (function(){
@@ -970,7 +971,7 @@ function ui(){
 }
 
 /* ================= routing & shell ================= */
-const NAV = [['home','🏠','בית'],['ask','💬','שאל שאלה'],['problems','🧭','מנווט בעיות'],['students','🧒','תלמידים'],['workflow','🗺️','סדר עבודה'],['roles','👥','מי פונה למי'],['circ','📜','חוזרי מנכ״ל'],['tools','🧰','כלים לילדים'],['tracks','🧭','טיפול מובנה'],['games','🎲','משחקים טיפוליים'],['library','📚','ספרייה'],['settings','⚙️','הגדרות']];
+const NAV = [['home','🏠','בית'],['ask','💬','שאל שאלה'],['problems','🧭','מנווט בעיות'],['students','🧒','תלמידים'],['workflow','🗺️','סדר עבודה'],['roles','👥','מי פונה למי'],['circ','📜','חוזרי מנכ״ל'],['tools','🧰','כלים לילדים'],['tracks','🧭','טיפול מובנה'],['groups','👥','הנחיית קבוצות'],['games','🎲','משחקים טיפוליים'],['library','📚','ספרייה'],['settings','⚙️','הגדרות']];
 function route(){ const h = location.hash.replace(/^#\/?/, '').split('/').map(decodeURIComponent); return {r: h[0] || 'home', id: h[1], sub: h[2], x: h[3]}; }
 let timers = [];
 function clearTimers(){ timers.forEach(t => { clearTimeout(t); clearInterval(t); }); timers = []; }
@@ -989,7 +990,7 @@ function render(){
   document.body.classList.toggle('locked', isLocked());
   if (isLocked()) { const o = lockView(); $('#title').textContent = ''; $('#view').innerHTML = `<div class="page">${o.html}</div>`; document.title = 'CBT בבית הספר'; return; }
   if (WEB && !ARTIFACT && !LITE && !PROBLEMS.length) { $('#title').textContent = ''; $('#view').innerHTML = `<div class="empty" style="padding-top:120px"><span class="big">⏳</span>${Cloud.status === 'error' ? esc(Cloud.err) + ' <br><br><button class="btn primary" data-act="cloud-retry">נסו שוב</button>' : 'טוען את התוכן מ-OneDrive…'}</div>`; return; }
-  const views = LITE ? {home: liteHome, problems, problem: problemView, tools, tool: toolView, settings: liteSettings, ask, workflow, roles: rolesView, circ: circView, circsrc: circSrcView, libsrc: libSrcView, circask: circAskView, find: findView, more: moreView, games: gamesView, game: gameView, tracks: tracksView, track: trackView} : {home, problems, problem: problemView, students, student: studentView, tools, tool: toolView, library, settings, ask, workflow, roles: rolesView, circ: circView, circsrc: circSrcView, libsrc: libSrcView, circask: circAskView, find: findView, more: moreView, games: gamesView, game: gameView, tracks: tracksView, track: trackView};
+  const views = LITE ? {home: liteHome, problems, problem: problemView, tools, tool: toolView, settings: liteSettings, ask, workflow, roles: rolesView, circ: circView, circsrc: circSrcView, libsrc: libSrcView, circask: circAskView, find: findView, more: moreView, games: gamesView, game: gameView, tracks: tracksView, track: trackView, groups: groupsView} : {home, problems, problem: problemView, students, student: studentView, tools, tool: toolView, library, settings, ask, workflow, roles: rolesView, circ: circView, circsrc: circSrcView, libsrc: libSrcView, circask: circAskView, find: findView, more: moreView, games: gamesView, game: gameView, tracks: tracksView, track: trackView, groups: groupsView};
   const fn = views[R.r] || home;
   const out = fn(R);
   $('#title').textContent = out.title;
@@ -1645,7 +1646,8 @@ const SYN = {
   'phobias':['בורח מהחצר','בורחת מהחצר','רואה חתול','רואה יונה','מפחדת מבלונים','מפחד מבלונים','פחד מבלונים','פחד','פוביה','מפחד מכלבים','כלב','חושך','רעשים','הקאה','מחטים','זריקה','מעלית','חרקים','דבורה','פחד מ'],
   'ocd':['טקס','טקסים','שוטף ידיים','רוחץ ידיים','בודק שוב','סופר','מסדר','מושלם','נקיון','חיידקים','מחשבות טורדניות','כפייתי','אובססיבי','ocd','חייב שיהיה'],
   'anger':['כעס','כועס','מתפרץ','התפרצות','התפרצויות','צועק','מכה','מרביץ','זורק','בועט','מקלל','עצבים','עצבני','נפיץ','משתולל','מאבד שליטה','ויסות','התקף זעם','טריקת דלת','אלים','אלימות'],
-  'social-rejection':['מריבות חוזרות','מריבות','מסתכסך','מסתכסכת','מסתכסכים','מסתכסך עם','רב עם','רבה עם','רבים איתו','רבים איתה','מריבות עם','מריבות בהפסקה','מריבות עם חברים','לא מסתדר עם הכיתה','לא מסתדרת עם הכיתה','לא מסתדר עם הילדים','לא מסתדרת עם הילדים','לא מסתדר עם חברים','לא מסתדרת עם חברים','לא מסתדר עם בני הכיתה','בעיות חברתיות','קשיים חברתיים','קושי חברתי','סכסוכים עם','סכסוך עם','ויכוחים עם','מתווכח עם','לא יודע להפסיד','לא יודעת להפסיד','לא מקבל תור','ילדים מתרחקים','מתרחקים ממנו','מתרחקים ממנה','אין חברים','אין לו חברים','לבד בהפסקה','לא משחקים איתו','דחוי','דחייה','בודד','בדידות','לא מקבלים אותו','כישורים חברתיים','לא יודע להשתלב','מתבודד','לא מזמינים'],
+  'social-skills':['מיומנויות חברתיות','כישורים בין אישיים','אימון מיומנויות','להצטרף למשחק','לא יודע איך להצטרף','לפתוח שיחה','לנהל שיחה','רמזים חברתיים','לא קורא רמזים','שפת גוף','לא מחכה לתור','לחכות לתור','קוטע אחרים','מדבר רק על עצמו','לא מקשיב לחברים','לשתף פעולה','לא יודע לשתף','לא משתף במשחק','עבודה בקבוצה','משתלט על המשחק','לא מפסיד בכבוד','עוזב משחק כשמפסיד','להגיד לא','לבקש סליחה','מרחב אישי','קרוב מדי','נקודת מבט','פתרון בעיות חברתי'],
+  'social-rejection':['מריבות חוזרות','מריבות','מסתכסך','מסתכסכת','מסתכסכים','מסתכסך עם','רב עם','רבה עם','רבים איתו','רבים איתה','מריבות עם','מריבות בהפסקה','מריבות עם חברים','לא מסתדר עם הכיתה','לא מסתדרת עם הכיתה','לא מסתדר עם הילדים','לא מסתדרת עם הילדים','לא מסתדר עם חברים','לא מסתדרת עם חברים','לא מסתדר עם בני הכיתה','בעיות חברתיות','קשיים חברתיים','קושי חברתי','סכסוכים עם','סכסוך עם','ויכוחים עם','מתווכח עם','לא יודע להפסיד','לא יודעת להפסיד','לא מקבל תור','ילדים מתרחקים','מתרחקים ממנו','מתרחקים ממנה','אין חברים','אין לו חברים','לבד בהפסקה','לא משחקים איתו','דחוי','דחייה','בודד','בדידות','לא מקבלים אותו','לא יודע להשתלב','מתבודד','לא מזמינים'],
   'bullying':['מחרימים אותו','חרם','וואטסאפ','מציקים','הצקות','מציק','בריונות','בריון','חרם','מחרימים','צוחקים עליו','משפילים','מכים אותו','קבוצת וואטסאפ','ברשת','שיימינג','מתעללים','פגיעה חברתית','נפגע'],
   'self-esteem':['ערך עצמי','דימוי עצמי','ביטחון עצמי','לא מאמין בעצמו','אני טיפש','אני לא שווה','אני לא מצליח','מוותר','פוחד לנסות','ביקורת עצמית','מסוגלות'],
   'low-mood':['לא רוצה לחיות','רוצה למות','עצוב','עצבות','דיכאון','מדוכא','אין חשק','לא נהנה','בוכה הרבה','מסתגר','עייף','אין כוח','חסר תקווה','מצב רוח','ירוד'],
@@ -3377,8 +3379,15 @@ function trStepHTML(t, s, D){
   return '';
 }
 function trStepDone(s, D){ const d = D[s.id]; if (!d) return false; return Object.values(d).some(x => x && (typeof x !== 'object' || Object.keys(x).length)); }
-function tracksView(){
-  const list = TRACKS();
+function groupsView(){
+  const all = TRACKS().filter(t => t.group), guide = all.find(t => t.id === 'grp-guide'), list = all.filter(t => t.id !== 'grp-guide');
+  return {title: 'הנחיית קבוצות', html: `${gGuide('בקבוצה לומדים אחד מהשני – בוא נבנה קבוצה טובה! 👥', 'שמחה', 6)}
+    <div class="note" style="margin:4px 0 16px">👥 מדור להנחיית קבוצות ילדים ונוער: המדריך המלא (בנייה, מיון, חוזה, שלבי קבוצה, מבנה מפגש, מיומנויות מנחה, מצבים מאתגרים, הערכה וסיום) ומתווים טיפוליים קבוצתיים לפי נושאים – כל מתווה עם מיון, פנייה להורים, מפגשים מפורטים, מדדים לפני ואחרי ומעקב. לכל עמוד יש קישור משלו.</div>
+    ${guide ? `<a class="card" href="#/track/${guide.id}" style="margin-bottom:16px;border:2px solid var(--brand)"><span class="emoji">${guide.icon || '👥'}</span><span class="name">${esc(guide.title)}</span><span class="sub">${guide.steps.length} פרקים · מתחילים כאן</span></a>` : ''}
+    <h2 class="sec">📚 מתווים טיפוליים קבוצתיים לפי נושאים</h2>
+    ${list.length ? `<div class="grid">${list.map(t => `<a class="card" href="#/track/${t.id}"><span class="emoji">${t.icon || '👥'}</span><span class="name">${esc(t.title)}</span><span class="sub">${esc(t['for'] || '')}</span><span class="sub">${(t.steps.find(s => s.kind === 'sessions') || {sessions: []}).sessions.length} מפגשים</span></a>`).join('')}</div>` : '<div class="empty">⏳ המתווים נטענים…</div>'}`};
+}
+function tracksView(){  const list = TRACKS().filter(t => !t.group);
   return {title: 'טיפול מובנה', html: `${gGuide('בחר בעיה, ונעבור יחד שלב אחרי שלב – מהאבחון ועד סיום הטיפול 🧭', 'רוגע', 3)}
     <div class="note" style="margin:4px 0 16px">🧭 לכל בעיה – מסלול טיפול מובנה ואינטראקטיבי: אבחון והערכה, הסבר פסיכו-חינוכי, פורמולציה (5P ומעגל משמר), מטרות, טכניקות, תוכנית פעולה ואקטיבציה, פרוטוקול מפגשים ומניעת הישנות. ${active() ? `הכול נשמר בתיק של <b>${esc(active().alias)}</b>.` : 'בחרו תלמיד בראש המסך כדי שהמילוי יישמר בתיק שלו (בלי תלמיד – נשמר ב״כללי״).'}</div>
     ${list.length ? `<div class="grid">${list.map(t => `<a class="card" href="#/track/${t.id}"><span class="emoji">${t.icon || '🧭'}</span><span class="name">${esc(t.title)}</span><span class="sub">${esc(t.for || '')} · ${t.steps.length} שלבים</span></a>`).join('')}</div>` : '<div class="empty">⏳ המסלולים נטענים…</div>'}`};
@@ -3389,8 +3398,8 @@ function trackView(R){
   if (R.sub === 'print') return {title: t.title, html: `<a class="back no-print" href="#/track/${t.id}">→ חזרה למסלול</a><h1>${esc(t.title)}</h1>${active() ? `<p>תלמיד: ${esc(active().alias)}</p>` : ''}${t.steps.map((s, i) => `<div class="panel trprint"><h3>${i + 1}. ${s.icon || ''} ${esc(s.title)}</h3>${trStepHTML(t, s, D)}</div>`).join('')}`, after(){ setTimeout(() => window.print(), 400); }};
   const i = Math.min(t.steps.length - 1, Math.max(0, R.sub ? +R.sub - 1 : 0)), s = t.steps[i];
   const done = t.steps.filter(x => trStepDone(x, D)).length;
-  return {title: t.title, html: `<a class="back no-print" href="#/tracks">→ כל המסלולים</a>
-    <div class="banner" style="--h:${hueOf(t.title)}"><span class="emoji">${t.icon || '🧭'}</span><div><div style="opacity:.85;font-size:14px">${esc(t.for || '')}${active() ? ' · ⭐ ' + esc(active().alias) : ''}</div><h1>${esc(t.title)}</h1></div>
+  return {title: t.title, html: `<a class="back no-print" href="#/${t.group ? 'groups' : 'tracks'}">→ ${t.group ? 'הנחיית קבוצות' : 'כל המסלולים'}</a>
+    <div class="banner" style="--h:${hueOf(t.title)}"><span class="emoji">${t.icon || '🧭'}</span><div><div style="opacity:.85;font-size:14px">${esc(t['for'] || '')}${active() ? ' · ⭐ ' + esc(active().alias) : ''}</div><h1>${esc(t.title)}</h1></div>
       <div class="actions no-print">${P[t.id] ? `<a class="btn sm" href="#/problem/${t.id}">🧭 מפת הטיפול</a>` : ''}${GAME(t.id) ? `<a class="btn sm" href="#/game/${t.id}">🎲 המשחק</a>` : ''}<a class="btn sm" href="#/track/${t.id}/print">🖨️ סיכום להדפסה</a></div></div>
     ${t.intro && i === 0 ? `<p class="lead" style="text-align:start">${esc(t.intro)}</p>` : ''}
     <div class="trlayout"><nav class="trsteps no-print"><div class="gprog"><i style="width:${Math.round(100 * done / t.steps.length)}%"></i></div>${t.steps.map((x, j) => `<a href="#/track/${t.id}/${j + 1}" class="${j === i ? 'on' : ''} ${trStepDone(x, D) ? 'ok' : ''}"><span class="n">${trStepDone(x, D) ? '✓' : j + 1}</span>${x.icon || ''} ${esc(x.title)}</a>`).join('')}</nav>
