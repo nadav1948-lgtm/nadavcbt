@@ -526,6 +526,82 @@ mark#hl{background:#ffda2a;color:#171717;padding:2px 3px;border-radius:4px;box-s
 @keyframes k-wave{from{transform:translateX(0)}to{transform:translateX(-40px)}}
 @keyframes k-frond{0%,100%{transform:rotate(-3deg)}50%{transform:rotate(3deg)}}
 @media (max-width:700px){.hero.withkid{padding-inline-end:24px;padding-top:150px}.heromascot{inset-inline-end:auto;inset-inline-start:50%;transform:translateX(50%);top:8px;bottom:auto;width:130px}.heromascot .kidmini{width:110px}.hsay{display:none}}
+/* ---------- visual formulation: the maintaining cycle ---------- */
+.cyc{margin:6px 0 10px}
+.ctitle{font-weight:800;font-size:18px;text-align:center;margin-bottom:6px}
+.cycwrap{position:relative;width:100%;max-width:620px;aspect-ratio:1/0.92;margin:0 auto}
+.carrows{position:absolute;inset:0;width:100%;height:100%;overflow:visible;color:#94a3b8}
+.carc{fill:none;stroke:currentColor;stroke-width:1.1;stroke-dasharray:3 2;animation:c-flow 1.6s linear infinite}
+@keyframes c-flow{to{stroke-dashoffset:-10}}
+.cnode{position:absolute;left:var(--x);top:var(--y);transform:translate(-50%,-50%);width:31%;background:color-mix(in srgb,var(--c) 70%,var(--panel));color:var(--ink);border:2px solid var(--c);border-radius:16px;padding:8px 10px;box-shadow:0 4px 12px rgba(15,23,42,.12);display:flex;flex-direction:column;gap:3px;font-size:14px;line-height:1.35;transition:transform .3s,opacity .5s,box-shadow .3s}
+.cnode b{font-size:13.5px}
+.cnode .muted{font-style:italic}
+.cnode.cut{box-shadow:0 0 0 4px #ef4444;transform:translate(-50%,-50%) scale(1.05)}
+.cnode.cut::after{content:'✂️ שוברים כאן';position:absolute;bottom:-12px;inset-inline-start:50%;transform:translateX(50%);background:#ef4444;color:#fff;font-size:11px;font-weight:700;border-radius:99px;padding:1px 8px;white-space:nowrap}
+.ccut{position:absolute;top:-12px;inset-inline-end:-10px;border:0;background:#fff;border-radius:50%;width:28px;height:28px;box-shadow:0 2px 6px rgba(0,0,0,.25);cursor:pointer;font-size:15px;animation:k-pop .5s}
+.ccenter{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:30%;text-align:center;font-size:13.5px;font-weight:700;color:var(--muted);line-height:1.4}
+.ccenter .cnew{display:none;color:#15803d}
+.cnode.nb{opacity:0;pointer-events:none}
+.cyc.showbetter .cnode.no{opacity:0;pointer-events:none}
+.cyc.showbetter .cnode.nb{opacity:1;pointer-events:auto}
+.cyc.showbetter .ccenter .cold{display:none}.cyc.showbetter .ccenter .cnew{display:block}
+.cyc.showbetter .carrows{color:#22c55e}
+.cbreaks{max-width:720px;margin:14px auto 8px;display:grid;gap:8px}
+.cbreaks h4{margin:0 0 2px}
+.cbreak{display:flex;gap:10px;align-items:flex-start;background:var(--panel);border:2px solid var(--line);border-radius:14px;padding:10px 12px;transition:border-color .3s,background .3s}
+.cbreak.on{border-color:#ef4444;background:color-mix(in srgb,#ef4444 8%,var(--panel))}
+.cbreak .cbn{flex:none;width:26px;height:26px;border-radius:50%;background:#ef4444;color:#fff;display:grid;place-items:center;font-weight:800;font-size:14px}
+.cbreak .btn{margin-top:6px}
+@media (max-width:640px){
+  .cycwrap{aspect-ratio:auto;display:flex;flex-direction:column;gap:22px;padding-bottom:6px}
+  .carrows{display:none}
+  .cnode{position:relative;left:auto;top:auto;transform:none;width:100%}
+  .cnode.cut{transform:scale(1.02)}
+  .cnode.no:not(:last-of-type)::before,.cnode.nb::before{content:'⬇';position:absolute;bottom:-21px;inset-inline-start:50%;color:var(--muted);font-size:16px}
+  .cyc:not(.showbetter) .cnode.nb,.cyc.showbetter .cnode.no{display:none}
+  .ccenter{position:relative;left:auto;top:auto;transform:none;width:100%;order:99;background:var(--bg);border:2px dashed var(--line);border-radius:12px;padding:8px}
+  .ccenter::before{content:'🔄 ';}
+}
+/* ---------- structured treatment tracks ---------- */
+.trlayout{display:grid;grid-template-columns:260px 1fr;gap:14px;align-items:start}
+.trsteps{position:sticky;top:70px;display:grid;gap:4px;background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:10px}
+.trsteps a{display:flex;gap:8px;align-items:center;text-decoration:none;color:var(--ink);padding:7px 8px;border-radius:10px;font-size:14.5px}
+.trsteps a .n{flex:none;width:22px;height:22px;border-radius:50%;background:var(--line);display:grid;place-items:center;font-size:12px;font-weight:800}
+.trsteps a.on{background:var(--brand-soft);font-weight:700}
+.trsteps a.ok .n{background:#22c55e;color:#fff}
+.trmain h2{margin-top:0}
+.trp{max-width:70ch;line-height:1.7}
+.trpts li{margin-bottom:4px}
+.trchecks{display:grid;gap:6px}
+.trcheck{display:flex;gap:8px;align-items:flex-start;padding:8px 10px;border:1px solid var(--line);border-radius:10px;cursor:pointer}
+.trcheck.on{background:color-mix(in srgb,#22c55e 12%,var(--panel));border-color:#22c55e}
+.trscale{display:grid;gap:8px;max-width:680px}
+.trsrow{display:grid;grid-template-columns:1fr 160px 34px;gap:10px;align-items:center}
+.trsrow b{font-size:18px;text-align:center}
+.trsends{display:flex;justify-content:space-between;color:var(--muted);font-size:13px}
+.fivep{display:grid;grid-template-columns:1fr 40px 1.2fr 40px 1fr;grid-template-rows:auto auto auto;gap:8px;align-items:stretch}
+.p5{border-radius:14px;border:2px solid var(--c);background:color-mix(in srgb,var(--c) 35%,var(--panel));padding:8px;display:flex;flex-direction:column;gap:6px}
+.p5 textarea{min-height:90px;background:var(--panel)}
+.p5-predisposing{grid-column:1;grid-row:1}.p5-precipitating{grid-column:1;grid-row:3}
+.p5-presenting{grid-column:3;grid-row:1/4;justify-content:center}.p5-presenting textarea{min-height:170px}
+.p5-perpetuating{grid-column:5;grid-row:1}.p5-protective{grid-column:5;grid-row:3}
+.p5arrow{display:grid;place-items:center;font-size:24px;color:var(--muted)}
+.p5arrow.a1{grid-column:2;grid-row:1/4}.p5arrow.a2{grid-column:4;grid-row:1/4}.p5arrow.a3{display:none}
+.trcyin{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:8px;margin-bottom:10px}
+.trideas{margin:6px 0}
+.trweek{display:grid;grid-template-columns:repeat(6,1fr);gap:6px}
+.trday{border:2px solid var(--line);border-radius:12px;padding:6px;min-height:120px;display:flex;flex-direction:column;gap:4px;background:var(--panel)}
+.trday.sel{border-color:var(--brand-text)}
+.trdayh{border:0;background:var(--bg);border-radius:8px;font-weight:800;padding:4px;cursor:pointer;color:var(--ink);font-family:inherit}
+.tract{font-size:13px;display:flex;gap:4px;align-items:flex-start;background:var(--bg);border-radius:8px;padding:4px}
+.tract.done{text-decoration:line-through;opacity:.7}
+.tract .x{border:0;background:none;cursor:pointer;margin-inline-start:auto;color:var(--muted)}
+.trcards{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:10px}
+.trcard{background:var(--panel);border:1px solid var(--line);border-inline-start:5px solid var(--brand);border-radius:14px;padding:10px 12px}
+.trcard p{margin:6px 0 0;line-height:1.6}
+.trsess.done summary{color:#15803d}
+@media (max-width:900px){.trlayout{grid-template-columns:1fr}.trsteps{position:static;grid-auto-flow:column;grid-auto-columns:max-content;overflow-x:auto}.trweek{grid-template-columns:repeat(2,1fr)}
+  .fivep{grid-template-columns:1fr;grid-template-rows:none}.p5,.p5-presenting{grid-column:1!important;grid-row:auto!important}.p5arrow{display:none}.trsrow{grid-template-columns:1fr 110px 30px}}
 </style>
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="apple-touch-icon" href="icon-192.png">
@@ -894,7 +970,7 @@ function ui(){
 }
 
 /* ================= routing & shell ================= */
-const NAV = [['home','🏠','בית'],['ask','💬','שאל שאלה'],['problems','🧭','מנווט בעיות'],['students','🧒','תלמידים'],['workflow','🗺️','סדר עבודה'],['roles','👥','מי פונה למי'],['circ','📜','חוזרי מנכ״ל'],['tools','🧰','כלים לילדים'],['games','🎲','משחקים טיפוליים'],['library','📚','ספרייה'],['settings','⚙️','הגדרות']];
+const NAV = [['home','🏠','בית'],['ask','💬','שאל שאלה'],['problems','🧭','מנווט בעיות'],['students','🧒','תלמידים'],['workflow','🗺️','סדר עבודה'],['roles','👥','מי פונה למי'],['circ','📜','חוזרי מנכ״ל'],['tools','🧰','כלים לילדים'],['tracks','🧭','טיפול מובנה'],['games','🎲','משחקים טיפוליים'],['library','📚','ספרייה'],['settings','⚙️','הגדרות']];
 function route(){ const h = location.hash.replace(/^#\/?/, '').split('/').map(decodeURIComponent); return {r: h[0] || 'home', id: h[1], sub: h[2], x: h[3]}; }
 let timers = [];
 function clearTimers(){ timers.forEach(t => { clearTimeout(t); clearInterval(t); }); timers = []; }
@@ -913,7 +989,7 @@ function render(){
   document.body.classList.toggle('locked', isLocked());
   if (isLocked()) { const o = lockView(); $('#title').textContent = ''; $('#view').innerHTML = `<div class="page">${o.html}</div>`; document.title = 'CBT בבית הספר'; return; }
   if (WEB && !ARTIFACT && !LITE && !PROBLEMS.length) { $('#title').textContent = ''; $('#view').innerHTML = `<div class="empty" style="padding-top:120px"><span class="big">⏳</span>${Cloud.status === 'error' ? esc(Cloud.err) + ' <br><br><button class="btn primary" data-act="cloud-retry">נסו שוב</button>' : 'טוען את התוכן מ-OneDrive…'}</div>`; return; }
-  const views = LITE ? {home: liteHome, problems, problem: problemView, tools, tool: toolView, settings: liteSettings, ask, workflow, roles: rolesView, circ: circView, circsrc: circSrcView, libsrc: libSrcView, circask: circAskView, find: findView, more: moreView, games: gamesView, game: gameView} : {home, problems, problem: problemView, students, student: studentView, tools, tool: toolView, library, settings, ask, workflow, roles: rolesView, circ: circView, circsrc: circSrcView, libsrc: libSrcView, circask: circAskView, find: findView, more: moreView, games: gamesView, game: gameView};
+  const views = LITE ? {home: liteHome, problems, problem: problemView, tools, tool: toolView, settings: liteSettings, ask, workflow, roles: rolesView, circ: circView, circsrc: circSrcView, libsrc: libSrcView, circask: circAskView, find: findView, more: moreView, games: gamesView, game: gameView, tracks: tracksView, track: trackView} : {home, problems, problem: problemView, students, student: studentView, tools, tool: toolView, library, settings, ask, workflow, roles: rolesView, circ: circView, circsrc: circSrcView, libsrc: libSrcView, circask: circAskView, find: findView, more: moreView, games: gamesView, game: gameView, tracks: tracksView, track: trackView};
   const fn = views[R.r] || home;
   const out = fn(R);
   $('#title').textContent = out.title;
@@ -1049,10 +1125,10 @@ function problemView(R){
   else if (tab === 'roles') body = `<div class="panel"><h3>👥 מי עושה מה במקרה הזה</h3>${mapRolesHTML(p)}</div>`;
   else if (tab === 'tools') body = `<div class="grid">${(p.tools || []).filter(t => TOOL[t]).map(t => toolCard(TOOL[t])).join('') || '<p class="muted">—</p>'}</div>`;
   else if (tab === 'library') body = lib.length ? `<p class="muted">${lib.length} פריטים, הרלוונטיים ביותר קודם.${lib.length > 60 ? ' מוצגים 60 הראשונים.' : ''}</p><div class="list">${lib.slice(0, 60).map(libItem).join('')}</div>` : `<div class="empty">${LIBDATA.length ? 'לא נמצאו חומרים מתאימים בספרייה.' : '📚 חומרי הספרייה לנושא הזה זמינים במחשב, בקיצור הדרך ״ספריית לימודי CBT״.'}</div>`;
-  else body = (sec[tab] || sec.overview) + (tab === 'overview' ? sec.sources : '');
+  else body = (tab === 'overview' && window.CYCLES && CYCLES[p.id] ? `<div class="panel"><h3>🔄 המעגל שמשמר את הבעיה – ואיך שוברים אותו</h3>${cycleHTML(CYCLES[p.id])}</div>` : '') + (sec[tab] || sec.overview) + (tab === 'overview' ? sec.sources : '');
   const h = `<a class="back no-print" href="#/problems">→ כל הבעיות</a>
     <div class="banner" style="--h:${hueOf(p.area)}"><span class="emoji">${p.icon}</span><div><div style="opacity:.85;font-size:14px">${esc(p.area)} · כיתות א–ו</div><h1>${esc(p.name)}</h1></div>
-    <div class="actions no-print">${GAME(p.id) ? `<a class="btn primary" href="#/game/${p.id}">🎲 המשחק</a>` : ''}<button class="btn" data-act="planfor" data-id="${p.id}">📋 תוכנית לתלמיד</button><button class="btn" data-act="printproblem" data-id="${p.id}">🖨️ הדפסה</button></div></div>
+    <div class="actions no-print">${TRACK(p.id) ? `<a class="btn primary" href="#/track/${p.id}">🧭 טיפול מובנה</a>` : ''}${GAME(p.id) ? `<a class="btn primary" href="#/game/${p.id}">🎲 המשחק</a>` : ''}<button class="btn" data-act="planfor" data-id="${p.id}">📋 תוכנית לתלמיד</button><button class="btn" data-act="printproblem" data-id="${p.id}">🖨️ הדפסה</button></div></div>
     <nav class="tabs">${TABS.map(([k, l]) => `<a href="#/problem/${p.id}/${k}" class="${k === tab ? 'on' : ''}">${l}</a>`).join('')}</nav>${body}`;
   return {title:p.name, html:h, after(){ if (tab === 'print') setTimeout(() => { window.print(); history.back(); }, 300); }};
 }
@@ -1164,7 +1240,7 @@ function initTool(id, itemId){
   if (id === 'ladder') { const ex = a && itemId && a.ladders.find(l => l.id === itemId); Object.assign(T, ex ? JSON.parse(JSON.stringify(ex)) : {id:null, title:'', steps:[]}); }
   if (id === 'rewards') { const ex = a && itemId && a.rewards.find(l => l.id === itemId); Object.assign(T, ex ? JSON.parse(JSON.stringify(ex)) : {id:null, title:'', goal:10, filled:0, prize:'', sticker:'⭐'}); }
   if (id === 'pmr') Object.assign(T, {i:-1, phase:'', running:false});
-  if (id === 'abc') Object.assign(T, {event:'', interp:'', emo:'פחד', lvl:7, react:'', alts:[]});
+  if (id === 'abc') Object.assign(T, {event:'', interp:'', emo:'פחד', lvl:7, react:'', result:'', alts:[]});
   if (id === 'copingcard') { const ex = a && itemId && a.cards.find(l => l.id === itemId); Object.assign(T, ex ? JSON.parse(JSON.stringify(ex)) : {id:null, feeling:'לחוץ', items:[], color:'#fde2a6'}); }
 }
 const lvlColor = l => `hsl(${130 - l * 13} 65% 45%)`;
@@ -1372,7 +1448,7 @@ const TOOLRENDER = {
         <div class="abcarr">◀</div>
         <div class="abcbox r"><h3><span class="L">ר</span> רגש</h3>${abcRow(-1)}</div>
         <div class="abcarr">◀</div>
-        <div class="abcbox t"><h3><span class="L">ת</span> תגובה</h3><p class="muted">מה עשיתי, או מה רציתי לעשות?</p><textarea class="inp" data-abc="react" data-i="-1" placeholder="למשל: הפסקתי להקשיב והסתכלתי מהחלון">${esc(T.react)}</textarea></div>
+        <div class="abcbox t"><h3><span class="L">ת</span> תגובה</h3><p class="muted">מה עשיתי, או מה רציתי לעשות?</p><textarea class="inp" data-abc="react" data-i="-1" placeholder="למשל: הפסקתי להקשיב והסתכלתי מהחלון">${esc(T.react)}</textarea><p class="muted" style="margin:6px 0 4px">ומה קרה אחר כך?</p><textarea class="inp" data-abc="result" data-i="-1" style="min-height:60px" placeholder="למשל: לא ידעתי את החומר, ובפעם הבאה שוב לא הצבעתי">${esc(T.result || '')}</textarea></div>
       </div>
       <h2 class="sec" style="margin-top:22px">🔄 ואולי אפשר לפרש את זה אחרת?</h2>
       <div class="chips no-print" style="margin-bottom:12px">${Q}</div>
@@ -1383,6 +1459,7 @@ const TOOLRENDER = {
         <button class="btn ghost sm no-print" data-act="abc-del" data-i="${i}" title="מחיקה">✕</button></div>`).join('')}
       <div class="actions no-print" style="justify-content:center"><button class="btn primary" data-act="abc-add">＋ פרשנות נוספת</button></div>
       <h2 class="sec">📊 איך הפרשנות משנה את הרגש</h2><div id="abcBars">${abcBars()}</div>
+      <h2 class="sec">🧩 הפורמולציה – המעגל שמשמר את עצמו, ואיך שוברים אותו</h2><div id="abcCycle">${cycleHTML(abcCycle())}</div>
       ${saveBar('abc')}`;
   },
   thoughts(){    const f = (k, label, ph, ta) => `<label class="f">${label}${ta ? `<textarea class="inp" data-bind="T.${k}" placeholder="${ph}">${esc(T[k])}</textarea>` : `<input class="inp" data-bind="T.${k}" value="${esc(T[k])}" placeholder="${ph}">`}</label>`;
@@ -1498,7 +1575,7 @@ function toolSave(kind){
   const a = active(); if (!a) return toast('בחרו תלמיד בראש המסך');
   const d = today();
   if (kind === 'thermometer') { if (T.level == null) return toast('בוחרים קודם רמה'); a.ratings.push({id:uid(), date:d, emotion:T.emotion, level:T.level}); }
-  if (kind === 'abc') { if (!T.event && !T.interp) return toast('ממלאים לפחות אירוע ופרשנות'); const best = T.alts.filter(x => x.t).sort((x, y) => x.lvl - y.lvl)[0]; a.thoughts.push({id:uid(), date:d, situation:T.event, thought:T.interp, feeling:T.emo, before:T.lvl, behavior:T.react, alt:best ? best.t : '', after:best ? best.lvl : '', alts:T.alts.filter(x => x.t).map(x => ({t:x.t, emo:x.emo, lvl:x.lvl, react:x.react})), model:'אפר״ת'}); }
+  if (kind === 'abc') { if (!T.event && !T.interp) return toast('ממלאים לפחות אירוע ופרשנות'); const best = T.alts.filter(x => x.t).sort((x, y) => x.lvl - y.lvl)[0]; a.thoughts.push({id:uid(), date:d, situation:T.event, thought:T.interp, feeling:T.emo, before:T.lvl, behavior:T.react, result:T.result, alt:best ? best.t : '', after:best ? best.lvl : '', alts:T.alts.filter(x => x.t).map(x => ({t:x.t, emo:x.emo, lvl:x.lvl, react:x.react})), model:'אפר״ת'}); }
   if (kind === 'thoughts') { if (!T.situation && !T.thought) return toast('ממלאים לפחות מצב ומחשבה'); a.thoughts.push({id:uid(), date:d, situation:T.situation, thought:T.thought, feeling:T.feeling, before:T.before, behavior:T.behavior, alt:T.alt, after:T.after}); }
   if (kind === 'trafficlight') { if (!T.problem) return toast('כותבים קודם מה הבעיה'); a.solutions.push({id:uid(), date:d, feel:T.feel, problem:T.problem, options:T.options, chosen:T.chosen, plan:T.plan}); }
   const upsert = (arr, obj) => { if (!obj.id) obj.id = uid(); const i = arr.findIndex(x => x.id === obj.id); if (i >= 0) arr[i] = obj; else arr.push(obj); };
@@ -2898,6 +2975,8 @@ document.addEventListener('click', async e => {
     case 'abc-add': T.alts.push({t:'', emo:T.emo, lvl:Math.max(0, T.lvl - 3), react:'', q:d.v || ''}); render(); setTimeout(() => { const x = document.querySelectorAll('[data-abc="t"]'); if (x.length) x[x.length - 1].focus(); }, 60); break;
     case 'abc-del': T.alts.splice(+d.i, 1); render(); break;
     case 'g-stage': case 'g-again': case 'g-sort': case 'g-next': case 'g-flip': case 'g-choice': case 'g-clue': case 'g-opt': case 'g-catchgo': case 'g-rung': case 'g-rungadd': case 'g-spin': case 'g-roll': case 'g-cardok': gameAct(act, d, e); break;
+    case 'cyc-cut': case 'cyc-better': cycAct(act, d, e); break;
+    case 'tr-day': case 'tr-idea': case 'tr-add': case 'tr-done': case 'tr-del': trackAct(act, d, e); break;
     case 'g-link': { const url = location.href.split('#')[0] + '#/game/' + d.id; try { navigator.clipboard.writeText(url).then(() => toast('🔗 הקישור למשחק הועתק'), () => prompt('הקישור למשחק:', url)); } catch(err){ prompt('הקישור למשחק:', url); } break; }
     case 'asker': ASKER = d.v; ls.set('cbtapp.asker', ASKER); aiFast = !ARTIFACT; render(); break;
     case 'copyq': try { navigator.clipboard.writeText(d.v).then(() => toast('השאלה הועתקה – הדביקו אותה בפרויקט של Claude'), () => {}); } catch(err){} break;
@@ -3216,8 +3295,128 @@ function abcRefresh(i){ const k = i < 0 ? 'm' : i, f = $('#abcFace-' + k), l = $
 document.addEventListener('input', e => {
   const el = e.target; if (!el.dataset || !el.dataset.abc) return;
   const i = +el.dataset.i, r = i < 0 ? T : T.alts[i], f = el.dataset.abc;
-  r[f] = f === 'lvl' ? +el.value : el.value; if (f === 'lvl') abcRefresh(i);
+  r[f] = f === 'lvl' ? +el.value : el.value; if (f === 'lvl') abcRefresh(i); abcCycleRefresh();
 });
+
+/* ================= visual formulation: the maintaining cycle (המעגל שמשמר את עצמו) and how to break it =================
+   c = {title, nodes:[{k,label,t}], back, breaks:[{at,title,t,tool}], better:[{k,label,t}]} – used in maps, the אפר״ת tool and the treatment tracks */
+const CYC_COLORS = {trigger: '#fde68a', thought: '#c4b5fd', feeling: '#fbcfe8', body: '#fecaca', behavior: '#a7f3d0', result: '#bae6fd'};
+const CYC_ICONS = {trigger: '⚡', thought: '💭', feeling: '💗', body: '🫀', behavior: '🏃', result: '↩️'};
+function cycleHTML(c, opt = {}){
+  const n = c.nodes.length, R = 37, pos = i => { const a = (-90 + i * 360 / n) * Math.PI / 180; return [50 + R * Math.cos(a), 50 + R * Math.sin(a)]; };
+  const arc = i => { const a0 = (-90 + i * 360 / n + 17) * Math.PI / 180, a1 = (-90 + (i + 1) * 360 / n - 17) * Math.PI / 180;
+    return `<path class="carc a${i}" d="M${(50 + R * Math.cos(a0)).toFixed(2)},${(50 + R * Math.sin(a0)).toFixed(2)} A${R},${R} 0 0 1 ${(50 + R * Math.cos(a1)).toFixed(2)},${(50 + R * Math.sin(a1)).toFixed(2)}" marker-end="url(#cArrow)"/>`; };
+  const brAt = {}; (c.breaks || []).forEach((b, j) => { (brAt[b.at] = brAt[b.at] || []).push(j); });
+  const node = (x, i, better) => { const [px, py] = pos(i); const empty = !x.t;
+    return `<div class="cnode ${better ? 'nb' : 'no'}" data-i="${i}" style="--x:${px}%;--y:${py}%;--c:${better ? '#bbf7d0' : CYC_COLORS[x.k] || '#e2e8f0'}"><b>${CYC_ICONS[x.k] || ''} ${esc(x.label || '')}</b><span class="${empty ? 'muted' : ''}">${esc(x.t || x.ph || '…')}</span>${!better && brAt[i] ? `<button type="button" class="ccut" data-act="cyc-cut" data-i="${i}" title="איך שוברים כאן">✂️</button>` : ''}</div>`; };
+  return `<div class="cyc ${opt.cls || ''}">
+    ${c.title ? `<div class="ctitle">🔄 ${esc(c.title)}</div>` : ''}
+    <div class="cycwrap"><svg class="carrows" viewBox="0 0 100 100" aria-hidden="true"><defs><marker id="cArrow" viewBox="0 0 10 10" refX="7" refY="5" markerWidth="4" markerHeight="4" orient="auto"><path d="M0,0 L10,5 L0,10Z" fill="currentColor"/></marker></defs>${c.nodes.map((_, i) => arc(i)).join('')}</svg>
+      <div class="ccenter"><span class="cold">${esc(c.back || 'והמעגל חוזר על עצמו')}</span>${c.better ? `<span class="cnew">🌱 המעגל החדש: כל שלב מחזק את השינוי</span>` : ''}</div>
+      ${c.nodes.map((x, i) => node(x, i, false)).join('')}${c.better ? c.better.map((x, i) => node(x, i, true)).join('') : ''}</div>
+    ${(c.breaks || []).length ? `<div class="cbreaks"><h4>✂️ איך שוברים את המעגל</h4>${c.breaks.map((b, j) => `<div class="cbreak" data-at="${b.at}"><span class="cbn">${j + 1}</span><div><b>${esc(b.title || 'נקודת שבירה')}</b> <span class="muted">(ב״${esc((c.nodes[b.at] || {}).label || '')}״)</span><div>${esc(b.t || '')}</div>${b.tool && TOOL[b.tool] ? `<a class="btn sm" href="#/tool/${b.tool}">${TOOL[b.tool].icon} ${esc(TOOL[b.tool].name)}</a>` : ''}</div></div>`).join('')}</div>` : ''}
+    ${c.better ? `<div class="actions" style="justify-content:center"><button type="button" class="btn primary" data-act="cyc-better">🌱 הצגת המעגל החדש</button></div>` : ''}
+  </div>`;
+}
+function cycAct(act, d, e){
+  const box = e.target.closest('.cyc'); if (!box) return;
+  if (act === 'cyc-cut') { const i = d.i, on = box.dataset.cut === i; box.dataset.cut = on ? '' : i;
+    box.querySelectorAll('.cnode.no').forEach(n => n.classList.toggle('cut', !on && n.dataset.i === i));
+    box.querySelectorAll('.cbreak').forEach(b => b.classList.toggle('on', !on && b.dataset.at === i));
+    const first = box.querySelector('.cbreak.on'); if (first) first.scrollIntoView({block: 'nearest', behavior: 'smooth'}); }
+  if (act === 'cyc-better') { const on = box.classList.toggle('showbetter'); e.target.textContent = on ? '🔄 חזרה למעגל הישן' : '🌱 הצגת המעגל החדש'; }
+}
+// the אפר״ת formulation: the child's own cycle from what was filled in, and the new cycle from the best alternative interpretation
+function abcCycle(){
+  const best = T.alts.filter(x => x.t).sort((x, y) => x.lvl - y.lvl)[0];
+  return {title: 'הפורמולציה שלי – המעגל', back: 'מה שקרה אחר כך מחזק את הפרשנות – והמעגל חוזר',
+    nodes: [{k: 'trigger', label: 'אירוע', t: T.event, ph: 'מה קרה?'}, {k: 'thought', label: 'פרשנות', t: T.interp && '״' + T.interp + '״', ph: 'מה אמרתי לעצמי?'},
+      {k: 'feeling', label: 'רגש', t: T.emo + ' – ' + T.lvl + '/10'}, {k: 'behavior', label: 'תגובה', t: T.react, ph: 'מה עשיתי?'}, {k: 'result', label: 'מה קרה אחר כך', t: T.result, ph: 'ומה קרה אחרי זה?'}],
+    breaks: [
+      {at: 1, title: 'שוברים בפרשנות', t: best ? `פרשנות חלופית: ״${best.t}״` : 'מחפשים פרשנות אחרת – השאלות המנחות למעלה עוזרות.', tool: best ? '' : 'thoughts'},
+      {at: 2, title: 'מרגיעים את הרגש', t: 'נשימת בלון, הרפיה או ספירה לאט – כדי שהרגש יירד לפני שמגיבים.', tool: 'breathing'},
+      {at: 3, title: 'בוחרים תגובה אחרת', t: best && best.react ? `במקום זה: ${best.react}` : 'עוצרים, חושבים על כמה אפשרויות ובוחרים את המועילה.', tool: 'trafficlight'},
+      {at: 4, title: 'לומדים מהתוצאה', t: 'בודקים: מה באמת קרה? האם הפרשנות הראשונה התבררה כנכונה?'}],
+    better: [{k: 'trigger', label: 'אירוע', t: T.event}, {k: 'thought', label: 'פרשנות', t: best ? '״' + best.t + '״' : 'פרשנות מאוזנת יותר'},
+      {k: 'feeling', label: 'רגש', t: best ? best.emo + ' – ' + best.lvl + '/10' : 'רגש רגוע יותר'}, {k: 'behavior', label: 'תגובה', t: best && best.react || 'תגובה מועילה'}, {k: 'result', label: 'מה קרה אחר כך', t: 'תוצאה טובה יותר, שמחזקת את הדרך החדשה'}]};
+}
+let abcTimer = null;
+const abcCycleRefresh = () => { clearTimeout(abcTimer); abcTimer = setTimeout(() => { const b = $('#abcCycle'); if (b) b.innerHTML = cycleHTML(abcCycle()); }, 350); };
+
+/* ================= structured treatment tracks (טיפול מובנה) – one per treatment map, for children and adults ================= */
+const TRACKS = () => { const m = new Map(); (window.TRACKS || []).forEach(t => m.set(t.id, t)); return [...m.values()]; };
+const TRACK = id => TRACKS().find(t => t.id === id);
+const trKey = id => (active() ? active().id : 'general') + ':' + id;
+const trData = id => { S.tracks = S.tracks || {}; return S.tracks[trKey(id)] = S.tracks[trKey(id)] || {}; };
+const FIVEP = [['predisposing', 'גורמים מקדימים', 'מה הכין את הקרקע? (מזג, רקע, היסטוריה)', '#e9d5ff'], ['precipitating', 'גורמים מזרזים', 'מה הדליק את הבעיה עכשיו?', '#fde68a'], ['presenting', 'הבעיה כפי שהיא מוצגת', 'מה רואים? מה מדאיג?', '#fecaca'], ['perpetuating', 'גורמים משמרים', 'מה מחזיק את הבעיה? (הימנעות, תגובות סביבה, מחשבות)', '#fbcfe8'], ['protective', 'גורמים מגינים', 'חוזקות, תמיכה, משאבים', '#bbf7d0']];
+const DAYS = ['ראשון', 'שני', 'שלישי', 'רביעי', 'חמישי', 'שישי'];
+function trStepHTML(t, s, D){
+  const v = (f) => esc((D[s.id] || {})[f] || '');
+  const inp = (f, ph, long) => long ? `<textarea class="inp" data-tr="${s.id}.${f}" placeholder="${esc(ph || '')}">${v(f)}</textarea>` : `<input class="inp" data-tr="${s.id}.${f}" value="${v(f)}" placeholder="${esc(ph || '')}">`;
+  const intro = s.intro ? `<p class="lead" style="text-align:start">${esc(s.intro)}</p>` : '';
+  if (s.kind === 'info') return `${(s.text || []).map(p => `<p class="trp">${esc(p)}</p>`).join('')}${(s.points || []).length ? `<ul class="clean trpts">${s.points.map(p => `<li>${esc(p)}</li>`).join('')}</ul>` : ''}`;
+  if (s.kind === 'form') return intro + `<div class="form">${s.fields.map(f => `<label class="f">${esc(f.label)}${inp(f.id, f.ph, f.long)}</label>`).join('')}</div>`;
+  if (s.kind === 'checklist') { const d = D[s.id] || {}; return intro + `<div class="trchecks">${s.items.map(it => `<label class="trcheck ${d[it.id] ? 'on' : ''}"><input type="checkbox" data-trc="${s.id}.${it.id}" ${d[it.id] ? 'checked' : ''}> ${esc(it.t)}</label>`).join('')}</div><p class="muted">סומנו ${s.items.filter(it => d[it.id]).length} מתוך ${s.items.length}</p>`; }
+  if (s.kind === 'scale') { const d = D[s.id] || {}, mx = s.max ?? 10, mn = s.min ?? 0, vals = s.items.map(it => d[it.id] ?? null).filter(x => x != null), avg = vals.length ? (vals.reduce((a, b) => a + +b, 0) / vals.length).toFixed(1) : '—';
+    return intro + `<div class="trscale">${s.items.map(it => { const val = d[it.id] ?? Math.round((mn + mx) / 2); return `<div class="trsrow"><span>${esc(it.t)}</span><input type="range" min="${mn}" max="${mx}" value="${val}" data-trs="${s.id}.${it.id}"><b id="trs-${s.id}-${it.id}" style="color:${lvlColor(Math.round(10 * (val - mn) / (mx - mn || 1)))}">${d[it.id] ?? '·'}</b></div>`; }).join('')}<div class="trsends"><span>${esc(s.low || '')}</span><span>${esc(s.high || '')}</span></div><p><b>ממוצע: <span id="trsavg-${s.id}">${avg}</span></b></p></div>`; }
+  if (s.kind === 'fivep') { const h = s.hints || {}; const box = ([k, l, ph, c]) => `<div class="p5 p5-${k}" style="--c:${c}"><b>${l}</b><textarea class="inp" data-tr="${s.id}.${k}" placeholder="${esc(h[k] || ph)}">${v(k)}</textarea></div>`;
+    return intro + `<div class="fivep">${FIVEP.map(box).join('')}<div class="p5arrow a1">⬅</div><div class="p5arrow a2">⬇</div><div class="p5arrow a3">⬆</div></div>`; }
+  if (s.kind === 'cycle') { const d = D[s.id] || {};
+    const c = {title: s.title, nodes: s.nodes.map((x, i) => ({k: x.k, label: x.label, t: d['n' + i] || '', ph: x.ph})), back: s.back, breaks: s.breaks};
+    return intro + `<div class="trcyin">${s.nodes.map((x, i) => `<label class="f"><span>${CYC_ICONS[x.k] || ''} ${esc(x.label)}</span>${inp('n' + i, x.ph, false)}</label>`).join('')}</div><div id="trcy-${s.id}">${cycleHTML(c)}</div>`; }
+  if (s.kind === 'plan') { const d = D[s.id] || {}; const days = d.days || {};
+    return intro + `<div class="chips trideas">${(s.ideas || []).map(x => `<button type="button" class="chip" data-act="tr-idea" data-st="${s.id}" data-v="${esc(x)}">＋ ${esc(x)}</button>`).join('')}</div>
+      <p class="muted" style="font-size:14px">לוחצים על רעיון ← הוא נכנס ליום שנבחר. אפשר גם לכתוב פעילות משלכם.</p>
+      <div class="trweek">${DAYS.map(day => `<div class="trday ${d.sel === day ? 'sel' : ''}"><button type="button" class="trdayh" data-act="tr-day" data-st="${s.id}" data-v="${day}">${day}</button>${(days[day] || []).map((a, i) => `<label class="tract ${a.done ? 'done' : ''}"><input type="checkbox" data-act="tr-done" data-st="${s.id}" data-d="${day}" data-i="${i}" ${a.done ? 'checked' : ''}> ${esc(a.t)} <button type="button" class="x" data-act="tr-del" data-st="${s.id}" data-d="${day}" data-i="${i}">✕</button></label>`).join('')}</div>`).join('')}</div>
+      <div style="display:flex;gap:8px;margin-top:10px"><input class="inp" id="tradd-${s.id}" placeholder="פעילות משלי ליום ${esc(d.sel || DAYS[0])}"><button type="button" class="btn" data-act="tr-add" data-st="${s.id}">＋ הוספה</button></div>`; }
+  if (s.kind === 'cards') return intro + `<div class="trcards">${s.cards.map(c => `<div class="trcard"><b>${esc(c.title)}</b><p>${esc(c.t)}</p></div>`).join('')}</div>`;
+  if (s.kind === 'sessions') { const d = D[s.id] || {};
+    return intro + s.sessions.map((x, i) => `<details class="panel trsess ${d['done' + i] ? 'done' : ''}" ${i === 0 ? 'open' : ''}><summary><b>${i + 1}. ${esc(x.title)}</b>${d['done' + i] ? ' ✅' : ''}</summary>
+      ${x.goals && x.goals.length ? `<h4>🎯 מטרות</h4><ul class="clean">${x.goals.map(g => `<li>${esc(g)}</li>`).join('')}</ul>` : ''}${x.agenda && x.agenda.length ? `<h4>📋 מהלך</h4><ol>${x.agenda.map(g => `<li>${esc(g)}</li>`).join('')}</ol>` : ''}${x.homework ? `<h4>🏠 משימת בית</h4><p>${esc(x.homework)}</p>` : ''}
+      <label class="trcheck ${d['done' + i] ? 'on' : ''}"><input type="checkbox" data-trc="${s.id}.done${i}" ${d['done' + i] ? 'checked' : ''}> המפגש התקיים</label><label class="f">הערות מהמפגש${inp('note' + i, 'מה קרה, מה להתאים', true)}</label></details>`).join(''); }
+  return '';
+}
+function trStepDone(s, D){ const d = D[s.id]; if (!d) return false; return Object.values(d).some(x => x && (typeof x !== 'object' || Object.keys(x).length)); }
+function tracksView(){
+  const list = TRACKS();
+  return {title: 'טיפול מובנה', html: `${gGuide('בחר בעיה, ונעבור יחד שלב אחרי שלב – מהאבחון ועד סיום הטיפול 🧭', 'רוגע', 3)}
+    <div class="note" style="margin:4px 0 16px">🧭 לכל בעיה – מסלול טיפול מובנה ואינטראקטיבי: אבחון והערכה, הסבר פסיכו-חינוכי, פורמולציה (5P ומעגל משמר), מטרות, טכניקות, תוכנית פעולה ואקטיבציה, פרוטוקול מפגשים ומניעת הישנות. ${active() ? `הכול נשמר בתיק של <b>${esc(active().alias)}</b>.` : 'בחרו תלמיד בראש המסך כדי שהמילוי יישמר בתיק שלו (בלי תלמיד – נשמר ב״כללי״).'}</div>
+    ${list.length ? `<div class="grid">${list.map(t => `<a class="card" href="#/track/${t.id}"><span class="emoji">${t.icon || '🧭'}</span><span class="name">${esc(t.title)}</span><span class="sub">${esc(t.for || '')} · ${t.steps.length} שלבים</span></a>`).join('')}</div>` : '<div class="empty">⏳ המסלולים נטענים…</div>'}`};
+}
+function trackView(R){
+  const t = TRACK(R.id); if (!t) return {title: 'טיפול מובנה', html: `<div class="empty">${TRACKS().length ? 'המסלול לא נמצא.' : '⏳ המסלולים נטענים…'} <a href="#/tracks">לכל המסלולים</a></div>`};
+  const D = trData(t.id);
+  if (R.sub === 'print') return {title: t.title, html: `<a class="back no-print" href="#/track/${t.id}">→ חזרה למסלול</a><h1>${esc(t.title)}</h1>${active() ? `<p>תלמיד: ${esc(active().alias)}</p>` : ''}${t.steps.map((s, i) => `<div class="panel trprint"><h3>${i + 1}. ${s.icon || ''} ${esc(s.title)}</h3>${trStepHTML(t, s, D)}</div>`).join('')}`, after(){ setTimeout(() => window.print(), 400); }};
+  const i = Math.min(t.steps.length - 1, Math.max(0, R.sub ? +R.sub - 1 : 0)), s = t.steps[i];
+  const done = t.steps.filter(x => trStepDone(x, D)).length;
+  return {title: t.title, html: `<a class="back no-print" href="#/tracks">→ כל המסלולים</a>
+    <div class="banner" style="--h:${hueOf(t.title)}"><span class="emoji">${t.icon || '🧭'}</span><div><div style="opacity:.85;font-size:14px">${esc(t.for || '')}${active() ? ' · ⭐ ' + esc(active().alias) : ''}</div><h1>${esc(t.title)}</h1></div>
+      <div class="actions no-print">${P[t.id] ? `<a class="btn sm" href="#/problem/${t.id}">🧭 מפת הטיפול</a>` : ''}${GAME(t.id) ? `<a class="btn sm" href="#/game/${t.id}">🎲 המשחק</a>` : ''}<a class="btn sm" href="#/track/${t.id}/print">🖨️ סיכום להדפסה</a></div></div>
+    ${t.intro && i === 0 ? `<p class="lead" style="text-align:start">${esc(t.intro)}</p>` : ''}
+    <div class="trlayout"><nav class="trsteps no-print"><div class="gprog"><i style="width:${Math.round(100 * done / t.steps.length)}%"></i></div>${t.steps.map((x, j) => `<a href="#/track/${t.id}/${j + 1}" class="${j === i ? 'on' : ''} ${trStepDone(x, D) ? 'ok' : ''}"><span class="n">${trStepDone(x, D) ? '✓' : j + 1}</span>${x.icon || ''} ${esc(x.title)}</a>`).join('')}</nav>
+      <section class="panel trmain"><h2>${s.icon || ''} ${esc(s.title)}</h2>${trStepHTML(t, s, D)}
+        <div class="actions" style="justify-content:space-between;margin-top:18px">${i > 0 ? `<a class="btn" href="#/track/${t.id}/${i}">→ הקודם</a>` : '<span></span>'}${i < t.steps.length - 1 ? `<a class="btn primary" href="#/track/${t.id}/${i + 2}">הבא ←</a>` : `<a class="btn primary" href="#/track/${t.id}/print">🖨️ סיכום המסלול</a>`}</div></section></div>`};
+}
+let trTimer = null;
+const trSave = () => { clearTimeout(trTimer); trTimer = setTimeout(save, 500); };
+function trCycleRefresh(tid, sid){ const t = TRACK(tid), s = t && t.steps.find(x => x.id === sid); if (!s || s.kind !== 'cycle') return; const D = trData(tid), d = D[sid] || {}; const b = $('#trcy-' + sid); if (b) b.innerHTML = cycleHTML({title: s.title, nodes: s.nodes.map((x, i) => ({k: x.k, label: x.label, t: d['n' + i] || '', ph: x.ph})), back: s.back, breaks: s.breaks}); }
+document.addEventListener('input', e => {
+  const el = e.target; if (!el.dataset) return;
+  const tid = route().id;
+  if (el.dataset.tr) { const [sid, f] = el.dataset.tr.split('.'); const D = trData(tid); (D[sid] = D[sid] || {})[f] = el.value; trSave(); if (/^n\d+$/.test(f)) { clearTimeout(el._t); el._t = setTimeout(() => trCycleRefresh(tid, sid), 350); } }
+  if (el.dataset.trs) { const [sid, f] = el.dataset.trs.split('.'); const D = trData(tid); (D[sid] = D[sid] || {})[f] = +el.value; trSave(); const lab = $(`#trs-${sid}-${f}`); if (lab) { lab.textContent = el.value; lab.style.color = lvlColor(Math.round(10 * el.value / (+el.max || 10))); }
+    const t = TRACK(tid), s = t && t.steps.find(x => x.id === sid); if (s) { const vals = s.items.map(it => D[sid][it.id]).filter(x => x != null); const a = $('#trsavg-' + sid); if (a) a.textContent = vals.length ? (vals.reduce((p, q) => p + +q, 0) / vals.length).toFixed(1) : '—'; } }
+  if (el.dataset.trc) { const [sid, f] = el.dataset.trc.split('.'); const D = trData(tid); (D[sid] = D[sid] || {})[f] = el.checked; trSave(); const l = el.closest('.trcheck'); if (l) l.classList.toggle('on', el.checked); }
+});
+function trackAct(act, d, e){
+  const tid = route().id, D = trData(tid), P0 = (D[d.st] = D[d.st] || {}), days = (P0.days = P0.days || {});
+  if (act === 'tr-day') { P0.sel = d.v; }
+  if (act === 'tr-idea') { const day = P0.sel || DAYS[0]; (days[day] = days[day] || []).push({t: d.v, done: false}); toast('נוסף ליום ' + day); }
+  if (act === 'tr-add') { const x = $('#tradd-' + d.st), v = x && x.value.trim(); if (!v) return toast('כותבים פעילות'); const day = P0.sel || DAYS[0]; (days[day] = days[day] || []).push({t: v, done: false}); }
+  if (act === 'tr-done') { const a = days[d.d][+d.i]; a.done = !a.done; }
+  if (act === 'tr-del') { e.preventDefault(); days[d.d].splice(+d.i, 1); }
+  save(); render();
+}
 
 /* ================= boot ================= */
 { const t = ls.get('cbtapp.theme', null); if (t) document.documentElement.dataset.theme = t; }
