@@ -1963,6 +1963,7 @@ async function libSearchAsync(q, n = 6, perFile = 2){
 }
 async function libFileChunks(id){
   await libTextLoad();
+  { const F = (window.LIB_TEXT || window.LIB_IDX || {}).files || [], f = F.find(x => x[0] === id); if (f && libHidden(f[2])) return {f: null, chunks: []}; }
   if (window.LIB_TEXT) { const T = window.LIB_TEXT, fi = T.files.findIndex(f => f[0] === id); return {f: T.files[fi], chunks: T.chunks.filter(c => c[0] === fi)}; }
   const I = window.LIB_IDX; if (!I) return {f: null, chunks: []};
   const fi = I.files.findIndex(f => f[0] === id); if (fi < 0) return {f: null, chunks: []};
@@ -1972,8 +1973,11 @@ async function libFileChunks(id){
 }
 const FINALS = {'כ':'ך','מ':'ם','נ':'ן','פ':'ף','צ':'ץ'};
 const termVars = t => { const v = [t]; const l = t.slice(-1); if (FINALS[l]) v.push(t.slice(0, -1) + FINALS[l]); return v; };
+// removed at the user's request (2026-09-28): certificates/diplomas and syllabi – the text packages still hold them, so hide them here
+const libHidden = p => { p = String(p || ''); return /סילבוס/.test(p.split('/').pop()) || /^files\/01 אישורים\/0(0[45]|1[345]|2[4-9]|3\d|40) /.test(p); };   // file name only: the folder "16 סילבוס ועוד" holds real content
 function libSearch(q, n = 6, perFile = 2, T0){
-  const T = T0 || window.LIB_TEXT; if (!T) return [];
+  const T0b = T0 || window.LIB_TEXT; if (!T0b) return [];
+  const T = {files: T0b.files, chunks: T0b.chunks.filter(c => !libHidden((T0b.files[c[0]] || [])[2]))};
   const terms = [...new Set(toks(q))].filter(t => t.length >= 3).slice(0, 9);
   if (!terms.length) return [];
   const V = terms.map(termVars), C = T.chunks, N = C.length, df = new Array(terms.length).fill(0), hits = [];
