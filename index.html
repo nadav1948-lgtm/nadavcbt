@@ -3,11 +3,11 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="theme-color" content="#0d0d0d">
+<meta name="theme-color" content="#0f0d1a">
 <title>CBT בבית הספר</title>
-<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='24' fill='%232f6f62'/><text x='50' y='68' font-size='56' text-anchor='middle'>🧠</text></svg>">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='24' fill='%235b3fe0'/><text x='50' y='68' font-size='56' text-anchor='middle'>🧠</text></svg>">
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;500;700;800;900&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;500;600;700;800;900&family=Rubik:wght@500;600;700;800;900&display=swap" rel="stylesheet">
 <style>
 /* Dark-first, matching the library site (Artlist-inspired): near-black grounds, bold white type, one yellow accent. */
 :root{
@@ -1281,6 +1281,400 @@ body.sharemode .side,body.sharemode .tabbar,body.sharemode .topbar{display:none!
 
 #printbrand{display:none}@media print{#printbrand{display:block!important;text-align:center;font-weight:800;font-size:15px;padding:4px 0 8px;margin-bottom:8px;border-bottom:2px solid #999}}
 
+/* show every title in full – never cut with … (user rule) */
+.topbar .title,.modal .mhead h3,.lib-item .t,.cbtrack small,.hmt,.so-bars .nm,.card .name,.card .sub,.hubc .name,.btn,.btn .lbl,.li b,.vcard .vt,.trsteps a,.tabs a,.chip{white-space:normal!important;overflow:visible!important;text-overflow:clip!important;-webkit-line-clamp:unset!important;max-height:none!important}
+.hmt{display:block!important}
+
+/* ===== design refresh 2026 ===== */
+/* indigo-violet primary, coral/amber warmth, mint/teal support; soft mesh grounds, glass bars, rounded layered surfaces.
+   dark = :root (default) · light = [data-theme="light"]. Only tokens + visual polish – no layout or content changes. */
+:root{
+  color-scheme:dark;
+  --bg:#0f0d1a; --bg2:#181529; --panel:#1b1830; --ink:#f3f1ff; --muted:#aaa5c8; --line:#2e2a4a;
+  --brand:#6d4ff0; --brand-2:#7c3aed; --brand-soft:rgba(150,130,255,.16); --brand-ink:#ffffff; --brand-text:#b6a9ff;
+  --accent:#f5a524; --coral:#fb7185; --teal:#2dd4bf; --danger:#ff7a85; --ok:#2fbf8a;
+  --grad:linear-gradient(135deg,#5b4df0 0%,#7c3aed 100%);
+  --glow:rgba(124,92,255,.55);
+  --ring:rgba(182,169,255,.85);
+  --gloss:rgba(255,255,255,.14);
+  --glass:rgba(27,24,48,.72);
+  --shadow:0 1px 2px rgba(0,0,0,.35),0 10px 30px -12px rgba(0,0,0,.55);
+  --shadow-hi:0 2px 6px rgba(0,0,0,.35),0 24px 50px -18px rgba(0,0,0,.75);
+  --r:18px; --soft-s:34%; --soft-l:21%; --sat:62%; --lt:64%;
+  --display:Rubik,Heebo,"Segoe UI",Arial,sans-serif;
+  --dg1:#818cf8;--dg2:#f472b6;--dg3:#2dd4bf;--dg4:#fbbf24;--dg5:#a78bfa;--dg6:#fb923c;--dg7:#38bdf8;--dg8:#f87171;--dgmix:20%;
+}
+:root[data-theme="light"]{
+  color-scheme:light;
+  --bg:#f6f5fb; --bg2:#eeecf7; --panel:#ffffff; --ink:#1c1733; --muted:#5d5877; --line:#e3e0f0;
+  --brand:#5b3fe0; --brand-2:#7c3aed; --brand-soft:rgba(91,63,224,.10); --brand-ink:#ffffff; --brand-text:#4c32d6;
+  --accent:#f59e0b; --coral:#f43f5e; --teal:#0d9488; --danger:#c92f47; --ok:#0d8a5f;
+  --grad:linear-gradient(135deg,#4f46e5 0%,#7c3aed 100%);
+  --glow:rgba(91,63,224,.42);
+  --ring:rgba(91,63,224,.7);
+  --gloss:rgba(255,255,255,.6);
+  --glass:rgba(255,255,255,.72);
+  --shadow:0 1px 2px rgba(28,20,70,.05),0 4px 12px -4px rgba(28,20,70,.07),0 14px 32px -16px rgba(28,20,70,.14);
+  --shadow-hi:0 2px 6px rgba(28,20,70,.06),0 22px 46px -16px rgba(60,40,150,.26);
+  --soft-s:72%; --soft-l:94%; --sat:58%; --lt:44%;
+  --dg1:#4f46e5;--dg2:#db2777;--dg3:#0d9488;--dg4:#d97706;--dg5:#7c3aed;--dg6:#ea580c;--dg7:#0284c7;--dg8:#dc2626;--dgmix:12%;
+}
+
+/* grounds & type */
+html{scrollbar-color:color-mix(in srgb,var(--brand) 40%,var(--line)) transparent}
+body{font-family:Heebo,"Segoe UI",Arial,sans-serif;line-height:1.65}
+body::before{content:"";position:fixed;inset:0;z-index:-1;pointer-events:none;
+  background:radial-gradient(55% 45% at 100% 0%,color-mix(in srgb,#7c3aed 16%,transparent),transparent 70%),
+             radial-gradient(45% 40% at 0% 100%,color-mix(in srgb,#14b8a6 12%,transparent),transparent 70%),
+             radial-gradient(35% 30% at 18% 8%,color-mix(in srgb,#fb7185 9%,transparent),transparent 70%)}
+::selection{background:color-mix(in srgb,var(--brand) 30%,transparent)}
+h1,h2,h3,.brand,.hero h1,.banner h1,.dghead,.ctitle{font-family:var(--display);letter-spacing:-.2px}
+h2.sec{font-size:21px;font-weight:700;margin:32px 0 14px}
+h2.sec::before{content:"";flex:none;width:6px;height:22px;border-radius:4px;background:linear-gradient(var(--brand),var(--coral))}
+:where(a,button,select,input,textarea,summary,[tabindex]):focus-visible{outline:3px solid var(--ring);outline-offset:2px}
+
+/* side navigation: frosted glass, pill-shaped gradient active item, icons in tinted circles */
+.side{background:var(--glass);-webkit-backdrop-filter:blur(18px) saturate(1.5);backdrop-filter:blur(18px) saturate(1.5);border-inline-end:1px solid color-mix(in srgb,var(--line) 80%,transparent);padding:18px 12px;gap:3px}
+.brand{font-size:17.5px;font-weight:800;padding:4px 6px 18px}
+.brand .mark{background:var(--grad);color:#fff;border-radius:14px;box-shadow:inset 0 1px 0 rgba(255,255,255,.35),0 8px 18px -6px var(--glow)}
+.nav{display:flex;flex-direction:column;gap:3px}
+.nav a{gap:11px;padding:6px 8px;border-radius:14px;font-weight:500;transition:background-color .18s,color .18s,box-shadow .2s}
+.nav a .i{flex:none;width:34px;height:34px;border-radius:11px;display:grid;place-items:center;font-size:18px;background:color-mix(in srgb,var(--brand) 11%,transparent);transition:transform .2s cubic-bezier(.2,.8,.2,1),background-color .2s}
+.nav a:hover{background:color-mix(in srgb,var(--brand) 9%,transparent);color:var(--ink)}
+.nav a:hover .i{transform:scale(1.07)}
+.nav a.on{background:var(--grad);color:#fff;font-weight:700;box-shadow:0 10px 22px -10px var(--glow)}
+.nav a.on .i{background:rgba(255,255,255,.2);box-shadow:inset 0 1px 0 rgba(255,255,255,.3)}
+.sync{border-radius:12px;background:color-mix(in srgb,var(--brand) 7%,var(--bg2))}
+
+/* top bar: a floating frosted strip */
+.topbar{top:10px;margin:10px 0 16px;height:62px;padding:0 16px 0 10px;border-radius:20px;background:var(--glass);-webkit-backdrop-filter:blur(16px) saturate(1.5);backdrop-filter:blur(16px) saturate(1.5);border:1px solid color-mix(in srgb,var(--line) 75%,transparent);box-shadow:0 10px 30px -16px rgba(30,20,80,.35)}
+.topbar .title{font-family:var(--display);font-weight:700}
+.who{border-radius:999px;background:color-mix(in srgb,var(--brand) 6%,var(--panel));border-color:color-mix(in srgb,var(--brand) 16%,var(--line));padding:4px 6px 4px 12px}
+.iconbtn{border-radius:14px;background:color-mix(in srgb,var(--brand) 6%,var(--panel));border-color:color-mix(in srgb,var(--brand) 16%,var(--line));transition:transform .18s cubic-bezier(.2,.8,.2,1),border-color .18s,box-shadow .18s}
+.iconbtn:hover{transform:translateY(-1px);border-color:color-mix(in srgb,var(--brand) 50%,var(--line));box-shadow:0 6px 16px -8px var(--glow)}
+@supports not ((-webkit-backdrop-filter:blur(1px)) or (backdrop-filter:blur(1px))){.side,.topbar,.tabbar{background:var(--panel)}}
+
+/* hero: vivid gradient band with soft mesh + decorative rings */
+.hero{background:linear-gradient(135deg,#1e1b4b 0%,#3b1d8f 42%,#6d28d9 74%,#a23b87 100%);border:0;border-radius:28px;box-shadow:0 26px 60px -28px rgba(76,29,149,.7)}
+.hero::before{background:radial-gradient(38% 50% at 88% 18%,rgba(251,113,133,.42),transparent 70%),radial-gradient(34% 46% at 10% 82%,rgba(45,212,191,.32),transparent 70%),radial-gradient(30% 40% at 55% 112%,rgba(251,191,36,.30),transparent 70%)}
+.hero::after{content:"";position:absolute;z-index:-1;pointer-events:none;inset:0;
+  background:radial-gradient(circle at 4% 8%,transparent 0 70px,rgba(255,255,255,.07) 71px 110px,transparent 111px),
+             radial-gradient(circle at 98% 104%,transparent 0 50px,rgba(255,255,255,.06) 51px 80px,transparent 81px),
+             radial-gradient(rgba(255,255,255,.16) 1.2px,transparent 1.6px) 0 0/22px 22px;
+  -webkit-mask-image:linear-gradient(to left,#000,transparent 70%);mask-image:linear-gradient(to left,#000,transparent 70%)}
+.hero h1{text-shadow:0 2px 18px rgba(20,10,60,.35)}
+.hero p{opacity:.95}
+.hero .btn,.banner .btn{background:rgba(255,255,255,.14);border-color:rgba(255,255,255,.32);color:#fff;-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px)}
+.hero .btn:hover,.banner .btn:hover{background:rgba(255,255,255,.24);border-color:rgba(255,255,255,.6)}
+.hero .btn.primary,.banner .btn.primary{background:#fff;color:#3b22b8;border-color:#fff;font-weight:700;box-shadow:0 10px 24px -10px rgba(0,0,0,.5)}
+
+/* page banners & hub headers: hue-driven gradient, glossy emoji badge, rings + a color strip */
+.banner{background:#1e1b4b;border:0;border-radius:24px;box-shadow:0 20px 44px -24px hsl(var(--h) 60% 25% / .8);padding:30px 30px 34px}
+.banner::before{background:radial-gradient(55% 120% at 100% 0%,hsl(var(--h) 85% 48% / .22),transparent 65%),radial-gradient(40% 110% at 0% 100%,rgba(236,72,153,.28),transparent 70%),linear-gradient(240deg,hsl(var(--h) 72% 26%) 0%,hsl(var(--h) 55% 22%) 40%,#241c5c 100%)}
+.banner::after,.hubhero::after{content:"";position:absolute;z-index:-1;pointer-events:none;inset:0;height:auto;
+  background:radial-gradient(circle at 8% 22%,transparent 0 46px,rgba(255,255,255,.08) 47px 74px,transparent 75px),
+             radial-gradient(circle at 18% 120%,rgba(255,255,255,.07) 0 80px,transparent 81px),
+             linear-gradient(to left,hsl(var(--h) 85% 62%),hsl(calc(var(--h) + 40) 85% 62%),hsl(calc(var(--h) + 80) 85% 62%)) bottom/100% 5px no-repeat}
+.banner h1,.banner p{text-shadow:0 1px 3px rgba(0,0,0,.3)}
+.banner p{opacity:.95}
+.banner .emoji{border-radius:20px;background:linear-gradient(145deg,rgba(255,255,255,.38),rgba(255,255,255,.08));border:1px solid rgba(255,255,255,.34);box-shadow:inset 0 1px 0 rgba(255,255,255,.5),0 12px 26px -10px rgba(0,0,0,.55);-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px)}
+.hubhero{padding:30px 30px 34px}
+.hubhero .emoji{width:80px;height:80px;font-size:42px;border-radius:24px;background:linear-gradient(145deg,hsl(var(--h) 85% 72% / .55),hsl(var(--h) 70% 45% / .25));box-shadow:inset 0 1px 0 rgba(255,255,255,.55),0 0 0 5px hsl(var(--h) 80% 70% / .18),0 14px 30px -10px rgba(0,0,0,.55)}
+
+/* surfaces */
+.card,.panel,.toolstage,.stat,.sess,.trsteps,.vcard,.modal .box{border-color:color-mix(in srgb,var(--line) 85%,transparent)}
+.card{border-radius:20px;padding:20px;box-shadow:var(--shadow);transition:transform .25s cubic-bezier(.2,.8,.2,1),box-shadow .25s,border-color .25s}
+.card:hover{transform:translateY(-4px);box-shadow:var(--shadow-hi),0 14px 34px -18px hsl(var(--h) 75% 50% / .6);border-color:hsl(var(--h) 65% 60% / .55)}
+.card.accent::before{height:5px;background:linear-gradient(to left,hsl(var(--h) var(--sat) var(--lt)),hsl(calc(var(--h) + 45) var(--sat) var(--lt)))}
+.card .emoji{width:52px;height:52px;border-radius:16px;background:linear-gradient(145deg,var(--gloss),transparent 60%),hsl(var(--h) var(--soft-s) var(--soft-l));box-shadow:inset 0 1px 0 var(--gloss),0 8px 18px -10px hsl(var(--h) 70% 40% / .6)}
+.card .name{font-weight:700}
+.card.hubc{background:linear-gradient(160deg,hsl(var(--h) var(--soft-s) var(--soft-l)) 0%,var(--panel) 60%)}
+.card.hubc .emoji{width:58px;height:58px;border-radius:18px;background:linear-gradient(145deg,var(--gloss),transparent 60%),hsl(var(--h) var(--sat) var(--lt) / .30)}
+.panel{border-radius:20px;padding:22px;box-shadow:var(--shadow)}
+.panel h3{font-weight:700}
+.toolstage{border-radius:24px}
+.stat{border-radius:18px;background:linear-gradient(160deg,color-mix(in srgb,var(--brand) 7%,var(--panel)),var(--panel) 70%);box-shadow:var(--shadow)}
+.stat b{font-family:var(--display);font-weight:800;color:var(--brand-text)}
+.sess{border-radius:18px;box-shadow:var(--shadow)}
+.sess summary .n{background:var(--grad);color:#fff;border-radius:12px}
+.sess.done summary .n{background:var(--ok)}
+.li{border-radius:14px;background:color-mix(in srgb,var(--panel) 60%,var(--bg));border-color:color-mix(in srgb,var(--line) 85%,transparent)}
+.note{border-radius:16px;border:1px solid color-mix(in srgb,var(--brand) 18%,transparent)}
+.note.warn{border-color:color-mix(in srgb,var(--accent) 35%,transparent)}
+.note.danger{border-color:color-mix(in srgb,var(--danger) 35%,transparent)}
+.modal{background:rgba(15,12,40,.55);-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px)}
+.modal .box{border-radius:24px;border:1px solid var(--line);box-shadow:0 40px 90px -20px rgba(10,5,40,.6)}
+.toast{border-radius:999px;padding:10px 20px}
+.progress i{background:var(--grad)}
+.chart .ln{stroke:var(--brand-text)}.chart .pt{stroke:var(--brand-text)}
+
+/* buttons, chips, pills, tabs */
+.btn{border-radius:999px;padding:9px 18px;font-weight:600;color:var(--ink);background:color-mix(in srgb,var(--brand) 8%,var(--panel));border:1px solid color-mix(in srgb,var(--brand) 20%,var(--line));transition:transform .18s cubic-bezier(.2,.8,.2,1),box-shadow .18s,background-color .18s,border-color .18s}
+.btn:hover{transform:translateY(-1px);background:color-mix(in srgb,var(--brand) 15%,var(--panel));border-color:color-mix(in srgb,var(--brand) 50%,var(--line))}
+.btn:active{transform:translateY(0) scale(.98)}
+.btn.primary{background:var(--grad);color:#fff;border-color:transparent;font-weight:700;box-shadow:0 8px 20px -10px var(--glow)}
+.btn.primary:hover{box-shadow:0 14px 28px -10px var(--glow)}
+.btn.ghost{background:transparent;border-color:transparent}
+.btn.ghost:hover{background:var(--brand-soft)}
+.btn.danger{color:var(--danger)}
+.btn.sm{padding:5px 12px;font-size:13px;border-radius:999px}
+.btn.big{padding:13px 26px}
+.vrate .btn.on{background:var(--grad);color:#fff;border-color:transparent}
+.chip{background:var(--panel);border-color:color-mix(in srgb,var(--brand) 16%,var(--line));padding:7px 15px;font-weight:500;transition:transform .18s,border-color .18s,background-color .18s,box-shadow .18s}
+.chip:hover{border-color:color-mix(in srgb,var(--brand) 55%,var(--line));transform:translateY(-1px)}
+.chip.on{background:var(--grad);border-color:transparent;color:#fff;font-weight:700;box-shadow:0 8px 18px -10px var(--glow)}
+.pill{background:color-mix(in srgb,var(--brand) 7%,var(--bg2));font-weight:500}
+.pill.brand{background:var(--brand-soft);color:var(--brand-text);font-weight:700}
+.tabs{border-bottom-color:color-mix(in srgb,var(--line) 85%,transparent);gap:6px}
+.tabs a{border-radius:12px 12px 0 0;transition:color .15s,background-color .15s}
+.tabs a:hover{color:var(--ink);background:color-mix(in srgb,var(--brand) 6%,transparent)}
+.tabs a.on{border-bottom-color:transparent;background:linear-gradient(var(--brand-text),var(--brand-text)) bottom/100% 3px no-repeat,color-mix(in srgb,var(--brand) 7%,transparent);font-weight:700}
+.gst{transition:border-color .15s,background-color .15s}
+.gst.on b{background:var(--grad);color:#fff}
+.wtabs>label{transition:background-color .15s,border-color .15s}
+.wtabs>input:checked+label{background:var(--grad);color:#fff;border-color:transparent}
+.back{font-weight:500;padding:4px 10px 4px 12px;border-radius:999px;transition:background-color .15s,color .15s}
+.back:hover{background:var(--brand-soft)}
+
+/* forms */
+label.f input,label.f select,label.f textarea,.inp{border-radius:12px;border-color:color-mix(in srgb,var(--line) 90%,var(--brand));transition:border-color .15s,box-shadow .15s}
+label.f input:focus,label.f select:focus,label.f textarea:focus,.inp:focus{border-color:var(--brand-text);box-shadow:0 0 0 4px var(--brand-soft)}
+.search input{border-radius:999px;box-shadow:var(--shadow);transition:border-color .15s,box-shadow .15s}
+.search input:focus{border-color:var(--brand-text);box-shadow:0 0 0 4px var(--brand-soft),var(--shadow)}
+.checks label{transition:border-color .15s,background-color .15s}
+.checks label:hover{border-color:color-mix(in srgb,var(--brand) 50%,var(--line))}
+
+/* home tiles */
+.htile{border-radius:22px;min-height:112px;background:radial-gradient(130% 95% at 50% 0%,hsl(var(--h) 72% 58% / .30),transparent 72%),linear-gradient(180deg,transparent 40%,hsl(calc(var(--h) + 35) 70% 55% / .10)),var(--panel);border:1px solid hsl(var(--h) var(--sat) var(--lt) / .32);transition:transform .25s cubic-bezier(.2,.8,.2,1),box-shadow .25s,border-color .25s}
+.htile:hover{transform:translateY(-4px);box-shadow:var(--shadow-hi),0 16px 34px -16px hsl(var(--h) 75% 50% / .65);border-color:hsl(var(--h) var(--sat) var(--lt) / .7)}
+.hti{width:54px;height:54px;border-radius:18px;background:linear-gradient(145deg,var(--gloss),transparent 60%),hsl(var(--h) var(--sat) var(--lt) / .32);box-shadow:inset 0 1px 0 var(--gloss),0 8px 18px -10px hsl(var(--h) 70% 40% / .7);transition:transform .25s cubic-bezier(.2,.8,.2,1)}
+.htile:hover .hti{transform:scale(1.08) rotate(-4deg)}
+.htl{font-weight:700}
+.hubmap a{box-shadow:0 2px 8px -4px hsl(var(--h) 60% 40% / .4)}
+
+/* treatment tracks: elegant stepper + step header bands */
+.trsteps{top:84px;border-radius:20px;padding:10px;background:var(--glass);-webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px);box-shadow:var(--shadow)}
+.trsteps a{border-radius:12px;padding:7px 8px;transition:background-color .15s}
+.trsteps a:hover{background:hsl(var(--kh,250) 70% 60% / .10)}
+.trsteps a .n{width:26px;height:26px}
+.trsteps a.on{background:linear-gradient(to left,hsl(var(--kh,250) 75% 58% / .22),hsl(var(--kh,250) 75% 58% / .06));box-shadow:inset -4px 0 0 hsl(var(--kh,250) 72% 58%)}
+.trsteps a.on .n{background:hsl(var(--kh,250) 65% 45%);box-shadow:0 4px 10px -3px hsl(var(--kh,250) 70% 45% / .7)}
+.trmain h2.trhead{border-radius:16px;padding:14px 16px;background:linear-gradient(to left,hsl(var(--kh,250) 75% 58% / .22),hsl(var(--kh,250) 75% 58% / .04));border-inline-start:6px solid hsl(var(--kh,250) 72% 58%)}
+.trkind{font-weight:700;letter-spacing:.2px}
+.trcard{border-radius:16px}
+.trringw{top:84px}
+.so-side{top:84px}
+
+/* diagrams: softer, layered nodes in the new palette */
+.dgn{border-radius:16px;box-shadow:0 1px 0 color-mix(in srgb,var(--c) 25%,transparent),0 8px 18px -12px color-mix(in srgb,var(--c) 70%,transparent)}
+button.dgn:hover{box-shadow:0 12px 24px -12px color-mix(in srgb,var(--c) 80%,transparent)}
+.dgside{border-radius:16px}
+.dgside h4{border-radius:13px 13px 0 0}
+.dgdet{border-radius:16px}
+:root:not([data-theme="light"]) .dgside h4,:root:not([data-theme="light"]) .dgdot,:root:not([data-theme="light"]) .trnum li::before{color:#15112b}
+
+/* library, videos, circulars */
+.lib-item{border-radius:14px;background:var(--panel);transition:transform .2s cubic-bezier(.2,.8,.2,1),border-color .2s,box-shadow .2s}
+.lib-item{flex-wrap:wrap}.lib-item .grow{flex:1 1 170px}
+.lib-item:hover{transform:translateY(-2px);border-color:color-mix(in srgb,var(--brand) 50%,var(--line));box-shadow:var(--shadow)}
+.ft{border-radius:6px}
+.vcard{border-radius:18px;padding:10px;box-shadow:var(--shadow);transition:transform .25s cubic-bezier(.2,.8,.2,1),box-shadow .25s,border-color .25s}
+.vcard:hover{transform:translateY(-4px);box-shadow:var(--shadow-hi);border-color:color-mix(in srgb,var(--brand) 45%,var(--line))}
+.vthumb{border-radius:12px;background:linear-gradient(135deg,#312e81,#6d28d9 60%,#be185d)}
+.vplay{background:rgba(255,255,255,.9);color:#4c1d95;box-shadow:0 8px 20px -6px rgba(0,0,0,.5)}
+.circ-quote{border-radius:14px;border-inline-start-color:var(--brand-text)}
+.circ-text{border-radius:14px}
+
+/* phones: floating frosted tab bar */
+@media (max-width:900px){
+  .main{padding:0 16px 108px}
+  .topbar{top:8px;margin:8px 0 14px;height:auto;min-height:58px;padding:8px 12px 8px 8px;gap:8px;row-gap:6px;flex-wrap:wrap;border-radius:18px}
+  .topbar .title{flex:1 1 auto;min-width:min-content;font-size:17px;line-height:1.3}
+  .topbar .who{margin-inline-start:auto}
+  .tabbar{bottom:calc(8px + env(safe-area-inset-bottom));inset-inline:8px;padding:6px 4px;border-radius:22px;border:1px solid color-mix(in srgb,var(--line) 80%,transparent);background:var(--glass);-webkit-backdrop-filter:blur(18px) saturate(1.5);backdrop-filter:blur(18px) saturate(1.5);box-shadow:0 14px 34px -12px rgba(20,10,60,.45)}
+  .tabbar a{border-radius:14px;gap:3px}
+  .tabbar a .i{width:40px;height:28px;border-radius:999px;display:grid;place-items:center;transition:background-color .2s,transform .2s}
+  .tabbar a.on{font-weight:700}
+  .tabbar a.on .i{background:var(--brand-soft);transform:translateY(-1px)}
+  .hero{border-radius:22px}
+  .banner,.hubhero{border-radius:20px;padding:22px 18px 26px}
+}
+@media (max-width:420px){.topbar{gap:5px;padding-inline:8px}.topbar .title{flex-basis:100%}.iconbtn{width:34px;height:34px;border-radius:12px;font-size:16px}.who{gap:4px;padding:3px 4px 3px 8px}.who select{font-size:14px}}
+
+/* motion: transform/opacity only, and none for those who ask */
+@media (prefers-reduced-motion:reduce){
+  .page{animation:none}
+  .card:hover,.htile:hover,.vcard:hover,.lib-item:hover,.btn:hover,.chip:hover,.iconbtn:hover,.htile:hover .hti,.nav a:hover .i{transform:none}
+}
+
+/* print: plain, light and readable whatever the screen theme */
+@media print{
+  :root,:root[data-theme]{color-scheme:light;--bg:#fff;--bg2:#f3f3f6;--panel:#fff;--ink:#111;--muted:#444;--line:#cfcfd8;--brand-text:#3b22b8;--brand-soft:#efeafe;--glass:#fff;
+    --dg1:#4f46e5;--dg2:#db2777;--dg3:#0d9488;--dg4:#d97706;--dg5:#7c3aed;--dg6:#ea580c;--dg7:#0284c7;--dg8:#dc2626;--dgmix:10%}
+  body::before,.hero::before,.hero::after,.banner::before,.banner::after{display:none!important}
+  .hero,.banner{background:none!important;color:#000!important;border:2px solid #ccc;box-shadow:none!important;border-radius:14px}
+  .hero h1,.banner h1,.banner p{text-shadow:none}
+  .banner .emoji{background:none;box-shadow:none;border:1px solid #ccc}
+  .card,.panel,.htile,.stat,.sess,.vcard,.trsteps,.dgn,.toolstage{box-shadow:none!important}
+  .stat b{color:#111}
+  .btn.primary,.chip.on{background:none;color:#111;border:1px solid #999;box-shadow:none}
+}
+/* premium polish: a refined gold hairline, lit top edges, calmer type rhythm */
+:root{--gold:#f5c451;--gold-2:#e0913a}
+@media screen{
+  .hero{box-shadow:inset 0 1px 0 rgba(255,255,255,.16),0 26px 60px -28px rgba(76,29,149,.7)}
+  .hero h1{letter-spacing:-1.2px}
+  .hero p{line-height:1.75}
+  .banner{box-shadow:inset 0 1px 0 rgba(255,255,255,.14),0 20px 44px -24px hsl(var(--h) 60% 25% / .8)}
+  h2.sec::before{background:linear-gradient(var(--gold),var(--gold-2))}
+  .card,.panel,.stat,.htile{box-shadow:inset 0 1px 0 rgba(255,255,255,.05),var(--shadow)}
+  .card:hover,.htile:hover{box-shadow:inset 0 1px 0 rgba(255,255,255,.07),var(--shadow-hi),0 14px 34px -18px hsl(var(--h) 75% 50% / .6)}
+  .brand .mark{box-shadow:inset 0 1px 0 rgba(255,255,255,.35),0 0 0 1px rgba(245,196,81,.35),0 8px 18px -6px var(--glow)}
+}
+/* ===== end design refresh 2026 ===== */
+
+/* ===== 🧭 מבט על – the hub infographic (app/infographics.js) ===== */
+.infogwrap{margin:6px 0 20px}
+.infogwrap>summary{list-style:none;cursor:pointer;display:flex;align-items:center;gap:8px;font-weight:800;font-size:18px;padding:10px 16px;border-radius:14px;background:hsl(var(--h,200) var(--soft-s) var(--soft-l));border:1.5px solid hsl(var(--h,200) var(--sat) var(--lt) / .45)}
+.infogwrap>summary::-webkit-details-marker{display:none}
+.infogwrap>summary::after{content:"▾";margin-inline-start:auto;transition:transform .2s}
+.infogwrap:not([open])>summary::after{transform:rotate(90deg)}
+.infogwrap>summary:focus-visible{outline:3px solid hsl(var(--h,200) 80% 55%);outline-offset:2px}
+.igbar{display:flex;justify-content:flex-end;margin:8px 0}
+.infog{--c:hsl(var(--h) var(--sat) var(--lt));position:relative;margin-top:8px;padding:18px;border-radius:24px;border:1.5px solid hsl(var(--h) var(--sat) var(--lt) / .35);
+  background:radial-gradient(120% 80% at 50% 0%,hsl(var(--h) var(--soft-s) var(--soft-l)) 0%,var(--panel) 70%);box-shadow:var(--shadow)}
+.infog a{color:inherit;text-decoration:none}
+.iglk{cursor:pointer;transition:transform .15s,box-shadow .15s,background .15s}
+.iglk:focus-visible{outline:3px solid hsl(var(--h) 85% 55%);outline-offset:2px;border-radius:10px}
+.igarr{opacity:.5;font-weight:900;margin-inline-start:6px;font-size:.85em;transition:opacity .15s,transform .15s}
+.iglk:hover .igarr,.iglk:focus-visible .igarr{opacity:1;transform:translateX(-3px)}
+/* hero: the boy with the tagline in a speech bubble */
+.ighero{display:flex;align-items:flex-end;gap:12px;margin-bottom:18px}
+.igkid{flex:none;width:78px}
+.igkid svg{width:100%;height:auto;display:block}
+.igbub{position:relative;flex:1;min-width:0;background:var(--panel);border:2px solid hsl(var(--h) var(--sat) var(--lt) / .5);border-radius:18px;border-bottom-right-radius:4px;padding:12px 16px;box-shadow:0 6px 18px -8px hsl(var(--h) 60% 30% / .45)}
+.igtag{font-size:18px;font-weight:700;line-height:1.5}
+/* the map: core circle in the middle, pillars around it */
+.igmap{display:grid;grid-template-columns:1fr minmax(210px,250px) 1fr;gap:18px 26px;align-items:center}
+.igside{display:flex;flex-direction:column;gap:12px}
+.igcore{display:flex;justify-content:center}
+.igca{position:relative;width:100%;aspect-ratio:1;border-radius:50%;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;text-align:center;padding:24px;
+  background:radial-gradient(circle at 35% 30%,hsl(var(--h) 70% 52%),hsl(var(--h) 65% 32%));color:#fff;
+  box-shadow:0 0 0 8px hsl(var(--h) var(--sat) var(--lt) / .18),0 0 0 17px hsl(var(--h) var(--sat) var(--lt) / .08),0 14px 30px -10px hsl(var(--h) 60% 25% / .6)}
+.infog .igca,.infog .igca .igarr{color:#fff;text-shadow:0 1px 3px rgba(0,0,0,.4)}
+a.igca:hover{transform:scale(1.03)}
+.igci{font-size:38px;line-height:1}
+.igct{font-size:19px;font-weight:900;line-height:1.25;text-wrap:balance}
+.igcx{font-size:13.5px;line-height:1.4;opacity:.95}
+.igp{position:relative;background:var(--panel);border-radius:16px;padding:10px 12px 10px 12px;border:1.5px solid hsl(calc(var(--h) + var(--k) * 34) var(--sat) var(--lt) / .45);
+  border-inline-start:6px solid hsl(calc(var(--h) + var(--k) * 34) var(--sat) var(--lt));box-shadow:0 4px 14px -8px hsl(var(--h) 50% 30% / .45)}
+.igp:hover{box-shadow:0 10px 22px -10px hsl(calc(var(--h) + var(--k) * 34) 60% 30% / .6)}
+.igs1 .igp::after,.igs2 .igp::after{content:"";position:absolute;top:50%;width:26px;height:2px;background:hsl(calc(var(--h) + var(--k) * 34) var(--sat) var(--lt) / .6)}
+.igs1 .igp::after{inset-inline-end:-28px}
+.igs2 .igp::after{inset-inline-start:-28px}
+.igph{display:flex}
+.igpa{display:flex;align-items:center;gap:8px;font-weight:800;font-size:16px;line-height:1.3;flex:1;min-width:0}
+a.igpa::before{content:"";position:absolute;inset:0;border-radius:16px}
+.igpi{flex:none;width:36px;height:36px;border-radius:50%;display:grid;place-items:center;font-size:19px;background:hsl(calc(var(--h) + var(--k) * 34) var(--sat) var(--lt) / .22)}
+.igpt{flex:1;min-width:0}
+.igpp{list-style:none;margin:8px 0 0;padding:0;display:flex;flex-wrap:wrap;gap:6px}
+.igpp li{position:relative;z-index:1}
+.igq{display:inline-flex;align-items:center;font-size:13.5px;line-height:1.35;padding:3px 10px;border-radius:99px;background:hsl(calc(var(--h) + var(--k,0) * 34) var(--soft-s) var(--soft-l));border:1px solid hsl(calc(var(--h) + var(--k,0) * 34) var(--sat) var(--lt) / .35)}
+a.igq:hover{transform:translateY(-1px);border-color:hsl(calc(var(--h) + var(--k,0) * 34) var(--sat) var(--lt))}
+/* sections */
+.igsec{margin-top:20px}
+.igh{margin:0 0 10px;font-size:16.5px;font-weight:900}
+.igflow{list-style:none;margin:0;padding:0;display:flex;flex-wrap:wrap;gap:10px 4px;align-items:stretch}
+.igflow li{display:flex;align-items:center}
+.igflow li:not(:last-child)::after{content:"←";margin-inline-start:6px;font-weight:900;font-size:18px;color:var(--c)}
+.igfa{display:flex;align-items:center;gap:6px;padding:6px 12px 6px 8px;border-radius:14px;font-weight:700;font-size:14.5px;line-height:1.3;
+  background:hsl(calc(var(--h) + var(--k) * 12) var(--soft-s) var(--soft-l));border:1.5px solid hsl(calc(var(--h) + var(--k) * 12) var(--sat) var(--lt) / .55)}
+a.igfa:hover{transform:translateY(-2px)}
+.ign{flex:none;width:26px;height:26px;border-radius:50%;display:grid;place-items:center;font-size:13px;font-weight:900;color:#fff;background:hsl(calc(var(--h) + var(--k) * 12) 65% 42%)}
+.igfi{font-size:17px}
+.igkeys{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:10px}
+.igka{height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;gap:4px;padding:12px 10px;border-radius:18px;background:var(--panel);
+  border:2px solid hsl(calc(var(--h) + var(--k) * 40) var(--sat) var(--lt) / .5)}
+a.igka:hover{transform:translateY(-2px);box-shadow:0 8px 18px -10px hsl(var(--h) 60% 30% / .6)}
+.igkn{font-family:Rubik,Heebo,sans-serif;font-size:32px;font-weight:900;line-height:1.1;color:hsl(calc(var(--h) + var(--k) * 40) var(--sat) var(--lt))}
+.igkt{font-size:13.5px;line-height:1.35}
+.igka .igarr{display:none}
+.igdd{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:20px}
+.igdo,.igdont{border-radius:18px;padding:12px 14px}
+.igdo{background:color-mix(in srgb,var(--ok) 13%,var(--panel));border:1.5px solid color-mix(in srgb,var(--ok) 55%,transparent)}
+.igdont{background:color-mix(in srgb,var(--danger) 12%,var(--panel));border:1.5px solid color-mix(in srgb,var(--danger) 55%,transparent)}
+.igdo .igh{color:var(--ok)}.igdont .igh{color:var(--danger)}
+.igdd ul{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:6px}
+.igdd li{display:flex;gap:8px;align-items:flex-start}
+.igdd li::before{flex:none;font-weight:900;margin-top:2px}
+.igdo li::before{content:"✔";color:var(--ok)}.igdont li::before{content:"✖";color:var(--danger)}
+.igdd .igq{background:none;border:none;padding:0;font-size:14.5px;display:inline}
+a.igdd .igq:hover,.igdd a.igq:hover{text-decoration:underline;transform:none}
+.igchips{display:flex;flex-wrap:wrap;gap:8px}
+.igchip{display:inline-flex;align-items:center;padding:5px 12px;border-radius:99px;font-weight:700;font-size:14px;background:var(--panel);border:1.5px solid hsl(var(--h) var(--sat) var(--lt) / .5)}
+a.igchip:hover{background:hsl(var(--h) var(--soft-s) var(--soft-l));transform:translateY(-1px)}
+.igsrc{margin:18px 0 0;font-size:13.5px;color:var(--muted)}
+.igsa{display:inline}
+.shlink .igarr,.sharemode .igarr{display:none}
+@media (max-width:860px){
+  .igmap{grid-template-columns:1fr 1fr;gap:12px}
+  .igcore{grid-column:1/-1;order:-1}
+  .igca{width:min(250px,76%)}
+  .igside{display:contents}
+  .igs1 .igp::after,.igs2 .igp::after{content:none}
+}
+@media (max-width:560px){
+  .infog{padding:14px 12px;border-radius:18px}
+  .igmap{grid-template-columns:1fr}
+  .igkid{width:58px}
+  .igtag{font-size:16px}
+  .igflow{flex-direction:column;align-items:stretch;gap:0}
+  .igflow li{flex-direction:column;align-items:stretch}
+  .igflow li:not(:last-child)::after{content:"↓";text-align:center;margin:2px 0 0}
+  .igkeys{grid-template-columns:1fr 1fr}
+  .igdd{grid-template-columns:1fr}
+}
+@media print{
+  .infogwrap>summary{display:none}
+  .infog{background:none!important;box-shadow:none!important;border:1.5px solid #bbb;padding:10px;break-inside:auto}
+  .igarr{display:none!important}
+  .igp,.igka,.igdo,.igdont,.igflow li{break-inside:avoid;box-shadow:none!important}
+  .igmap{grid-template-columns:1fr 170px 1fr;gap:10px 20px}
+  .igside{display:flex}.igcore{order:0;grid-column:auto}.igca{width:100%}
+  .igca{box-shadow:none!important;border:3px solid hsl(var(--h) 60% 40%)}
+  .igkid{width:54px}.igtag{font-size:14.5px}
+  .igpa{font-size:13.5px}.igq{font-size:11.5px;padding:1px 7px}.igpi{width:26px;height:26px;font-size:14px}
+  .igsec,.igdd{margin-top:10px}.igh{font-size:13.5px;margin-bottom:5px}
+  .igfa{font-size:12px;padding:3px 8px}.ign{width:20px;height:20px;font-size:11px}
+  .igkn{font-size:22px}.igkt,.igdd .igq,.igchip,.igsrc{font-size:11.5px}.igct{font-size:15px}.igcx{font-size:11px}.igci{font-size:26px}
+  .igflow{flex-direction:row}.igflow li{flex-direction:row}.igflow li:not(:last-child)::after{content:"←"}
+  .igkeys{grid-template-columns:repeat(4,1fr)}.igdd{grid-template-columns:1fr 1fr}
+  body.igprint .side,body.igprint .topbar,body.igprint .tabbar,body.igprint .modal,body.igprint #selview{display:none!important}
+  body.igprint .shell{display:block}body.igprint .main{padding:0}
+  body.igprint .page>*:not(.igsel){display:none!important}
+  body.igprint .infogwrap.igsel{margin:0}body.igprint .infog{zoom:.86}
+}
+/* ===== end hub infographic ===== */
+
+/* re-asserted after the refresh (user rule): never cut a word in the middle, show every title in full */
+body,body *{overflow-wrap:normal!important;word-break:normal!important;hyphens:manual!important}
+.topbar .title,.modal .mhead h3,.lib-item .t,.cbtrack small,.hmt,.so-bars .nm,.card .name,.card .sub,.hubc .name,.btn,.btn .lbl,.li b,.vcard .vt,.trsteps a,.tabs a,.chip{white-space:normal!important;overflow:visible!important;text-overflow:clip!important;-webkit-line-clamp:unset!important;max-height:none!important}
+.hmt{display:block!important}
+
+/* hub map: a symmetric grid – neighbours always share the same height (the tallest text sets the row), text always in full */
+.hubmap ol{display:grid!important;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));grid-auto-rows:1fr;gap:10px 12px!important;align-items:stretch}
+.hubmap li{display:flex!important;align-items:stretch!important;min-width:0}
+.hubmap li::after{align-self:center}
+.hubmap a{flex:1;max-width:none!important;height:100%;box-sizing:border-box;align-items:center;padding:8px 14px 8px 8px!important}
+@media (max-width:520px){.hubmap ol{grid-template-columns:1fr;grid-auto-rows:auto}.hubmap li::after{content:none}}
+
+/* infographic symmetry: tiles side by side / in a column share one height (the fullest tile sets it); text stays complete */
+.igside{display:grid!important;grid-auto-rows:1fr;align-items:stretch}
+.igside>*{height:100%;box-sizing:border-box}
+.igflow>li,.igkeys>*,.igdd>*{height:auto;align-self:stretch}
+.igkeys{grid-auto-rows:1fr}
+.igdd{align-items:stretch}
+
 </style>
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="apple-touch-icon" href="icon-192.png">
@@ -2282,6 +2676,624 @@ return {view: R => R.sub === '__about' ? aboutOnly() : view(R)};
 
 </script>
 <script>
+/* 🧭 מבט על – התחום בתמונה אחת: אינפוגרפיקה לכל מדור.
+   התוכן נכתב מתוך המסלולים של כל מדור (אין כאן טענות חדשות). כל רכיב מקשר לשלב שמסביר אותו:
+   go = '#/…' או {track, step} – מספר השלב מחושב בזמן הצגה, כך שהקישור שורד הוספת שלבים. */
+(function(){
+'use strict';
+const T = (track, step) => step ? {track, step} : {track};
+
+window.INFOG = {
+transitions: {
+  tagline: 'שלושה צמתים – מהגן לכיתה א׳, מכיתה ו׳ לחטיבה ומכיתה ח׳ לישיבה – ובכל אחד: לפני, בזמן ואחרי.',
+  core: {icon: '🚪', title: 'מעבר – הזדמנות לצמוח', text: 'רוב הילדים מסתגלים בתוך שבועות; מזהים מוקדם את מי שצריך ליווי נוסף', go: T('trans-k1', 'about')},
+  pillars: [
+    {icon: '🎒', title: 'מהגן לכיתה א׳', track: 'trans-k1', points: [{t: 'ארבעת תחומי המוכנות', go: T('trans-k1', 'dg-readiness')}, {t: 'ערב הורים ופרידה בבוקר', go: T('trans-k1', 'parents')}, {t: 'חונך מכיתה ה׳', go: T('trans-k1', 'kids')}]},
+    {icon: '🏫', title: 'מכיתה ו׳ לחטיבה', track: 'trans-6', points: [{t: 'סדנת מעברים – שישה מפגשים', go: T('trans-6', 'workshop')}, {t: 'ההורה – ממארגן למלווה', go: T('trans-6', 'dg-parent')}, {t: 'משקפי סיכון ומשקפי סיכוי', go: T('trans-6', 'dg-glasses')}]},
+    {icon: '📖', title: 'מכיתה ח׳ לישיבה', track: 'trans-8', points: [{t: 'איזו מסגרת מתאימה לו?', go: T('trans-8', 'dg-choose')}, {t: 'מבחני כניסה וריאיון', go: T('trans-8', 'entry')}, {t: 'מעקב בישיבה', go: T('trans-8', 'followup')}]},
+    {icon: '🔍', title: 'איתור מי שצריך ליווי', track: 'trans-k1', go: T('trans-k1', 'risk'), points: [{t: 'דגלים אדומים', go: T('trans-k1', 'risk')}, {t: 'מתי זה רגיל ומתי לדאוג', go: T('trans-k1', 'dg-worry')}, {t: 'מדד מוכנות לילד מסוים', go: T('trans-k1', 'screen')}]},
+    {icon: '📜', title: 'העברת מידע לפי חוזר 0370', track: 'trans-k1', go: T('trans-k1', 'handover-rules'), points: [{t: 'רק באישור חתום של ההורים', go: T('trans-k1', 'handover-rules')}, {t: 'הסכמה מלאה, חלקית או אין', go: T('trans-k1', 'dg-consent')}, {t: 'טופס העברת מידע', go: T('trans-k1', 'handover')}]},
+    {icon: '🏗️', title: 'תוכנית בית-ספרית למעברים', track: 'prog-transitions', points: [{t: 'צמתי המעבר לאורך בית הספר', go: T('prog-transitions', 'dg-junctions')}, {t: 'שלוש רמות התערבות', go: T('prog-transitions', 'tiers')}, {t: 'שנת היציאה – התחנות', go: T('prog-transitions', 'dg-exit')}]}
+  ],
+  flow: [
+    {icon: '📅', t: 'מיפוי וקשר עם המסגרות', go: T('trans-k1', 'timeline')},
+    {icon: '🔍', t: 'איתור ילדים שצריכים ליווי', go: T('trans-k1', 'risk')},
+    {icon: '🤝', t: 'הדרכת הורים ומחנכים', go: T('trans-k1', 'parents')},
+    {icon: '🎒', t: 'פעילויות עם הילדים', go: T('trans-k1', 'kids')},
+    {icon: '📜', t: 'העברת מידע בהסכמה', go: T('trans-k1', 'handover')},
+    {icon: '🔁', t: 'מעקב אחרי חודש-חודשיים', go: T('trans-k1', 'followup')}
+  ],
+  keys: [
+    {n: '3', t: 'צמתי מעבר: גן ← א׳, ו׳ ← ז׳, ח׳ ← ישיבה', go: T('prog-transitions', 'dg-junctions')},
+    {n: '4', t: 'תחומי מוכנות: פיזית, שכלית, רגשית, חברתית', go: T('trans-k1', 'dg-readiness')},
+    {n: '6', t: 'מפגשים בסדנת המעברים לכיתה ו׳', go: T('trans-6', 'workshop')},
+    {n: '0370', t: 'חוזר העברת מידע בין מסגרות', go: '#/circ/c05'}
+  ],
+  do: [{t: 'מתחילים מוקדם – כבר בחורף שלפני המעבר', go: T('trans-k1', 'timeline')}, {t: 'משתפים את ההורים בערב הורים ובשגרה בבית', go: T('trans-k1', 'parents')}, {t: 'בודקים שוב אחרי החגים', go: T('trans-k1', 'followup')}],
+  dont: [{t: 'לא מלחיצים את הילד לקראת המעבר', go: T('trans-k1', 'readiness')}, {t: 'בכי בפרידה בימים הראשונים – לא סימן לבעיה', go: T('trans-k1', 'about')}, {t: 'לא מעבירים מידע בלי חתימת ההורים', go: T('trans-k1', 'dg-consent')}],
+  partners: [{t: 'הילד', go: T('trans-k1', 'dg-who')}, {t: 'ההורים', go: T('trans-k1', 'parents')}, {t: 'צוות הגן', go: T('trans-k1', 'teachers')}, {t: 'המחנך', go: T('trans-6', 'teachers')}, {t: 'היועץ', go: T('trans-6', 'dg-who')}, {t: 'המסגרת הקולטת', go: T('trans-8', 'teachers')}],
+  sources: {t: 'חוזר 0370 · שפ״י – מעברים בין מסגרות · כישורי חיים', go: T('trans-k1', 'library')}
+},
+
+newteachers: {
+  tagline: 'השנה הראשונה בהוראה – ליווי של היועץ, המנהל והמורה החונך, מהקליטה ועד הרפלקציה.',
+  core: {icon: '🌱', title: 'שייכות · בהירות · מסוגלות', text: 'שלושת הדברים שהמורה החדש צריך – והליווי בונה אותם לאורך השנה', go: T('nt-journey', 'dg-needs')},
+  pillars: [
+    {icon: '🧭', title: 'קליטה ומיפוי צרכים', track: 'nt-journey', go: T('nt-journey', 'intake'), points: [{t: 'פגישת היכרות ראשונה', go: T('nt-journey', 'intake')}, {t: 'דירוג עצמי של צרכים', go: T('nt-journey', 'needs')}, {t: 'רשימת קליטה לפתיחת השנה', go: T('nt-journey', 'ready')}]},
+    {icon: '📅', title: 'נקודות הצומת של השנה', track: 'nt-journey', go: T('nt-journey', 'dg-junctions'), points: [{t: 'אלול – קליטה', go: T('nt-journey', 'dg-junctions')}, {t: 'אסיפת ההורים', go: T('nt-journey', 'dg-junctions')}, {t: 'תוכנית השנה', go: T('nt-journey', 'plan')}]},
+    {icon: '📌', title: 'מה חייב לדעת', track: 'nt-journey', go: T('nt-journey', 'essentials'), points: [{t: 'חשש לפגיעה – לא נשארים לבד', go: T('nt-journey', 'essentials')}, {t: 'כך מגיבים להפרת משמעת', go: T('nt-journey', 'essentials')}, {t: 'מה אסור', go: T('nt-journey', 'essentials')}]},
+    {icon: '🏫', title: 'ניהול כיתה והורים', track: 'nt-journey', go: T('nt-journey', 'classroom'), points: [{t: 'ללמד את השגרות בימים הראשונים', go: T('nt-journey', 'classroom')}, {t: 'קשר לפני תוכן', go: T('nt-journey', 'classroom')}, {t: 'שיחה אישית עם הורה', go: T('nt-journey', 'dg-parent-talk')}]},
+    {icon: '🤝', title: 'המורה החונך', track: 'nt-mentor', points: [{t: 'חוזה חניכה', go: T('nt-mentor', 'contract')}, {t: 'פגישה קבועה בחמישה חלקים', go: T('nt-mentor', 'dg-meeting')}, {t: 'תצפית ומשוב באותו יום', go: T('nt-mentor', 'dg-observe')}]},
+    {icon: '💚', title: 'רווחה ורפלקציה', track: 'nt-journey', go: T('nt-journey', 'wellbeing'), points: [{t: 'גבולות של זמן', go: T('nt-journey', 'wellbeing')}, {t: 'לבקש עזרה מוקדם', go: T('nt-journey', 'wellbeing')}, {t: 'רפלקציה באמצע ובסוף השנה', go: T('nt-journey', 'feedback')}]}
+  ],
+  flow: [
+    {icon: '✨', t: 'ציפייה', go: T('nt-journey', 'dg-moir')},
+    {icon: '🌊', t: 'הישרדות', go: T('nt-journey', 'dg-moir')},
+    {icon: '🌧️', t: 'התפכחות', go: T('nt-journey', 'dg-moir')},
+    {icon: '🌤️', t: 'התחדשות', go: T('nt-journey', 'dg-moir')},
+    {icon: '🪞', t: 'רפלקציה', go: T('nt-journey', 'feedback')}
+  ],
+  keys: [
+    {n: '5', t: 'שלבי השנה הראשונה לפי מויר', go: T('nt-journey', 'dg-moir')},
+    {n: '3', t: 'צרכים: שייכות, בהירות, מסוגלות', go: T('nt-journey', 'dg-needs')},
+    {n: '3', t: 'מצבי החונך: מדריך, מאמן, תומך', go: T('nt-mentor', 'dg-modes')},
+    {n: '5–10', t: 'דקות שיחה יומית עם החונך בשבוע הראשון', go: T('nt-journey', 'dg-junctions')}
+  ],
+  do: [{t: 'זמן פגישה קבוע ומוגן עם החונך', go: T('nt-journey', 'why')}, {t: 'שואלים ״מה אתה חושב שקרה?״ לפני שמציעים', go: T('nt-mentor', 'role')}, {t: 'משוב ספציפי – ודבר אחד לשפר', go: T('nt-mentor', 'dg-observe')}],
+  dont: [{t: 'לא מערבבים ליווי והערכה', go: T('nt-journey', 'why')}, {t: 'לא נותנים ״לחדש״ את הכיתה הקשה במיוחד', go: T('nt-journey', 'why')}, {t: 'לא משאירים אותו בודד בחדר המורים', go: T('nt-journey', 'why')}],
+  partners: [{t: 'המורה החדש', go: T('nt-journey', 'intake')}, {t: 'המורה החונך', go: T('nt-mentor', 'role')}, {t: 'היועץ', go: T('nt-journey', 'plan')}, {t: 'המנהל', go: T('nt-journey', 'dg-junctions')}, {t: 'סדנת ההתמחות', go: T('nt-journey', 'library')}],
+  sources: {t: 'מויר (1990) · ונמן (1984) · חוזרים 0470 ו-0482 · מחברת הייעוץ', go: T('nt-journey', 'library')}
+},
+
+programs: {
+  tagline: 'תוכנית מניעה והתערבות בית-ספרית – מהמיפוי ועד הדוח השנתי, מבוססת נתונים ונכתבת עם הצוות.',
+  core: {icon: '🏗️', title: 'תוכנית מבוססת נתונים', text: 'מיפוי ← מטרות ← מרכיבים ← הערכה – והסוף של שנה הוא ההתחלה של הבאה', go: T('prog-guide', 'dg-stages')},
+  pillars: [
+    {icon: '🔎', title: 'מיפוי צרכים', track: 'prog-guide', go: T('prog-guide', 'mapping'), points: [{t: 'נתונים מכמה מקורות', go: T('prog-guide', 'mapping')}, {t: 'בעיה אחת במשפט אחד', go: T('prog-guide', 'problem')}]},
+    {icon: '🔺', title: 'רמות ההתערבות', track: 'prog-guide', go: T('prog-guide', 'dg-tiers'), points: [{t: 'אוניברסלית – לכולם', go: T('prog-guide', 'levels')}, {t: 'ממוקדת – 10–15%', go: T('prog-guide', 'dg-tiers')}, {t: 'פרטנית – מעטים', go: T('prog-guide', 'dg-tiers')}]},
+    {icon: '🎯', title: 'מטרות ומודל לוגי', track: 'prog-guide', go: T('prog-guide', 'goals'), points: [{t: 'יעדים מדידים (SMART)', go: T('prog-guide', 'goals')}, {t: 'תשומות ← פעילויות ← תפוקות', go: T('prog-guide', 'dg-logic')}]},
+    {icon: '🧩', title: 'מרכיבים ושותפים', track: 'prog-guide', go: T('prog-guide', 'components'), points: [{t: 'מעגל הלמידה בכל מפגש', go: T('prog-guide', 'dg-learn')}, {t: 'שותפים ותפקידים', go: T('prog-guide', 'partners')}, {t: 'הכשרת הצוות', go: T('prog-guide', 'training')}]},
+    {icon: '📈', title: 'הערכה ודיווח', track: 'prog-guide', go: T('prog-guide', 'dg-eval'), points: [{t: 'הערכת תהליך – איך בוצע?', go: T('prog-guide', 'process')}, {t: 'הערכת תוצאות – מה השתנה?', go: T('prog-guide', 'outcome')}, {t: 'נאמנות לתוכנית', go: T('prog-guide', 'fidelity')}]},
+    {icon: '📚', title: 'תוכניות מוכנות לפי נושא', track: 'prog-climate', points: [{t: 'אקלים ומניעת אלימות', go: T('prog-climate')}, {t: 'בריונות וחרם', go: T('prog-bullying')}, {t: 'חרדה וחוסן', go: T('prog-anxiety')}, {t: 'מוגנות ברשת', go: T('prog-digital')}]}
+  ],
+  flow: [
+    {icon: '🔎', t: 'מיפוי צרכים', go: T('prog-guide', 'mapping')},
+    {icon: '🎯', t: 'בעיה ויעדים', go: T('prog-guide', 'goals')},
+    {icon: '🔗', t: 'מודל לוגי', go: T('prog-guide', 'logic')},
+    {icon: '🧩', t: 'מרכיבים ושותפים', go: T('prog-guide', 'components')},
+    {icon: '📅', t: 'תוכנית שנתית', go: T('prog-guide', 'annual')},
+    {icon: '🛠️', t: 'יישום ונאמנות', go: T('prog-guide', 'fidelity')},
+    {icon: '📈', t: 'הערכה ודוח', go: T('prog-guide', 'outcome')}
+  ],
+  keys: [
+    {n: '3', t: 'רמות: אוניברסלית, ממוקדת, פרטנית', go: T('prog-guide', 'dg-tiers')},
+    {n: '10–15%', t: 'מהתלמידים ברמה הממוקדת', go: T('prog-guide', 'dg-tiers')},
+    {n: '1–2', t: 'מטרות מרכזיות בשנה – לא עשרה נושאים', go: T('prog-guide', 'why')},
+    {n: '@count', t: 'תוכניות מוכנות לפי נושאים', go: '#/programs'}
+  ],
+  do: [{t: 'מתחילים במיפוי – לא ברעיון שכבר אהבנו', go: T('prog-guide', 'why')}, {t: 'כותבים את התוכנית עם הצוות', go: T('prog-guide', 'why')}, {t: 'מודדים לפני ואחרי באותם כלים', go: T('prog-guide', 'dg-eval')}],
+  dont: [{t: 'לא עשרה נושאים במקביל', go: T('prog-guide', 'why')}, {t: 'לא מסתפקים בשעה במערכת', go: T('prog-guide', 'why')}, {t: 'לא מוותרים על הערכת התהליך', go: T('prog-guide', 'dg-eval')}],
+  partners: [{t: 'ההנהלה', go: T('prog-guide', 'partners')}, {t: 'צוות מוביל', go: T('prog-guide', 'partners')}, {t: 'המחנכים', go: T('prog-guide', 'training')}, {t: 'ההורים', go: T('prog-guide', 'parents')}, {t: 'פסיכולוג שפ״ח', go: T('prog-guide', 'dg-tiers')}],
+  sources: {t: 'טלילה עובדיה – תכניות מניעה והתערבות · חוזר 0351 · חוזר 0470', go: T('prog-guide', 'sources')}
+},
+
+distress: {
+  tagline: 'זיהוי סימני מצוקה בכיתות א׳–ו׳ – מהתצפית ועד ההחלטה: עבודה של היועץ, שיתוף הורים, הפניה או נוהל חירום.',
+  core: {icon: '🔎', title: 'שינוי לעומת הרגיל של הילד', text: 'משווים את הילד לעצמו. כשיש ספק – אין ספק: מתייעצים', go: T('dist-guide', 'principle')},
+  pillars: [
+    {icon: '💛', title: 'בעיות רגשיות', track: 'dist-emo', points: [{t: 'חרדה ודאגנות', go: T('dist-anxiety')}, {t: 'התקפי זעם', go: T('dist-anger')}, {t: 'תלונות גופניות וסירוב', go: T('dist-somatic')}]},
+    {icon: '🧠', title: 'בעיות נפשיות', track: 'dist-mental', points: [{t: 'דיכאון ומצב רוח ירוד', go: T('dist-depression')}, {t: 'פגיעה עצמית וסיכון אובדני', go: T('dist-suicide')}, {t: 'טראומה ותגובות דחק', go: T('dist-trauma')}]},
+    {icon: '🌋', title: 'בעיות התנהגות', track: 'dist-behav', points: [{t: 'התנהגות מתריסה', go: T('dist-odd')}, {t: 'תוקפנות', go: T('dist-conduct')}, {t: 'קשב ואי שקט', go: T('dist-adhd')}]},
+    {icon: '🤝', title: 'בעיות חברתיות', track: 'dist-social', points: [{t: 'הסתגרות ובדידות', go: T('dist-withdrawal')}, {t: 'דחייה ובריונות', go: T('dist-rejection')}]},
+    {icon: '🧊', title: 'רגשות מתחפשים', track: 'dist-guide', go: T('dist-guide', 'masks'), points: [{t: 'הקרחון – מה מתחת', go: T('dist-guide', 'dg-iceberg')}, {t: 'מצוקה פנימה והחוצה', go: T('dist-guide', 'dg-inout')}, {t: 'איך זה נראה בכל גיל', go: T('dist-guide', 'ages')}]},
+    {icon: '🚨', title: 'נוהל חירום', track: 'dist-guide', go: T('dist-guide', 'emergency'), points: [{t: 'לא משאירים לבד', go: T('dist-guide', 'dg-suicide-flow')}, {t: 'מיידעים את המנהל ואת ההורים', go: T('dist-guide', 'dg-suicide-flow')}, {t: 'חוזר 0473', go: '#/circ/c11'}]}
+  ],
+  flow: [
+    {icon: '👀', t: 'תצפית בכמה מקומות', go: T('dist-guide', 'tools')},
+    {icon: '📋', t: 'רשימת סינון', go: T('dist-guide', 'screen')},
+    {icon: '📊', t: 'מדד חומרה', go: T('dist-guide', 'severity')},
+    {icon: '🪜', t: 'מסלול ההחלטה', go: T('dist-guide', 'dg-decide')},
+    {icon: '💬', t: 'שיחה עם ההורים', go: T('dist-guide', 'parents')},
+    {icon: '📝', t: 'סיכום והחלטה', go: T('dist-guide', 'record')}
+  ],
+  keys: [
+    {n: '3', t: 'שאלות: אופייני לו? הוא סובל? מישהו אחר סובל?', go: T('dist-guide', 'dg-3q')},
+    {n: '4', t: 'רמות החלטה: יועץ, הורים, הפניה, חירום', go: T('dist-guide', 'dg-decide')},
+    {n: '3', t: 'מקורות מידע לפחות: הילד, המחנך, ההורים', go: T('dist-guide', 'tools')},
+    {n: '0473', t: 'חוזר אובדנות – כל הצוות מכיר את הסימנים', go: '#/circ/c11'}
+  ],
+  do: [{t: 'מזהים, מתעדים ומתייעצים', go: T('dist-guide', 'principle')}, {t: 'שמים לב גם לילד השקט והמסתגר', go: T('dist-guide', 'masks')}, {t: 'צופים בכיתה, בהפסקה ובתפילה', go: T('dist-guide', 'tools')}],
+  dont: [{t: 'לא מאבחנים לבד', go: T('dist-guide', 'principle')}, {t: 'לא מערבבים טיפולי ומשמעתי', go: T('dist-guide', 'sides')}, {t: 'לא משאירים ילד בסיכון לבד', go: T('dist-guide', 'dg-suicide-flow')}],
+  partners: [{t: 'המחנך', go: T('dist-guide', 'sides')}, {t: 'ההורים', go: T('dist-guide', 'parents')}, {t: 'היועץ', go: T('dist-guide', 'dg-decide')}, {t: 'המנהל', go: T('dist-guide', 'dg-suicide-flow')}, {t: 'פסיכולוג שפ״ח', go: T('dist-guide', 'parents')}],
+  sources: {t: 'חוזרים 0473, 0470, 0482 ו-0472 · ורד ראש · CBT מערכתי', go: T('dist-guide', 'sources')}
+},
+
+talk: {
+  tagline: 'שיחה רגשית עם ילד – עקרונות, ראיון ראשון, שאלות טובות, רגעים קשים ותרגול.',
+  core: {icon: '💬', title: 'הילד מדבר יותר מחצי הזמן', text: 'סקרנות ועמדה של אי-ידיעה; הרגש לפני הפתרון', go: T('talk-guide', 'why')},
+  pillars: [
+    {icon: '🧭', title: 'העקרונות', track: 'talk-guide', points: [{t: 'המקום, הזמן והגוף', go: T('talk-guide', 'setting')}, {t: 'קצב – 80:20 לטובת הילד', go: T('talk-guide', 'pace')}, {t: 'לתת שם לרגש', go: T('talk-guide', 'name')}, {t: 'לפי גיל', go: T('talk-guide', 'ages')}]},
+    {icon: '🪜', title: 'שיחה שלב אחרי שלב', track: 'talk-emotions', points: [{t: 'שבעת השלבים', go: T('talk-emotions', 'dg-flow')}, {t: 'שיחות לדוגמה', go: T('talk-emotions', 'dialog1')}, {t: 'כלים לשיחה', go: T('talk-emotions', 'tools')}]},
+    {icon: '📝', title: 'הראיון הראשון', track: 'talk-interview', points: [{t: 'מבנה הפגישה הראשונה', go: T('talk-interview', 'dg-timeline')}, {t: 'סודיות וגבולותיה', go: T('talk-interview', 'secret')}, {t: 'שיחה ראשונה עם ההורים והמחנך', go: T('talk-interview', 'parents')}]},
+    {icon: '❓', title: 'שאלות טובות', track: 'talk-questions', points: [{t: 'למה לא ״למה?״', go: T('talk-questions', 'why-not')}, {t: 'שאלות סולם וחריג', go: T('talk-questions', 'scale')}, {t: 'גילוי מודרך', go: T('talk-questions', 'dg-socratic')}]},
+    {icon: '⚡', title: 'רגעים קשים', track: 'talk-hard', points: [{t: 'שתיקה ובכי', go: T('talk-hard', 'silent')}, {t: 'כעס והתפרצות', go: T('talk-hard', 'angry')}, {t: 'חשיפת פגיעה', go: T('talk-hard', 'dg-disclose')}, {t: 'בירור מול שיחה טיפולית', go: T('talk-hard', 'dg-compare')}]},
+    {icon: '🎯', title: 'תרגול ליועץ ולצוות', track: 'talk-practice', points: [{t: 'חמש רמות האמפתיה', go: T('talk-practice', 'dg-empathy')}, {t: 'משחק תפקידים', go: T('talk-practice', 'role')}, {t: 'סדנה לצוות', go: T('talk-practice', 'workshop')}]}
+  ],
+  flow: [
+    {icon: '🤝', t: 'קשר ופתיחה', go: T('talk-emotions', 's1')},
+    {icon: '👂', t: 'הקשבה', go: T('talk-emotions', 's2')},
+    {icon: '🪞', t: 'שיקוף ותיקוף', go: T('talk-emotions', 's3')},
+    {icon: '🔭', t: 'הרחבה', go: T('talk-emotions', 's4')},
+    {icon: '🏷️', t: 'שם לרגש', go: T('talk-emotions', 's5')},
+    {icon: '💡', t: 'משמעות', go: T('talk-emotions', 's6')},
+    {icon: '👣', t: 'צעד הבא', go: T('talk-emotions', 's7')}
+  ],
+  keys: [
+    {n: '80:20', t: 'יחס הדיבור – לטובת הילד', go: T('talk-guide', 'pace')},
+    {n: '4', t: 'חלקי הדו-שיח: שיקוף, סיכום, תיקוף, אמפתיה', go: T('talk-guide', 'dg-listen')},
+    {n: '7', t: 'שלבי השיחה הרגשית', go: T('talk-emotions', 'dg-flow')},
+    {n: '3', t: 'שאלות עשת אחרי אירוע משמעת', go: T('talk-hard', 'dg-eshet')}
+  ],
+  do: [{t: 'שיקוף לפני שאלה', go: T('talk-emotions', 'map')}, {t: 'מנחשים רגש בטון שואל', go: T('talk-guide', 'name')}, {t: 'מותר לא לדעת ולבקש זמן', go: T('talk-guide', 'self')}],
+  dont: [{t: 'לא הטפה ולא ״בית משפט״', go: T('talk-guide', 'dont')}, {t: 'לא מפגיזים בשאלות', go: T('talk-guide', 'dont')}, {t: 'לא מבטיחים סוד כשילד מספר על פגיעה', go: T('talk-hard', 'disclose')}],
+  partners: [{t: 'התלמיד', go: T('talk-interview', 'open')}, {t: 'ההורים', go: T('talk-interview', 'dg-parents')}, {t: 'המחנך', go: T('talk-interview', 'teacher')}, {t: 'הצוות', go: T('talk-practice', 'workshop')}],
+  sources: {t: 'קדמה · ״דיאלוג מורה-תלמיד״ · נוהל שיח רגשי · חוזרים 0473 ו-0470', go: T('talk-guide', 'why')}
+},
+
+sel: {
+  tagline: 'למידה רגשית-חברתית לבנים בכיתות א׳–ו׳ – חמש מיומנויות שלומדים כמו כל מקצוע, שיעור אחרי שיעור.',
+  core: {icon: '💞', title: 'חמש המיומנויות', text: 'מודעות עצמית · ניהול עצמי · מודעות חברתית · בין-אישי · החלטות אחראיות', go: T('sel-guide', 'comp')},
+  pillars: [
+    {icon: '🪞', title: 'מודעות עצמית', track: 'sel-self', points: [{t: 'מטרות לפי גיל', go: T('sel-self', 'goals')}, {t: 'מערכים מוכנים', go: T('sel-self', 'lessons')}]},
+    {icon: '🌡️', title: 'ניהול עצמי וויסות', track: 'sel-manage', points: [{t: 'מטרות לפי גיל', go: T('sel-manage', 'goals')}, {t: 'מערכים מוכנים', go: T('sel-manage', 'lessons')}]},
+    {icon: '🔭', title: 'מודעות חברתית ואמפתיה', track: 'sel-social', points: [{t: 'מטרות לפי גיל', go: T('sel-social', 'goals')}, {t: 'מערכים מוכנים', go: T('sel-social', 'lessons')}]},
+    {icon: '🤝', title: 'מיומנויות בין-אישיות', track: 'sel-relate', points: [{t: 'מטרות לפי גיל', go: T('sel-relate', 'goals')}, {t: 'מערכים מוכנים', go: T('sel-relate', 'lessons')}]},
+    {icon: '🚦', title: 'קבלת החלטות אחראית', track: 'sel-decide', points: [{t: 'מטרות לפי גיל', go: T('sel-decide', 'goals')}, {t: 'מערכים מוכנים', go: T('sel-decide', 'lessons')}]},
+    {icon: '📅', title: 'תוכנית שנתית', track: 'sel-year', points: [{t: 'השנה במבט אחד', go: T('sel-year', 'periods')}, {t: 'משימות היועץ לפי חודשים', go: T('sel-year', 'milestones')}]},
+    {icon: '🎓', title: 'הדרכת מחנכים', track: 'sel-teachers', points: [{t: 'שש סדנאות לצוות', go: T('sel-teachers', 'workshops')}, {t: 'תצפית ומשוב', go: T('sel-teachers', 'observe')}]},
+    {icon: '🏠', title: 'שיתוף הורים', track: 'sel-parents', points: [{t: 'המיומנויות בשפה של הורים', go: T('sel-parents', 'five')}, {t: 'מכתב חודשי', go: T('sel-parents', 'letter')}]}
+  ],
+  flow: [
+    {icon: '🎈', t: 'חיבור חווייתי', go: T('sel-guide', 'lesson')},
+    {icon: '💬', t: 'שיתוף במחשבות וברגשות', go: T('sel-guide', 'lesson')},
+    {icon: '💡', t: 'הרחבה, תובנות והמשגה', go: T('sel-guide', 'lesson')},
+    {icon: '🛠️', t: 'תרגול ויישום', go: T('sel-guide', 'lesson')}
+  ],
+  keys: [
+    {n: '5', t: 'מיומנויות SEL', go: T('sel-guide', 'comp')},
+    {n: '4', t: 'שלבים במעגל הלמידה של כל שיעור', go: T('sel-guide', 'lesson')},
+    {n: '1', t: 'שעה קבועה בשבוע לכישורי חיים', go: T('sel-guide', 'climate')},
+    {n: '0351', t: 'חוזר כישורי חיים', go: '#/circ/c09'}
+  ],
+  do: [{t: 'שיעור בשעה קבועה כל שבוע', go: T('sel-guide', 'climate')}, {t: 'מחברים כל מיומנות לשפת המידות', go: T('sel-guide', 'what')}, {t: 'צוות מוביל עם מנהל, יועץ ורכזים', go: T('sel-guide', 'role')}],
+  dont: [{t: 'לא מחליפים את השעה בשיעור אחר', go: T('sel-guide', 'climate')}, {t: 'לא מערבבים טיפולי ומשמעתי', go: T('sel-guide', 'separate')}, {t: 'חשש לפגיעה – לא ממתינים, מדווחים', go: T('sel-guide', 'separate')}],
+  partners: [{t: 'המנהל', go: T('sel-guide', 'role')}, {t: 'היועץ', go: T('sel-guide', 'role')}, {t: 'המחנכים', go: T('sel-teachers')}, {t: 'רכז החינוך החברתי', go: T('sel-guide', 'role')}, {t: 'הפסיכולוג', go: T('sel-guide', 'role')}, {t: 'ההורים', go: T('sel-parents')}],
+  sources: {t: 'חוזר 0351 · שפ״י – כישורי חיים ומפתח הל״ב · CASEL (פיגום)', go: T('sel-guide', 'links')}
+},
+
+mafteach: {
+  tagline: 'שתי השעות החברתיות-רגשיות של השבוע: כישורי חיים (״הכ״חות שבדרך״) ומפתח הל״ב לשעת החינוך.',
+  core: {icon: '🔑', title: 'מעגל הלמידה', text: 'חוויה ← שיתוף ← המשגה ← יישום – השלד של כל שיעור', go: T('ks-guide', 'cycle')},
+  pillars: [
+    {icon: '🧩', title: 'איך מעבירים שיעור', track: 'ks-guide', points: [{t: 'מנחה, לא מרצה', go: T('ks-guide', 'stance')}, {t: 'כללי שיח מוגן', go: T('ks-guide', 'rules')}, {t: 'פותחים, מחזיקים, סוגרים', go: T('ks-guide', 'lesson-flow')}]},
+    {icon: '📚', title: 'כישורי חיים לפי שכבה', track: 'ks-a', points: [{t: 'כיתות א׳–ב׳', go: T('ks-a')}, {t: 'כיתות ג׳–ד׳', go: T('ks-c')}, {t: 'כיתות ה׳–ו׳', go: T('ks-e')}]},
+    {icon: '🔑', title: 'מפתח הל״ב', track: 'mh-guide', points: [{t: 'ערך לכל תקופה', go: T('mh-guide', 'year')}, {t: 'איך בנוי כל מערך', go: T('mh-guide', 'lesson')}, {t: 'רשימת הכנה למחנך', go: T('mh-guide', 'ready')}]},
+    {icon: '📅', title: 'התקופות', track: 'mh-elul', points: [{t: 'אלול–תשרי: שיתוף והשתתפות', go: T('mh-elul')}, {t: 'חשון–כסלו: שונות', go: T('mh-heshvan')}, {t: 'טבת–שבט: ניהול קונפליקטים', go: T('mh-tevet')}]},
+    {icon: '📜', title: 'בכיתת בנים חרדית וחרד״לית', track: 'ks-guide', go: T('ks-guide', 'boys'), points: [{t: 'מחברים למקור', go: T('ks-guide', 'boys')}, {t: 'הרב והמחנך יחד', go: T('ks-guide', 'boys')}, {t: 'התאמה לגיל', go: T('ks-guide', 'grades')}]},
+    {icon: '🎓', title: 'הדרכת מחנכים', track: 'mh-teachers', points: [{t: 'מהוראה להנחיה', go: T('mh-teachers')}, {t: 'כל המעגלים של כיתה אחת', go: T('mh-grades')}]}
+  ],
+  flow: [
+    {icon: '🎈', t: 'חיבור חווייתי', go: T('ks-guide', 'cycle')},
+    {icon: '💬', t: 'שיתוף במחשבות וברגשות', go: T('ks-guide', 'cycle')},
+    {icon: '💡', t: 'המשגה', go: T('ks-guide', 'cycle')},
+    {icon: '🛠️', t: 'תרגול ויישום', go: T('ks-guide', 'cycle')}
+  ],
+  keys: [
+    {n: '2', t: 'שעות בשבוע: כישורי חיים ומפתח הל״ב', go: T('mh-guide', 'what')},
+    {n: '6', t: 'כללי שיח מוגן', go: T('ks-guide', 'rules')},
+    {n: '3', t: 'דרגות התאמה לגיל: א׳–ב׳, ג׳–ד׳, ה׳–ו׳', go: T('ks-guide', 'grades')},
+    {n: '0351', t: 'חוזר כישורי חיים', go: '#/circ/c09'}
+  ],
+  do: [{t: 'מנחים – לא מרצים', go: T('ks-guide', 'stance')}, {t: 'מתאימים שמות ודוגמאות לבנים ולבית הספר', go: T('mh-guide', 'ready')}, {t: 'כשילד משתף משהו רגיש – מודים ומזמינים לשיחה אחרי', go: T('ks-guide', 'sensitive')}],
+  dont: [{t: 'לא מחייבים לשתף', go: T('ks-guide', 'pitfalls')}, {t: 'לא פותחים ריב במליאה', go: T('ks-guide', 'pitfalls')}, {t: 'לא מדלגים על הסיכום', go: T('ks-guide', 'pitfalls')}],
+  partners: [{t: 'המחנך', go: T('mh-guide', 'roles')}, {t: 'רכז החינוך החברתי', go: T('mh-guide', 'roles')}, {t: 'היועץ', go: T('mh-guide', 'roles')}, {t: 'הרב', go: T('ks-guide', 'boys')}, {t: 'ההורים', go: T('ks-guide', 'boys')}],
+  sources: {t: 'שפ״י – ״הכ״חות שבדרך״ · אתר מפתח הל״ב לבנים · חוזר 0351', go: T('ks-guide', 'links')}
+},
+
+parents: {
+  tagline: 'הבית ובית הספר – שותפים לאותו ילד: אסיפה כללית, שיחה פרטנית, הדרכת מחנכים והנהגת הורים.',
+  core: {icon: '🤝', title: 'ההורים – המומחים לילד', text: 'הצוות מומחה לשיחה ולבית הספר; יחד בונים תוכנית משותפת', go: T('par-guide', 'why')},
+  pillars: [
+    {icon: '🏫', title: 'אסיפה כללית', track: 'par-general', points: [{t: 'סדר יום של כשעה ורבע', go: T('par-general', 'agenda')}, {t: 'פעילויות פתיחה', go: T('par-general', 'activities')}, {t: 'שאלות קשות מהקהל', go: T('par-general', 'hard')}]},
+    {icon: '💬', title: 'שיחה פרטנית', track: 'par-individual', points: [{t: 'מפת הדרך של הפגישה', go: T('par-individual', 'flow')}, {t: 'בשורה קשה', go: T('par-individual', 'hardnews')}, {t: 'סולם הרגעה', go: T('par-individual', 'deesc')}]},
+    {icon: '🎓', title: 'הדרכת מחנכים', track: 'par-teachers', points: [{t: 'סיפור במקום תיאור', go: T('par-teachers', 'story')}, {t: 'רשימה לפני ימי ההורים', go: T('par-teachers', 'checklist')}]},
+    {icon: '🗳️', title: 'הנהגת הורים', track: 'par-leadership', points: [{t: 'ארבע הרמות', go: T('par-leadership', 'levels')}, {t: 'לוח הבחירות', go: T('par-leadership', 'dates')}, {t: 'מה הנציגות לא עושה', go: T('par-leadership', 'limits')}]},
+    {icon: '📋', title: 'ועד הכיתה', track: 'par-class-leadership', points: [{t: 'הבחירות באספה הראשונה', go: T('par-class-leadership', 'elect')}, {t: 'הגבולות של הוועד', go: T('par-class-leadership', 'bounds')}]},
+    {icon: '🏛️', title: 'הנציגות הבית-ספרית', track: 'par-school-leadership', points: [{t: 'הפורום עם המנהל', go: T('par-school-leadership', 'forum')}, {t: 'תפקיד היועץ מול הנציגות', go: T('par-school-leadership', 'counselor')}]}
+  ],
+  flow: [
+    {icon: '🍂', t: 'אלול–תשרי: אסיפה כללית', go: T('par-general')},
+    {icon: '📊', t: 'לפני המחצית: ישיבה פדגוגית', go: T('par-guide', 'year')},
+    {icon: '💬', t: 'אחרי המחצית: שיחה פרטנית', go: T('par-individual')},
+    {icon: '📞', t: 'כל השנה: שיחות לפי צורך', go: T('par-guide', 'year')},
+    {icon: '🎓', t: 'סוף השנה: תעודה ומעבר', go: '#/reports'}
+  ],
+  keys: [
+    {n: '0482', t: 'חוזר הקשר עם ההורים', go: T('par-guide', 'law')},
+    {n: '0423', t: 'חוזר נציגות הורים', go: T('par-leadership', 'why')},
+    {n: '15.10', t: 'עד מועד זה – בחירות לוועד הכיתה', go: T('par-leadership', 'dates')},
+    {n: '8', t: 'שאלות לפני שיחה קשה', go: T('par-individual', 'eight')}
+  ],
+  do: [{t: 'פותחים בחוזקה אמיתית', go: T('par-individual', 'hardnews')}, {t: 'ההורים מדברים ראשונים', go: T('par-individual', 'flow')}, {t: 'רושמים עובדות והסכמות', go: T('par-individual', 'record')}],
+  dont: [{t: 'לא מדברים באסיפה על ילד מסוים', go: T('par-general', 'content')}, {t: 'לא נגררים עם הורה כועס', go: T('par-individual', 'defensive')}, {t: 'הנציגות לא עוסקת בתלמיד מסוים', go: T('par-leadership', 'limits')}],
+  partners: [{t: 'המחנך', go: T('par-general', 'roles')}, {t: 'היועץ', go: T('par-general', 'roles')}, {t: 'ההנהלה', go: T('par-general', 'roles')}, {t: 'ההורים', go: T('par-guide', 'why')}, {t: 'ועד ההורים', go: T('par-class-leadership', 'what')}],
+  sources: {t: 'חוזרים 0482 ו-0423 · ״המסע אל התעודה 2״', go: T('par-guide', 'law')}
+},
+
+reports: {
+  tagline: 'תעודת מחצית ותעודת סוף שנה – הערכה מילולית שמדברת אל הילד ומקדמת אותו.',
+  core: {icon: '🎓', title: 'מ״תעודה״ ל״תהודה״', text: 'משוב שמאתר חוזקות ומקדם למידה – במקום ציונים ״יבשים״', go: T('rep-guide', 'role')},
+  pillars: [
+    {icon: '🔺', title: 'המשולש', track: 'rep-guide', go: T('rep-guide', 'triangle'), points: [{t: 'התלמיד', go: T('rep-guide', 'triangle')}, {t: 'המורה', go: T('rep-guide', 'triangle')}, {t: 'ההורים', go: T('rep-guide', 'triangle')}]},
+    {icon: '🧩', title: 'ממה בנויה התעודה', track: 'rep-guide', go: T('rep-guide', 'parts'), points: [{t: 'ציונים והישגים', go: T('rep-guide', 'parts')}, {t: 'הערכה מילולית', go: T('rep-guide', 'parts')}, {t: 'התנהגות', go: T('rep-guide', 'parts')}]},
+    {icon: '🧭', title: 'החלק של היועץ', track: 'rep-guide', go: T('rep-guide', 'counselor'), points: [{t: 'הכנת הצוות', go: T('rep-guide', 'counselor')}, {t: 'ישיבה פדגוגית', go: T('rep-guide', 'counselor')}, {t: 'בדיקת הניסוחים', go: T('rep-guide', 'counselor')}]},
+    {icon: '🌓', title: 'תעודת מחצית', track: 'rep-half', points: [{t: 'ארבע לבנים להערכה מילולית', go: T('rep-half', 'formula')}, {t: 'הקשר לשיחה עם ההורים', go: T('rep-half', 'parents')}, {t: 'הערכה עצמית של הבנים', go: T('rep-half', 'self')}]},
+    {icon: '🏁', title: 'תעודת סוף שנה', track: 'rep-final', points: [{t: 'סיכום שמכוון קדימה', go: T('rep-final', 'purpose')}, {t: 'מקרים רגישים', go: T('rep-final', 'sensitive')}]},
+    {icon: '🎨', title: 'בנק ניסוחים', track: 'rep-compare', points: [{t: 'ניסוחים חיוביים לפי תחום', go: T('rep-compare', 'bank')}, {t: 'מה להימנע ממנו', go: T('rep-compare', 'avoid')}, {t: 'מפת החוזקות', go: T('rep-compare', 'strengths')}]}
+  ],
+  flow: [
+    {icon: '🌱', t: 'תחילת שנה', go: T('rep-guide', 'year')},
+    {icon: '📆', t: 'חודש לפני המחצית', go: T('rep-guide', 'year')},
+    {icon: '✍️', t: 'כתיבה ובדיקה', go: T('rep-compare', 'review')},
+    {icon: '📨', t: 'חלוקת התעודות', go: T('rep-guide', 'year')},
+    {icon: '💬', t: 'אחרי המחצית', go: T('rep-half', 'parents')},
+    {icon: '🏁', t: 'סוף שנה', go: T('rep-final')}
+  ],
+  keys: [
+    {n: '2', t: 'תעודות בשנה: מחצית וסוף שנה', go: T('rep-compare', 'compare')},
+    {n: '4', t: 'לבנים בנוסחת ההערכה המילולית', go: T('rep-half', 'formula')},
+    {n: '24', t: 'מילים במפת החוזקות', go: T('rep-compare', 'strengths')}
+  ],
+  do: [{t: 'חוזקות, התקדמות, מאמץ ומטרה', go: T('rep-guide', 'sides')}, {t: 'שאלות פתוחות ולא קביעות נחרצות', go: T('rep-guide', 'role')}, {t: 'יש ספק? מתייעצים עם היועץ לפני ההדפסה', go: T('rep-guide', 'sides')}],
+  dont: [{t: 'לא אבחנות ולא מידע טיפולי', go: T('rep-guide', 'sides')}, {t: 'לא משווים לילדים אחרים', go: T('rep-guide', 'sides')}, {t: 'אירוע משמעת – לא בהערכה המילולית', go: T('rep-guide', 'sides')}],
+  partners: [{t: 'המחנך', go: T('rep-half', 'howto')}, {t: 'היועץ', go: T('rep-guide', 'counselor')}, {t: 'ההורים', go: T('rep-half', 'parents')}, {t: 'התלמיד', go: T('rep-half', 'self')}],
+  sources: {t: '״המסע אל התעודה 2״ · ״מתעודה לתהודה״ · חוזרים 0470 ו-0436', go: T('rep-guide', 'parts')}
+},
+
+sped: {
+  tagline: 'חינוך מיוחד והכלה – מאיתור בכיתה ועד ועדת זכאות, תוכנית אישית וחידוש זכאות, לפי חוזר 0287.',
+  core: {icon: '🧩', title: 'כל ילד לומד אחרת', text: 'תמיכה מדורגת: קודם הוראה טובה ותוכנית בבית הספר, ואחר כך ועדות', go: T('sped-guide', 'tiers')},
+  pillars: [
+    {icon: '🗺️', title: 'מפת התהליך', track: 'sped-guide', go: T('sped-guide', 'map'), points: [{t: 'מי עושה מה', go: T('sped-guide', 'who')}, {t: 'לוח השנה', go: T('sped-guide', 'year')}, {t: 'טיפולי או מנהלי?', go: T('sped-guide', 'split')}]},
+    {icon: '📂', title: 'ערכת הטפסים', track: 'sped-forms', points: [{t: 'איזה טופס אני צריך?', go: T('sped-forms', 'which')}, {t: 'פרטיות ושמירה', go: T('sped-forms', 'privacy')}]},
+    {icon: '🏛️', title: 'הכנה לוועדה', track: 'sped-committee', points: [{t: 'לפני שמפנים', go: T('sped-committee', 'before')}, {t: 'צוות רב-מקצועי מול ועדת זכאות', go: T('sped-committee', 'cmp')}, {t: 'זכויות ההורים', go: T('sped-committee', 'rights')}]},
+    {icon: '🔄', title: 'חידוש זכאות', track: 'sped-renewal', points: [{t: 'מחזור של שלוש שנים', go: T('sped-renewal', 'cycle3')}, {t: 'שלוש דרכים לחידוש', go: T('sped-renewal', 'routes')}, {t: 'קיצור יום לימודים', go: T('sped-renewal', 'short')}]},
+    {icon: '📖', title: 'הערכת קריאה א׳–ג׳', track: 'sped-reading', points: [{t: 'פרופיל אורייני – תחילת א׳', go: T('sped-reading', 'a1')}, {t: 'שטף קריאה – סוף ב׳ וסוף ג׳', go: T('sped-reading', 'b2')}, {t: 'דיוק, קצב, פרוזודיה', go: T('sped-reading', 'tri')}]},
+    {icon: '🤲', title: 'הכלה בכיתה', track: 'sped-inclusion', points: [{t: 'רכז ההכלה', go: T('sped-inclusion', 'rakaz')}, {t: 'שלושה שותפים', go: T('sped-inclusion', 'venn')}, {t: 'מיפוי ילד מתקשה', go: T('sped-inclusion', 'map')}]},
+    {icon: '⭐', title: 'מחוננים ומצטיינים', track: 'sped-gifted', points: [{t: 'שלבי האיתור', go: T('sped-gifted', 'flow')}, {t: 'רשימת בדיקה', go: T('sped-gifted', 'check')}]}
+  ],
+  flow: [
+    {icon: '🔍', t: 'איתור ומיפוי בכיתה', go: T('sped-guide', 'map')},
+    {icon: '🛠️', t: 'תמיכה בבית הספר ומעקב', go: '#/circ/c02/c02-support-plan-before-referral'},
+    {icon: '🤝', t: 'שיחה עם ההורים והסכמות', go: T('sped-committee', 'before')},
+    {icon: '🧩', t: 'צוות רב-מקצועי', go: T('sped-committee', 'cmp')},
+    {icon: '🏛️', t: 'ועדת זכאות ואפיון', go: T('sped-committee', 'cmp')},
+    {icon: '📝', t: 'תוכנית אישית – תח״י', go: '#/circ/c02/c02-iep-personal-program'},
+    {icon: '🔄', t: 'חידוש זכאות', go: T('sped-renewal', 'cycle3')}
+  ],
+  keys: [
+    {n: '4', t: 'רמות תמיכה – מהכיתה ועד הסל האישי', go: T('sped-guide', 'tiers')},
+    {n: '31.3', t: 'מועד אחרון לבקשות ולשאלונים', go: T('sped-guide', 'map')},
+    {n: '3', t: 'שנים במחזור זכאות', go: T('sped-renewal', 'cycle3')},
+    {n: '0287', t: 'חוזר ועדות חינוך מיוחד', go: '#/circ/c02'}
+  ],
+  do: [{t: 'תוכנית תמיכה בכתב ומבדק מעקב', go: T('sped-guide', 'check')}, {t: 'ההורים שותפים להחלטה ולעיתוי', go: T('sped-committee', 'before')}, {t: 'מסבירים לילד במילים שלו מה יקרה', go: T('sped-committee', 'after')}],
+  dont: [{t: 'לא שומרים באפליקציה פרטי תלמידים – רק כינוי', go: T('sped-guide', 'role')}, {t: 'לא מפנים לוועדה לפני תמיכה בבית הספר', go: T('sped-guide', 'map')}, {t: 'לא מערבבים טיפולי ומנהלי', go: T('sped-guide', 'split')}],
+  partners: [{t: 'המנהל', go: T('sped-guide', 'who')}, {t: 'המחנך', go: T('sped-guide', 'who')}, {t: 'היועץ', go: T('sped-guide', 'role')}, {t: 'פסיכולוג השפ״ח', go: T('sped-guide', 'who')}, {t: 'איש חינוך מיוחד', go: T('sped-committee', 'who')}, {t: 'ההורים', go: T('sped-committee', 'rights')}],
+  sources: {t: 'חוזר 0287 · חוזר 0483 – מוסדות מכילים · ערכת הטפסים שלך', go: '#/circ/c02'}
+},
+
+develop: {
+  tagline: 'התפתחות הילד מהגן ועד כיתה ו׳ – מה צפוי בכל גיל, מה שונות רגילה ומתי מפנים.',
+  core: {icon: '🌳', title: 'הילד השלם – בקצב שלו', text: 'הטווח התקין רחב; בודקים עוצמה, תדירות, משך ופגיעה בתפקוד', go: T('dev-guide', 'what')},
+  pillars: [
+    {icon: '🧸', title: 'גן ובשלות לכיתה א׳', track: 'dev-k', points: [{t: 'בשלות – מה היא באמת', go: T('dev-k', 'ready')}, {t: 'תקין או לבדוק?', go: T('dev-k', 'worries')}]},
+    {icon: '✏️', title: 'א׳–ב׳: להיות תלמיד', track: 'dev-12', points: [{t: 'מה צפוי בכל תחום', go: T('dev-12', 'grid')}, {t: 'קשיי פרידה – מתי לדאוג', go: T('dev-12', 'sep')}]},
+    {icon: '🧗', title: 'ג׳–ד׳: חבורה וכללים', track: 'dev-34', points: [{t: 'המטלה של הגיל', go: T('dev-34', 'task')}, {t: '״כואבת לי הבטן כל בוקר״', go: T('dev-34', 'ice')}]},
+    {icon: '🌅', title: 'ה׳–ו׳: ראשית ההתבגרות', track: 'dev-56', points: [{t: 'הגוף משתנה בקצב אישי', go: T('dev-56', 'body')}, {t: 'מתבגר רגיל או מצוקה?', go: T('dev-56', 'compare')}]},
+    {icon: '📚', title: 'תיאוריות התפתחות', track: 'dev-theories', points: [{t: 'פיאז׳ה', go: T('dev-theories', 'piaget')}, {t: 'אריקסון', go: T('dev-theories', 'erikson')}, {t: 'התקשרות וניופלד', go: T('dev-theories', 'attach')}, {t: 'קולברג', go: T('dev-theories', 'kohlberg')}]},
+    {icon: '🔬', title: 'לפי תחומים', track: 'dev-domains', points: [{t: 'שפה ודיבור', go: T('dev-domains', 'lang')}, {t: 'תפקודים ניהוליים וקשב', go: T('dev-domains', 'ef')}, {t: 'ויסות רגשי', go: T('dev-domains', 'reg')}]},
+    {icon: '🚩', title: 'דגלים אדומים והפניה', track: 'dev-flags', points: [{t: 'שש שאלות לפני הפניה', go: T('dev-flags', 'when')}, {t: 'למי מפנים', go: T('dev-flags', 'who')}, {t: 'התהליך הבית-ספרי', go: T('dev-flags', 'process')}]},
+    {icon: '🏠', title: 'הדרכת הורים לפי גיל', track: 'dev-parents', points: [{t: 'טיפים לפי גיל', go: T('dev-parents', 'ages')}, {t: 'שלוש פגישות הדרכה', go: T('dev-parents', 'series')}]}
+  ],
+  flow: [
+    {icon: '❓', t: 'מה בדיוק מדאיג?', go: T('dev-guide', 'lens')},
+    {icon: '📏', t: 'מה צפוי בגיל?', go: T('dev-guide', 'timeline')},
+    {icon: '🗂️', t: 'איסוף מידע', go: T('dev-guide', 'lens')},
+    {icon: '⚖️', t: 'השוואה לתחומים האחרים', go: T('dev-guide', 'domains')},
+    {icon: '✅', t: 'החלטה', go: T('dev-guide', 'range')},
+    {icon: '🔁', t: 'מעקב', go: T('dev-guide', 'check')}
+  ],
+  keys: [
+    {n: '7', t: 'תחומי התפתחות', go: T('dev-guide', 'domains')},
+    {n: '4', t: 'שלבי גיל: גן, א׳–ב׳, ג׳–ד׳, ה׳–ו׳', go: T('dev-guide', 'timeline')},
+    {n: '5', t: 'דרגות – משונות רגילה ועד סכנה', go: T('dev-guide', 'range')},
+    {n: '6', t: 'שאלות לפני שמפנים', go: T('dev-flags', 'when')}
+  ],
+  do: [{t: 'בודקים מה צפוי בגיל הזה', go: T('dev-guide', 'check')}, {t: 'בודקים פגיעה בתפקוד', go: T('dev-guide', 'check')}, {t: 'אוספים מידע מכמה מקורות', go: T('dev-flags', 'before')}],
+  dont: [{t: 'לא מסיקים מעצם ההתנהגות – בודקים עוצמה, תדירות ומשך', go: T('dev-guide', 'check')}, {t: 'לא מתעלמים מרגרסיה', go: T('dev-guide', 'what')}, {t: 'לא מערבבים טיפולי ומנהלי', go: T('dev-flags', 'sides')}],
+  partners: [{t: 'ההורים', go: T('dev-parents', 'principles')}, {t: 'המחנך', go: T('dev-12', 'tell')}, {t: 'היועץ', go: T('dev-guide', 'lens')}, {t: 'רופא ילדים', go: T('dev-flags', 'who')}, {t: 'קלינאי תקשורת', go: T('dev-flags', 'who')}, {t: 'פסיכולוג שפ״ח', go: T('dev-flags', 'who')}],
+  sources: {t: 'פיאז׳ה · אריקסון · ניופלד · ויגוצקי · קולברג · ברונפנברנר', go: T('dev-theories', 'why')}
+},
+
+tzalach: {
+  tagline: 'צוות לשעת חירום – היערכות בשגרה, השעות והיום הראשון, תרחישים, השיחה בכיתה ומעקב.',
+  core: {icon: '🛟', title: 'היערכות מקדימה מצילה חיים', text: 'הצל״ח עובד בשגרה; המנהל מוביל, והיועץ אחראי על הצד הטיפולי', go: T('tz-guide', 'what')},
+  pillars: [
+    {icon: '🌳', title: 'מי בצוות', track: 'tz-guide', go: T('tz-guide', 'tree'), points: [{t: 'עץ התפקידים', go: T('tz-guide', 'tree')}, {t: 'טיפולי מול ניהולי', go: T('tz-guide', 'roles')}]},
+    {icon: '💼', title: 'היערכות בשגרה', track: 'tz-ready', points: [{t: 'רשימת המוכנות', go: T('tz-ready', 'ring')}, {t: 'ארבעת שלבי ההתנעה', go: T('tz-ready', 'startup')}, {t: 'מיפוי מעגלי הפגיעות', go: T('tz-ready', 'map')}]},
+    {icon: '⏰', title: 'מחר בבוקר', track: 'tz-first', points: [{t: 'קודם מאמתים', go: T('tz-first', 'golden')}, {t: 'ציר היום הראשון', go: T('tz-first', 'timeline')}, {t: 'חדר תמיכה ואיתור', go: T('tz-first', 'room')}]},
+    {icon: '🗂️', title: 'תרחישים', track: 'tz-scenarios', points: [{t: 'מוות של תלמיד', go: T('tz-scenarios', 'student')}, {t: 'אזעקות', go: T('tz-scenarios', 'security')}, {t: 'אובדנות בקהילה', go: T('tz-scenarios', 'suicide')}]},
+    {icon: '🏫', title: 'השיחה בכיתה', track: 'tz-class', points: [{t: 'מודל השיחה הכיתתית', go: T('tz-class', 'model')}, {t: 'מותאם לגיל', go: T('tz-class', 'ages')}, {t: 'מתי מפנים ליועץ', go: T('tz-class', 'refer')}]},
+    {icon: '🕯️', title: 'אחרי האירוע', track: 'tz-after', points: [{t: 'מעקב עד יום השנה', go: T('tz-after', 'timeline')}, {t: 'טראומה משנית בצוות', go: T('tz-after', 'staff')}, {t: 'הפקת לקחים', go: T('tz-after', 'debrief')}]}
+  ],
+  flow: [
+    {icon: '🛡️', t: 'שגרה – היערכות', go: T('tz-ready')},
+    {icon: '⏰', t: 'השעות והיום הראשון', go: T('tz-first', 'timeline')},
+    {icon: '📅', t: 'השבוע הראשון', go: T('tz-after', 'timeline')},
+    {icon: '🔁', t: 'חזרה לשגרה ומעקב ארוך', go: T('tz-after', 'timeline')}
+  ],
+  keys: [
+    {n: '4', t: 'שלבים על ציר הזמן', go: T('tz-guide', 'phases')},
+    {n: '3', t: 'קמ״צ: קרבה, מיידיות, צפייה להחלמה', go: T('tz-guide', 'kamatz')},
+    {n: '7', t: 'ערוצי התמודדות – גש״ר מאח״ד', go: T('tz-guide', 'basic')},
+    {n: '3', t: 'מעגלי פגיעות: פיזית, רגשית, פגיעות קודמת', go: T('tz-guide', 'circles')}
+  ],
+  do: [{t: 'קודם מאמתים – לא פועלים על שמועה', go: T('tz-first', 'golden')}, {t: 'הצוות שומע לפני התלמידים', go: T('tz-first', 'golden')}, {t: 'הודעה אחת מאושרת להורים', go: T('tz-first', 'media')}],
+  dont: [{t: 'לא מפרסמים תמונות, שמות או פרטים', go: T('tz-first', 'media')}, {t: 'היועץ לא מנהל את הצל״ח – המנהל', go: T('tz-guide', 'what')}, {t: 'לא שוכחים את הצוות – גם הוא נפגע', go: T('tz-after', 'staff')}],
+  partners: [{t: 'המנהל', go: T('tz-guide', 'roles')}, {t: 'היועץ', go: T('tz-guide', 'roles')}, {t: 'המחנכים', go: T('tz-class')}, {t: 'פסיכולוג שפ״ח', go: T('tz-guide', 'tree')}, {t: 'רב בית הספר', go: T('tz-guide', 'roles')}, {t: 'רכז הביטחון', go: T('tz-guide', 'roles')}],
+  sources: {t: 'חוזרים 0449, 0472 ו-0473 · מסמכי שפ״י', go: '#/circ/c13'}
+},
+
+cbtclass: {
+  tagline: 'CBT לכל הכיתה – מניעה ושפה משותפת: מחשבה, רגש והתנהגות, בשלוש רמות.',
+  core: {icon: '🔺', title: 'משולש ה-CBT', text: 'מה אני אומר לעצמי · מה אני מרגיש · מה אני עושה', go: T('cbtc-guide', 'triangle')},
+  pillars: [
+    {icon: '📚', title: 'שיעורים לכיתה', track: 'cbtc-lessons', points: [{t: 'שבע יחידות על ציר אחד', go: T('cbtc-lessons', 'units')}, {t: 'מלכודות החשיבה', go: T('cbtc-lessons', 'traps')}, {t: 'הרמזור – פתרון בעיות', go: T('cbtc-lessons', 'traffic')}]},
+    {icon: '🎙️', title: 'המורה כמאמן', track: 'cbtc-teacher', points: [{t: 'בנק משפטים', go: T('cbtc-teacher', 'phrases')}, {t: 'שבח שבונה מסוגלות', go: T('cbtc-teacher', 'praise')}, {t: 'פרוטוקול להתפרצות כעס', go: T('cbtc-teacher', 'anger')}]},
+    {icon: '📊', title: 'ניהול התנהגות', track: 'cbtc-behavior', points: [{t: 'ניתוח ABC', go: T('cbtc-behavior', 'abc')}, {t: 'כלכלת אסימונים', go: T('cbtc-behavior', 'token')}, {t: 'להפחית בסדר הנכון', go: T('cbtc-behavior', 'reduce')}]},
+    {icon: '📝', title: 'חרדת מבחנים', track: 'cbtc-tests', points: [{t: 'עקומת הלחץ', go: T('cbtc-tests', 'curve')}, {t: 'שישה שיעורים', go: T('cbtc-tests', 'lessons')}, {t: 'סולם מבחני תרגול', go: T('cbtc-tests', 'mock')}]},
+    {icon: '🌈', title: 'אקלים כיתתי', track: 'cbtc-climate', points: [{t: 'גלגל הפעילויות', go: T('cbtc-climate', 'wheel')}, {t: 'כשיש חרם או הדרה', go: T('cbtc-climate', 'boycott')}, {t: 'מדד אקלים קצר', go: T('cbtc-climate', 'measure')}]},
+    {icon: '🔄', title: 'התייעצות עם המורה', track: 'cbtc-consult', points: [{t: 'מעגל בחמישה שלבים', go: T('cbtc-consult', 'cycle')}, {t: 'רוצה, מסוגל, מוכן', go: T('cbtc-consult', 'ready')}, {t: 'כשהמורה מתנגד', go: T('cbtc-consult', 'resist')}]}
+  ],
+  flow: [
+    {icon: '👂', t: 'המחנך מקשיב', go: T('cbtc-guide', 'lowint')},
+    {icon: '📞', t: 'מיידע את ההורים', go: T('cbtc-guide', 'lowint')},
+    {icon: '🤝', t: 'מחליטים יחד על יועץ', go: T('cbtc-guide', 'lowint')},
+    {icon: '📝', t: 'דיווח בכתב', go: T('cbtc-guide', 'roles')},
+    {icon: '🔁', t: 'מפגש קבוע', go: T('cbtc-guide', 'lowint')}
+  ],
+  keys: [
+    {n: '3', t: 'רמות: כיתה, קבוצה, פרטני', go: T('cbtc-guide', 'tiers')},
+    {n: '10', t: 'מרכיבים משותפים', go: T('cbtc-guide', 'principles')},
+    {n: '3–6', t: '״האזור הטוב״ בעקומת הלחץ', go: T('cbtc-tests', 'curve')},
+    {n: '5', t: 'רכיבי כלכלת אסימונים', go: T('cbtc-behavior', 'token')}
+  ],
+  do: [{t: 'שפה משותפת לכל המורים', go: T('cbtc-guide', 'why')}, {t: 'מתחילים בכיתה אחת עם מחנך שמוכן לנסות', go: T('cbtc-guide', 'start')}, {t: 'חיזוק מיידי, הרבה ובקטן', go: T('cbtc-behavior', 'rules')}],
+  dont: [{t: 'לא משתמשים בכלי טיפולי כעונש', go: T('cbtc-guide', 'separate')}, {t: 'לא מבררים ״מי אשם״ מול הכיתה', go: T('cbtc-guide', 'separate')}, {t: 'לא משפילים ולא צועקים', go: T('cbtc-guide', 'separate')}],
+  partners: [{t: 'היועץ', go: T('cbtc-guide', 'roles')}, {t: 'המחנך', go: T('cbtc-teacher', 'why')}, {t: 'ההורים', go: T('cbtc-guide', 'lowint')}, {t: 'המנהל', go: T('cbtc-guide', 'start')}],
+  sources: {t: 'יששכר עשת – CBT מערכתי בעצימות נמוכה · חוזרים 0351 ו-0470', go: T('cbtc-guide', 'links')}
+},
+
+aklim: {
+  tagline: 'חוזר 0470 בתמונה אחת – גבולות ברורים לצד טיפול רגשי, במדרג תגובות מדורג.',
+  core: {icon: '⚖️', title: 'גבולות לצד טיפול רגשי', text: 'כל תגובה משמעתית באה יחד עם תכנית חינוכית וליווי', go: T('ak-guide', 'what')},
+  pillars: [
+    {icon: '🪜', title: 'מדרג התגובות', track: 'ak-ladder', points: [{t: 'שגרה ← א׳ ← ב׳ ← ג׳ ← ד׳', go: T('ak-ladder', 'main')}, {t: 'התבחינים לחומרה', go: T('ak-ladder', 'crit')}, {t: 'פגיעה ברשת ובצוות', go: T('ak-ladder', 'online')}]},
+    {icon: '🚨', title: 'מה עושים כש…', track: 'ak-events', points: [{t: 'חמשת כללי הברזל', go: T('ak-events', 'first')}, {t: 'מאתר האירועים', go: T('ak-events', 'finder')}]},
+    {icon: '⏸️', title: 'אמצעי משמעת', track: 'ak-discipline', points: [{t: 'ששת הכללים', go: T('ak-discipline', 'rules')}, {t: 'מותר מול אסור', go: T('ak-discipline', 'forbidden')}, {t: 'הליך הוגן', go: T('ak-discipline', 'hear')}]},
+    {icon: '🧭', title: 'תפקיד היועץ', track: 'ak-counselor', points: [{t: 'חמשת התפקידים', go: T('ak-counselor', 'role')}, {t: 'שיחת צדק מאחה', go: T('ak-counselor', 'rj')}, {t: 'תכנית אישית', go: T('ak-counselor', 'plan')}]},
+    {icon: '📝', title: 'טפסים', track: 'ak-forms', points: [{t: 'תיעוד אירוע', go: T('ak-forms', 'doc')}, {t: 'יידוע ההורים', go: T('ak-forms', 'parents')}]},
+    {icon: '🌱', title: 'בונים אקלים', track: 'ak-build', points: [{t: 'שישה מרכיבים', go: T('ak-build', 'parts')}, {t: 'הפסקות וחצר', go: T('ak-build', 'yard')}, {t: 'העבודה עם הצופים', go: T('ak-build', 'bystanders')}]},
+    {icon: '📊', title: 'שאלוני אקלים', track: 'ak-survey', points: [{t: 'איך קוראים תוצאות', go: T('ak-survey', 'read')}, {t: 'שאלון כיתתי אנונימי', go: T('ak-survey', 'class')}]},
+    {icon: '🏫', title: 'האקלים בכיתה', track: 'ak-class', points: [{t: 'השבועיים הראשונים', go: T('ak-class', 'open')}, {t: 'תקנון כיתתי', go: T('ak-class', 'takanon')}, {t: 'קונפליקט בכיתה', go: T('ak-class', 'conflict')}]}
+  ],
+  flow: [
+    {icon: '✋', t: 'עוצרים ומפרידים', go: T('ak-guide', 'flow')},
+    {icon: '👂', t: 'בירור ושמיעת התלמיד', go: T('ak-discipline', 'hear')},
+    {icon: '📏', t: 'קובעים חומרה', go: T('ak-ladder', 'crit')},
+    {icon: '📣', t: 'פעולות החובה', go: T('ak-ladder', 'report')},
+    {icon: '📝', t: 'הורים, דיווח ותיעוד', go: T('ak-forms', 'parents')},
+    {icon: '💚', t: 'תכנית וליווי', go: T('ak-counselor', 'plan')},
+    {icon: '🔁', t: 'מעקב והפקת לקחים', go: T('ak-events', 'after')}
+  ],
+  keys: [
+    {n: '12', t: 'הנחות יסוד', go: T('ak-guide', 'wheel')},
+    {n: '7', t: 'סטנדרטים לאקלים', go: T('ak-guide', 'standards')},
+    {n: '4', t: 'חלקים במדרג: א׳–ד׳', go: T('ak-ladder', 'main')},
+    {n: '6', t: 'כללים לכל תגובה משמעתית', go: T('ak-discipline', 'rules')}
+  ],
+  do: [{t: 'מסר של אמון ביכולת התלמיד לשנות', go: T('ak-guide', 'sides')}, {t: 'שומעים את התלמיד לפני החלטה', go: T('ak-discipline', 'hear')}, {t: 'דיווח על פי נוהל – יחד עם תגובה חינוכית', go: T('ak-guide', 'what')}],
+  dont: [{t: 'היועץ לא ״מעניש״ והמנהל לא ״מטפל״', go: T('ak-guide', 'sides')}, {t: 'נמנעים מענישה קולקטיבית', go: T('ak-discipline', 'rules')}, {t: 'לא מגיבים לתקשורת בלי אישור', go: T('ak-guide', 'what')}],
+  partners: [{t: 'המנהל', go: T('ak-guide', 'roles')}, {t: 'היועץ והפסיכולוג', go: T('ak-counselor', 'role')}, {t: 'המחנך', go: T('ak-class', 'open')}, {t: 'רכז החינוך החברתי', go: T('ak-guide', 'roles')}, {t: 'המפקח', go: T('ak-guide', 'roles')}, {t: 'הרשות המקומית', go: T('ak-guide', 'roles')}],
+  sources: {t: 'חוזר מנכ״ל 0470 – אקלים חינוכי מיטבי', go: '#/circ/c04'}
+},
+
+crole: {
+  tagline: 'היועץ החינוכי – הלב הרגשי של בית הספר: הגדרה, מודלים, גבולות, אתיקה, השנה והיועץ עצמו.',
+  core: {icon: '🎯', title: 'הפרט והמערכת', text: 'איש צוות של בית הספר שעובד עם התלמיד ועם הכיתה, הצוות וההורים', go: T('role-guide', 'define')},
+  pillars: [
+    {icon: '💎', title: 'מודל היהלום', track: 'role-guide', go: T('role-guide', 'diamond'), points: [{t: 'כישורי חיים', go: '#/mafteach'}, {t: 'אקלים מיטבי', go: '#/aklim'}, {t: 'הוראה-למידה', go: T('role-guide', 'diamond')}, {t: 'משבר וסיכון', go: '#/tzalach'}]},
+    {icon: '🧬', title: 'המודלים של התפקיד', track: 'role-models', points: [{t: 'שנים-עשר מודלים – מפה אחת', go: T('role-models', 'map')}, {t: 'היוועצות לפי Caplan', go: T('role-models', 'consultant')}, {t: 'מה מתאים ליסודי לבנים', go: T('role-models', 'fit')}]},
+    {icon: '⏱️', title: 'חלוקת עבודה וגבולות', track: 'role-division', points: [{t: 'שבוע העבודה – אופק חדש', go: T('role-division', 'ofek')}, {t: 'מה כן ומה לא בתפקיד', go: T('role-division', 'isnot')}, {t: 'תיאום ציפיות עם המנהל', go: T('role-division', 'contract')}]},
+    {icon: '🔒', title: 'אתיקה', track: 'role-ethics', points: [{t: 'ששת העקרונות', go: T('role-ethics', 'principles')}, {t: 'סודיות והחריגים לה', go: T('role-ethics', 'secret')}, {t: 'איך מחליטים בדילמה', go: T('role-ethics', 'decide')}]},
+    {icon: '📅', title: 'השנה של היועץ', track: 'role-year', points: [{t: 'השנה בחודשים', go: T('role-year', 'months')}, {t: 'איתור בארבעה ממדים', go: T('role-year', 'dims4')}, {t: 'מטרות עם ת.ב.ל.י.ן', go: T('role-year', 'tavlin')}]},
+    {icon: '🤝', title: 'המנהל והצוות', track: 'role-staff', points: [{t: 'היוועצות עם מחנך', go: T('role-staff', 'consultsteps')}, {t: 'היועץ בצוות הניהול', go: T('role-staff', 'mgmt')}, {t: 'כשיש התנגדות', go: T('role-staff', 'resist')}]},
+    {icon: '🌿', title: 'היועץ עצמו', track: 'role-self', points: [{t: 'מסלול ההתפתחות', go: T('role-self', 'ladder')}, {t: 'סופרוויז׳ן', go: T('role-self', 'supervision')}, {t: 'שחיקה – סימנים ושמירה', go: T('role-self', 'burnout')}]}
+  ],
+  flow: [
+    {icon: '🔎', t: 'מיפוי וזיהוי', go: T('role-guide', 'process')},
+    {icon: '🗂️', t: 'ארגון והצגה', go: T('role-guide', 'process')},
+    {icon: '📋', t: 'תוכנית ומנגנון', go: T('role-year', 'plan')},
+    {icon: '📈', t: 'משוב והערכה', go: T('role-year', 'ogdan')}
+  ],
+  keys: [
+    {n: '8', t: 'מטרות הייעוץ', go: T('role-guide', 'goals8')},
+    {n: '4', t: 'מיומנויות יסוד', go: T('role-guide', 'skills4')},
+    {n: '4', t: 'מוקדים במודל היהלום', go: T('role-guide', 'diamond')},
+    {n: '8', t: 'פרקי הקוד האתי', go: T('role-ethics', 'chapters')}
+  ],
+  do: [{t: 'עובדים עם הפרט ועם המערכת', go: T('role-guide', 'define')}, {t: 'בשולחן ההחלטות – כדי לשמור על הצד הרגשי', go: T('role-guide', 'separate')}, {t: 'עמיתים וסופרוויז׳ן – חובה אתית', go: T('role-self', 'peers')}],
+  dont: [{t: 'לא ״מטפל מבחוץ״ – איש צוות', go: T('role-guide', 'define')}, {t: 'לא מערבבים טיפולי ומשמעתי', go: T('role-guide', 'separate')}, {t: 'לא מטפלים בילד של חבר קרוב', go: T('role-ethics', 'dual')}],
+  partners: [{t: 'התלמידים', go: T('role-guide', 'circles')}, {t: 'הצוות החינוכי', go: T('role-staff', 'roleset')}, {t: 'צוות הניהול', go: T('role-staff', 'mgmt')}, {t: 'ההורים', go: T('role-guide', 'circles')}, {t: 'הקהילה', go: T('role-guide', 'circles')}],
+  sources: {t: 'שפ״י · ההסכם הקיבוצי · הקוד האתי · אופק חדש · חוזרי המנכ״ל', go: T('role-guide', 'circulars')}
+},
+
+groups: {
+  tagline: 'הנחיית קבוצות ילדים ונוער – בנייה, מיון, חוזה, שלבי קבוצה, מבנה מפגש ומתווים לפי נושאים.',
+  core: {icon: '⭕', title: 'בקבוצה לומדים אחד מהשני', text: 'אוניברסליות – ״אני לא היחיד״ – הגורם המרפא החזק אצל ילדים', go: T('grp-guide', 'why')},
+  pillars: [
+    {icon: '🧭', title: 'בנייה ומיון', track: 'grp-guide', go: T('grp-guide', 'types'), points: [{t: 'סוגי קבוצות', go: T('grp-guide', 'types')}, {t: 'קבוצה או פרטני?', go: T('grp-guide', 'dg-group-or-one')}, {t: 'מיון ודגלים אדומים', go: T('grp-guide', 'screening')}]},
+    {icon: '📜', title: 'החוזה הקבוצתי', track: 'grp-guide', go: T('grp-guide', 'contract'), points: [{t: 'מה שנאמר כאן – נשאר כאן', go: T('grp-guide', 'contract')}, {t: 'זכות לדלג', go: T('grp-guide', 'contract')}, {t: 'בטיחות – לא פוגעים', go: T('grp-guide', 'contract')}]},
+    {icon: '🌀', title: 'שלבי הקבוצה', track: 'grp-guide', go: T('grp-guide', 'stages'), points: [{t: 'התהוות וסערה', go: T('grp-guide', 'dg-stages')}, {t: 'גיבוש נורמות ועשייה', go: T('grp-guide', 'dg-stages')}, {t: 'פרידה', go: T('grp-guide', 'ending')}]},
+    {icon: '⏱️', title: 'מבנה מפגש', track: 'grp-guide', go: T('grp-guide', 'dg-session'), points: [{t: 'פתיחה וצ׳ק-אין', go: T('grp-guide', 'session-structure')}, {t: 'פעילות מרכזית', go: T('grp-guide', 'session-structure')}, {t: 'עיבוד וסיכום', go: T('grp-guide', 'session-structure')}]},
+    {icon: '🎙️', title: 'מיומנויות מנחה', track: 'grp-guide', go: T('grp-guide', 'skills'), points: [{t: 'שיקוף וקישור', go: T('grp-guide', 'skills')}, {t: 'חסימה ומידול', go: T('grp-guide', 'skills')}, {t: 'מצבים מאתגרים', go: T('grp-guide', 'challenges')}]},
+    {icon: '📚', title: 'מתווים לפי נושאים', track: 'grp-anxiety', points: [{t: 'חרדות ודאגות', go: T('grp-anxiety')}, {t: 'ויסות וכעס', go: T('grp-anger')}, {t: 'מיומנויות חברתיות', go: T('grp-social')}, {t: 'חרדת מבחנים', go: T('grp-tests')}]},
+    {icon: '🎓', title: 'העמקה – קורס יעל מלמד', track: 'grpc-course', points: [{t: 'כוחות מרפאים', go: T('grpc-healing')}, {t: 'התנגדות בקבוצה', go: T('grpc-resistance')}, {t: 'רצפים בעבודה קבוצתית', go: T('grpc-sequences')}]}
+  ],
+  flow: [
+    {icon: '📝', t: 'תכנית הקבוצה', go: T('grp-guide', 'plan')},
+    {icon: '🔍', t: 'מיון והתאמה', go: T('grp-guide', 'screening')},
+    {icon: '🤝', t: 'הורים, מחנך והנהלה', go: T('grp-guide', 'parents-staff')},
+    {icon: '📜', t: 'חוזה קבוצתי', go: T('grp-guide', 'contract')},
+    {icon: '🔁', t: 'מפגשים', go: T('grp-guide', 'session-structure')},
+    {icon: '📊', t: 'הערכה ומדידה', go: T('grp-guide', 'evaluation')},
+    {icon: '🏁', t: 'סיום טוב', go: T('grp-guide', 'ending')}
+  ],
+  keys: [
+    {n: '8', t: 'גורמים מרפאים (יאלום)', go: T('grp-guide', 'dg-yalom')},
+    {n: '5', t: 'שלבי קבוצה (טקמן)', go: T('grp-guide', 'dg-stages')},
+    {n: '45', t: 'דקות במפגש', go: T('grp-guide', 'dg-session')},
+    {n: '@count', t: 'מתווים והעמקות במדור', go: '#/groups'}
+  ],
+  do: [{t: 'תנועה ומשחק בכל מפגש', go: T('grp-guide', 'boys-religious')}, {t: 'הילדים בונים את הכללים', go: T('grp-guide', 'contract')}, {t: 'מודדים לפני, באמצע ואחרי', go: T('grp-guide', 'evaluation')}],
+  dont: [{t: 'חשיפת סיכון – לא ממשיכים כרגיל', go: T('grp-guide', 'dg-risk')}, {t: 'לא מצרפים ילד שהקושי שלו לא תואם', go: T('grp-guide', 'screening')}, {t: 'לא נותנים לילד הדומיננטי להשתלט', go: T('grp-guide', 'challenges')}],
+  partners: [{t: 'המנחה', go: T('grp-guide', 'skills')}, {t: 'הילדים', go: T('grp-guide', 'intake')}, {t: 'ההורים', go: T('grp-guide', 'parents-staff')}, {t: 'המחנך', go: T('grp-guide', 'parents-staff')}, {t: 'ההנהלה', go: T('grp-guide', 'parents-staff')}],
+  sources: {t: 'יאלום · טקמן · קורס הנחיית קבוצות – יעל מלמד · הספרייה', go: T('grp-guide', 'library')}
+},
+
+workflow: {
+  tagline: 'סדר עבודה לכל תלמיד – שמונה שלבים, מההפניה ועד הסיום ומניעת הישנות.',
+  core: {icon: '🗺️', title: 'שלב אחרי שלב', text: 'השלבים מסומנים לפי מה שנרשם בתיק, וכל שלב נפתח להעמקה', go: T('wf-referral', 'psy')},
+  pillars: [
+    {icon: '📥', title: 'הפניה והסכמה', track: 'wf-referral', points: [{t: 'מפת האנשים סביב הילד', go: T('wf-referral', 'eco')}, {t: 'טופס איסוף מידע', go: T('wf-referral', 'info')}, {t: 'הסכם העבודה עם ההורים', go: T('wf-consent', 'agree')}]},
+    {icon: '🔍', title: 'הערכה ומדידה', track: 'wf-assess', points: [{t: 'מה מודדים – לפי הקושי', go: T('wf-assess', 'types')}, {t: 'מדידת הבסיס והרמזור', go: T('wf-assess', 'gauge')}]},
+    {icon: '🧠', title: 'המשגה ומטרות', track: 'wf-formulate', points: [{t: '5P – הפרח', go: T('wf-formulate', 'fivep')}, {t: 'המעגל המשמר', go: T('wf-formulate', 'cycle')}, {t: 'מטרות SMART', go: T('wf-formulate', 'goals')}]},
+    {icon: '📋', title: 'תוכנית טיפול', track: 'wf-plan', points: [{t: 'דרך האבנים', go: T('wf-plan', 'road')}, {t: 'רצף טיפוסי לפי קושי', go: T('wf-plan', 'types')}]},
+    {icon: '🛠️', title: 'מפגשים ותרגול', track: 'wf-treat', points: [{t: 'מבנה המפגש', go: T('wf-treat', 'agenda')}, {t: 'כשמשימת הבית לא נעשית', go: T('wf-treat', 'hw-trouble')}, {t: 'עדכון למחנך', go: T('wf-treat', 'teacher')}]},
+    {icon: '📊', title: 'בקרה וסיום', track: 'wf-review', points: [{t: 'אין שיפור? מה בודקים', go: T('wf-review', 'noimprove')}, {t: 'לפני ואחרי – וההחלטה', go: T('wf-review', 'compare')}, {t: 'כרטיס ההתמודדות', go: T('wf-close', 'cope')}]}
+  ],
+  flow: [
+    {icon: '📥', t: 'הפניה ואיסוף מידע', go: T('wf-referral')},
+    {icon: '✍️', t: 'הסכמת הורים', go: T('wf-consent')},
+    {icon: '🔍', t: 'הערכה ומדידת בסיס', go: T('wf-assess')},
+    {icon: '🧠', t: 'המשגה ומטרות', go: T('wf-formulate')},
+    {icon: '📋', t: 'תוכנית טיפול', go: T('wf-plan')},
+    {icon: '🛠️', t: 'מפגשים ותרגול', go: T('wf-treat')},
+    {icon: '📊', t: 'מדידה חוזרת', go: T('wf-review')},
+    {icon: '🎓', t: 'סיום ומניעת הישנות', go: T('wf-close')}
+  ],
+  keys: [
+    {n: '8', t: 'שלבים מההפניה ועד הסיום', go: T('wf-referral')},
+    {n: '2–4', t: 'מטרות מדידות', go: T('wf-formulate', 'goals')},
+    {n: '6–8', t: 'מפגשים בלי שיפור – חושבים מחדש', go: T('wf-review', 'noimprove')},
+    {n: '0–10', t: 'עוצמת הקושי בכל מפגש', go: T('wf-treat', 'progress')}
+  ],
+  do: [{t: 'רישום קצר אחרי כל מפגש', go: T('wf-treat', 'agenda')}, {t: 'מדידה חוזרת באותו שאלון', go: T('wf-review', 'compare')}, {t: 'עדכון המחנך פעם בשבועיים', go: T('wf-treat', 'teacher')}],
+  dont: [{t: 'לא מתחילים בלי מדידת בסיס', go: T('wf-assess', 'psy')}, {t: 'לא ממשיכים כרגיל כשאין שיפור', go: T('wf-review', 'noimprove')}, {t: 'לא מסיימים בבת אחת – מדלילים', go: T('wf-close', 'taper')}],
+  partners: [{t: 'התלמיד', go: T('wf-formulate', 'fivep')}, {t: 'ההורים', go: T('wf-consent', 'agree')}, {t: 'המחנך', go: T('wf-treat', 'teacher')}, {t: 'היועץ', go: T('wf-plan', 'details')}],
+  sources: {t: 'מפות הטיפול ומסלולי הטיפול המובנה באפליקציה', go: '#/problems'}
+}
+};
+
+/* ---------------- renderer ---------------- */
+const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'}[c]));
+// never break a word after a dash or maqaf: glue with U+2060 (WORD JOINER)
+const nb = s => esc(s).replace(/([–\-־])(?=[^\s⁠])/g, '$1⁠');
+let TR = [];
+const trk = id => TR.find(t => t.id === id);
+/* go → an app hash, or '' when the target is missing (then the element stays plain text – no dead links) */
+function href(go){
+  if (!go) return '';
+  if (typeof go === 'object') { const t = trk(go.track); if (!t) return '';
+    if (!go.step) return '#/track/' + t.id;
+    const i = (t.steps || []).findIndex(s => s.id === go.step); return '#/track/' + t.id + (i >= 0 ? '/' + (i + 1) : ''); }
+  const m = /^#\/track\/([^/]+)/.exec(go); if (m && !trk(m[1])) return '';
+  return go;
+}
+const item = x => typeof x === 'string' ? {t: x} : x || {};
+// a linked element: <a> with an arrow; without a target: a plain <span>
+function lk(go, inner, cls, label){ const h = href(go);
+  return h ? `<a class="${cls} iglk" href="${esc(h)}"${label ? ` aria-label="${esc(label)}"` : ''}>${inner}<span class="igarr" aria-hidden="true">←</span></a>` : `<span class="${cls}">${inner}</span>`; }
+
+function infographicHTML(id, ctx = {}){
+  const D = window.INFOG[id]; if (!D) return '';
+  TR = ctx.tracks || (window.TRACKS || []);
+  const hub = ctx.list || [];
+  const H = ctx.hue ?? 200;
+  const pillars = (D.pillars || []).filter(p => !p.track || trk(p.track));
+  const covered = new Set(); const cov = g => { if (g && typeof g === 'object') covered.add(g.track); else if (typeof g === 'string') { const m = /^#\/track\/([^/]+)/.exec(g); if (m) covered.add(m[1]); } };
+  pillars.forEach(p => { covered.add(p.track); cov(p.go); (p.points || []).forEach(q => cov(item(q).go)); });
+  [D.core, ...(D.flow || []), ...(D.keys || []), ...(D.do || []), ...(D.dont || []), ...(D.partners || []), D.sources].forEach(x => cov(item(x).go));
+  const more = hub.filter(t => !covered.has(t.id));
+  const count = hub.filter(t => !/-guide$/.test(t.id)).length;
+  const half = Math.ceil(pillars.length / 2);
+  const tile = (p, i) => { const pts = (p.points || []).map(item);
+    return `<div class="igp" style="--k:${i}"><div class="igph">${lk(p.go || T(p.track), `<span class="igpi" aria-hidden="true">${p.icon || '•'}</span><span class="igpt">${nb(p.title)}</span>`, 'igpa', p.title)}</div>
+      ${pts.length ? `<ul class="igpp">${pts.map(q => `<li>${lk(q.go, `<span>${nb(q.t)}</span>`, 'igq')}</li>`).join('')}</ul>` : ''}</div>`; };
+  const core = D.core || {};
+  const kid = ctx.kid || '';
+  return `<div class="infog" style="--h:${H}" data-hub="${esc(id)}">
+    <div class="ighero">${kid ? `<div class="igkid" aria-hidden="true">${kid}</div>` : ''}<div class="igbub"><span class="igtag">${nb(D.tagline)}</span></div></div>
+    <div class="igmap">
+      <div class="igside igs1">${pillars.slice(0, half).map((p, i) => tile(p, i)).join('')}</div>
+      <div class="igcore">${lk(core.go, `<span class="igci" aria-hidden="true">${core.icon || '🧭'}</span><b class="igct">${nb(core.title)}</b><span class="igcx">${nb(core.text)}</span>`, 'igca', core.title)}</div>
+      <div class="igside igs2">${pillars.slice(half).map((p, i) => tile(p, i + half)).join('')}</div>
+    </div>
+    ${(D.flow || []).length ? `<div class="igsec"><h3 class="igh">🔀 התהליך</h3><ol class="igflow">${D.flow.map((f, i) => `<li style="--k:${i}">${lk(f.go, `<span class="ign">${i + 1}</span><span class="igfi" aria-hidden="true">${f.icon || ''}</span><span class="igft">${nb(f.t)}</span>`, 'igfa')}</li>`).join('')}</ol></div>` : ''}
+    ${(D.keys || []).length ? `<div class="igsec"><h3 class="igh">🔢 במספרים</h3><div class="igkeys">${D.keys.map((k, i) => `<div class="igk" style="--k:${i}">${lk(k.go, `<b class="igkn">${nb(k.n === '@count' ? String(count) : k.n)}</b><span class="igkt">${nb(k.t)}</span>`, 'igka')}</div>`).join('')}</div></div>` : ''}
+    <div class="igdd">
+      <div class="igdo"><h3 class="igh">✔ עושים</h3><ul>${(D.do || []).map(item).map(x => `<li>${lk(x.go, `<span>${nb(x.t)}</span>`, 'igq')}</li>`).join('')}</ul></div>
+      <div class="igdont"><h3 class="igh">✖ לא עושים</h3><ul>${(D.dont || []).map(item).map(x => `<li>${lk(x.go, `<span>${nb(x.t)}</span>`, 'igq')}</li>`).join('')}</ul></div>
+    </div>
+    ${(D.partners || []).length ? `<div class="igsec igpart"><h3 class="igh">🤝 מי שותף</h3><div class="igchips">${D.partners.map(item).map(x => lk(x.go, `<span>${nb(x.t)}</span>`, 'igchip')).join('')}</div></div>` : ''}
+    ${more.length ? `<div class="igsec igmore"><h3 class="igh">📚 עוד במדור</h3><div class="igchips">${more.map(t => lk(T(t.id), `<span>${t.icon ? t.icon + ' ' : ''}${nb(t.title)}</span>`, 'igchip')).join('')}</div></div>` : ''}
+    ${D.sources ? `<p class="igsrc">${lk(item(D.sources).go, `<span>📚 ${nb(item(D.sources).t)}</span>`, 'igsa')}</p>` : ''}
+  </div>`;
+}
+/* the collapsible block shown at the top of a hub page */
+function infographicBlock(id, ctx = {}){
+  const inner = infographicHTML(id, ctx); if (!inner) return '';
+  return `<details class="infogwrap" open><summary><span>🧭 מבט על – התחום בתמונה אחת</span></summary>
+    <div class="igbar no-print"><button type="button" class="btn sm" data-igprint>🖨️ הדפסת האינפוגרפיקה</button></div>${inner}</details>`;
+}
+/* print only the infographic */
+document.addEventListener('click', e => {
+  const b = e.target.closest('[data-igprint]'); if (!b) return;
+  const w = b.closest('.infogwrap'); if (!w) return;
+  if (!document.getElementById('printbrand')) document.body.insertAdjacentHTML('afterbegin', '<div id="printbrand">ייעוץ חינוכי · נדב דוד</div>');
+  w.open = true; w.classList.add('igsel'); document.body.classList.add('igprint');
+  const done = () => { document.body.classList.remove('igprint'); w.classList.remove('igsel'); window.removeEventListener('afterprint', done); };
+  window.addEventListener('afterprint', done);
+  setTimeout(() => { window.print(); setTimeout(done, 1500); }, 60);
+});
+window.infographicHTML = infographicHTML;
+window.infographicBlock = infographicBlock;
+window.INFOG_HREF = go => href(go);
+})();
+
+</script>
+<script>
 /* CBT app – school counseling. Plain JS, no dependencies. */
 (function(){
 'use strict';
@@ -2620,7 +3632,7 @@ function ui(){
 }
 
 /* ================= routing & shell ================= */
-const NAV = [['home','🏠','בית'],['ask','💬','שאל שאלה'],['problems','🧭','מנווט בעיות'],['students','🧒','תלמידים'],['workflow','🗺️','סדר עבודה'],['roles','👥','מי פונה למי'],['circ','📜','חוזרי מנכ״ל'],['aklim','⚖️','אקלים ומדרג התגובות'],['tools','🧰','כלים לילדים'],['tracks','🧭','טיפול מובנה'],['distress','🚨','סימני מצוקה'],['talk','🗣️','ראיון ושיח רגשי'],['sel','💞','למידה רגשית-חברתית'],['mafteach','🧩','כישורי חיים ומפתח הל״ב'],['sped','🧩','חינוך מיוחד והכלה'],['tzalach','🛟','צל״ח – צוות חירום'],['develop','🌳','התפתחות הילד'],['cbtclass','🏫','יישום CBT בכיתה'],['groups','👥','הנחיית קבוצות'],['programs','🏗️','תוכניות התערבות'],['transitions','🚪','מעברים'],['newteachers','🌱','מורים חדשים'],['parents','🤝','הורים'],['reports','🎓','תעודות'],['games','🎲','משחקים טיפוליים'],['videos','🎬','סרטונים'],['library','📚','ספרייה'],['settings','⚙️','הגדרות']];
+const NAV = [['home','🏠','בית'],['ask','💬','שאל שאלה'],['problems','🧭','מנווט בעיות'],['students','🧒','תלמידים'],['workflow','🗺️','סדר עבודה'],['crole','🎯','תפקיד היועץ'],['roles','👥','מי פונה למי'],['circ','📜','חוזרי מנכ״ל'],['aklim','⚖️','אקלים ומדרג התגובות'],['tools','🧰','כלים לילדים'],['tracks','🧭','טיפול מובנה'],['distress','🚨','סימני מצוקה'],['talk','🗣️','ראיון ושיח רגשי'],['sel','💞','למידה רגשית-חברתית'],['mafteach','🧩','כישורי חיים ומפתח הל״ב'],['sped','🧩','חינוך מיוחד והכלה'],['tzalach','🛟','צל״ח – צוות חירום'],['develop','🌳','התפתחות הילד'],['cbtclass','🏫','יישום CBT בכיתה'],['groups','👥','הנחיית קבוצות'],['programs','🏗️','תוכניות התערבות'],['transitions','🚪','מעברים'],['newteachers','🌱','מורים חדשים'],['parents','🤝','הורים'],['reports','🎓','תעודות'],['games','🎲','משחקים טיפוליים'],['videos','🎬','סרטונים'],['library','📚','ספרייה'],['settings','⚙️','הגדרות']];
 function route(){ const h = location.hash.replace(/^#\/?/, '').split('/').map(decodeURIComponent); return {r: h[0] || 'home', id: h[1], sub: h[2], x: h[3]}; }
 let timers = [];
 function clearTimers(){ timers.forEach(t => { clearTimeout(t); clearInterval(t); }); timers = []; }
@@ -2633,6 +3645,9 @@ function lockView(){
     ${nc ? '' : '<button class="btn primary" data-act="cloud-login" style="width:100%;padding:12px">🔑 כניסה עם חשבון מיקרוסופט</button>'}
     ${Cloud.err ? `<p class="note danger" style="margin:14px 0 0;font-size:13px;text-align:start">הכניסה לא הושלמה: ${esc(Cloud.err)}</p>` : ''}</div></div>`};
 }
+// infographic symmetry: the pillar tiles on both sides share one height (the fullest one)
+function igEqualize(){ document.querySelectorAll('.igmap').forEach(m => { const k = [...m.querySelectorAll('.igside>*')]; if (!k.length) return; k.forEach(x => x.style.minHeight = ''); if (innerWidth <= 860) return; const h = Math.max(...k.map(x => x.getBoundingClientRect().height)); k.forEach(x => x.style.minHeight = h + 'px'); }); }
+addEventListener('resize', () => { clearTimeout(igEqualize.t); igEqualize.t = setTimeout(igEqualize, 150); });
 function render(){
   if (SHARE_MODE) return shareView();
   clearTimers();
@@ -2640,11 +3655,12 @@ function render(){
   document.body.classList.toggle('locked', isLocked());
   if (isLocked()) { const o = lockView(); $('#title').textContent = ''; $('#view').innerHTML = `<div class="page">${o.html}</div>`; document.title = 'CBT בבית הספר'; return; }
   if (WEB && !ARTIFACT && !LITE && !PROBLEMS.length) { $('#title').textContent = ''; $('#view').innerHTML = `<div class="empty" style="padding-top:120px"><span class="big">⏳</span>${Cloud.status === 'error' ? esc(Cloud.err) + ' <br><br><button class="btn primary" data-act="cloud-retry">נסו שוב</button>' : 'טוען את התוכן מ-OneDrive…'}</div>`; return; }
-  const views = LITE ? {home: liteHome, problems, problem: problemView, tools, tool: toolView, settings: liteSettings, ask, workflow, roles: rolesView, circ: circView, circsrc: circSrcView, libsrc: libSrcView, circask: circAskView, find: findView, more: moreView, games: gamesView, game: gameView, tracks: tracksView, track: trackView, groups: groupsView, transitions: hubView, newteachers: hubView, programs: hubView, distress: hubView, talk: hubView, parents: hubView, reports: hubView, sel: hubView, mafteach: hubView, sped: hubView, tzalach: hubView, aklim: hubView,develop: hubView, cbtclass: hubView, videos: videosView} : {home, problems, problem: problemView, students, student: studentView, tools, tool: toolView, library, settings, ask, workflow, roles: rolesView, circ: circView, circsrc: circSrcView, libsrc: libSrcView, circask: circAskView, find: findView, more: moreView, games: gamesView, game: gameView, tracks: tracksView, track: trackView, groups: groupsView, transitions: hubView, newteachers: hubView, programs: hubView, distress: hubView, talk: hubView, parents: hubView, reports: hubView, sel: hubView, mafteach: hubView, sped: hubView, tzalach: hubView, aklim: hubView,develop: hubView, cbtclass: hubView, videos: videosView};
+  const views = LITE ? {home: liteHome, problems, problem: problemView, tools, tool: toolView, settings: liteSettings, ask, workflow, roles: rolesView, circ: circView, circsrc: circSrcView, libsrc: libSrcView, circask: circAskView, find: findView, more: moreView, games: gamesView, game: gameView, tracks: tracksView, track: trackView, groups: groupsView, transitions: hubView, newteachers: hubView, programs: hubView, distress: hubView, talk: hubView, parents: hubView, reports: hubView, sel: hubView, mafteach: hubView, sped: hubView, tzalach: hubView, aklim: hubView,develop: hubView, cbtclass: hubView, crole: hubView, videos: videosView} : {home, problems, problem: problemView, students, student: studentView, tools, tool: toolView, library, settings, ask, workflow, roles: rolesView, circ: circView, circsrc: circSrcView, libsrc: libSrcView, circask: circAskView, find: findView, more: moreView, games: gamesView, game: gameView, tracks: tracksView, track: trackView, groups: groupsView, transitions: hubView, newteachers: hubView, programs: hubView, distress: hubView, talk: hubView, parents: hubView, reports: hubView, sel: hubView, mafteach: hubView, sped: hubView, tzalach: hubView, aklim: hubView,develop: hubView, cbtclass: hubView, crole: hubView, videos: videosView};
   const fn = views[R.r] || home;
   const out = fn(R);
   $('#title').textContent = out.title;
   $('#view').innerHTML = `<div class="page">${out.html}</div>`;
+  setTimeout(igEqualize, 60); setTimeout(igEqualize, 600);
   const navKey = {problem:'problems', student:'students', tool:'tools', circsrc:'circ', libsrc:'library', circask:'circ'}[R.r] || R.r;
   document.querySelectorAll('[data-nav]').forEach(a => a.classList.toggle('on', a.dataset.nav === navKey));
   document.title = out.title + ' · CBT בבית הספר';
@@ -2768,7 +3784,7 @@ function problemSections(p){
     assess: `<div class="panel"><h3>🔍 הערכה ואבחון</h3>${ul(p.assessment)}</div>`,
     sessions: `<p class="muted no-print">${p.sessions.length} מפגשים. לחיצה על מפגש פותחת את הפירוט.</p>${p.sessions.map((s, i) => sessionHTML(s, i)).join('')}`,
     techniques: `<div class="grid wide">${(p.techniques || []).map(t => `<div class="panel" style="margin:0"><h3>🛠️ ${esc(t.name)}</h3><p style="margin:0">${esc(t.how)}</p></div>`).join('')}</div>`,
-    partners: `<div class="two"><div class="panel" style="margin:0"><h3>👨‍👩‍👧 עבודה עם ההורים</h3>${ul(p.parents)}</div><div class="panel" style="margin:0"><h3>🏫 הנחיות למחנכ/ת ולצוות</h3>${ul(p.teachers)}</div></div>`,
+    partners: `<div class="two"><div class="panel" style="margin:0"><h3>👨‍👩‍👦 עבודה עם ההורים</h3>${ul(p.parents)}</div><div class="panel" style="margin:0"><h3>🏫 הנחיות למחנכ/ת ולצוות</h3>${ul(p.teachers)}</div></div>`,
     sources: `<div class="panel"><h3>📖 מקורות ותוכניות מבוססות מחקר</h3>${ul(p.sources)}</div>`
   };
 }
@@ -3326,7 +4342,7 @@ const SYN = {
 };
 const INTENTS = [
   {id:'teachers', label:'🏫 מה אומרים למחנכ/ת ולצוות', field:'teachers', words:['מורה','מחנכ','מחנכת','צוות','בכיתה','גננת','סייעת','מנהל','יועצת','שיעור','בהפסקה','ביה ס']},
-  {id:'parents', label:'👨‍👩‍👧 הדרכת הורים', field:'parents', words:['הורה','הורים','אמא','אבא','משפחה','בבית','ההורים','שיחת הורים']},
+  {id:'parents', label:'👨‍👩‍👦 הדרכת הורים', field:'parents', words:['הורה','הורים','אמא','אבא','משפחה','בבית','ההורים','שיחת הורים']},
   {id:'assess', label:'🔍 הערכה ואבחון', field:'assessment', words:['שאלון','שאלונים','אבחון','הערכה','לבדוק','לזהות','לאבחן','מדד','איך יודעים','סימנים']},
   {id:'redflags', label:'🚩 מתי להפנות', field:'redFlags', words:['להפנות','הפניה','פסיכיאטר','פסיכולוג','מסוכן','חמור','דחוף','תרופות','תרופה','רופא','מתי לדאוג']},
   {id:'techniques', label:'🛠️ טכניקות', field:'techniques', words:['טכניקה','טכניקות','איך מטפלים','איך לטפל','מה עושים','התערבות','לעזור','לטפל','שיטה','כלים']},
@@ -3463,7 +4479,7 @@ function answerHTML(A){
   if (lib.length) h += `<div class="panel"><h3>📚 חומרים מהספרייה שלך</h3><div class="list">${lib.map(libItem).join('')}</div></div>`;
   return h;
 }
-const ASK_EXAMPLES = ['ילד בכיתה ב׳ בוכה כל בוקר בשער ולא מוכן להיפרד מאמא','מה אומרים למחנכת על ילד שמתפרץ ומכה בהפסקות','ילדה עם כאבי בטן לפני מבחנים והולכת לאחות','איך מתחילים מפגש ראשון עם ילד שיש לו טיקים','תלמיד שמחרימים אותו בקבוצת הוואטסאפ של הכיתה','ילד שאבא שלו נהרג – מה עושים בבית הספר','אילו שאלונים יש לחרדה','מתי להפנות ילד עם הרטבה לרופא','תלמיד קילל מורה באמצע השיעור – מה עושים?','מתי מותר להשעות תלמיד ומי מחליט','אבא גרוש מבקש לקבל את התעודה','ילד כתב במחברת שהוא רוצה למות – מה חובה לעשות'];
+const ASK_EXAMPLES = ['ילד בכיתה ב׳ בוכה כל בוקר בשער ולא מוכן להיפרד מאמא','מה אומרים למחנכת על ילד שמתפרץ ומכה בהפסקות','ילד עם כאבי בטן לפני מבחנים והולכת לאחות','איך מתחילים מפגש ראשון עם ילד שיש לו טיקים','תלמיד שמחרימים אותו בקבוצת הוואטסאפ של הכיתה','ילד שאבא שלו נהרג – מה עושים בבית הספר','אילו שאלונים יש לחרדה','מתי להפנות ילד עם הרטבה לרופא','תלמיד קילל מורה באמצע השיעור – מה עושים?','מתי מותר להשעות תלמיד ומי מחליט','אבא גרוש מבקש לקבל את התעודה','ילד כתב במחברת שהוא רוצה למות – מה חובה לעשות'];
 let lastAsk = '', aiFast = !(window.claude && typeof window.claude.use === 'function');
 /* follow-up: add a detail to the question already answered instead of starting over (keyword engine, no tokens) */
 const REFINE_SEP = ' · ';
@@ -3543,7 +4559,7 @@ function stagesHTML(s){
 }
 function workflow(){
   const act = S.students.filter(s => !s.archived);
-  let h = `<div class="panel" style="margin-top:4px"><h3>🗺️ סדר עבודה לכל תלמיד – משלב ההפניה ועד הסיום</h3><p class="muted" style="margin:0">השלבים מסומנים אוטומטית לפי מה שנרשם בתיק (מטרות, שאלונים, תוכנית, מפגשים). אפשר גם לסמן ידנית. כל שלב נפתח ל״פירוט, הסבר והערות״ – ומשם ל״🔎 פתיחה והעמקה״ עם התאמה לגיל ולסוג הבעיה, כלים חזותיים וטפסים.</p></div>
+  let h = `${infog('workflow', TRACKS().filter(t => t.workflow))}<div class="panel" style="margin-top:4px"><h3>🗺️ סדר עבודה לכל תלמיד – משלב ההפניה ועד הסיום</h3><p class="muted" style="margin:0">השלבים מסומנים אוטומטית לפי מה שנרשם בתיק (מטרות, שאלונים, תוכנית, מפגשים). אפשר גם לסמן ידנית. כל שלב נפתח ל״פירוט, הסבר והערות״ – ומשם ל״🔎 פתיחה והעמקה״ עם התאמה לגיל ולסוג הבעיה, כלים חזותיים וטפסים.</p></div>
     <div class="list" style="margin-top:14px">${STAGES.map((st, i) => `<div class="li wfrow"><span class="pill brand">${i + 1}</span><div class="grow"><b>${st.icon} ${st.name}</b><div style="font-size:14.5px">${st.what}</div></div>${wfExpand(st, null)}</div>`).join('')}</div>`;
   if (LITE) return {title:'סדר עבודה', html: h + `<h2 class="sec">📅 שגרה שבועית מומלצת</h2><div class="panel"><ul class="clean"><li>אחרי כל מפגש: רישום קצר – מה עשינו, משימת בית ועוצמת קושי (0–10).</li><li>פעם בשבועיים: עדכון קצר למחנכ/ת, לפי ההנחיות ב״הורים וצוות״ של מפת הטיפול.</li><li>סוף חודש: מדידה חוזרת באותו שאלון כמו בהתחלה.</li></ul></div>`};
   h += `<h2 class="sec">🧒 איפה כל תלמיד עומד</h2>`;
@@ -3855,10 +4871,10 @@ function aiAnswerHTML(q, A, maps, rolesQ){  if (!A || typeof A !== 'object') ret
 const CIRC_DIR = 'files/חוזרי מנכל/';
 const CIRC_FILE = {c01:'הקשר בין ההורים לצוותים החינוכיים - אתר הסתדרות המורים.pdf', c02:'חוזר מנכל  ועדות – המיוחד החינוך חוק יישום.pdf', c03:'חוזר מנכל  מענים לתלמידים שהוריהם נעדרים מהבית בשל המלחמה.pdf', c04:'חוזר מנכל אקלים חינוכי מיטבי.pdf', c05:'חוזר מנכל העברת מידע בין מוסדות חינוך.pdf', c06:'חוזר מנכל הקשר בין מוסדות החינוך ובין הורים פרודים או גרושים.pdf', c07:'חוזר מנכל הקשר בין מוסדות החינוך וההורים.pdf', c16:'חוזר מנכל הקשר בין מוסדות החינוך וההורים.pdf', c17:'חוזר מנכל הקשר בין מוסדות החינוך וההורים.pdf', c08:'חוזר מנכל חוק זכויות התלמיד.pdf', c09:'חוזר מנכל כישורי חיים.pdf', c10:'חוזר מנכל ליווי תלמידים בעקבות משבר מתמשך.pdf', c11:'חוזר מנכל מניעה - נוער ובני ילדים אובדנות.pdf', c12:'חוזר מנכל מצלמות במוסדות החינוך.pdf', c13:'חוזר מנכל נוהלי שעת חירום במערכת החינוך.pdf', c14:'חוזר מנכל קשב והפרעת למידה לקויות עם לתלמידים היבחנות בדרכי.pdf', c15:'טופס דיווח ארוע חריג תשפ_ו.docx'};
 const CIRC_ORDER = ['c04','c11','c07','c08','c06','c05','c10','c03','c13','c02','c14','c09','c12','c16','c17','c15','c01'];
-const CIRC_ICON = {c01:'🗞️', c02:'🧩', c03:'🪖', c04:'⚖️', c05:'🔐', c06:'👨‍👧', c07:'🤝', c08:'🧾', c09:'🌱', c10:'🕯️', c11:'💛', c12:'📹', c13:'🚨', c14:'📝', c15:'📋'};
+const CIRC_ICON = {c01:'🗞️', c02:'🧩', c03:'🪖', c04:'⚖️', c05:'🔐', c06:'👨‍👦', c07:'🤝', c08:'🧾', c09:'🌱', c10:'🕯️', c11:'💛', c12:'📹', c13:'🚨', c14:'📝', c15:'📋'};
 const KIND = {discipline:['⚖️','משמעת והתנהגות'], violence:['🛑','אלימות ופגיעה'], safety:['🦺','בטיחות וסיכון'], reporting:['📣','דיווח'], procedure:['📑','נהלים'], rights:['🧾','זכויות'],
-  parents:['👨‍👩‍👧','הורים'], info:['🔐','מידע ופרטיות'], emergency:['🚨','חירום'], 'special-ed':['🧩','חינוך מיוחד'], wellbeing:['💛','רווחה נפשית']};
-const CROLE = {counselor:'🧭 יועץ/ת', homeroom:'🏠 מחנך/ת', teacher:'📘 מורה מקצועי/ת', management:'🏛️ הנהלה', parents:'👨‍👩‍👧 הורים'};
+  parents:['👨‍👩‍👦','הורים'], info:['🔐','מידע ופרטיות'], emergency:['🚨','חירום'], 'special-ed':['🧩','חינוך מיוחד'], wellbeing:['💛','רווחה נפשית']};
+const CROLE = {counselor:'🧭 יועץ/ת', homeroom:'🏠 מחנך/ת', teacher:'📘 מורה מקצועי/ת', management:'🏛️ הנהלה', parents:'👨‍👩‍👦 הורים'};
 const CIRC_WORDS = ['חוזר','חוזרי','מנכ״ל','מנכל','מנכ"ל','מותר','אסור','חובה','חובת','נוהל','נהלים','לפי החוק','השעיה','להשעות','השעיית','השהיה','הרחקה','להרחיק','תקנון','משמעת','משמעתי','עונש','ענישה','להעניש','סנקציה','דיווח','לדווח','מדווחים','שימוע','ערעור','לערער','זכויות','זכות','סמכות','מוסמך','מי מחליט','אקלים','תיעוד','לתעד','משטרה','רווחה','פקיד סעד','ועדת','צוות רב מקצועי','ועדת זכאות','התאמות','משמורת','גרושים','פרודים','מצלמות','חירום','העברת מידע','אלימות','מכות','הרביץ','קילל','קללות','חרם','טלפון נייד','פלאפון','חיפוש בתיק','מכה','מרביץ','מרביצה','בועט','פוגע','איים','מאיים','מקלל','מקללת','השפיל','רוצה למות','להתאבד','פגיעה עצמית','אובדנות','צועק','צועקת','מידע','למסור','מרביץ לו','מרביצים לו','בבית מרביצים'];
 const circMeta = id => (window.CIRC_META || []).find(m => m.id === id) || {id, title: id, chapters: []};
 const circGuide = () => window.CIRC_GUIDE || [];
@@ -4353,7 +5369,7 @@ function circView(R){
   if (circKind) h += `<div class="list">${G.filter(g => g.kind === circKind).sort((a, b) => CIRC_ORDER.indexOf(a.circ) - CIRC_ORDER.indexOf(b.circ)).map(g => circRowHTML(g)).join('')}</div>`;
   else h += `<div class="grid">${list.map(m => { const n = G.filter(g => g.circ === m.id).length; return `<a class="card accent" href="#/circ/${m.id}" style="--h:${hueOf(m.id + m.title)}">
       <span class="emoji">${CIRC_ICON[m.id] || '📜'}</span><span class="name">${esc(m.title)}${m.id === 'c04' ? ' <span class="pill brand">מרכזי</span>' : ''}</span>
-      <span class="sub">${esc((m.summary || '').slice(0, 170))}${(m.summary || '').length > 170 ? '…' : ''}</span>
+      <span class="sub">${esc(m.summary || '')}</span>
       <span class="row">${m.number ? `<span class="pill">${esc(m.type || 'הוראת קבע')} ${esc(m.number)}</span>` : m.type ? `<span class="pill">${esc(m.type)}</span>` : ''}${m.validFrom ? `<span class="pill">בתוקף מ-${esc(m.validFrom)}</span>` : ''}<span class="pill">${n} מצבים</span></span></a>`; }).join('')}</div>`;
   return {title:'חוזרי מנכ״ל', html:h, after: circAskAfter};
 }
@@ -4454,7 +5470,7 @@ function myRoleCardHTML(){
 }
 
 /* ================= roles: who contacts whom ================= */
-const R_ICON = {teacher:'📘', homeroom:'🏠', counselor:'🧭', management:'🏛️', parents:'👨‍👩‍👧', escalate:'🤝'};
+const R_ICON = {teacher:'📘', homeroom:'🏠', counselor:'🧭', management:'🏛️', parents:'👨‍👩‍👦', escalate:'🤝'};
 const R_LABEL = {teacher:'מורה מקצועי/ת', homeroom:'מחנך/ת הכיתה', counselor:'יועץ/ת', management:'הנהלה ומזכירות', parents:'מי פונה להורים', escalate:'גורמי חוץ ופיקוח'};
 function circlesSVG(){
   const rings = [
@@ -5029,9 +6045,9 @@ const trKey = id => (active() ? active().id : 'general') + ':' + id;
 const trData = id => { S.tracks = S.tracks || {}; return S.tracks[trKey(id)] = S.tracks[trKey(id)] || {}; };
 const FIVEP = [['predisposing', 'גורמים מקדימים', 'מה הכין את הקרקע? (מזג, רקע, היסטוריה)', '#e9d5ff'], ['precipitating', 'גורמים מזרזים', 'מה הדליק את הבעיה עכשיו?', '#fde68a'], ['presenting', 'הבעיה כפי שהיא מוצגת', 'מה רואים? מה מדאיג?', '#fecaca'], ['perpetuating', 'גורמים משמרים', 'מה מחזיק את הבעיה? (הימנעות, תגובות סביבה, מחשבות)', '#fbcfe8'], ['protective', 'גורמים מגינים', 'חוזקות, תמיכה, משאבים', '#bbf7d0']];
 const DAYS = ['ראשון', 'שני', 'שלישי', 'רביעי', 'חמישי', 'שישי'];
-const trLink = h => akSrcLinks(h).replace(/(?<![="'\/\w])#\/(track|game|problem|tool|groups|transitions|programs|newteachers|distress|talk|parents|reports|sped|sel|mafteach|develop|tzalach|aklim|cbtclass|videos|circ)((?:\/[\w-]+){0,2})/g, (m, r, p) => { const [id, sub] = p.split('/').slice(1); const x = id && r === 'track' ? TRACK(id) : id && r === 'game' ? GAME(id) : null;
+const trLink = h => akSrcLinks(h).replace(/(?<![="'\/\w])#\/(track|game|problem|tool|groups|transitions|programs|newteachers|distress|talk|parents|reports|sped|sel|mafteach|develop|tzalach|aklim|cbtclass|crole|workflow|roles|videos|circ)((?:\/[\w-]+){0,2})/g, (m, r, p) => { const [id, sub] = p.split('/').slice(1); const x = id && r === 'track' ? TRACK(id) : id && r === 'game' ? GAME(id) : null;
   const cg = r === 'circ' && sub ? circGuide().find(g => g.id === sub) : null, cm = r === 'circ' && id && !cg ? (window.CIRC_META || []).find(c => c.id === id) : null;
-  const lab = x ? x.title : r === 'problem' && id && P[id] ? '🧭 ' + P[id].name : r === 'tool' && id && TOOL[id] ? TOOL[id].icon + ' ' + TOOL[id].name : cg ? '📜 ' + cg.title : cm ? '📜 ' + cm.title : r === 'distress' && !id ? '🚨 ' + HUBS.distress.title : (r === 'mafteach' || r === 'sel' || r === 'develop' || r === 'transitions') && !id ? HUBS[r].icon + ' ' + HUBS[r].title : (r === 'parents' || r === 'reports' || r === 'sped' || r === 'tzalach' || r === 'aklim' || r === 'cbtclass') && !id ? HUBS[r].icon + ' ' + HUBS[r].title : null;
+  const lab = x ? x.title : r === 'problem' && id && P[id] ? '🧭 ' + P[id].name : r === 'tool' && id && TOOL[id] ? TOOL[id].icon + ' ' + TOOL[id].name : cg ? '📜 ' + cg.title : cm ? '📜 ' + cm.title : r === 'distress' && !id ? '🚨 ' + HUBS.distress.title : (r === 'mafteach' || r === 'sel' || r === 'develop' || r === 'transitions') && !id ? HUBS[r].icon + ' ' + HUBS[r].title : (r === 'parents' || r === 'reports' || r === 'sped' || r === 'tzalach' || r === 'aklim' || r === 'cbtclass' || r === 'crole') && !id ? HUBS[r].icon + ' ' + HUBS[r].title : HUBS[r] && !id ? HUBS[r].icon + ' ' + HUBS[r].title : r === 'groups' && !id ? '👥 הנחיית קבוצות' : r === 'workflow' && !id ? '🗺️ סדר עבודה' : r === 'roles' && !id ? '👥 מי פונה למי' : null;
   return `<a href="${m}" class="trlink">${lab ? esc(lab) : m}</a>`; }).replace(/(?<![="'\/\w])#\/file\/([\w-]+)/g, (m, k) => trFile(k) ? trFileBtn(k) : m);   // #/file/<key> → opens a file from window.TRFILES (tracks-sped.js)
 function trStepHTML(t, s, D){ const h0 = trStepHTML0(t, s, D) + (s.src ? `<p class="wfsrc">📚 ${trLink(esc(s.src))}</p>` : ''); return ['form', 'fivep', 'cycle', 'plan', 'viz'].includes(s.kind) ? h0 : trLink(h0); }
 function trStepHTML0(t, s, D){
@@ -5065,7 +6081,7 @@ function trStepHTML0(t, s, D){
 function trStepDone(s, D){ const d = D[s.id]; if (!d) return false; return Object.values(d).some(x => x && (typeof x !== 'object' || Object.keys(x).length)); }
 function groupsView(){
   const all = TRACKS().filter(t => t.group), guide = all.find(t => t.id === 'grp-guide'), list = all.filter(t => t.id !== 'grp-guide' && !t.deep), deep = all.filter(t => t.deep);
-  return {title: 'הנחיית קבוצות', html: `${hubHero('groups', '👥', 'הנחיית קבוצות', all.length)}${gGuide('בקבוצה לומדים אחד מהשני – בוא נבנה קבוצה טובה! 👥', 'שמחה', 6)}
+  return {title: 'הנחיית קבוצות', html: `${hubHero('groups', '👥', 'הנחיית קבוצות', all.length)}${gGuide('בקבוצה לומדים אחד מהשני – בוא נבנה קבוצה טובה! 👥', 'שמחה', 6)}${infog('groups', all)}
     <div class="note" style="margin:4px 0 16px">👥 מדור להנחיית קבוצות ילדים ונוער: המדריך המלא (בנייה, מיון, חוזה, שלבי קבוצה, מבנה מפגש, מיומנויות מנחה, מצבים מאתגרים, הערכה וסיום) ומתווים טיפוליים קבוצתיים לפי נושאים – כל מתווה עם מיון, פנייה להורים, מפגשים מפורטים, מדדים לפני ואחרי ומעקב. לכל עמוד יש קישור משלו.</div>
     ${guide ? `<a class="card" href="#/track/${guide.id}" style="margin-bottom:16px;border:2px solid var(--brand)"><span class="emoji">${guide.icon || '👥'}</span><span class="name">${esc(guide.title)}</span><span class="sub">${guide.steps.length} פרקים · מתחילים כאן</span></a>` : ''}
     ${deep.length ? `<h2 class="sec">🎓 העמקה – מתוך קורס הנחיית הקבוצות (יעל מלמד)</h2><div class="grid" style="margin-bottom:16px">${deep.map(t => `<a class="card accent hubc" href="#/track/${t.id}" style="--h:${t.hue ?? hubHue('groups')}"><span class="emoji">${t.icon || '🎓'}</span><span class="name">${esc(t.title)}</span><span class="sub">${t.steps.length} שלבים</span></a>`).join('')}</div>` : ''}
@@ -5078,7 +6094,7 @@ const HUBS = {
   newteachers: {flag: 'newteachers', title: 'ליווי מורים חדשים', icon: '🌱', say: 'שנה ראשונה בהוראה – לא לבד! 🌱', intro: '🌱 ליווי מורים חדשים: מסע השנה הראשונה (צרכים, תוכנית שנתית, מה חובה לדעת, ניהול כיתה, הורים, תצפיות ורווחה אישית) וערכת עבודה למורה החונך.', extra: [['#/track/teacher-consult', '🧑‍🏫', 'מסלול הדרכת מורה'], ['#/track/teacher-stress', '🧯', 'מסלול דחק ושחיקה']]},
   programs: {flag: 'program', guide: 'prog-guide', title: 'בניית תוכנית התערבות', icon: '🏗️', say: 'תוכנית טובה מתחילה במיפוי – בוא נבנה אותה שלב אחרי שלב 🏗️', intro: '🏗️ בניית תוכנית התערבות ומניעה בית-ספרית: המדריך המלא (מיפוי צרכים, רמות התערבות, מטרות, מודל לוגי, רכיבים, שותפים, תוכנית שנתית, הטמעה והערכה) ותוכניות התערבות מוכנות לפי נושאים – כל אחת עם מיפוי, שלוש רמות התערבות, לוח שנתי, מערכי שיעור, צוות, הורים ומדדים.', extra: []},
   talk: {flag: 'talk', guide: 'talk-guide', title: 'ראיון ושיח רגשי עם תלמידים', icon: '🗣️', say: 'שיחה טובה מתחילה בהקשבה – בוא נתרגל יחד 💬', intro: '💬 ראיון ושיח רגשי עם תלמידים: עקרונות השיחה הרגשית עם ילד (מקום, קצב, שיקוף ותיקוף, שם לרגש, שתיקה, הבדלים בין הגילים ומה לא עושים), הראיון הראשון עם תלמיד ועם ההורים והמחנך, מאגר שאלות טובות לפי סוג, שיחה רגשית שלב אחרי שלב עם דוגמאות, רגעים קשים (שתיקה, בכי, כעס, חשיפת פגיעה וחובת הדיווח, שיחה אחרי אירוע משמעת) ותרגול ליועץ ולצוות. כל פריט מבוסס על מקור מהספרייה. הצד המשמעתי והצד הטיפולי מופרדים.', extra: [['#/circ/c11/c11-first-conversation', '📜', 'שיחה ראשונה עם תלמיד בסיכון (0473)'], ['#/circ/c04/c04-legal-reporting-duty', '📜', 'חובת דיווח (0470)'], ['#/tool/thermometer', '🌡️', 'מדחום רגשות'], ['#/track/teacher-consult', '🧑‍🏫', 'מסלול הדרכת מורה']]},
-  parents: {flag: 'parents', guide: 'par-guide', title: 'הורים – אסיפות הורים ושיחות אישיות', icon: '🤝', say: 'הבית ובית הספר – שותפים לאותו ילד. בוא נתכונן למפגש 🤝', intro: '🤝 הורים: אסיפת הורים כללית (מטרות, חלוקת תפקידים בין המחנך ליועץ, רשימת הכנה, סדר יום, פעילויות פתיחה, שאלות קשות ומעקב) ואסיפת הורים פרטנית (הכנה, מבנה השיחה, בשורה קשה, הורה כועס או מתגונן, תוכנית משותפת ותיעוד), והדרכת מחנכים לקראת האסיפות – לפי חוזר 0482 ו״המסע אל התעודה 2״. הצד הטיפולי והצד המשמעתי מופרדים.', extra: [['#/circ/c07', '📜', 'הקשר עם ההורים (0482)'], ['#/circ/c06', '📜', 'הורים פרודים או גרושים (0436)'], ['#/track/parent-consult', '🧭', 'מסלול הדרכת הורים'], ['#/track/rep-guide', '🎓', 'תעודות']]},
+  parents: {flag: 'parents', guide: 'par-guide', title: 'הורים – אסיפות, שיחות והנהגת הורים', icon: '🤝', say: 'הבית ובית הספר – שותפים לאותו ילד. בוא נתכונן למפגש 🤝', intro: '🤝 הורים: אסיפת הורים כללית (מטרות, חלוקת תפקידים בין המחנך ליועץ, רשימת הכנה, סדר יום, פעילויות פתיחה, שאלות קשות ומעקב) ואסיפת הורים פרטנית (הכנה, מבנה השיחה, בשורה קשה, הורה כועס או מתגונן, תוכנית משותפת ותיעוד), הדרכת מחנכים לקראת האסיפות, והנהגת הורים (ועד הכיתה והנציגות הבית-ספרית: בחירות, תפקידים, גבולות, ישיבות, מחלוקות ועבודה משותפת עם המנהל והיועץ – לפי חוזר 0423) – לפי חוזר 0482 ו״המסע אל התעודה 2״. הצד הטיפולי והצד המשמעתי מופרדים.', extra: [['#/circ/c07', '📜', 'הקשר עם ההורים (0482)'], ['#/circ/c06', '📜', 'הורים פרודים או גרושים (0436)'], ['#/track/parent-consult', '🧭', 'מסלול הדרכת הורים'], ['#/track/rep-guide', '🎓', 'תעודות']]},
   reports: {flag: 'reports', guide: 'rep-guide', title: 'תעודות – מחצית וסוף שנה', icon: '🎓', say: 'תעודה טובה מדברת אל הילד – ומקדמת אותו 🎓', intro: '🎓 תעודות: התפקיד של התעודה ושל ההערכה המילולית וחלקו של היועץ, תעודת מחצית (משוב מעצב, מטרה אחת, קשר לשיחה עם ההורים), תעודת סוף שנה (סיכום ומסר לשנה הבאה, מקרים רגישים), השוואה בין השתיים, בנק ניסוחים חיוביים, מה לא לכתוב ורשימה לבדיקת הנוסח – לפי ״המסע אל התעודה 2״ ו״מתעודה לתהודה״. ציון ההתנהגות (צד משמעתי) נפרד מההערכה המילולית.', extra: [['#/circ/c04/c04-report-card-behavior', '📜', 'התנהגות בתעודה (0470)'], ['#/circ/c06/c06-report-card-divorced', '📜', 'תעודה להורה גרוש (0436)'], ['#/track/par-individual', '🤝', 'אסיפת הורים פרטנית']]},
   distress: {flag: 'distress', guide: 'dist-guide', title: 'הפרעות רגשיות והתנהגותיות – זיהוי סימני מצוקה', icon: '🚨', say: 'ילדים לא תמיד מספרים על מצוקה – הם מראים אותה. בוא נלמד לזהות 🔎', intro: '🚨 זיהוי סימני מצוקה אצל תלמידי א׳–ו׳: המדריך המלא (מה שונה מההתנהגות הרגילה של הילד, רשימת סינון, מדד חומרה, מתי זו עבודה של היועץ, מתי משתפים הורים, מתי מפנים ומתי מפעילים נוהל חירום לפי חוזרי המנכ״ל), ואחריו ארבעה תחומים – בכל אחד סקירה ומסלולי זיהוי קצרים לפי בעיה. בכל מקום הצד הטיפולי והצד המשמעתי מופרדים.', extra: [['#/circ/c11', '📜', 'חוזר אובדנות ילדים ובני נוער (0473)'], ['#/circ/c04', '📜', 'חוזר אקלים חינוכי מיטבי (0470)'], ['#/track/low-mood', '🧭', 'מסלול טיפול: מצב רוח ירוד']],
     areas: [['emo', '💛', 'זיהוי בעיות רגשיות'], ['mental', '🧠', 'זיהוי בעיות נפשיות'], ['behav', '🌋', 'זיהוי בעיות התנהגות'], ['social', '🤝', 'זיהוי בעיות חברתיות']]},
@@ -5087,20 +6103,21 @@ const HUBS = {
   sped: {flag: 'sped', guide: 'sped-guide', title: 'חינוך מיוחד והכלה', icon: '🧩', say: 'כל ילד לומד אחרת – בוא נמצא יחד את הדרך שלו 🧩', intro: '🧩 חינוך מיוחד והכלה: מפת התהליך המלאה (איתור ← תמיכה בבית הספר ← צוות רב-מקצועי ← ועדת זכאות ואפיון ← חידוש זכאות ← תח״י/תל״א) עם הטופס של כל שלב, ערכת כל הטפסים שלך (נפתחים בלחיצה), הכנה לוועדה, חידוש זכאות וקיצור יום, כלי הערכת הקריאה והאוריינות לכיתות א׳–ג׳ עם נקודות החתך, הכלה בכיתה ומחוננים – לפי חוזר 0287 והחומרים שלך. הצד הטיפולי והצד המנהלי מופרדים, ולכל פריט מצוין המקור.', extra: [['#/circ/c02', '📜', 'חוזר ועדות חינוך מיוחד (0287)'], ['#/circ/c16', '📜', 'מוסדות חינוך מכילים (0483)'], ['#/circ/c02/c02-iep-personal-program', '📜', 'תוכנית אישית – תח״י (0287)'],['#/track/prog-guide', '🏗️', 'בניית תוכנית התערבות']]},
   develop: {flag: 'develop', guide: 'dev-guide', title: 'התפתחות הילד', icon: '🌳', say: 'כל ילד גדל בקצב שלו – בוא נבין מה צפוי בגיל הזה ומתי כדאי לבדוק 🌳', intro: '🌳 התפתחות הילד מהגן ועד כיתה ו׳: המדריך (שבעת תחומי ההתפתחות, טבע וסביבה, ציר הזמן, טווח תקין מול דגל אדום ואיך היועץ משתמש במבט התפתחותי), מסלול לכל שכבת גיל – גן ובשלות לכיתה א׳, א׳–ב׳, ג׳–ד׳, ה׳–ו׳ וראשית ההתבגרות – עם מה צפוי בכל תחום, דאגות נפוצות (תקין או לבדוק), דגלים אדומים, שיחה עם הילד והנחיות להורים ולמחנכים; תיאוריות (פיאז׳ה, אריקסון, התקשרות וניופלד, ויגוצקי, קולברג, ברונפנברנר, מושג המוות), העמקה לפי תחומים, מתי מפנים ולמי, והדרכת הורים לפי גיל. לכל פריט מצוין המקור, ומה שאינו מהחומרים מסומן ״ידע מקצועי כללי״.', extra: [['#/transitions', '🚪', 'מעברים'], ['#/sped', '🧩', 'חינוך מיוחד והכלה'], ['#/distress', '🚨', 'זיהוי סימני מצוקה'], ['#/sel', '💞', 'למידה רגשית-חברתית'], ['#/parents', '🤝', 'הורים']]},
   cbtclass: {flag: 'cbtclass', guide: 'cbtc-guide', title: 'יישום CBT בכיתה', icon: '🏫', say: 'כל הכיתה לומדת לחשוב, להרגיש ולפעול אחרת – בוא נביא את ה-CBT לכיתה 🏫', intro: '🏫 יישום CBT בכיתה (א׳–⁠ו׳): המדריך (למה CBT בכיתה כמניעה לכולם, משולש המחשבה-הרגש-ההתנהגות לילדים, פירמידת שלוש הרמות – כיתה, קבוצה ופרטני – ומה תפקיד היועץ ומה תפקיד המורה, השיחה המכבדת והמאתגרת, והפרדה בין הטיפולי למשמעתי), סדרת שיעורים מוכנה לפי שכבות גיל עם כלים ומשחקים מהאפליקציה, המורה כמאמן CBT (שפה משותפת, בנק משפטים, שבח שבונה מסוגלות, חרדה בכיתה בלי מלכודת ההימנעות, פרוטוקול להתפרצות כעס וכרטיסי עזר), ניהול התנהגות (ניתוח ABC, סדרי חיזוק, כלכלת אסימונים, שגרות והקו של חוזר 0470), תוכנית כיתתית לחרדת מבחנים, אקלים כיתתי ופעילויות קבוצתיות, ומעגל ההתייעצות עם המורה עם טפסים. לפי ״CBT מערכתי בעצימות נמוכה לחינוכיים״ של יששכר עשת ושאר חומרי הספרייה; מה שאינו מהחומרים מסומן ״ידע מקצועי כללי״.', extra: [['#/track/teacher-consult', '🧭', 'הדרכת מורה בניהול כיתה'], ['#/track/class-climate', '🌈', 'אקלים כיתתי'], ['#/sel', '💞', 'למידה רגשית-חברתית'], ['#/mafteach', '🔑', 'כישורי חיים ומפתח הל״ב'], ['#/programs', '🏗️', 'תוכניות התערבות'], ['#/tool/sociometry', '🕸️', 'שאלון סוציומטרי'], ['#/circ/c04', '📜', 'חוזר 0470 – אקלים חינוכי מיטבי']]},
+  crole: {flag: 'crole', guide: 'role-guide', title: 'תפקיד היועץ החינוכי', icon: '🎯', say: 'היועץ הוא הלב הרגשי של בית הספר – בוא נראה את כל התפקיד במבט אחד 🎯', intro: '🎯 תפקיד היועץ החינוכי: המדריך (ההגדרה לפי שפ״י וההסכם הקיבוצי, שמונה מטרות הייעוץ, ארבע מיומנויות היסוד, מעגלי העבודה ותהליך העבודה, מודל היהלום, מה חוזרי המנכ״ל מטילים על היועץ, הפרדה בין הטיפולי למשמעתי, איך מסבירים לתלמידים מה עושה היועץ ומפת האפליקציה לפי תחומי התפקיד), המודלים של התפקיד (הכוון, טיפולי, מניעתי לפי Caplan, מערכתי, מייעץ, מתאם ומנהל מקרה, מבוסס נתונים ומודלים בינלאומיים – עם השוואות ומה מתאים ליסודי לבנים), חלוקת עבודה וזמן (אופק חדש, דוח מבקר המדינה, מה כן ומה לא בתפקיד והגבולות מול כל שותף), אתיקה (הקוד האתי, סודיות וחריגיה, קשרים כפולים, חובת דיווח, תיעוד וכרטיסי דילמה), השנה של היועץ (חודשי השנה העברית, איתור בארבעה ממדים, מטרות עם ת.ב.ל.י.ן, תוכנית עבודה, ועדה מלווה ואוגדן סוף שנה), העבודה עם המנהל והצוות, והיועץ עצמו (זהות מקצועית, מסלול ההתפתחות, סופרוויז׳ן ושמירה מפני שחיקה). לכל פריט מצוין מקור; מה שאינו מהחומרים מסומן ״ידע מקצועי כללי״.', extra: [['#/workflow', '🗺️', 'סדר עבודה – מהפניה ועד סיום'], ['#/roles', '👥', 'מי פונה למי'], ['#/track/ak-counselor', '⚖️', 'תפקיד היועץ לפי חוזר האקלים'], ['#/circ/c04/c04-role-counselor-psychologist', '📜', 'תפקיד היועץ בחוזר 0470'], ['#/circ/c09/c09-counselor-role', '📜', 'תפקיד היועץ בכישורי חיים (0351)'], ['#/circ/c13/c13-counselor-role-shefi', '📜', 'היועץ בשעת חירום'], ['#/circ/c05/c05-counselor-role-info', '📜', 'סמכויות היועץ בהעברת מידע'], ['#/track/teacher-stress', '🧯', 'דחק ושחיקה']]},
   aklim: {flag: 'aklim', guide: 'ak-guide', title: 'אקלים חינוכי – חוזר 0470 ומדרג התגובות', icon: '⚖️', say: 'גבולות ברורים לצד טיפול רגשי – בוא נמצא יחד את השלב המדויק במדרג ⚖️', intro: '⚖️ אקלים חינוכי – חוזר 0470 ומדרג התגובות: המדריך (עקרונות, סטנדרטים, חובות בית הספר, עץ התפקידים וזרימת הטיפול), מדרג התגובות המלא בסולם צבעוני (שגרה, חלקים א׳–ד׳, פגיעה ברשת ו׳–ח׳ ופגיעה בצוות) עם התבחינים לחומרה, ״מה עושים כש…״ לפי סוג אירוע עם רשימה וטבעת התקדמות, אמצעי משמעת והשעיה, תפקיד היועץ, טפסים, בניית אקלים, שאלון אקלים כיתתי אנונימי ומדריך למחנך. כל כלל מקושר למשפט בחוזר; הצד החינוכי-טיפולי והצד המשמעתי-מנהלי מוצגים זה לצד זה.', extra: [['#/circ/c04', '📜', 'חוזר 0470 – דף החוזר'], ['#/circ/c11', '📜', 'אובדנות (0473)'], ['#/circ/c07', '📜', 'הקשר עם ההורים (0482)'], ['#/circ/c08', '📜', 'חוק זכויות התלמיד'], ['#/track/prog-climate', '🏗️', 'תכנית התערבות לאקלים'], ['#/track/prog-bullying', '🛡️', 'מניעת בריונות'], ['#/tool/sociometry', '🕸️', 'מיפוי חברתי'], ['#/sel', '💞', 'למידה רגשית-חברתית']]},
   tzalach: {flag: 'tzalach', guide: 'tz-guide', title: 'צל״ח – צוות לשעת חירום', icon: '🛟', say: 'היערכות מקדימה מצילה חיים – בוא נכין את הצוות יחד, צעד אחרי צעד 🛟', intro: '🛟 צל״ח – צוות לשעת חירום: המדריך (מה זה צל״ח, עץ התפקידים – המנהל, היועץ, המחנכים, הפסיכולוג, הרב, המזכיר ורכז הביטחון – מעגל השגרה והחירום, ארבעת השלבים, קמ״צ, גשר הרציפויות, גש״ר מאח״ד, מעש״ה ומעגלי הפגיעות), היערכות בשגרה עם רשימת מוכנות וטבעת התקדמות, ״מה עושים מחר בבוקר״ – השעות והיום הראשון, תרחישים (מוות של תלמיד, הורה או מורה, תאונה, אזעקות, אובדנות בקהילה, אלימות, אסון, מחלה קשה) עם מה אומרים לכל גיל והיבטים דתיים, הדרכת המחנכים לשיחה בכיתה, ומעקב אחרי האירוע – זיכרון, הצוות והפקת לקחים. לפי חוזרי 0449, 0472 ו-0473 ומסמכי שפ״י; הצד הטיפולי והצד הניהולי מופרדים, ולכל פריט מצוין המקור.', extra: [['#/circ/c13', '📜', 'נוהלי שעת חירום (0449)'], ['#/circ/c10', '📜', 'ליווי תלמידים במשבר מתמשך (0472)'], ['#/circ/c11', '📜', 'אובדנות – מניעה והתערבות (0473)'], ['#/track/prog-emergency', '🛡️', 'תוכנית התערבות: חוסן, חירום ומשבר'], ['#/track/dist-trauma', '🚨', 'זיהוי תגובות דחק וטראומה'], ['#/track/grief', '🕯️', 'מסלול טיפול: אבל ואובדן'], ['#/track/grp-resilience', '👥', 'קבוצת חוסן'], ['#/track/talk-hard', '🗣️', 'רגעים קשים בשיחה'], ['#/distress', '🚨', 'זיהוי סימני מצוקה']]}
 };
 function hubView(R){
   const h = HUBS[R.r]; const all = TRACKS().filter(t => t[h.flag]), guide = h.guide && all.find(t => t.id === h.guide), list = all.filter(t => t !== guide);
   const H = hubHue(R.r), card = t => `<a class="card accent hubc" href="#/track/${t.id}" style="--h:${t.hue ?? H}"><span class="emoji">${t.icon || h.icon}</span><span class="name">${esc(t.title)}</span><span class="sub">${esc(t['for'] || '')} · ${t.steps.length} שלבים</span></a>`;
-  return {title: h.title, html: `${hubHero(R.r, h.icon, h.title, all.length)}${gGuide(h.say, 'שמחה', 6)}<div class="note" style="margin:4px 0 16px">${h.intro} ${active() ? `הכול נשמר בתיק של <b>${esc(active().alias)}</b>.` : ''}</div>${hubMap([guide, ...list].filter(Boolean), H)}
+  return {title: h.title, html: `${hubHero(R.r, h.icon, h.title, all.length)}${gGuide(h.say, 'שמחה', 6)}<div class="note" style="margin:4px 0 16px">${h.intro} ${active() ? `הכול נשמר בתיק של <b>${esc(active().alias)}</b>.` : ''}</div>${infog(R.r, all)}${hubMap([guide, ...list].filter(Boolean), H)}
     ${guide ? `<a class="card" href="#/track/${guide.id}" style="margin-bottom:16px;border:2px solid var(--brand)"><span class="emoji">${guide.icon}</span><span class="name">${esc(guide.title)}</span><span class="sub">${guide.steps.length} שלבים · מתחילים כאן</span></a>${h.areas ? '' : '<h2 class="sec">📚 לפי נושאים</h2>'}` : ''}
     ${h.areas && list.length ? h.areas.map(([k, i, l]) => { const inA = list.filter(t => t.distArea === k), ov = inA.find(t => t.distOverview), rest = inA.filter(t => t !== ov);
       return `<h2 class="sec">${i} ${esc(l)}</h2>${ov ? `<a class="card" href="#/track/${ov.id}" style="margin-bottom:10px;border:2px solid var(--brand)"><span class="emoji">${ov.icon || i}</span><span class="name">${esc(ov.title)}</span><span class="sub">${ov.steps.length} שלבים · סקירת התחום</span></a>` : ''}${rest.length ? `<div class="grid" style="margin-bottom:16px">${rest.map(card).join('')}</div>` : ''}`; }).join('')
     : list.length ? `<div class="grid">${list.map(card).join('')}</div>` : '<div class="empty">🛠️ התוכן של המדור הזה בהכנה ויעלה בקרוב.</div>'}
     ${h.extra.length ? `<h2 class="sec">🔗 עוד בנושא</h2><div class="actions">${h.extra.map(([u, i, l]) => `<a class="btn" href="${u}">${i} ${esc(l)}</a>`).join('')}</div>` : ''}`};
 }
-const HUBOF = t => t.workflow ? (active() ? ['student/' + active().id, 'סדר העבודה של ' + esc(active().alias)] : ['workflow', 'סדר עבודה']) : t.group ?['groups', 'הנחיית קבוצות'] : t.transition ? ['transitions', 'מעברים'] : t.newteachers ? ['newteachers', 'ליווי מורים חדשים'] : t.program ? ['programs', 'בניית תוכנית התערבות'] : t.distress ? ['distress', 'זיהוי סימני מצוקה'] : t.talk ? ['talk', 'ראיון ושיח רגשי'] : t.parents ? ['parents', 'הורים'] : t.reports ? ['reports', 'תעודות'] : t.sel ? ['sel', 'SEL – למידה רגשית-חברתית'] : t.mafteach ? ['mafteach', 'כישורי חיים ומפתח הל״ב'] : t.sped ? ['sped', 'חינוך מיוחד והכלה'] : t.develop ? ['develop', 'התפתחות הילד'] : t.tzalach ? ['tzalach', 'צל״ח – צוות לשעת חירום'] : t.aklim ? ['aklim', 'אקלים חינוכי – חוזר 0470'] : t.cbtclass ? ['cbtclass', 'יישום CBT בכיתה'] : ['tracks', 'כל המסלולים'];function tracksView(){  const list = TRACKS().filter(t => !t.group && !t.transition && !t.newteachers && !t.program && !t.distress && !t.talk && !t.parents && !t.reports && !t.workflow && !t.sel && !t.sped && !t.mafteach && !t.develop && !t.tzalach && !t.aklim && !t.cbtclass);
+const HUBOF = t => t.workflow ? (active() ? ['student/' + active().id, 'סדר העבודה של ' + esc(active().alias)] : ['workflow', 'סדר עבודה']) : t.group ?['groups', 'הנחיית קבוצות'] : t.transition ? ['transitions', 'מעברים'] : t.newteachers ? ['newteachers', 'ליווי מורים חדשים'] : t.program ? ['programs', 'בניית תוכנית התערבות'] : t.distress ? ['distress', 'זיהוי סימני מצוקה'] : t.talk ? ['talk', 'ראיון ושיח רגשי'] : t.parents ? ['parents', 'הורים'] : t.reports ? ['reports', 'תעודות'] : t.sel ? ['sel', 'SEL – למידה רגשית-חברתית'] : t.mafteach ? ['mafteach', 'כישורי חיים ומפתח הל״ב'] : t.sped ? ['sped', 'חינוך מיוחד והכלה'] : t.develop ? ['develop', 'התפתחות הילד'] : t.tzalach ? ['tzalach', 'צל״ח – צוות לשעת חירום'] : t.aklim ? ['aklim', 'אקלים חינוכי – חוזר 0470'] : t.cbtclass ? ['cbtclass', 'יישום CBT בכיתה'] : t.crole ? ['crole', 'תפקיד היועץ החינוכי'] : ['tracks', 'כל המסלולים'];function tracksView(){  const list = TRACKS().filter(t => !t.group && !t.transition && !t.newteachers && !t.program && !t.distress && !t.talk && !t.parents && !t.reports && !t.workflow && !t.sel && !t.sped && !t.mafteach && !t.develop && !t.tzalach && !t.aklim && !t.cbtclass && !t.crole);
   return {title: 'טיפול מובנה', html: `${hubHero('tracks', '🧭', 'טיפול מובנה', list.length)}${gGuide('בחר בעיה, ונעבור יחד שלב אחרי שלב – מהאבחון ועד סיום הטיפול 🧭', 'רוגע', 3)}
     <div class="note" style="margin:4px 0 16px">🧭 לכל בעיה – מסלול טיפול מובנה ואינטראקטיבי: אבחון והערכה, הסבר פסיכו-חינוכי, פורמולציה (5P ומעגל משמר), מטרות, טכניקות, תוכנית פעולה ואקטיבציה, פרוטוקול מפגשים ומניעת הישנות. ${active() ? `הכול נשמר בתיק של <b>${esc(active().alias)}</b>.` : 'בחרו תלמיד בראש המסך כדי שהמילוי יישמר בתיק שלו (בלי תלמיד – נשמר ב״כללי״).'}</div>
     ${list.length ? `<div class="grid">${list.map(t => `<a class="card accent hubc" href="#/track/${t.id}" style="--h:${t.hue ?? hueOf(t.title)}"><span class="emoji">${t.icon || '🧭'}</span><span class="name">${esc(t.title)}</span><span class="sub">${esc(t.for || '')} · ${t.steps.length} שלבים</span></a>`).join('')}</div>` : '<div class="empty">⏳ המסלולים נטענים…</div>'}`};
@@ -5249,8 +6266,10 @@ function diagramHTML(g, o = {}){
     ${g.note ? `<p class="dgnote">📌 ${esc(g.note)}</p>` : ''}${o.src !== false && g.src ? `<p class="wfsrc">📚 ${esc(g.src)}</p>` : ''}</figure>`;
 }
 /* hub color identity: one hue per hub – its hero band, its cards, its map and the headers of its tracks */
-const HUB_HUE = {transitions: 200, newteachers: 135, programs: 28, distress: 0, talk: 265, parents: 330, reports: 45, sel: 300, sped: 180, develop: 140, tzalach: 12, aklim: 60, cbtclass: 285,groups: 220, tracks: 160, workflow: 90, games: 20, videos: 350, tools: 190, circ: 40, library: 250, problems: 170, roles: 100, ask: 210, students: 55};
+const HUB_HUE = {transitions: 200, newteachers: 135, programs: 28, distress: 0, talk: 265, parents: 330, reports: 45, sel: 300, sped: 180, develop: 140, tzalach: 12, aklim: 60, cbtclass: 285, crole: 315, groups: 220, tracks: 160, workflow: 90, games: 20, videos: 350, tools: 190, circ: 40, library: 250, problems: 170, roles: 100, ask: 210, students: 55};
 const hubHue = k => HUB_HUE[k] ?? hueOf(k);
+/* 🧭 מבט על – the hub's infographic (app/infographics.js) */
+const infog = (k, list) => { try { return window.infographicBlock ? window.infographicBlock(k, {hue: hubHue(k), tracks: TRACKS(), list: list || [], kid: kidMini('שמחה', 5, 'igkidsvg')}) : ''; } catch(e){ return ''; } };
 function hubHero(k, icon, title, n){ return `<div class="banner hubhero" style="--h:${hubHue(k)}"><span class="emoji">${icon}</span><div><h1>${esc(title)}</h1>${n ? `<p>${n} מסלולים · בוחרים מסלול ומתקדמים שלב אחרי שלב</p>` : ''}</div></div>`; }
 function hubMap(list, H){ if (list.length < 3 || list.length > 40) return '';
   return `<nav class="hubmap no-print" aria-label="מפת המדור" style="--h:${H}"><h2 class="sec">🗺️ מפת המדור</h2><ol>${list.map((t, i) => `<li style="--k:${i}"><a href="#/track/${t.id}"><span class="hmn">${i + 1}</span><span class="hmi" aria-hidden="true">${t.icon || '🧭'}</span><span class="hmt">${esc(t.title)}</span></a></li>`).join('')}</ol></nav>`; }
@@ -5361,7 +6380,7 @@ const WV = {
   },
   formview: {
     draw(t, s, D, d, o){ const P = D[s.from.fivep] || {}, cyS = t.steps.find(x => x.id === s.from.cycle), C = D[s.from.cycle] || {}, G = D[s.from.goals] || {}, F = Object.fromEntries(FIVEP.map(x => [x[0], x]));
-      const cut = x => x.length > 140 ? x.slice(0, 137) + '…' : x;
+      const cut = x => x;
       const pet = ([k, l, ph, c]) => `<div class="fpet fp-${k}" style="--c:${c}"><b>${esc(l)}</b><span class="${P[k] ? '' : 'muted'}">${esc(cut(P[k] || ph))}</span></div>`;
       const flower = `<div class="fflow"><svg class="fflines" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true"><path d="M17,25 L50,50 M17,75 L50,50 M83,25 L50,50 M83,75 L50,50"/></svg>${pet(F.predisposing)}${pet(F.precipitating)}<div class="fcore" style="--c:${F.presenting[3]}"><b>🎯 ${esc(F.presenting[1])}</b><span class="${P.presenting ? '' : 'muted'}">${esc(cut(P.presenting || F.presenting[2]))}</span></div>${pet(F.perpetuating)}${pet(F.protective)}</div>`;
       const cyc = cyS && !o.ro ? cycleHTML({title: '', nodes: cyS.nodes.map((x, i) => ({k: x.k, label: x.label, t: C['n' + i] || '', ph: x.ph})), back: cyS.back, breaks: cyS.breaks}, {cls: 'fvcyc'}) : '';
@@ -5731,6 +6750,125 @@ if (!SHARE_MODE) AI.init().then(() => { if (route().r === 'ask') render(); });
 document.body.classList.toggle('artifact', ARTIFACT); document.body.classList.toggle('lite', LITE);
 if (!SHARE_MODE) SYNC.init();
 if (WEB && !ARTIFACT && 'serviceWorker' in navigator && location.protocol === 'https:') navigator.serviceWorker.register('sw.js').catch(() => {});
+})();
+
+</script>
+<script>
+/* hebday.js – the home hero's day line: live clock · greeting · Hebrew date · holiday / special day · Omer count.
+   Works in the app (#view, .hero.withkid) and in the library site (#app, section.hero). Pure Intl – no data files. */
+(function(){
+'use strict';
+if (window.hebDay) return;
+const DAY = 864e5;
+const add = (d, n) => new Date(d.getFullYear(), d.getMonth(), d.getDate() + n);
+const fmtEn = new Intl.DateTimeFormat('en-u-ca-hebrew', {day: 'numeric', month: 'long', year: 'numeric'});
+const fmtHe = new Intl.DateTimeFormat('he-IL-u-ca-hebrew', {month: 'long'});
+function heb(d){ const p = {}; fmtEn.formatToParts(d).forEach(x => p[x.type] = x.value); return {d: +p.day, m: p.month, y: +p.year}; }
+const leap = y => ((7 * y + 1) % 19) < 7;
+function gem(n){
+  const L = [[400,'ת'],[300,'ש'],[200,'ר'],[100,'ק'],[90,'צ'],[80,'פ'],[70,'ע'],[60,'ס'],[50,'נ'],[40,'מ'],[30,'ל'],[20,'כ'],[10,'י'],[9,'ט'],[8,'ח'],[7,'ז'],[6,'ו'],[5,'ה'],[4,'ד'],[3,'ג'],[2,'ב'],[1,'א']];
+  let s = ''; n %= 1000;
+  for (const [v, c] of L) while (n >= v) { if (n === 15) { s += 'טו'; n = 0; break; } if (n === 16) { s += 'טז'; n = 0; break; } s += c; n -= v; }
+  return s.length > 1 ? s.slice(0, -1) + '״' + s.slice(-1) : s + '׳';
+}
+function hebDate(d){ try { const h = heb(d); return `${gem(h.d)} ב${fmtHe.format(d).replace(/^ב/, '')} ${gem(h.y)}`; } catch (e) { return ''; } }
+/* the date on which Hebrew day `day` of the current Hebrew month falls */
+const sameMonth = (d, h, day) => add(d, day - h.d);
+const same = (a, b) => a.getFullYear() === b.getFullYear() && a.getMonth() === b.getMonth() && a.getDate() === b.getDate();
+
+/* holidays & special days (Israel) for civil date d → list of labels */
+function special(d){
+  const h = heb(d), m = h.m, dd = h.d, dow = d.getDay(), out = [];
+  const on = (mon, day) => m === mon && dd === day;
+  const purimMonth = leap(h.y) ? 'Adar II' : 'Adar';
+  // Tishrei
+  if (on('Elul', 29)) out.push('ערב ראש השנה');
+  if (on('Tishri', 1) || on('Tishri', 2)) out.push('ראש השנה');
+  if (m === 'Tishri') { const g = sameMonth(d, h, 3); const obs = g.getDay() === 6 ? add(g, 1) : g; if (same(d, obs)) out.push('צום גדליה'); }
+  if (on('Tishri', 9)) out.push('ערב יום כיפור');
+  if (on('Tishri', 10)) out.push('יום כיפור');
+  if (on('Tishri', 14)) out.push('ערב סוכות');
+  if (on('Tishri', 15)) out.push('סוכות');
+  if (m === 'Tishri' && dd >= 16 && dd <= 20) out.push('חול המועד סוכות');
+  if (on('Tishri', 21)) out.push('הושענא רבה');
+  if (on('Tishri', 22)) out.push('שמיני עצרת ושמחת תורה');
+  // Chanukah: 25 Kislev + 8 days (Kislev has 29 or 30 days)
+  if (m === 'Kislev' && dd >= 25) out.push(`חנוכה – נר ${gem(dd - 24)}`);
+  if (m === 'Tevet' && dd <= 3) { const kisLast = heb(add(d, -dd)).d; const n = kisLast - 24 + dd; if (n <= 8) out.push(`חנוכה – נר ${gem(n)}`); }
+  if (on('Tevet', 10)) out.push('עשרה בטבת');
+  if (on('Shevat', 15)) out.push('ט״ו בשבט');
+  // Adar / Purim
+  if (m === 'Adar I' && dd === 14) out.push('פורים קטן');
+  if (m === purimMonth) { const t = sameMonth(d, h, 13); const obs = t.getDay() === 6 ? add(t, -2) : t; if (same(d, obs)) out.push('תענית אסתר'); }
+  if (m === purimMonth && dd === 14) out.push('פורים');
+  if (m === purimMonth && dd === 15) out.push('שושן פורים');
+  // Nisan
+  if (on('Nisan', 14)) out.push('ערב פסח');
+  if (on('Nisan', 15)) out.push('פסח');
+  if (m === 'Nisan' && dd >= 16 && dd <= 20) out.push('חול המועד פסח');
+  if (on('Nisan', 21)) out.push('שביעי של פסח');
+  if (m === 'Nisan') { const s = sameMonth(d, h, 27), w = s.getDay(); const obs = w === 5 ? add(s, -1) : w === 0 ? add(s, 1) : s; if (same(d, obs)) out.push('יום הזיכרון לשואה ולגבורה'); }
+  // Iyar: Yom HaZikaron / HaAtzmaut with the Israeli moves
+  if (m === 'Iyar' || (m === 'Nisan' && dd >= 29)) {
+    const i5 = m === 'Iyar' ? sameMonth(d, h, 5) : add(d, 30 - dd + 5), w = i5.getDay();
+    const atz = w === 5 ? add(i5, -1) : w === 6 ? add(i5, -2) : w === 1 ? add(i5, 1) : i5, zik = add(atz, -1);
+    if (same(d, zik)) out.push('יום הזיכרון לחללי מערכות ישראל'); if (same(d, atz)) out.push('יום העצמאות');
+  }
+  if (on('Iyar', 18)) out.push('ל״ג בעומר');
+  if (on('Iyar', 28)) out.push('יום ירושלים');
+  if (on('Sivan', 5)) out.push('ערב שבועות');
+  if (on('Sivan', 6)) out.push('שבועות');
+  if (m === 'Tamuz') { const t = sameMonth(d, h, 17); const obs = t.getDay() === 6 ? add(t, 1) : t; if (same(d, obs)) out.push('צום י״ז בתמוז'); }
+  if (m === 'Av') { const t = sameMonth(d, h, 9); const obs = t.getDay() === 6 ? add(t, 1) : t; if (same(d, obs)) out.push(obs === t ? 'תשעה באב' : 'תשעה באב (נדחה)'); }
+  if (on('Av', 15)) out.push('ט״ו באב');
+  // Rosh Chodesh (not Rosh Hashana)
+  if (dd === 30 || (dd === 1 && m !== 'Tishri')) { const nm = dd === 30 ? add(d, 1) : d; out.push('ראש חודש ' + fmtHe.format(nm).replace(/^ב/, '')); }
+  if (dow === 5) out.push('ערב שבת'); if (dow === 6) out.push('שבת שלום');
+  return out;
+}
+function omer(d){ const h = heb(d); const n = h.m === 'Nisan' && h.d >= 16 ? h.d - 15 : h.m === 'Iyar' ? h.d + 15 : h.m === 'Sivan' && h.d <= 5 ? h.d + 44 : 0; return n; }
+const greet = d => { const x = d.getHours(); return x >= 5 && x < 12 ? 'בוקר טוב' : x >= 12 && x < 17 ? 'צהריים טובים' : x >= 17 && x < 22 ? 'ערב טוב' : 'לילה טוב'; };
+const clock = d => String(d.getHours()).padStart(2, '0') + ':' + String(d.getMinutes()).padStart(2, '0');
+const ICON = s => /חנוכה/.test(s) ? '🕎' : /שבת/.test(s) ? '🕯️' : /סוכות|הושענא|שמיני/.test(s) ? '🌿' : /פסח/.test(s) ? '🍷' : /פורים/.test(s) ? '🎭' : /עצמאות|ירושלים/.test(s) ? '🇮🇱' : /זיכרון|שואה|צום|תענית|תשעה|כיפור|עשרה/.test(s) ? '🕯️' : /ראש השנה/.test(s) ? '🍎' : /שבועות/.test(s) ? '🌾' : /בשבט/.test(s) ? '🌳' : /ל״ג/.test(s) ? '🔥' : /ראש חודש/.test(s) ? '🌙' : '✨';
+
+function barHTML(now){
+  const hol = special(now), om = omer(now), hd = hebDate(now);
+  return `<span class="hd-clock"><time dir="ltr" datetime="${now.toISOString()}">${clock(now)}</time></span><span class="hd-greet">${greet(now)}</span>${hd ? `<span class="hd-dot" aria-hidden="true"></span><span class="hd-date">${hd}</span>` : ''}${hol.map(s => `<span class="hd-hol"><span aria-hidden="true">${ICON(s)}</span> ${s}</span>`).join('')}${om ? `<span class="hd-hol hd-omer"><span aria-hidden="true">🌾</span> ספירת העומר: היום ${gem(om)} לעומר</span>` : ''}`;
+}
+function tick(){ const now = window.__hdNow ? new Date(window.__hdNow) : new Date(); document.querySelectorAll('.hebday').forEach(el => { el.innerHTML = barHTML(now); }); }
+let timer = 0;
+function schedule(){ clearTimeout(timer); const n = new Date(); timer = setTimeout(() => { tick(); schedule(); }, (60 - n.getSeconds()) * 1000 - n.getMilliseconds() + 50); }
+
+const CSS = `
+.hebday{display:flex;flex-wrap:wrap;align-items:center;gap:8px 10px;width:fit-content;max-width:100%;margin:0 0 18px;padding:7px 14px 7px 8px;border-radius:999px;position:relative;
+  background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.22);-webkit-backdrop-filter:blur(10px) saturate(1.4);backdrop-filter:blur(10px) saturate(1.4);box-shadow:inset 0 1px 0 rgba(255,255,255,.18),0 10px 26px -14px rgba(0,0,0,.5);color:#fff;font-size:14.5px;font-weight:600;line-height:1.35}
+.hebday::after{content:"";position:absolute;inset:auto 18px -1px;height:1px;background:linear-gradient(90deg,transparent,#f5c451,transparent);opacity:.9}
+.hd-clock{display:inline-grid;place-items:center;padding:3px 11px;border-radius:999px;background:linear-gradient(135deg,rgba(245,196,81,.3),rgba(224,145,58,.22));border:1px solid rgba(245,196,81,.55);font-weight:800;font-size:15.5px;letter-spacing:.5px;font-variant-numeric:tabular-nums;color:#fff3d6}
+.hd-greet{font-weight:800}
+.hd-dot{width:5px;height:5px;border-radius:50%;background:#f5c451;opacity:.85}
+.hd-date{color:#f3eeff}
+.hd-hol{display:inline-flex;align-items:center;gap:4px;padding:3px 11px;border-radius:999px;background:rgba(245,196,81,.16);border:1px solid rgba(245,196,81,.45);color:#fff1c9;font-weight:700;font-size:13.5px}
+.hero .hebday{animation:hd-in .6s cubic-bezier(.2,.8,.2,1) both}
+@keyframes hd-in{from{opacity:0;transform:translateY(-6px)}to{opacity:1;transform:none}}
+@media (max-width:700px){.hebday{border-radius:18px;padding:8px 10px;font-size:13.5px;gap:6px 8px}.hd-clock{font-size:14.5px}}
+@media (prefers-reduced-motion:reduce){.hero .hebday{animation:none}}
+@media print{.hebday{display:none!important}}
+`;
+function boot(){
+  if (!document.getElementById('hebday-css')) { const s = document.createElement('style'); s.id = 'hebday-css'; s.textContent = CSS; document.head.appendChild(s); }
+  const view = document.getElementById('view'), app = !view && document.getElementById('app'), root = view || app; if (!root) return;
+  const scan = () => {
+    const hero = root.querySelector(view ? '.hero.withkid' : 'section.hero'); if (!hero || hero.querySelector('.hebday')) return;
+    const div = '<div class="hebday" role="status" aria-live="off"></div>';
+    if (view) { const h1 = hero.querySelector('h1'); h1 ? h1.insertAdjacentHTML('beforebegin', div) : hero.insertAdjacentHTML('afterbegin', div); }
+    else { const c = hero.querySelector('.container') || hero; c.insertAdjacentHTML('afterbegin', div); }
+    tick();
+  };
+  scan(); new MutationObserver(scan).observe(root, {childList: true}); schedule();
+  document.addEventListener('visibilitychange', () => { if (!document.hidden) { tick(); schedule(); } });
+}
+if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', boot); else boot();
+window.hebDay = {special, omer, hebDate, greet, heb, tick};
 })();
 
 </script>
