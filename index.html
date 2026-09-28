@@ -644,21 +644,24 @@ const Cloud = {
     this.status = 'ok'; this.last = Date.now(); this.err = ''; ui();
   },
   schedule(){ if (this.status !== 'ok') return ui(); clearTimeout(this.timer); this.timer = setTimeout(() => this.push().catch(e => { this.status = 'error'; this.err = e.message; ui(); }), 1000); },
-  async openFileAt(rel, page){
-    if (!page || /Android|iPhone|iPad/i.test(navigator.userAgent) || !/\.pdf$/i.test(rel)) return this.openFile(rel);
-    if (this.status !== 'ok') return toast('כדי לפתוח קבצים צריך להתחבר עם חשבון מיקרוסופט');
-    const w = window.open('', '_blank');
-    try { const r = await this.g(this.itemPath(rel)); if (!r.ok) throw new Error('הקובץ לא נמצא ב-OneDrive'); const j = await r.json(); const b = await (await fetch(j['@microsoft.graph.downloadUrl'])).blob(); const u = URL.createObjectURL(new Blob([b], {type: 'application/pdf'})); if (w) w.location.href = u + '#page=' + page; else window.open(u + '#page=' + page, '_blank'); }
-    catch(e){ if (w) w.close(); toast('לא הצלחתי לפתוח את הקובץ: ' + e.message); }
-  },
-  async openFile(rel){
+  openFileAt(rel, page){ return this.openFile(rel, page); },
+  // open the file itself – never OneDrive's "open in…" page: PDF/images straight from the file, Office files in a read-only viewer
+  async openFile(rel, page){
     if (this.status !== 'ok') return toast('כדי לפתוח קבצים מהספרייה צריך להתחבר עם חשבון מיקרוסופט');
     const w = window.open('', '_blank');
+    try { if (w) w.document.write('<body dir="rtl" style="font:18px Arial;padding:30px;color:#475569">⏳ פותח את הקובץ…</body>'); } catch(_){}
+    const go = u => { if (w) w.location.href = u; else location.href = u; };
     try {
-      const r = await this.g(this.itemPath(rel) + ':?$select=webUrl');
+      const r = await this.g(this.itemPath(rel));
       if (!r.ok) throw new Error('הקובץ לא נמצא ב-OneDrive');
-      const j = await r.json();
-      if (w) w.location.href = j.webUrl; else location.href = j.webUrl;
+      const j = await r.json(), dl = j['@microsoft.graph.downloadUrl'], ext = (rel.match(/\.([a-z0-9]+)$/i) || [])[1] || '';
+      const TYPES = {pdf: 'application/pdf', jpg: 'image/jpeg', jpeg: 'image/jpeg', png: 'image/png', gif: 'image/gif', webp: 'image/webp', txt: 'text/plain;charset=utf-8', mp4: 'video/mp4', mp3: 'audio/mpeg'};
+      const type = TYPES[ext.toLowerCase()];
+      if (type) { const b = await (await fetch(dl)).blob(); go(URL.createObjectURL(new Blob([b], {type})) + (page && type === 'application/pdf' ? '#page=' + page : '')); return; }
+      if (/^(docx?|pptx?|xlsx?|rtf|odt|odp)$/i.test(ext)) {
+        try { const p = await this.g('/me/drive/items/' + j.id + '/preview', {method: 'POST', headers: {'Content-Type': 'application/json'}, body: '{}'}); if (p.ok) { const pj = await p.json(); if (pj.getUrl) { go(pj.getUrl); return; } } } catch(_){}
+      }
+      go(dl);                                                                // anything else: the file itself (downloads and opens in its program)
     } catch(e){ if (w) w.close(); toast('לא הצלחתי לפתוח את הקובץ: ' + e.message); }
   }
 };
@@ -806,13 +809,22 @@ function studentCard(s){
     <span class="sub">${next ? '⏭️ הבא: ' + esc(next.title) : s.plan.length ? '✅ התוכנית הושלמה' : 'אין עדיין תוכנית טיפול'}</span>
     <span class="row"><span class="pill">${s.sessions.length} מפגשים</span>${s.sessions.length ? `<span class="pill">אחרון: ${fmtDate(s.sessions.slice().sort((a,b)=>a.date<b.date?1:-1)[0].date)}</span>` : ''}</span></a>`;
 }
+// a notebook page that holds a file opens the file itself, not the page printout (files outside the notebook are their own pdf)
+const OPENABLE = /\.(pdf|docx?|pptx?|xlsx?|rtf|txt)$/i;
+function mainFile(p){
+  if (p.src === 'dropbox' || p.src === 'dnew' || p.src === 'circ') return null;
+  const at = (p.attachments || []).filter(a => OPENABLE.test(a.path || a.name || ''));
+  const rank = a => /\.pdf$/i.test(a.path) ? 0 : /\.docx?$/i.test(a.path) ? 1 : /\.pptx?$/i.test(a.path) ? 2 : 3;
+  return at.length ? at.slice().sort((a, b) => rank(a) - rank(b))[0] : null;
+}
 function libItem(p){
-  const first = p.attachments[0];
-  const open = p.pdf ? `data-act="libopen" data-pdf="${esc(p.pdf)}"` : first ? `data-act="attopen" data-path="${esc(first.path)}"` : '';
-  return `<div class="lib-item" ${open} data-title="${esc(p.pdf ? p.title : first ? first.name : p.title)}">
+  const first = mainFile(p) || (!p.pdf && p.attachments[0]);
+  const open = first ? `data-act="attopen" data-path="${esc(first.path)}"` : p.pdf ? `data-act="libopen" data-pdf="${esc(p.pdf)}"` : '';
+  return `<div class="lib-item" ${open} data-title="${esc(first ? first.name : p.title)}">
     <span style="font-size:22px">${topicIcon(p.topic)}</span>
     <div class="grow"><div class="t">${esc(p.title)}</div><div class="s">${esc(topicName(p.topic))}${p.src ? ' · ' + esc(p.sub ? p.section + ' › ' + p.sub : p.section) : ''}</div></div>
     ${p.attachments.map(a => { const [c, l] = ftype(a.name); return `<a class="ft ${c}" href="${href(a.path)}" target="_blank" data-act="attopen" data-path="${esc(a.path)}" data-title="${esc(a.name)}" title="${esc(a.name)}">${l}</a>`; }).join(' ')}
+    ${first && p.pdf ? `<a class="ft" href="${href(p.pdf)}" target="_blank" data-act="libopen" data-pdf="${esc(p.pdf)}" data-title="${esc(p.title)}" title="דף המחברת עצמו">📓</a>` : ''}
   </div>`;
 }
 function ul(arr){ return arr && arr.length ? `<ul class="clean">${arr.map(x => `<li>${esc(x)}</li>`).join('')}</ul>` : '<p class="muted">—</p>'; }
@@ -2605,6 +2617,7 @@ function modal(title, html, onsubmit){
   const first = m.querySelector('input,textarea,select'); if (first) first.focus();
 }
 function viewer(title, url, kind){
+  if (kind !== 'pdf' && kind !== 'img') { window.open(url, '_blank'); return; }   // Word / PowerPoint: straight to the file, no in-between window
   const m = $('#modal'); m.className = 'modal open big';
   m.innerHTML = `<div class="box"><div class="mhead"><h3>${esc(title)}</h3><a class="btn sm" href="${url}" target="_blank">↗ לשונית חדשה</a><button class="iconbtn" data-act="close">✕</button></div>
     ${kind === 'pdf' || kind === 'img' ? `<iframe src="${url}"></iframe>` : `<div class="empty"><span class="big">📂</span>את הקובץ הזה לא ניתן להציג בדפדפן.<br><br><a class="btn primary" href="${url}" target="_blank">פתיחה בתוכנה</a></div>`}</div>`;
