@@ -3488,10 +3488,18 @@ async function playVideo(d){
     m.innerHTML = `<div class="box">${head}<div class="vwrap"><iframe src="${src}" allow="autoplay; fullscreen; encrypted-media; picture-in-picture" allowfullscreen></iframe></div></div>`; return;
   }
   m.innerHTML = `<div class="box">${head}<div class="vwrap"><div class="empty">⏳ טוען את הסרטון…</div></div></div>`;
-  let src = href(d.src);
-  if (WEB) { try { if (Cloud.status !== 'ok') throw new Error('צריך להתחבר עם חשבון מיקרוסופט'); const r = await Cloud.g(Cloud.itemPath(d.src)); if (!r.ok) throw new Error('הסרטון לא נמצא ב-OneDrive'); const j = await r.json(); src = j['@microsoft.graph.downloadUrl']; } catch(e){ m.querySelector('.vwrap').innerHTML = `<div class="empty">לא הצלחתי לפתוח את הסרטון: ${esc(e.message)}</div>`; return; } }
-  const w = m.querySelector('.vwrap'); if (!w) return;
-  w.innerHTML = `<video src="${src}" controls autoplay playsinline preload="auto"></video>`;
+  const w0 = () => m.querySelector('.vwrap');
+  if (!WEB) { w0().innerHTML = `<video src="${href(d.src)}" controls autoplay playsinline preload="auto"></video>`; return; }
+  try {
+    if (Cloud.status !== 'ok') throw new Error('צריך להתחבר עם חשבון מיקרוסופט');
+    const r = await Cloud.g(Cloud.itemPath(d.src)); if (!r.ok) throw new Error('הסרטון לא נמצא ב-OneDrive'); const j = await r.json();
+    // OneDrive's own player (embeddable) plays every video reliably; the direct stream is only a fallback
+    const p = await Cloud.g('/me/drive/items/' + j.id + '/preview', {method: 'POST', headers: {'Content-Type': 'application/json'}, body: '{}'});
+    const pj = p.ok ? await p.json() : {};
+    const w = w0(); if (!w) return;
+    if (pj.getUrl) w.innerHTML = `<iframe src="${pj.getUrl}" allow="autoplay; fullscreen" allowfullscreen></iframe>`;
+    else w.innerHTML = `<video src="${j['@microsoft.graph.downloadUrl']}" controls autoplay playsinline preload="auto"></video>`;
+  } catch(e){ const w = w0(); if (w) w.innerHTML = `<div class="empty">לא הצלחתי לפתוח את הסרטון: ${esc(e.message)}</div>`; }
 }
 /* ================= boot ================= */
 { const t = ls.get('cbtapp.theme', null); if (t) document.documentElement.dataset.theme = t; }
