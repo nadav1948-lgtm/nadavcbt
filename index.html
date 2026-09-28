@@ -311,7 +311,7 @@ mark#hl{background:#ffda2a;color:#171717;padding:2px 3px;border-radius:4px;box-s
     <div class="topbar">
       <div class="title" id="title"></div>
       <label class="who" title="התלמיד שאיתו עובדים עכשיו">⭐<select id="who"></select></label>
-      <a class="iconbtn" href="#/settings" title="הגדרות" style="text-decoration:none">⚙️</a>
+      <a class="iconbtn" href="#/find" title="חיפוש באפליקציה" style="text-decoration:none">🔍</a><a class="iconbtn" href="#/settings" title="הגדרות" style="text-decoration:none">⚙️</a>
       <button class="iconbtn" data-act="theme" title="מצב כהה / בהיר">🌓</button>
     </div>
     <div id="view"></div>
@@ -668,7 +668,7 @@ function render(){
   document.body.classList.toggle('locked', isLocked());
   if (isLocked()) { const o = lockView(); $('#title').textContent = ''; $('#view').innerHTML = `<div class="page">${o.html}</div>`; document.title = 'CBT בבית הספר'; return; }
   if (WEB && !ARTIFACT && !LITE && !PROBLEMS.length) { $('#title').textContent = ''; $('#view').innerHTML = `<div class="empty" style="padding-top:120px"><span class="big">⏳</span>${Cloud.status === 'error' ? esc(Cloud.err) + ' <br><br><button class="btn primary" data-act="cloud-retry">נסו שוב</button>' : 'טוען את התוכן מ-OneDrive…'}</div>`; return; }
-  const views = LITE ? {home: liteHome, problems, problem: problemView, tools, tool: toolView, settings: liteSettings, ask, workflow, roles: rolesView, circ: circView, circsrc: circSrcView, libsrc: libSrcView, circask: circAskView} : {home, problems, problem: problemView, students, student: studentView, tools, tool: toolView, library, settings, ask, workflow, roles: rolesView, circ: circView, circsrc: circSrcView, libsrc: libSrcView, circask: circAskView};
+  const views = LITE ? {home: liteHome, problems, problem: problemView, tools, tool: toolView, settings: liteSettings, ask, workflow, roles: rolesView, circ: circView, circsrc: circSrcView, libsrc: libSrcView, circask: circAskView, find: findView} : {home, problems, problem: problemView, students, student: studentView, tools, tool: toolView, library, settings, ask, workflow, roles: rolesView, circ: circView, circsrc: circSrcView, libsrc: libSrcView, circask: circAskView, find: findView};
   const fn = views[R.r] || home;
   const out = fn(R);
   $('#title').textContent = out.title;
@@ -1803,6 +1803,35 @@ function circSrcView(R){
     <p class="muted" style="font-size:13px">הטקסט חולץ מקובץ ה-PDF של החוזר; בטבלאות הסדר עלול להשתבש. בהחלטה מחייבת בודקים בקובץ המקורי.</p>`;
   return {title: 'מקור · ' + m.title, html: h, after(){ const e = $('#hl'); if (e) setTimeout(() => e.scrollIntoView({block: 'center'}), 60); }};
 }
+/* ================= site-wide search: find any page, map, circular, tool or file ================= */
+let findQ = '';
+function findView(R){
+  const q = (R.id || findQ || '').trim(); findQ = q;
+  const terms = [...new Set(norm(q).trim().split(' ').filter(w => w.length > 1).map(stem))];
+  const hit = t => { const n = norm(t); let c = 0; for (const w of terms) if (n.includes(w)) c++; return c; };
+  const need = Math.max(1, Math.ceil(terms.length * 0.6));
+  const pick = (arr, text, n = 8) => arr.map(x => [x, hit(text(x))]).filter(x => x[1] >= need).sort((a, b) => b[1] - a[1]).slice(0, n).map(x => x[0]);
+  let h = `<div class="panel" style="margin-top:4px"><h3>🔍 חיפוש באפליקציה</h3><form id="findform" style="display:flex;gap:8px"><input class="inp" id="findq" value="${esc(q)}" placeholder="מה מחפשים? למשל: טופס הסכמה, חרדת מבחנים, השעיה, נשימות" style="flex:1"><button class="btn primary" type="submit">חיפוש</button></form>
+    <p class="muted" style="margin:8px 0 0;font-size:13.5px">מחפש בכל מקום: עמודי האפליקציה, מפות הטיפול, חוזרי המנכ״ל, הכלים לילדים והספרייה. לשאלה מלאה – ״💬 שאל שאלה״.</p></div>`;
+  if (terms.length) {
+    const pages = pick(NAV.filter(n => !LITE || !['students', 'library'].includes(n[0])), n => n[2] + ' ' + n[0]);
+    const maps = pick(PROBLEMS, p => p.name + ' ' + p.summary + ' ' + p.area + ' ' + (p.signs || []).join(' '));
+    const circs = pick(CIRC_ORDER.map(circMeta).filter(m => m.title !== m.id), m => m.title + ' ' + (m.summary || ''), 5);
+    const sits = pick(circGuide(), g => g.title + ' ' + (g.triggers || []).join(' '), 10);
+    const tools = pick(TOOLS, t => t.name + ' ' + (t.desc || '') + ' ' + (t.sub || ''));
+    const lib = pick(LIBDATA, p => p.title + ' ' + (p.sub || '') + ' ' + topicName(p.topic) + ' ' + p.attachments.map(a => a.name).join(' '), 15);
+    const topicsHit = pick(LIBTOPICS, t => t.name + ' ' + (t.desc || ''), 6);
+    const block = (title, items) => items ? `<h2 class="sec">${title}</h2><div class="list">${items}</div>` : '';
+    h += block('🧭 עמודים באפליקציה', pages.map(n => `<a class="li" href="#/${n[0]}" style="text-decoration:none"><span style="font-size:20px">${n[1]}</span><div class="grow"><b>${esc(n[2])}</b></div></a>`).join(''));
+    h += block('🗺️ מפות טיפול', maps.map(p => `<a class="li" href="#/problem/${p.id}" style="text-decoration:none"><span style="font-size:20px">${p.icon}</span><div class="grow"><b>${esc(p.name)}</b><div class="date">${esc(p.summary)}</div></div></a>`).join(''));
+    h += block('📜 חוזרי מנכ״ל', circs.map(m => `<a class="li" href="#/circ/${m.id}" style="text-decoration:none"><span style="font-size:20px">${CIRC_ICON[m.id] || '📜'}</span><div class="grow"><b>${esc(m.title)}</b></div></a>`).join('') + sits.map(g => circRowHTML(g)).join(''));
+    h += block('🧰 כלים לילדים', tools.map(t => `<a class="li" href="#/tool/${t.id}" style="text-decoration:none"><span style="font-size:20px">${t.icon}</span><div class="grow"><b>${esc(t.name)}</b></div></a>`).join(''));
+    if (!LITE) h += block('📚 נושאים בספרייה', topicsHit.map(t => `<button class="li" data-act="findtopic" data-v="${t.id}" style="text-align:start;width:100%"><span style="font-size:20px">${t.icon}</span><div class="grow"><b>${esc(t.name)}</b><div class="date">${esc(t.desc || '')}</div></div></button>`).join('')) + block('📄 קבצים בספרייה', lib.map(libItem).join(''));
+    if (!pages.length && !maps.length && !circs.length && !sits.length && !tools.length && !lib.length && !topicsHit.length) h += `<div class="panel empty">לא נמצא דבר. נסו מילה אחרת, או שאלו ב״💬 שאל שאלה״.</div>`;
+  }
+  return {title: 'חיפוש', html: h, after(){ const f = $('#findform'), i = $('#findq'); if (!q) i.focus(); f.onsubmit = e => { e.preventDefault(); const v = i.value.trim(); if (v) location.hash = '#/find/' + encodeURIComponent(v); }; }};
+}
+
 /* ================= understanding engine: a small language model running on the device (no Claude, no tokens) ================= */
 const SEM = {status: 'idle'}, SEM_Q = {};
 window.__semQ = SEM_Q;
@@ -2329,6 +2358,7 @@ document.addEventListener('click', async e => {
     case 'libsub': libSub = d.v; render(); break;
     case 'circkind': circKind = d.v; circQ = ''; render(); break;
     case 'back': history.back(); break;
+    case 'findtopic': libTopic = d.v; libSub = ''; libQ = ''; location.hash = '#/library'; break;
     case 'circ-ai': if (AI.available()) aiCircOnlyRun(d.v); break;
     case 'ai-general': if (AI.available()) aiGeneralRun(d.v); break;
     case 'libpdf': { const pg = +d.p || 0, f = d.path; if (WEB) Cloud.openFileAt(f, pg); else viewer(d.title, href(f) + (pg && /\.pdf$/i.test(f) ? '#page=' + pg : ''), ftype(f)[0]); break; }
