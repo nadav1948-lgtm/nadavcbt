@@ -190,6 +190,40 @@ label.f input:focus,label.f select:focus,label.f textarea:focus,.inp:focus{borde
 .emos{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin-bottom:18px}
 .emos button{border:2px solid var(--line);background:var(--bg);border-radius:14px;padding:8px 14px;font-size:17px;cursor:pointer}
 .emos button.on{border-color:var(--brand-text);background:var(--brand-soft)}
+.emos button{transition:transform .15s}
+.emos button:active{transform:scale(.94)}
+.emos button .em{display:inline-block}
+.emos button.on .em{animation:k-pop .5s ease}
+/* animated thermometer + the kid character */
+.thermo2{display:flex;gap:18px;justify-content:center;align-items:flex-start;flex-wrap:wrap}
+.thtube{width:150px;height:360px;touch-action:none;cursor:pointer;user-select:none;flex:none}
+#thMerc{transform-box:fill-box;transform-origin:50% 100%;transition:transform .9s cubic-bezier(.34,1.56,.64,1),fill .6s}
+#thBulb{transition:fill .6s}
+.thtick text{transition:font-size .2s}
+.thtick:hover text{fill:var(--brand-text)}
+.thkid{display:flex;flex-direction:column;align-items:center;gap:8px;min-width:230px;max-width:320px}
+.kidchar{width:210px;height:auto;animation:k-bob 3.2s ease-in-out infinite;overflow:visible}
+.kidchar.k-shake{animation:k-shake .35s linear infinite}
+.kidchar .k-eyes{transform-box:fill-box;transform-origin:center;animation:k-blink 4.5s infinite}
+.kidchar .k-tear{animation:k-fall 1.8s ease-in infinite}
+.kidchar .k-sweat{animation:k-fall 2.2s ease-in infinite}
+.kidchar .k-steam circle{animation:k-rise 1.6s ease-out infinite}
+.kidchar .k-steam circle:nth-child(even){animation-delay:.8s}
+.kidchar .k-stars path{transform-box:fill-box;transform-origin:center;animation:k-twinkle 1.4s ease-in-out infinite}
+.kidchar .k-stars path:nth-child(2n){animation-delay:.7s}
+.kidchar .k-glow{transform-box:fill-box;transform-origin:center;animation:k-glow 3s ease-in-out infinite}
+.bubble{position:relative;background:#fff;color:#1f2937;border:2px solid var(--line);border-radius:18px;padding:10px 14px;font-size:17px;line-height:1.5;text-align:center;animation:k-pop .45s ease;box-shadow:var(--shadow)}
+.bubble:after{content:'';position:absolute;bottom:-11px;left:50%;margin-left:-10px;border:10px solid transparent;border-top-color:#fff;border-bottom:0}
+@keyframes k-bob{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}
+@keyframes k-shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-2px)}75%{transform:translateX(2px)}}
+@keyframes k-blink{0%,92%,100%{transform:scaleY(1)}95%{transform:scaleY(.1)}}
+@keyframes k-fall{0%{transform:translateY(0);opacity:0}15%{opacity:1}100%{transform:translateY(34px);opacity:0}}
+@keyframes k-rise{0%{transform:translateY(8px);opacity:0}30%{opacity:.9}100%{transform:translateY(-22px);opacity:0}}
+@keyframes k-twinkle{0%,100%{transform:scale(.7) rotate(0);opacity:.6}50%{transform:scale(1.15) rotate(20deg);opacity:1}}
+@keyframes k-glow{0%,100%{transform:scale(.96);opacity:.35}50%{transform:scale(1.04);opacity:.8}}
+@keyframes k-pop{0%{transform:scale(.6);opacity:0}70%{transform:scale(1.08)}100%{transform:scale(1);opacity:1}}
+@media (max-width:600px){.thermo2{flex-wrap:nowrap;gap:4px;align-items:center}.thtube{width:96px;height:250px}.thkid{min-width:0;flex:1}.kidchar{width:150px}.bubble{font-size:14.5px;padding:8px 10px}.thkid .bigtext{font-size:22px}}
+@media (prefers-reduced-motion:reduce){.kidchar,.kidchar *,.bubble,#thMerc,.emos .em{animation:none!important;transition:none!important}}
 .breath{display:grid;place-items:center;height:330px}
 .breath .circle{width:120px;height:120px;border-radius:50%;background:radial-gradient(circle at 35% 35%,#bfe9df,#4a9c8a);box-shadow:0 0 0 18px rgba(74,156,138,.15),0 0 0 36px rgba(74,156,138,.08);display:grid;place-items:center;color:#fff;font-weight:700;font-size:20px;text-align:center;transition:transform 4s ease-in-out}
 .bigtext{font-size:28px;font-weight:700;text-align:center;min-height:44px}
@@ -926,15 +960,87 @@ const PMR = [
 const DETECTIVE_Q = ['מה ההוכחות שזה נכון?','מה ההוכחות שזה לא לגמרי נכון?','מה הייתי אומר לחבר טוב שחושב ככה?','מה הכי גרוע שיכול לקרות? מה הכי טוב? ומה הכי סביר?','נפלתי למלכודת חשיבה? (הכול או כלום, קורא מחשבות, מנחש עתיד, מגדיל)','זה יהיה חשוב גם בעוד שבוע?'];
 const COPE = ['לנשום נשימת בלון 3 פעמים','לספור לאט עד 10','להגיד לעצמי: ״אני יכול להתמודד עם זה״','לבקש עזרה מהמורה','ללכת לפינה השקטה','לשתות מים','לסחוט כדור לחץ','לצייר או לשרבט','לחשוב על המקום הבטוח שלי','לספר למבוגר שאני סומך עליו','ללכת קצת ולחזור','להשתמש ברמזור: לעצור, לחשוב, לעשות'];
 
+/* the kid character: a boy with a kippah and peyot (the school is Haredi-oriented, boys only); the face follows the emotion and its strength */
+const KIDX = {
+  'פחד':  {brow:-1,   mouth:'o',   eye:1.25, fx:'sweat'},
+  'דאגה': {brow:-0.7, mouth:-0.5,  eye:1.05, fx:'sweat'},
+  'כעס':  {brow:1,    mouth:-0.9,  eye:0.8,  fx:'steam', red:true},
+  'עצב':  {brow:-0.9, mouth:-1,    eye:0.9,  fx:'tear'},
+  'בושה': {brow:-0.4, mouth:-0.25, eye:0.75, fx:'blush', down:true},
+  'תסכול':{brow:0.75, mouth:'zig', eye:0.85, fx:'puff'},
+  'שמחה': {brow:0.1,  mouth:1,     eye:1,    fx:'stars'},
+  'רוגע': {brow:0,    mouth:0.55,  eye:'closed', fx:'glow'}
+};
+function kidSVG(emotion, level){
+  const x = KIDX[emotion] || {brow:0, mouth:0.5, eye:1, fx:''};
+  const k = level == null ? 0.25 : level / 10, s = 0.3 + 0.7 * k, on = level != null && level >= 4;
+  const skin = '#f6d3ae', hair = '#3b2a20';
+  const bi = 86 + 7 * x.brow * s;                                   // inner end of the eyebrows
+  const eyes = x.eye === 'closed'
+    ? `<path d="M70,109 Q78,115 86,109 M114,109 Q122,115 130,109" stroke="#2b2b2b" stroke-width="3.5" fill="none" stroke-linecap="round"/>`
+    : `<g class="k-eyes">${[78, 122].map(cx => `<ellipse cx="${cx}" cy="${x.down ? 112 : 108}" rx="7.5" ry="${(9 * x.eye).toFixed(1)}" fill="#fff" stroke="#2b2b2b" stroke-width="1.5"/><circle cx="${cx + (x.down ? 0 : 1)}" cy="${x.down ? 116 : 109}" r="4.2" fill="#2b2b2b"/><circle cx="${cx + 2.5}" cy="${x.down ? 113 : 106}" r="1.5" fill="#fff"/>`).join('')}</g>`;
+  let mouth;
+  if (x.mouth === 'o') mouth = `<ellipse cx="100" cy="146" rx="${(5 + 5 * s).toFixed(1)}" ry="${(6 + 7 * s).toFixed(1)}" fill="#7a2e2e"/>`;
+  else if (x.mouth === 'zig') mouth = `<path d="M84,146 L90,141 L96,147 L102,141 L108,147 L114,141 L118,145" stroke="#7a2e2e" stroke-width="3.5" fill="none" stroke-linejoin="round" stroke-linecap="round"/>`;
+  else { const c = x.mouth * s * 16, y = 143 - Math.min(0, c) * 0.4; mouth = `<path d="M${84 - 4 * Math.max(0, x.mouth * s)},${y} Q100,${y + c} ${116 + 4 * Math.max(0, x.mouth * s)},${y}" stroke="#7a2e2e" stroke-width="4" fill="${c > 8 ? '#b94a4a' : 'none'}" stroke-linecap="round"/>`; }
+  const fx = [];
+  if (x.red) fx.push(`<circle cx="100" cy="112" r="57" fill="#ef4444" opacity="${(0.28 * k).toFixed(2)}"/>`);
+  if (x.fx === 'blush' || (emotion === 'שמחה' && level != null)) fx.push(`<ellipse cx="66" cy="128" rx="10" ry="6" fill="#f472b6" opacity="${(0.25 + 0.5 * k).toFixed(2)}"/><ellipse cx="134" cy="128" rx="10" ry="6" fill="#f472b6" opacity="${(0.25 + 0.5 * k).toFixed(2)}"/>`);
+  if (on && x.fx === 'sweat') fx.push(`<path class="k-sweat" d="M150,70 q7,12 0,17 q-7,-5 0,-17z" fill="#7dd3fc" stroke="#38bdf8"/>`);
+  if (on && x.fx === 'tear') fx.push(`<path class="k-tear" d="M76,120 q6,10 0,14 q-6,-4 0,-14z" fill="#7dd3fc" stroke="#38bdf8"/>`);
+  if (on && x.fx === 'steam') fx.push(`<g class="k-steam" fill="#cbd5e1"><circle cx="44" cy="40" r="9"/><circle cx="156" cy="40" r="9"/><circle cx="36" cy="26" r="6"/><circle cx="164" cy="26" r="6"/></g>`);
+  if (on && x.fx === 'puff') fx.push(`<g class="k-steam" fill="#e2e8f0"><circle cx="160" cy="138" r="7"/><circle cx="171" cy="131" r="5"/></g>`);
+  if (level != null && level >= 3 && x.fx === 'stars') fx.push(`<g class="k-stars" fill="#facc15">${[[30, 60], [168, 52], [26, 150], [174, 160]].map(([a, b]) => `<path d="M${a},${b - 9} L${a + 3},${b - 3} L${a + 9},${b - 3} L${a + 4},${b + 1} L${a + 6},${b + 8} L${a},${b + 4} L${a - 6},${b + 8} L${a - 4},${b + 1} L${a - 9},${b - 3} L${a - 3},${b - 3}Z"/>`).join('')}</g>`);
+  if (level != null && x.fx === 'glow') fx.push(`<circle class="k-glow" cx="100" cy="110" r="80" fill="none" stroke="#86efac" stroke-width="6"/>`);
+  const shake = on && level >= 7 && (emotion === 'פחד' || emotion === 'כעס') ? ' k-shake' : '';
+  return `<svg class="kidchar${shake}" viewBox="0 0 200 232" role="img" aria-label="ילד עם כיפה ופאות – ${esc(emotion)}${level != null ? ' ברמה ' + level : ''}">
+    <path d="M36,232 Q38,188 100,182 Q162,188 164,232Z" fill="#fff" stroke="#cbd5e1" stroke-width="2"/>
+    <path d="M86,184 L100,200 L114,184" fill="none" stroke="#cbd5e1" stroke-width="2.5"/>
+    <rect x="89" y="160" width="22" height="26" rx="8" fill="${skin}"/>
+    <circle cx="43" cy="112" r="10" fill="${skin}" stroke="#e2b48c"/><circle cx="157" cy="112" r="10" fill="${skin}" stroke="#e2b48c"/>
+    <circle cx="100" cy="110" r="58" fill="${skin}" stroke="#e2b48c" stroke-width="2"/>
+    <path d="M44,98 Q46,48 100,47 Q154,48 156,98 Q144,72 100,70 Q56,72 44,98Z" fill="${hair}"/>
+    <path d="M64,60 Q100,20 136,60 Q100,50 64,60Z" fill="#111827"/><path d="M78,46 Q100,32 120,44" stroke="#475569" stroke-width="2" fill="none" opacity=".6"/>
+    ${[46, 154].map(px => { const d = px < 100 ? -1 : 1; return `<path d="M${px},96 c${-8 * d},8 ${6 * d},14 ${-2 * d},22 c${-8 * d},8 ${6 * d},14 ${-2 * d},22 c${-7 * d},7 ${4 * d},13 ${-1 * d},19" stroke="${hair}" stroke-width="5" fill="none" stroke-linecap="round"/>`; }).join('')}
+    ${fx.filter(f => f.includes('#ef4444')).join('')}
+    <path d="M66,${86}  L88,${bi.toFixed(1)}" stroke="${hair}" stroke-width="4.5" stroke-linecap="round"/><path d="M112,${bi.toFixed(1)} L134,86" stroke="${hair}" stroke-width="4.5" stroke-linecap="round"/>
+    ${eyes}
+    <path d="M97,122 Q100,128 104,122" stroke="#d19a6f" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+    ${mouth}
+    ${fx.filter(f => !f.includes('#ef4444')).join('')}
+  </svg>`;
+}
+const POSITIVE = ['שמחה', 'רוגע'];
+const thColor = (emo, l) => POSITIVE.includes(emo) ? `hsl(${150 - l * 4} 62% ${58 - l * 2}%)` : lvlColor(l);   // pleasant feelings stay green – a strong joy is not a warning
+function thermoTip(emotion, l){
+  if (l == null) return {say: 'שלום! איזה רגש יש לך עכשיו? בחר רגש, ואחר כך גע במדחום.', btn: ''};
+  if (POSITIVE.includes(emotion)) return {say: l >= 4 ? `איזה יופי! ${emotion} ברמה ${l}. מה עזר לך להרגיש ככה?` : `${emotion} ברמה ${l}. מה יכול להוסיף לך עוד קצת ${emotion}?`, btn: ''};
+  if (l <= 3) return {say: `${emotion} ברמה ${l} – רגש קטן. כל הכבוד שאתה שם לב אליו! 👍`, btn: ''};
+  if (l <= 6) return {say: `${emotion} ברמה ${l}. אפשר לנשום יחד נשימת בלון, והרגש יקטן.`, btn: `<a class="btn primary" href="#/tool/breathing">🎈 בוא ננשום יחד</a>`};
+  return {say: `${emotion} ברמה ${l} – רגש גדול! זה הזמן לעצור ולהשתמש בכלי ההרגעה שלנו. 💪`, btn: `<a class="btn primary" href="#/tool/breathing">🎈 נשימות</a><a class="btn" href="#/tool/pmr">🍋 הרפיית שרירים</a>`};
+}
+const TH_Y0 = 292, TH_H = 262;                                            // mercury bottom and full height in the thermometer SVG
 const TOOLRENDER = {
   thermometer(){
-    const l = T.level;
+    const l = T.level, p = T.prev == null ? 0 : T.prev, col = thColor(T.emotion, l == null ? 0 : l), tip = thermoTip(T.emotion, l);
     return `<h2>🌡️ מדחום הרגשות</h2><p class="lead">איזה רגש יש לך עכשיו, וכמה הוא חזק?</p>
-      <div class="emos">${EMOS.map(([e, i]) => `<button class="${T.emotion === e ? 'on' : ''}" data-act="th-emo" data-v="${e}">${i} ${e}</button>`).join('')}</div>
-      <div class="thermo"><div class="bar">${Array.from({length:11}, (_, i) => `<div class="lvl ${l === i ? 'on' : ''} ${l != null && i <= l ? 'fill' : ''}" style="background:${lvlColor(i)}" data-act="th-lvl" data-v="${i}"><span>${i}</span><span>${i === 0 ? 'רגוע' : i === 10 ? 'הכי חזק' : ''}</span></div>`).join('')}</div>
-      <div style="display:flex;flex-direction:column;justify-content:center;gap:10px;min-width:200px"><div class="face">${l == null ? '👆' : FACES[l]}</div>
-      <div class="bigtext">${l == null ? 'לוחצים על מספר' : `${esc(T.emotion)} ברמה ${l}`}</div>
-      <p class="muted" style="text-align:center;margin:0;font-size:16px">${l == null ? '' : l <= 3 ? 'אפשר להמשיך כרגיל 👍' : l <= 6 ? 'אולי כדאי לנשום נשימת בלון 🎈' : 'זה הזמן לכלי ההרגעה שלנו 💪'}</p></div></div>${saveBar('thermometer')}`;
+      <div class="emos">${EMOS.map(([e, i]) => `<button class="${T.emotion === e ? 'on' : ''}" data-act="th-emo" data-v="${e}"><span class="em">${i}</span> ${e}</button>`).join('')}</div>
+      <div class="thermo2">
+        <svg id="thTube" class="thtube" viewBox="0 0 150 340" role="slider" aria-label="עוצמת הרגש" aria-valuemin="0" aria-valuemax="10" aria-valuenow="${l == null ? '' : l}">
+          <rect x="48" y="18" width="34" height="${TH_Y0 - 8}" rx="17" fill="#f1f5f9" stroke="#94a3b8" stroke-width="3"/>
+          <rect id="thMerc" x="55" y="${TH_Y0 - TH_H}" width="20" height="${TH_H}" rx="10" fill="${col}" style="transform:scaleY(${p / 10})" data-to="${l == null ? 0 : l / 10}"/>
+          <circle id="thBulb" cx="65" cy="${TH_Y0 + 10}" r="28" fill="${col}" stroke="#94a3b8" stroke-width="3"/>
+          <circle cx="56" cy="${TH_Y0 + 1}" r="7" fill="#fff" opacity=".45"/>
+          ${Array.from({length: 11}, (_, i) => { const y = TH_Y0 - i * TH_H / 10; return `<g data-act="th-lvl" data-v="${i}" class="thtick ${l === i ? 'on' : ''}"><rect x="0" y="${y - 12}" width="150" height="24" fill="transparent"/><line x1="86" x2="${i % 5 ? 96 : 102}" y1="${y}" y2="${y}" stroke="#64748b" stroke-width="2"/><text x="112" y="${y + 6}" font-size="${l === i ? 21 : 16}" font-weight="700" fill="${l === i ? col : '#475569'}">${i}</text></g>`; }).join('')}
+          <text x="44" y="${TH_Y0 - TH_H + 6}" font-size="13" fill="#64748b">הכי חזק</text><text x="44" y="${TH_Y0 + 4}" font-size="13" fill="#64748b">רגוע</text>
+        </svg>
+        <div class="thkid">
+          <div class="bubble" id="thSay">${esc(tip.say)}</div>
+          ${kidSVG(T.emotion, l)}
+          <div class="bigtext" id="thNum">${l == null ? '👆 גע במדחום' : `${esc(T.emotion)} – ${l}`}</div>
+          ${tip.btn ? `<div class="actions no-print" style="justify-content:center">${tip.btn}</div>` : ''}
+        </div>
+      </div>${saveBar('thermometer')}`;
   },
   breathing(){
     const m = BREATH[T.mode];
@@ -1013,6 +1119,21 @@ const TOOLRENDER = {
   }
 };
 const TOOLAFTER = {
+  thermometer(){
+    const m = $('#thMerc'), svg = $('#thTube'); if (!m || !svg) return;
+    requestAnimationFrame(() => requestAnimationFrame(() => { m.style.transform = `scaleY(${m.dataset.to})`; }));   // mercury climbs from the previous level
+    // drag along the tube: the mercury follows the finger; the face updates when the finger lifts
+    let drag = null;
+    const lvlAt = e => { const r = svg.getBoundingClientRect(), y = (e.clientY - r.top) * 340 / r.height; return Math.max(0, Math.min(10, Math.round((TH_Y0 - y) * 10 / TH_H))); };
+    svg.addEventListener('pointerdown', e => { drag = {y: e.clientY, moved: false, v: T.level}; });
+    svg.addEventListener('pointermove', e => {
+      if (!drag) return; if (!drag.moved && Math.abs(e.clientY - drag.y) < 6) return;
+      if (!drag.moved) { drag.moved = true; try { svg.setPointerCapture(e.pointerId); } catch(_){} }
+      drag.v = lvlAt(e); m.style.transition = 'none'; m.style.transform = `scaleY(${drag.v / 10})`; m.setAttribute('fill', thColor(T.emotion, drag.v)); $('#thBulb').setAttribute('fill', thColor(T.emotion, drag.v)); $('#thNum').textContent = `${T.emotion} – ${drag.v}`;
+    });
+    const end = () => { if (drag && drag.moved) { T.prev = drag.v; T.level = drag.v; drag = null; render(); } else drag = null; };
+    svg.addEventListener('pointerup', end); svg.addEventListener('pointercancel', end);
+  },
   breathing(){ if (T.running) runBreath(); },
   pmr(){ if (T.running) runPmr(); }
 };
@@ -2448,8 +2569,8 @@ document.addEventListener('click', async e => {
     case 'askex': location.hash = '#/ask/' + encodeURIComponent(d.v); break;
     case 'stage': { const st = STAGES.find(x => x.id === d.id); s.stages = s.stages || {}; s.stages[st.id] = !stageDone(s, st); save(); render(); break; }
     // tools
-    case 'th-emo': T.emotion = d.v; render(); break;
-    case 'th-lvl': T.level = +d.v; render(); break;
+    case 'th-emo': T.emotion = d.v; T.prev = T.level; render(); break;
+    case 'th-lvl': T.prev = T.level; T.level = +d.v; render(); break;
     case 'br-mode': T.mode = d.v; T.running = false; T.cycles = 0; render(); break;
     case 'br-toggle': T.running = !T.running; render(); break;
     case 'dq': { const i = +d.i; T.q = el.checked ? [...T.q, i] : T.q.filter(x => x !== i); break; }
