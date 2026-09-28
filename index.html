@@ -1675,6 +1675,22 @@ body,body *{overflow-wrap:normal!important;word-break:normal!important;hyphens:m
 .igkeys{grid-auto-rows:1fr}
 .igdd{align-items:stretch}
 
+/* guided breathing: the boy breathes with the circle – air comes in on the in-breath, puffs out on the out-breath */
+.brwrap{display:flex;gap:28px;align-items:center;justify-content:center;flex-wrap:wrap;margin:10px 0}
+.brkid{position:relative;width:180px;flex:none}
+.brkid .brkidsvg{width:100%;height:auto;display:block;transform-origin:50% 90%;transition:transform var(--sec,4s) ease-in-out}
+.brkid[data-ph="in"] .brkidsvg,.brkid[data-ph="hold"] .brkidsvg{transform:scale(1.09)}
+.brkid[data-ph="out"] .brkidsvg{transform:scale(.96)}
+.brkid .air{position:absolute;top:58%;left:44%;width:16px;height:16px;border-radius:50%;background:radial-gradient(circle,#dff3ff 0,#8fd0ff 55%,rgba(143,208,255,0) 72%);opacity:0;pointer-events:none}
+.brkid[data-ph="out"] .air{animation:brpuff 1.5s ease-out infinite}
+.brkid[data-ph="in"] .air{animation:brsuck 1.5s ease-in infinite;top:52%}
+.brkid .a2{animation-delay:.38s!important}.brkid .a3{animation-delay:.76s!important}.brkid .a4{animation-delay:1.14s!important}
+@keyframes brpuff{0%{transform:translate(0,0) scale(.4);opacity:.95}100%{transform:translate(-95px,-18px) scale(1.9);opacity:0}}
+@keyframes brsuck{0%{transform:translate(-95px,-30px) scale(1.6);opacity:0}35%{opacity:.85}100%{transform:translate(0,0) scale(.3);opacity:0}}
+.brlab{text-align:center;font-size:22px;font-weight:800;min-height:1.5em;margin:6px 0}
+@media (prefers-reduced-motion:reduce){.brkid .air{animation:none!important}.brkid .brkidsvg{transition:none}}
+@media print{.brkid .air{display:none}}
+
 </style>
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="apple-touch-icon" href="icon-192.png">
@@ -4115,7 +4131,17 @@ const TOOLRENDER = {
       <div class="actions no-print" id="thBtns" style="justify-content:center">${tip.btn}</div>
       ${saveBar('thermometer')}`;
   },
-  abc(){
+  breathing(){
+    const m = BREATH[T.mode];
+    return `<h2>🎈 נושמים יחד</h2><p class="lead">עוקבים אחרי העיגול: כשהוא גדל – שואפים, כשהוא קטן – נושפים</p>
+      <div class="chips" style="justify-content:center">${Object.entries(BREATH).map(([k, v]) => `<button class="chip ${T.mode === k ? 'on' : ''}" data-act="br-mode" data-v="${k}">${v.name}</button>`).join('')}</div>
+      <div class="brwrap"><div class="brkid" id="brkid" data-ph="idle" aria-hidden="true">${kidMini('שמחה', 3, 'brkidsvg')}<span class="air a1"></span><span class="air a2"></span><span class="air a3"></span><span class="air a4"></span></div>
+      <div class="breath"><div class="circle" id="bcircle"><span id="bcount"></span></div></div></div>
+      <div class="brlab" id="brlab">${T.running ? '' : '👦 הילד נושם איתך – לוחצים ״התחלה״'}</div>
+      <div class="bigtext" id="bphase">${T.running ? '' : 'מוכנים?'}</div>
+      <p class="muted" style="text-align:center" id="bcycles">${T.cycles ? `סבבים: ${T.cycles}` : ''}</p>
+      <div class="actions" style="justify-content:center"><button class="btn primary" data-act="br-toggle">${T.running ? '⏸ עצירה' : '▶ התחלה'}</button></div>`;
+  },  abc(){
     const Q = ABC_Q.map(q => `<button class="chip" data-act="abc-add" data-v="${esc(q)}">💡 ${esc(q)}</button>`).join('');
     return `<h2>🧩 מודל אפר״ת</h2><p class="lead">מה קרה? מה אמרתי לעצמי? מה הרגשתי? מה עשיתי? – ואיך פרשנות אחרת משנה את הרגש</p>
       <div class="abcflow">
@@ -4228,10 +4254,14 @@ const TOOLAFTER = {
 function runBreath(){
   const m = BREATH[T.mode]; let k = 0;
   const circle = $('#bcircle'), ph = $('#bphase'), cnt = $('#bcount');
+  let prev = 1; const kid = $('#brkid'), lab = $('#brlab');
   const step = () => {
     if (!T.running || !circle) return;
     const [txt, sec, scale] = m.steps[k];
     circle.style.transitionDuration = sec + 's'; circle.style.transform = `scale(${scale})`; ph.textContent = txt;
+    const phs = scale > prev ? 'in' : scale < prev ? 'out' : 'hold'; prev = scale;   // the boy breathes with the circle
+    if (kid) { kid.style.setProperty('--sec', sec + 's'); kid.dataset.ph = phs; }
+    if (lab) lab.textContent = {in: '🌬️ שואף אוויר – דרך האף', out: '💨 נושף אוויר – לאט, מהפה', hold: '✋ מחזיק רגע את האוויר'}[phs];
     let left = sec; cnt.textContent = left;
     const iv = setInterval(() => { left--; if (left > 0) cnt.textContent = left; else clearInterval(iv); }, 1000); timers.push(iv);
     k = (k + 1) % m.steps.length;
