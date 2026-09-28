@@ -1270,6 +1270,28 @@ function answerHTML(A){
 }
 const ASK_EXAMPLES = ['ילד בכיתה ב׳ בוכה כל בוקר בשער ולא מוכן להיפרד מאמא','מה אומרים למחנכת על ילד שמתפרץ ומכה בהפסקות','ילדה עם כאבי בטן לפני מבחנים והולכת לאחות','איך מתחילים מפגש ראשון עם ילד שיש לו טיקים','תלמיד שמחרימים אותו בקבוצת הוואטסאפ של הכיתה','ילד שאבא שלו נהרג – מה עושים בבית הספר','אילו שאלונים יש לחרדה','מתי להפנות ילד עם הרטבה לרופא','תלמיד קילל מורה באמצע השיעור – מה עושים?','מתי מותר להשעות תלמיד ומי מחליט','אבא גרוש מבקש לקבל את התעודה','ילד כתב במחברת שהוא רוצה למות – מה חובה לעשות'];
 let lastAsk = '', aiFast = !(window.claude && typeof window.claude.use === 'function');
+/* follow-up: add a detail to the question already answered instead of starting over (keyword engine, no tokens) */
+const REFINE_SEP = ' · ';
+const REFINE_CHIPS = ['מה תפקיד המחנך/ת?', 'מה תפקיד היועץ/ת?', 'מה אומרים להורים?', 'ומה אם זה חוזר על עצמו?', 'מה חובת הדיווח?'];
+function refineHTML(q){
+  const parts = String(q || '').split(REFINE_SEP);
+  return `<div class="panel" style="border-inline-start:5px solid var(--accent, var(--brand))"><h3>🔁 חידוד השאלה – כהמשך, לא מההתחלה</h3>
+    ${parts.length > 1 ? `<p style="margin:0 0 8px;font-size:14px"><span class="muted">השאלה עד עכשיו:</span> ${parts.map(esc).join(' ← ')}</p>` : ''}
+    <form id="refineform" style="display:flex;gap:8px;flex-wrap:wrap"><input class="inp" id="refineq" style="flex:1;min-width:220px" placeholder="מוסיפים פרט או שאלת המשך – למשל: ומה אם זה בכיתה א׳?"><button class="btn primary" type="submit">➕ חידוד</button></form>
+    <div class="actions" style="margin-top:8px">${REFINE_CHIPS.map(c => `<button type="button" class="chip" data-act="refine" data-v="${esc(c)}">${esc(c)}</button>`).join('')}${parts.length > 1 ? `<button type="button" class="chip" data-act="refine-back">↩ צעד אחורה</button>` : ''}</div></div>`;
+}
+function refineGo(add){
+  const R = route(), base = R.id || lastAsk || '';
+  const parts = base.split(REFINE_SEP);
+  const v = add === null ? parts.slice(0, -1).join(REFINE_SEP) : (base ? base + REFINE_SEP : '') + add.trim();
+  if (!v) return;
+  lastAsk = v;
+  location.hash = '#/' + (R.r === 'circask' ? 'circask' : 'ask') + '/' + encodeURIComponent(v);
+}
+function refineAfter(){
+  const f = $('#refineform'), i = $('#refineq'); if (!f) return;
+  f.onsubmit = e => { e.preventDefault(); const v = i.value.trim(); if (v) refineGo(v); };
+}
 function ask(R){
   const q = R.id ? R.id : lastAsk;
   const hist = ls.get('cbtapp.asks', []);
@@ -1285,6 +1307,7 @@ function ask(R){
   if (q && !useAI) h += (AI.status === 'off' && AI.err ? `<div class="note warn" style="margin-bottom:12px">🤖 ${esc(AI_ERR[AI.err] || 'Claude לא זמין כרגע – התשובה מהמנוע המהיר.')}</div>` : '') + answerHTML(answer(q));
   else if (!q) h += `<h2 class="sec">💡 דוגמאות לשאלות</h2><div class="actions">${ASK_EXAMPLES.map(e => `<button class="chip" data-act="askex" data-v="${esc(e)}">${esc(e)}</button>`).join('')}</div>`;
   if (q) h += '<div id="libPanel"></div>';
+  if (q) h += refineHTML(q);
   if (claudeBox) h += claudeBox;
   if (hist.length) h += `<h2 class="sec">🕘 שאלות אחרונות</h2><div class="actions">${hist.slice(0, 10).map(e => `<button class="chip" data-act="askex" data-v="${esc(e)}">${esc(e)}</button>`).join('')}</div>`;
   return {title:'שאל שאלה', html:h, after(){
@@ -1292,6 +1315,7 @@ function ask(R){
     i.addEventListener('keydown', e => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); f.requestSubmit(); } });
     f.onsubmit = e => { e.preventDefault(); const v = i.value.trim(); if (!v) return; lastAsk = v; ls.set('cbtapp.asks', [v, ...hist.filter(x => x !== v)].slice(0, 15)); location.hash = '#/ask/' + encodeURIComponent(v); };
     if (!q) i.focus();
+    refineAfter();
     if (q && $('#aiPanel')) aiAnswerRun(q);
     if (q) libFill(q);
     if (q && !useAI) semRefine(q);
@@ -1634,8 +1658,8 @@ function aiAnswerHTML(q, A, maps, rolesQ){  if (!A || typeof A !== 'object') ret
 
 /* ================= חוזרי מנכ״ל ================= */
 const CIRC_DIR = 'files/חוזרי מנכל/';
-const CIRC_FILE = {c01:'הקשר בין ההורים לצוותים החינוכיים - אתר הסתדרות המורים.pdf', c02:'חוזר מנכל  ועדות – המיוחד החינוך חוק יישום.pdf', c03:'חוזר מנכל  מענים לתלמידים שהוריהם נעדרים מהבית בשל המלחמה.pdf', c04:'חוזר מנכל אקלים חינוכי מיטבי.pdf', c05:'חוזר מנכל העברת מידע בין מוסדות חינוך.pdf', c06:'חוזר מנכל הקשר בין מוסדות החינוך ובין הורים פרודים או גרושים.pdf', c07:'חוזר מנכל הקשר בין מוסדות החינוך וההורים.pdf', c08:'חוזר מנכל חוק זכויות התלמיד.pdf', c09:'חוזר מנכל כישורי חיים.pdf', c10:'חוזר מנכל ליווי תלמידים בעקבות משבר מתמשך.pdf', c11:'חוזר מנכל מניעה - נוער ובני ילדים אובדנות.pdf', c12:'חוזר מנכל מצלמות במוסדות החינוך.pdf', c13:'חוזר מנכל נוהלי שעת חירום במערכת החינוך.pdf', c14:'חוזר מנכל קשב והפרעת למידה לקויות עם לתלמידים היבחנות בדרכי.pdf', c15:'טופס דיווח ארוע חריג תשפ_ו.docx'};
-const CIRC_ORDER = ['c04','c11','c07','c08','c06','c05','c10','c03','c13','c02','c14','c09','c12','c15','c01'];
+const CIRC_FILE = {c01:'הקשר בין ההורים לצוותים החינוכיים - אתר הסתדרות המורים.pdf', c02:'חוזר מנכל  ועדות – המיוחד החינוך חוק יישום.pdf', c03:'חוזר מנכל  מענים לתלמידים שהוריהם נעדרים מהבית בשל המלחמה.pdf', c04:'חוזר מנכל אקלים חינוכי מיטבי.pdf', c05:'חוזר מנכל העברת מידע בין מוסדות חינוך.pdf', c06:'חוזר מנכל הקשר בין מוסדות החינוך ובין הורים פרודים או גרושים.pdf', c07:'חוזר מנכל הקשר בין מוסדות החינוך וההורים.pdf', c16:'חוזר מנכל הקשר בין מוסדות החינוך וההורים.pdf', c17:'חוזר מנכל הקשר בין מוסדות החינוך וההורים.pdf', c08:'חוזר מנכל חוק זכויות התלמיד.pdf', c09:'חוזר מנכל כישורי חיים.pdf', c10:'חוזר מנכל ליווי תלמידים בעקבות משבר מתמשך.pdf', c11:'חוזר מנכל מניעה - נוער ובני ילדים אובדנות.pdf', c12:'חוזר מנכל מצלמות במוסדות החינוך.pdf', c13:'חוזר מנכל נוהלי שעת חירום במערכת החינוך.pdf', c14:'חוזר מנכל קשב והפרעת למידה לקויות עם לתלמידים היבחנות בדרכי.pdf', c15:'טופס דיווח ארוע חריג תשפ_ו.docx'};
+const CIRC_ORDER = ['c04','c11','c07','c08','c06','c05','c10','c03','c13','c02','c14','c09','c12','c16','c17','c15','c01'];
 const CIRC_ICON = {c01:'🗞️', c02:'🧩', c03:'🪖', c04:'⚖️', c05:'🔐', c06:'👨‍👧', c07:'🤝', c08:'🧾', c09:'🌱', c10:'🕯️', c11:'💛', c12:'📹', c13:'🚨', c14:'📝', c15:'📋'};
 const KIND = {discipline:['⚖️','משמעת והתנהגות'], violence:['🛑','אלימות ופגיעה'], safety:['🦺','בטיחות וסיכון'], reporting:['📣','דיווח'], procedure:['📑','נהלים'], rights:['🧾','זכויות'],
   parents:['👨‍👩‍👧','הורים'], info:['🔐','מידע ופרטיות'], emergency:['🚨','חירום'], 'special-ed':['🧩','חינוך מיוחד'], wellbeing:['💛','רווחה נפשית']};
@@ -2026,7 +2050,19 @@ function circAskView(R){
   if (!q) return {title: 'שאלה על החוזרים', html: h + `<div class="actions"><a class="btn" href="#/circ">← לכל החוזרים</a></div>`, after: circAskAfter};
   const C0 = circSearch(q, {nGuide: 8, nText: 6});
   // only situations that really match (a phrase that fits, or most of the question's words); weak word-overlaps are hidden
-  const good = C0.guide.filter(x => x.why.length > 0 || x.cov >= 0.62);
+  const isGood = x => x.why.length > 0 || x.cov >= 0.62;
+  let good = C0.guide.filter(isGood);
+  const qParts = q.split(REFINE_SEP);
+  if (qParts.length > 1) {
+    // a follow-up keeps what the original question found; each part may add its own matches; order follows the whole chain
+    const full = circSearch(q, {nGuide: 40, nText: 0}).guide, sc = new Map(full.map(x => [x.g.id, x.s]));
+    const seen = new Set(good.map(x => x.g.id));
+    const base = circSearch(qParts[0], {nGuide: 8, nText: 0}).guide.filter(isGood);
+    const circs = new Set(base.map(x => x.g.circ));   // a follow-up stays inside the circulars the original question led to
+    base.forEach(x => { if (!seen.has(x.g.id)) { seen.add(x.g.id); good.push(x); } });
+    qParts.slice(1).forEach(p => circSearch(p, {nGuide: 8, nText: 0}).guide.filter(x => isGood(x) && (!circs.size || circs.has(x.g.circ))).forEach(x => { if (!seen.has(x.g.id)) { seen.add(x.g.id); good.push({...x, s: sc.get(x.g.id) || x.s * 0.5}); } }));
+    good = good.map(x => ({...x, s: sc.get(x.g.id) || x.s})).sort((a, b) => b.s - a.s).slice(0, 8);
+  }
   const weak = C0.guide.filter(x => !good.includes(x)).slice(0, 4);
   const C = {...C0, guide: good, text: good.length ? C0.text : []};
   let claudeEnd = '';
@@ -2045,9 +2081,10 @@ function circAskView(R){
     if (rest.length) h += `<div class="panel"><h3>📜 עוד מצבים קרובים בחוזרים</h3><div class="list">${rest.slice(0, 6).map(x => circRowHTML(x.g)).join('')}</div></div>`;
     if (C.text.length) h += `<div class="panel"><h3>📖 סעיפים מתוך לשון החוזרים</h3>${circTextHTML(C.text.slice(0, 5), C.qt)}</div>`;
   }
+  h += refineHTML(q);
   h += claudeEnd;
   h += `<div class="actions"><a class="btn" href="#/circ">← לכל החוזרים</a></div>`;
-  return {title: 'שאלה על החוזרים', html: h, after(){ circAskAfter(); if (autoAI) aiCircOnlyRun(q); }};
+  return {title: 'שאלה על החוזרים', html: h, after(){ circAskAfter(); refineAfter(); if (autoAI) aiCircOnlyRun(q); }};
 }
 function aiCircOnlyClassify(q){
   return `אתה מסווג שאלות של צוות בית ספר יסודי בישראל לפי ״מצבים״ מתוך חוזרי מנכ״ל של משרד החינוך.
@@ -2402,6 +2439,8 @@ document.addEventListener('click', async e => {
     case 'ai-retry': if (lastAsk || route().id) aiAnswerRun(route().id || lastAsk); break;
     case 'ai-fast': e.preventDefault(); aiFast = true; render(); break;
     case 'ai-go': aiFast = false; render(); break;
+    case 'refine': refineGo(d.v); break;
+    case 'refine-back': refineGo(null); break;
     case 'askex': location.hash = '#/ask/' + encodeURIComponent(d.v); break;
     case 'stage': { const st = STAGES.find(x => x.id === d.id); s.stages = s.stages || {}; s.stages[st.id] = !stageDone(s, st); save(); render(); break; }
     // tools
