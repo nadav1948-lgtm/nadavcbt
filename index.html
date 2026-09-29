@@ -4559,12 +4559,12 @@ function doSearch(q){ runSearch(q); if (mode === 'map') update({view: tgt => { i
 
 function setMode(m){ mode = m; R.root.dataset.mode = m; R.root.querySelectorAll('[data-sm="mode"]').forEach(b => { b.textContent = m === 'map' ? '🌳 תצוגת רשימה' : '🗺️ תצוגת מפה'; b.setAttribute('aria-pressed', m === 'list'); });
   EL.clear(); WIRE.clear(); POS.clear(); R.layer.innerHTML = ''; R.svg.innerHTML = '';
-  if (m === 'map') { update({instant: true}); Object.assign(VIEW, fitView(POS)); applyView(); } else renderOutline(); updateBack(); }
+  if (m === 'map') { update({instant: true}); Object.assign(VIEW, fitView(POS)); const sv = ss.get(VIEW_K); if (sv) { try { Object.assign(VIEW, JSON.parse(sv)); } catch(e){} ss.del(VIEW_K); } applyView(); } else renderOutline(); updateBack(); }
 
 /* ---------------- page ---------------- */
 function counts(){ const lv = []; BY.forEach(n => { lv[n.lvl] = (lv[n.lvl] || 0) + 1; }); return lv; }
 window.sitemapUI = function(ctx){
-  C = ctx; TREE = build(); loadOpen(); Q = ''; SOPEN = new Set(); HITS = []; HIT_I = -1;
+  ss.del(RET_K); C = ctx; TREE = build(); loadOpen(); Q = ''; SOPEN = new Set(); HITS = []; HIT_I = -1;
   const nTr = C.TRACKS.length, nSt = C.TRACKS.reduce((a, t) => a + t.steps.length, 0);
   const html = `<div class="sm-root" id="smRoot" data-mode="map">
   <div class="banner hubhero" style="--h:258"><span class="emoji">🗺️</span><div><h1>מפת האתר</h1><p>${BY.size - 1} מקומות באתר במבט אחד · ${C.PROBLEMS.length} בעיות · ${nTr} מסלולים ו־${nSt} שלבים · ${C.circList.length} חוזרים. לוחצים על שם כדי להגיע, ועל העיגול כדי לפתוח ענף.</p></div></div>
@@ -4706,6 +4706,29 @@ const CSS_TXT = `
 }
 `;
 function injectCSS(){ if (document.getElementById('sm-css')) return; const s = document.createElement('style'); s.id = 'sm-css'; s.textContent = CSS_TXT; (document.head || document.documentElement).appendChild(s); }
+/* ---------------- "→ חזור למפת האתר" on the pages reached from the map ----------------
+   A click on a place in the map remembers the map's position; every page opened from there shows a clear button at the top that returns
+   to the map exactly as it was. The button goes away on returning to the map or on choosing another place from the side menu. */
+const RET_K = 'cbtapp.fromMap', VIEW_K = 'cbtapp.sitemap.view';
+const ss = { get: k => { try { return sessionStorage.getItem(k); } catch(e){ return null; } }, set: (k, v) => { try { sessionStorage.setItem(k, v); } catch(e){} }, del: k => { try { sessionStorage.removeItem(k); } catch(e){} } };
+function mapReturnBtn(){
+  let b = document.getElementById('smReturn');
+  const on = ss.get(RET_K) === '1' && !/^#\/sitemap/.test(location.hash);
+  if (!b) { if (!on) return; b = document.createElement('button'); b.type = 'button'; b.id = 'smReturn'; b.className = 'no-print'; b.textContent = '→ חזור למפת האתר';
+    b.onclick = () => { location.hash = '#/sitemap'; }; document.body.appendChild(b);
+    const s = document.createElement('style'); s.textContent = '#smReturn{position:fixed;z-index:60;left:50%;transform:translateX(-50%);font:700 17px/1 var(--display,inherit);padding:12px 24px;border-radius:999px;border:0;cursor:pointer;color:#fff;background:linear-gradient(135deg,#6366f1,#8b5cf6);box-shadow:0 8px 22px rgb(99 102 241 / .45);white-space:nowrap}#smReturn:hover{transform:translateX(-50%) scale(1.04)}#smReturn:focus-visible{outline:3px solid var(--ring,#a5b4fc);outline-offset:2px}#smReturn[hidden]{display:none}@media print{#smReturn{display:none}}'; document.head.appendChild(s); }
+  b.hidden = !on;
+  const tb = document.querySelector('.topbar'); b.style.top = ((tb ? tb.getBoundingClientRect().bottom : 10) + 10) + 'px';
+  const vw = document.querySelector('.main') || document.querySelector('#view'); if (vw) { const r = vw.getBoundingClientRect(); if (r.width) b.style.left = (r.left + r.width / 2) + 'px'; }
+}
+document.addEventListener('click', e => {
+  const a = e.target.closest('a[href^="#/"]'); if (!a) return;
+  if (a.closest('#smRoot')) { if (a.matches('.sm-l') && !a.dataset.tg && a.getAttribute('href') !== '#/sitemap') { ss.set(RET_K, '1'); ss.set(VIEW_K, JSON.stringify({x: VIEW.x, y: VIEW.y, k: VIEW.k})); } }
+  else if (a.closest('.side, .nav, .tabbar')) ss.del(RET_K);
+}, true);
+window.addEventListener('hashchange', () => setTimeout(mapReturnBtn, 60));
+window.addEventListener('scroll', () => { const b = document.getElementById('smReturn'); if (b && !b.hidden) { const tb = document.querySelector('.topbar'); b.style.top = ((tb ? tb.getBoundingClientRect().bottom : 10) + 10) + 'px'; } }, {passive: true});
+setTimeout(mapReturnBtn, 300);
 injectCSS();
 })();
 
