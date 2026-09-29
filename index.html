@@ -4338,7 +4338,8 @@ function fillLibrary(a){
 function build(){
   BY = new Map();
   const root = mk(null, '', {label: 'האתר של נדב דוד', icon: '🧠', href: '#/home', hue: 258, desc: 'יועץ חינוכי ומטפל CBT – כל המדורים במבט אחד'});
-  C.pins.filter(([k]) => k !== 'sitemap').forEach(([k, i, l]) => mk(root, 'pin-' + k, {label: l, icon: i, href: '#/' + k, hue: C.hubHue(k), pin: true, desc: PIN_DESC[k] || ''}));
+  // the pinned shortcuts (בית, יומן, שאל שאלה, חיפוש) are not sections – left out of the map
+  if (0) C.pins.filter(([k]) => k !== 'sitemap').forEach(([k, i, l]) => mk(root, 'pin-' + k, {label: l, icon: i, href: '#/' + k, hue: C.hubHue(k), pin: true, desc: PIN_DESC[k] || ''}));
   C.groups.forEach(([i, l, items]) => {
     const g = mk(root, 'g-' + l, {label: l, icon: i, href: '#/more', hue: C.hubHue(items[0] ? items[0][0] : l), desc: items.map(x => x[2]).join(' · ')});
     items.forEach(([k, ic, lb]) => {
@@ -4393,7 +4394,7 @@ function nodeHTML(n, out){
   const lk = `<a class="sm-l" href="${esc(n.href)}"${n.act ? ` data-act="${esc(n.act)}" data-v="${esc(n.v)}"` : ''}${n.desc ? ` data-d="${esc(n.desc)}"` : ''}><span class="sm-i" aria-hidden="true">${n.icon}</span><span class="sm-t">${nb(n.label)}</span></a>`;
   if (!n.kids.length || !n.parent) return lk;
   const o = isOpen(n);
-  const bt = `<button type="button" class="${out ? 'sm-ox' : 'sm-x'}" aria-expanded="${o}" aria-label="${o ? 'סגירת הענף' : 'פתיחת הענף'} ${esc(n.label)} (${n.kids.length} פריטים)" data-tg="${esc(n.id)}"><span aria-hidden="true">${o ? '−' : n.kids.length}</span></button>`;
+  const bt = `<button type="button" class="${out ? 'sm-ox' : 'sm-x'}" aria-expanded="${o}" aria-label="${o ? 'סגירת הענף' : 'פתיחת הענף'} ${esc(n.label)} (${n.kids.length} פריטים)" title="בענף הזה ${n.kids.length} פריטים" data-tg="${esc(n.id)}"><span aria-hidden="true">${o ? '−' : '+' + n.kids.length}</span></button>`;
   return out ? bt + lk : lk + bt;
 }
 function cls(n){ return 'lv' + Math.min(n.lvl, 5) + (n.deep ? ' deep' : '') + (n.star ? ' star' : '') + (n.pin ? ' pin' : '') + (Q && HITS.includes(n) ? ' hit' : '') + (HITS[HIT_I] === n ? ' cur' : ''); }
@@ -4417,7 +4418,7 @@ function ensureEls(list){
   // DOM order = tree order, so Tab walks the map in reading order
   list.forEach(n => R.layer.appendChild(EL.get(n.id)));
 }
-function refreshEl(n){ const d = EL.get(n.id); if (!d) return; d.className = 'sm-n ' + cls(n); const b = d.querySelector('.sm-x'); if (b) { const o = isOpen(n); b.setAttribute('aria-expanded', o); b.setAttribute('aria-label', `${o ? 'סגירת הענף' : 'פתיחת הענף'} ${n.label} (${n.kids.length} פריטים)`); b.firstChild.textContent = o ? '−' : n.kids.length; } d.setAttribute('aria-expanded', n.kids.length ? isOpen(n) : null); if (!n.kids.length) d.removeAttribute('aria-expanded'); }
+function refreshEl(n){ const d = EL.get(n.id); if (!d) return; d.className = 'sm-n ' + cls(n); const b = d.querySelector('.sm-x'); if (b) { const o = isOpen(n); b.setAttribute('aria-expanded', o); b.setAttribute('aria-label', `${o ? 'סגירת הענף' : 'פתיחת הענף'} ${n.label} (${n.kids.length} פריטים)`); b.firstChild.textContent = o ? '−' : '+' + n.kids.length; } d.setAttribute('aria-expanded', n.kids.length ? isOpen(n) : null); if (!n.kids.length) d.removeAttribute('aria-expanded'); }
 function layout(){
   const vis = visible(); ensureEls(vis);
   vis.forEach(n => { if (!n._w) { const d = EL.get(n.id); n._w = d.offsetWidth; n._h = d.offsetHeight; } });
