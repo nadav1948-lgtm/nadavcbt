@@ -8331,6 +8331,7 @@ function outMenu(btn){
   const r = btn.getBoundingClientRect(); m.style.top = (r.bottom + 6) + 'px'; m.style.left = Math.max(8, r.left - 120) + 'px';
   m.onclick = e => { const b = e.target.closest('[data-out]'); if (!b) return; m.remove(); const k = b.dataset.out;
     const R0 = route(); if (R0.r === 'track' && TRACK(R0.id) && !OUT_SEL.picked) return pickSteps(TRACK(R0.id), R0, k);
+    if (HUBS[R0.r] && HUBS[R0.r].flag && !R0.id && !OUT_SEL.picked && hubTracks(R0.r).length) return pickHub(R0.r, k);
     doOut(k); };
   setTimeout(() => document.addEventListener('click', function off(e){ if (!e.target.closest('#outmenu') && !e.target.closest('[data-act="outmenu"]')) { const x = $('#outmenu'); if (x) x.remove(); document.removeEventListener('click', off); } }), 0);
 }
@@ -8342,20 +8343,50 @@ function pickSteps(tr, R, k){
   const m = $('#modal'); m.className = 'modal open';
   m.innerHTML = `<div class="box"><div class="mhead"><h3>מה לקחת ${verb}?</h3><button class="iconbtn" data-act="close">✕</button></div>
     <div class="list" style="gap:8px"><button class="btn primary" data-pk="one" style="justify-content:flex-start">📄 רק השלב הזה: <b style="margin-inline-start:6px">${esc(tr.steps[cur].title)}</b></button>
-    <button class="btn" data-pk="all" style="justify-content:flex-start">📚 כל המדריך – ${tr.steps.length} השלבים וכל תתי הסעיפים</button></div>
+    <button class="btn" data-pk="all" style="justify-content:flex-start">📚 כל המדריך – ${tr.steps.length} השלבים וכל תתי הסעיפים</button>
+    ${trackHub(tr) ? `<button class="btn" data-pk="hub" style="justify-content:flex-start">🗂️ כל התחום – ${esc(HUBS[trackHub(tr)].title)} (${hubTracks(trackHub(tr)).length} מסלולים)</button>` : ''}</div>
     <details style="margin-top:12px"><summary><b>☑️ לבחור שלבים מסוימים</b></summary><div style="margin:8px 0;display:flex;flex-direction:column;gap:4px;max-height:45vh;overflow:auto">${tr.steps.map((s, i) => `<label style="display:flex;gap:8px;align-items:center;cursor:pointer"><input type="checkbox" value="${i}" ${i === cur ? 'checked' : ''}> ${i + 1}. ${s.icon || ''} ${esc(s.title)}</label>`).join('')}</div>
     <button class="btn primary" data-pk="some">✔ המשך עם השלבים שסימנתי</button></details></div>`;
   m.onclick = e => { const b = e.target.closest('[data-pk]'); if (!b) return; const w = b.dataset.pk;
+    if (w === 'hub') { m.onclick = null; closeModal(); return runHubOut(trackHub(tr), hubTracks(trackHub(tr)), k); }
     const steps = w === 'one' ? [cur] : w === 'all' ? tr.steps.map((_, i) => i) : [...m.querySelectorAll('input[type=checkbox]:checked')].map(x => +x.value);
     if (!steps.length) return toast('לא סומן אף שלב');
     m.onclick = null; closeModal(); OUT_SEL.steps = steps; OUT_SEL.picked = true;
     try { doOut(k); } finally { setTimeout(() => { OUT_SEL.steps = null; OUT_SEL.picked = false; }, 1500); } };
 }
+/* a whole section (hub): this page only, every track in it with all its steps, or chosen tracks */
+const hubTracks = key => { const h = HUBS[key]; if (!h || !h.flag) return []; const all = TRACKS().filter(t => t[h.flag]), g = h.guide && all.find(t => t.id === h.guide); return g ? [g, ...all.filter(t => t !== g)] : all; };
+const trackHub = tr => Object.keys(HUBS).find(k => HUBS[k].flag && tr[HUBS[k].flag]) || null;
+function pickHub(key, k){
+  const h = HUBS[key], list = hubTracks(key);
+  const verb = {print: 'להדפסה', pdf: 'ל-PDF', slides: 'למצגת', pptx: 'למצגת PowerPoint', share: 'לקובץ שיתוף', link: 'לקישור לצוות'}[k] || '';
+  const m = $('#modal'); m.className = 'modal open';
+  m.innerHTML = `<div class="box"><div class="mhead"><h3>מה לקחת ${verb}?</h3><button class="iconbtn" data-act="close">✕</button></div>
+    <div class="list" style="gap:8px"><button class="btn primary" data-pk="page" style="justify-content:flex-start">📄 רק העמוד הזה – ${esc(h.title)}</button>
+    <button class="btn" data-pk="all" style="justify-content:flex-start">🗂️ כל התחום – ${list.length} המסלולים עם כל השלבים</button></div>
+    <details style="margin-top:12px"><summary><b>☑️ לבחור מסלולים מסוימים</b></summary><div style="margin:8px 0;display:flex;flex-direction:column;gap:4px;max-height:45vh;overflow:auto">${list.map((t, i) => `<label style="display:flex;gap:8px;align-items:center;cursor:pointer"><input type="checkbox" value="${i}"> ${t.icon || ''} ${esc(t.title)} <span class="muted">(${t.steps.length} שלבים)</span></label>`).join('')}</div>
+    <button class="btn primary" data-pk="some">✔ המשך עם המסלולים שסימנתי</button></details></div>`;
+  m.onclick = e => { const b = e.target.closest('[data-pk]'); if (!b) return; const w = b.dataset.pk;
+    if (w === 'page') { m.onclick = null; closeModal(); OUT_SEL.picked = true; try { doOut(k); } finally { setTimeout(() => { OUT_SEL.picked = false; }, 1500); } return; }
+    const pick = w === 'all' ? list : [...m.querySelectorAll('input[type=checkbox]:checked')].map(x => list[+x.value]);
+    if (!pick.length) return toast('לא סומן אף מסלול');
+    m.onclick = null; closeModal(); runHubOut(key, pick, k); };
+}
+function runHubOut(key, tracks, k){
+  if (k === 'link') { toast('🔗 לתחום שלם שולחים קישור לעמוד התחום'); return doOut(k); }
+  OUT_SEL.hub = {key, tracks}; OUT_SEL.picked = true;
+  try { doOut(k); } finally { setTimeout(() => { OUT_SEL.hub = null; OUT_SEL.picked = false; }, 1500); }
+}
+function selAny(){ return selTrack() || OUT_SEL.hub; }
 function selTrack(){ const R = route(); return R.r === 'track' && TRACK(R.id) && OUT_SEL.steps ? TRACK(R.id) : null; }
-function selTitle(){ const tr = selTrack(); if (!tr) return $('#title').textContent || document.title; const st = OUT_SEL.steps;
+function selTitle(){ const hb = OUT_SEL.hub; if (hb) { const h = HUBS[hb.key], n = hubTracks(hb.key).length; return hb.tracks.length === 1 ? hb.tracks[0].title : hb.tracks.length === n ? h.title : `${h.title} (${hb.tracks.length} מסלולים נבחרים)`; }
+  const tr = selTrack(); if (!tr) return $('#title').textContent || document.title; const st = OUT_SEL.steps;
   return st.length === 1 ? `${tr.title} – ${tr.steps[st[0]].title}` : st.length === tr.steps.length ? tr.title : `${tr.title} (${st.length} שלבים נבחרים)`; }
 // the chosen steps rendered as one page (own answers for print; empty for sharing)
-function selHTML(withData){ const tr = selTrack(); const D = withData ? trData(tr.id) : {};
+function selHTML(withData){ const hb = OUT_SEL.hub;
+  if (hb) { const h = HUBS[hb.key]; return `<h1>${h.icon || ''} ${esc(selTitle())}</h1>` + hb.tracks.map(tr => { const D = withData ? trData(tr.id) : {};
+    return `<h2 class="sec">${tr.icon || ''} ${esc(tr.title)}</h2>` + tr.steps.map((s, i) => `<div class="panel trprint"><h3>${i + 1}. ${s.icon || ''} ${esc(s.title)}</h3>${trStepHTML(tr, s, D)}</div>`).join(''); }).join(''); }
+  const tr = selTrack(); const D = withData ? trData(tr.id) : {};
   return `<h1>${tr.icon || ''} ${esc(selTitle())}</h1>` + OUT_SEL.steps.map(i => `<div class="panel trprint"><h3>${i + 1}. ${tr.steps[i].icon || ''} ${esc(tr.steps[i].title)}</h3>${trStepHTML(tr, tr.steps[i], D)}</div>`).join(''); }
 function doOut(k){
     if (!$('#printbrand')) document.body.insertAdjacentHTML('afterbegin', '<div id="printbrand">ייעוץ חינוכי · נדב דוד</div>');
@@ -8364,7 +8395,7 @@ function doOut(k){
     if (k === 'link') return shareLink();
     if (k === 'pptx') return pptExport();
     let sel = null;
-    if (selTrack()) { sel = document.createElement('div'); sel.id = 'selview'; sel.className = 'page'; sel.innerHTML = selHTML(true); document.body.appendChild(sel); document.body.classList.add('selprint'); }
+    if (selAny()) { sel = document.createElement('div'); sel.id = 'selview'; sel.className = 'page'; sel.innerHTML = selHTML(true); document.body.appendChild(sel); document.body.classList.add('selprint'); }
     document.querySelectorAll('#view details').forEach(d => { d.dataset.wasOpen = d.open ? '1' : ''; d.open = true; });
     if (k === 'pdf') toast('בחלון שנפתח בחרו ביעד: "שמירה כ-PDF" (Save as PDF)');
     setTimeout(() => { window.print(); document.querySelectorAll('#view details').forEach(d => { d.open = !!d.dataset.wasOpen; }); if (sel) { sel.remove(); document.body.classList.remove('selprint'); } }, k === 'pdf' ? 900 : 50);
@@ -8375,7 +8406,7 @@ function shareSnapshot(){
   document.querySelectorAll('#view details').forEach(d => d.open = true);
   let clone = $('#view .page').cloneNode(true);
   const R = route();
-  if (selTrack()) { clone = document.createElement('div'); clone.className = 'page'; clone.innerHTML = selHTML(false); }   // chosen steps, empty (never a pupil's answers)
+  if (selAny()) { clone = document.createElement('div'); clone.className = 'page'; clone.innerHTML = selHTML(false); }   // chosen steps, empty (never a pupil's answers)
   else if (R.r === 'track' && TRACK(R.id)) {   // a whole track: every step, empty (never a pupil's answers)
     const tr = TRACK(R.id); clone = document.createElement('div'); clone.className = 'page';
     try { clone.innerHTML = `<h1>${tr.icon || ''} ${esc(tr.title)}</h1>` + tr.steps.map((s, i) => `<div class="panel trprint"><h3>${i + 1}. ${s.icon || ''} ${esc(s.title)}</h3>${trStepHTML(tr, s, {})}</div>`).join(''); } catch(e){ clone = $('#view .page').cloneNode(true); }
@@ -8437,7 +8468,7 @@ async function sharePage(){
 }
 function slideShow(){
   document.querySelectorAll('#view details').forEach(d => d.open = true);
-  let tmp = null; if (selTrack()) { tmp = document.createElement('div'); tmp.id = 'selslides'; tmp.className = 'page'; tmp.style.cssText = 'position:absolute;left:-20000px;top:0;width:' + ($('#view').clientWidth || 900) + 'px'; tmp.innerHTML = selHTML(true); document.body.appendChild(tmp); }
+  let tmp = null; if (selAny()) { tmp = document.createElement('div'); tmp.id = 'selslides'; tmp.className = 'page'; tmp.style.cssText = 'position:absolute;left:-20000px;top:0;width:' + ($('#view').clientWidth || 900) + 'px'; tmp.innerHTML = selHTML(true); document.body.appendChild(tmp); }
   const groups = slideBlocks(); const title = selTitle(); if (tmp) { groups.forEach(g => g.forEach((el, i) => { g[i] = el.cloneNode(true); })); tmp.remove(); } if (!groups.length) return;
   const slides = [`<div class="sl-title"><div class="sl-emo">🎞️</div><h1>${esc(title)}</h1><p>ייעוץ חינוכי · נדב דוד</p></div>`].concat(groups.map(g => g.map(el => el.outerHTML).join('')));
   let i = 0; const o = document.createElement('div'); o.className = 'slideshow'; o.tabIndex = -1;
