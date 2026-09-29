@@ -4262,7 +4262,7 @@ const strip = s => String(s || '').replace(/<[^>]*>/g, ' ').replace(/\s+/g, ' ')
 const lead = s => strip(s).replace(/^[^\p{L}\p{N}"״(]+/u, '');   // drop a leading emoji
 // one line for a tooltip: the first sentence; a very long one ends at a comma (no ellipsis)
 function oneLine(s){ let t = lead(s); if (!t) return ''; const m = t.match(/^(.{20,}?[.!?])(\s|$)/); if (m) t = m[1]; if (t.length > 190) { const c = t.lastIndexOf(',', 180), k = t.lastIndexOf(' – ', 180), cut = Math.max(c, k); if (cut > 60) t = t.slice(0, cut); } return t; }
-const LSK = 'cbtapp.sitemap';
+const LSK = 'cbtapp.sitemap.v2';
 const store = { get(){ try { return JSON.parse(localStorage.getItem(LSK) || '{}') || {}; } catch(e){ return {}; } }, set(o){ try { localStorage.setItem(LSK, JSON.stringify(Object.assign(store.get(), o))); } catch(e){} } };
 const RM = () => { try { return matchMedia('(prefers-reduced-motion: reduce)').matches; } catch(e){ return false; } };
 const WIDE = () => innerWidth > 760;
@@ -4362,7 +4362,7 @@ function build(){
 let OPEN = new Set(), SOPEN = new Set(), HITS = [], HIT_I = -1, Q = '';
 const isOpen = n => !n.parent || OPEN.has(n.id) || SOPEN.has(n.id);
 const visKids = n => isOpen(n) ? n.kids : [];
-function defaultOpen(){ const s = new Set(); TREE.kids.forEach(n => { if (!n.pin) s.add(n.id); }); return s; }
+function defaultOpen(){ return new Set(); }   // starts closed: only the sections around the centre
 function loadOpen(){ const o = store.get().open; OPEN = Array.isArray(o) ? new Set(o.filter(id => BY.has(id))) : defaultOpen(); }
 const saveOpen = () => store.set({open: [...OPEN]});
 function countDesc(n, deep){ let c = 0; for (const k of n.kids) { if (!deep && k.deep) continue; c += 1 + countDesc(k, deep); } return c; }
@@ -4536,7 +4536,9 @@ function renderOutline(focusId){
 function renderPrint(){ if (!R) return; R.print.innerHTML = `<h2>🗺️ מפת האתר – האתר של נדב דוד</h2><ul>${TREE.kids.map(k => outlineLi(k, true)).join('')}</ul>`; }
 
 /* ---------------- actions ---------------- */
-function toggle(id){ const n = BY.get(id); if (!n || !n.kids.length) return; if (isOpen(n)) { OPEN.delete(id); SOPEN.delete(id); } else OPEN.add(id); saveOpen(); refresh({keep: id, focus: id}); }
+// modular: opening a branch closes its sibling branches (and everything under them), so only the chosen path stays open
+const closeSub = n => n.kids.forEach(k => { OPEN.delete(k.id); SOPEN.delete(k.id); closeSub(k); });
+function toggle(id){ const n = BY.get(id); if (!n || !n.kids.length) return; if (isOpen(n)) { OPEN.delete(id); SOPEN.delete(id); closeSub(n); } else { if (n.parent) n.parent.kids.forEach(s => { if (s !== n) { OPEN.delete(s.id); SOPEN.delete(s.id); closeSub(s); } }); OPEN.add(id); } saveOpen(); refresh({keep: id, focus: id}); }
 function refresh(o = {}){ if (mode === 'map') update(o); else renderOutline(o.focus); renderStatus(); }
 function expandAll(){ BY.forEach(n => { if (n.kids.length && !n.kids[0].deep && n.parent) OPEN.add(n.id); }); saveOpen(); refresh({view: tgt => { const v = fitView(tgt); if (v.k >= 0.35) return v; const r = tgt.get('root'), k = 0.35; return {k, x: R.canvas.clientWidth / 2 - (r.x + r.w / 2) * k, y: R.canvas.clientHeight / 2 - (r.y + r.h / 2) * k}; }}); }
 function collapseAll(){ OPEN = new Set(); SOPEN = new Set(); saveOpen(); refresh({view: tgt => fitView(tgt)}); }
