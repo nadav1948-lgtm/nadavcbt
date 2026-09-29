@@ -1708,6 +1708,188 @@ body,body *{overflow-wrap:normal!important;word-break:normal!important;hyphens:m
 @keyframes brarr{0%,100%{transform:translateX(0)}50%{transform:translateX(0);stroke-width:5}}
 @media (prefers-reduced-motion:reduce){.brkid .brchest,.brkid .brhead{transition:none}.brkid .brarrows{animation:none}}
 
+/* ===== 📅 יומן ===== */
+.dybanner .actions{margin-inline-start:auto}
+.dyup{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.35fr);gap:14px;margin:0 0 18px}
+.dycount{display:grid;gap:10px;align-content:start}
+.dycd{--h:200;display:flex;align-items:center;gap:12px;padding:14px 16px;border-radius:18px;text-decoration:none;background:linear-gradient(135deg,hsl(var(--h) var(--soft-s) var(--soft-l)),var(--panel) 85%);border:1px solid hsl(var(--h) 60% 55% / .35);box-shadow:var(--shadow);transition:transform .2s,box-shadow .2s}
+.dycd:hover{transform:translateY(-2px);box-shadow:var(--shadow-hi)}
+.dycd .i{width:46px;height:46px;border-radius:14px;display:grid;place-items:center;font-size:24px;background:hsl(var(--h) var(--sat) var(--lt) / .22);flex:0 0 auto}
+.dycd b{display:block;font-family:var(--display);font-size:17px;font-weight:800;line-height:1.3}
+.dycd small{display:block;color:var(--muted);font-size:13px;margin-top:2px}
+.panel.dynext{margin:0;padding:16px 18px}
+.dynext h3{font-size:16px;flex-wrap:wrap}
+.dynext h3 small{font-weight:500;font-size:13px}
+.dynx{--h:200;display:flex;align-items:baseline;gap:10px;padding:7px 0;border-top:1px solid var(--line);text-decoration:none;font-size:14.5px;line-height:1.4}
+.dynx:first-of-type{border-top:0}
+.dynx:hover span:last-child{color:var(--brand-text)}
+.dynx.more{color:var(--brand-text);font-weight:600}
+.dynxd{flex:0 0 74px;color:var(--muted);font-size:13px}
+.dynx i{width:9px;height:9px;border-radius:50%;background:hsl(var(--h) var(--sat) var(--lt));flex:0 0 auto;align-self:center}
+.dynx b{font-variant-numeric:tabular-nums}
+.dybar{display:flex;flex-wrap:wrap;gap:10px 14px;align-items:center;margin:0 0 14px}
+.dyseg{display:inline-flex;background:var(--bg2);border:1px solid var(--line);border-radius:999px;padding:3px}
+.dyseg a{padding:6px 16px;border-radius:999px;text-decoration:none;color:var(--muted);font-weight:600;font-size:14px;text-align:center;transition:background .15s,color .15s}
+.dyseg a:hover{color:var(--ink)}
+.dyseg a.on{background:var(--brand);color:var(--brand-ink)}
+.dynav{display:inline-flex;gap:6px;align-items:center;flex-wrap:wrap}
+.dynav .btn.sm{min-width:38px}
+.dyjump input{border:1px solid var(--line);background:var(--panel);border-radius:10px;padding:5px 8px;font-size:14px;color:var(--ink);max-width:170px}
+.dyjump .sr,.dylays .sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+.dylays{display:flex;gap:6px;flex-wrap:wrap}
+.dylays label{display:inline-flex;align-items:center;gap:6px;border:1px solid var(--line);border-radius:999px;padding:5px 12px;font-size:13.5px;cursor:pointer;background:var(--panel)}
+.dylays label:has(input:checked){border-color:color-mix(in srgb,var(--brand-text) 55%,var(--line));background:var(--brand-soft)}
+.dylays input{accent-color:var(--brand);margin:0}
+.dyics{margin-inline-start:auto}
+.dyperiod{display:flex;align-items:baseline;gap:6px 12px;flex-wrap:wrap;margin:2px 0 12px}
+.dyperiod h2{margin:0;font-family:var(--display);font-size:clamp(21px,2.6vw,27px);font-weight:800}
+.dyperiod .heb{color:var(--muted);font-size:15px}
+.dymonth{border:1px solid var(--line);border-radius:18px;overflow:hidden;background:var(--panel);box-shadow:var(--shadow)}
+.dywd{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));background:var(--bg2);border-bottom:1px solid var(--line)}
+.dywd span{padding:8px 4px;text-align:center;font-size:13px;color:var(--muted)}
+.dywd b{font-weight:700}
+.dywd .s{display:none}
+.dygrid{display:grid;grid-template-columns:repeat(7,minmax(0,1fr))}
+.dycell{position:relative;min-height:122px;padding:6px 6px 8px;border-inline-start:1px solid var(--line);border-top:1px solid var(--line);cursor:pointer;display:flex;flex-direction:column;gap:4px;min-width:0;transition:background .15s}
+.dycell:nth-child(7n+1){border-inline-start:0}
+.dycell:nth-child(-n+7){border-top:0}
+.dycell:hover{background:color-mix(in srgb,var(--brand) 6%,var(--panel))}
+.dycell.shab{background:color-mix(in srgb,var(--brand) 4%,var(--panel))}
+.dycell.out{background:color-mix(in srgb,var(--bg2) 70%,var(--panel))}
+.dycell.vac{background:repeating-linear-gradient(135deg,color-mix(in srgb,var(--teal) 12%,var(--panel)) 0 9px,color-mix(in srgb,var(--teal) 7%,var(--panel)) 9px 18px)}
+.dycell.out>*{opacity:.5}
+.dycell.today .dyg{background:var(--brand);color:var(--brand-ink);box-shadow:0 4px 14px -4px var(--glow)}
+.dycell.sel{box-shadow:inset 0 0 0 2px var(--brand-text)}
+.dycell:focus-visible{outline:2px solid var(--ring);outline-offset:-3px}
+.dytop{display:flex;align-items:center;gap:4px}
+.dyg{min-width:28px;height:28px;padding:0 6px;border-radius:999px;display:inline-grid;place-items:center;font-weight:800;font-size:15px;font-variant-numeric:tabular-nums;flex:0 0 auto}
+.dyh{font-size:11.5px;color:var(--muted);line-height:1.2;flex:1;min-width:0}
+.dyadd{width:24px;height:24px;border-radius:50%;border:1px solid var(--line);background:var(--panel);color:var(--ink);cursor:pointer;opacity:0;transition:opacity .15s;font-size:13px;line-height:1;display:grid;place-items:center;padding:0;flex:0 0 auto}
+.dycell:hover .dyadd,.dyadd:focus-visible{opacity:1}
+@media (hover:none){.dyadd{display:none}}
+.dychips{display:flex;flex-wrap:wrap;gap:3px}
+.dychip{display:inline-flex;align-items:center;gap:3px;padding:1px 7px;border-radius:8px;font-size:11.5px;font-weight:600;line-height:1.35;background:var(--bg2);color:var(--ink);border:1px solid var(--line);max-width:100%}
+.dychip.j-hag,.dychip.j-erev{background:color-mix(in srgb,var(--gold,#f5c451) 22%,var(--panel));border-color:color-mix(in srgb,var(--gold,#f5c451) 60%,var(--line))}
+.dychip.j-minor,.dychip.j-omer{background:color-mix(in srgb,var(--gold,#f5c451) 11%,var(--panel));border-color:color-mix(in srgb,var(--gold,#f5c451) 35%,var(--line))}
+.dychip.j-nat{background:color-mix(in srgb,#3b82f6 15%,var(--panel));border-color:color-mix(in srgb,#3b82f6 45%,var(--line))}
+.dychip.j-fast,.dychip.j-mem{background:color-mix(in srgb,var(--muted) 16%,var(--panel))}
+.dychip.j-rc{background:none;color:var(--muted);border-style:dashed}
+.dychip.j-shab{background:var(--brand-soft);border-color:color-mix(in srgb,var(--brand-text) 35%,var(--line))}
+.dychip.e-vacation,.dychip.e-noschool{background:color-mix(in srgb,var(--teal) 22%,var(--panel));border-color:color-mix(in srgb,var(--teal) 60%,var(--line));font-weight:700}
+.dychip.e-short{background:color-mix(in srgb,var(--accent) 16%,var(--panel));border-color:color-mix(in srgb,var(--accent) 50%,var(--line))}
+.dychip.e-event{background:color-mix(in srgb,var(--teal) 8%,var(--panel));border-color:color-mix(in srgb,var(--teal) 40%,var(--line))}
+.dychips.big{gap:6px;margin:4px 0 0}
+.dychips.big .dychip{font-size:13.5px;padding:3px 11px;border-radius:999px}
+.dyents{display:flex;flex-direction:column;gap:3px}
+.dyent{--h:200;display:flex;align-items:baseline;gap:5px;text-align:start;border:0;border-radius:7px;padding:2px 6px 2px 5px;background:hsl(var(--h) var(--soft-s) var(--soft-l));font-size:12px;line-height:1.3;cursor:pointer;color:var(--ink);width:100%}
+.dyent:hover{box-shadow:inset 0 0 0 1px hsl(var(--h) var(--sat) var(--lt))}
+.dyent i{width:7px;height:7px;border-radius:50%;background:hsl(var(--h) var(--sat) var(--lt));flex:0 0 auto;align-self:center}
+.dyent b{font-weight:700;font-variant-numeric:tabular-nums}
+.dyent.done{opacity:.55}
+.dyent.done span{text-decoration:line-through}
+.dymore{font-size:11.5px;color:var(--muted);padding-inline-start:4px}
+.dydots{display:none}
+.panel.dysel{margin-top:14px}
+.dydhead{display:flex;align-items:flex-start;justify-content:space-between;gap:10px;flex-wrap:wrap;margin-bottom:6px}
+.dydhead h3{margin:0 0 2px;font-size:19px;display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.dyenote{margin:8px 0 0;font-size:13.5px;color:var(--muted)}
+.dyrows{display:flex;flex-direction:column;gap:8px;margin-top:12px}
+.dyrow{--h:200;display:flex;align-items:flex-start;gap:10px;padding:10px 12px;border-radius:14px;background:var(--bg2);border:1px solid var(--line);border-inline-start:5px solid hsl(var(--h) var(--sat) var(--lt))}
+.dyrow.done .dyrtitle span{text-decoration:line-through;opacity:.6}
+.dychk{display:grid;place-items:center;padding-top:2px}
+.dychk input{width:20px;height:20px;accent-color:var(--ok);margin:0;cursor:pointer}
+.dyrt{flex:1;min-width:0}
+.dyrtitle{display:flex;gap:4px 10px;flex-wrap:wrap;align-items:baseline;font-weight:700;font-size:15.5px;line-height:1.35}
+.dytime{font-variant-numeric:tabular-nums;color:hsl(var(--h) 60% var(--lt))}
+.dyrmeta{display:flex;gap:6px;flex-wrap:wrap;margin-top:5px}
+.dycat{font-size:12px;padding:2px 9px;border-radius:999px;background:hsl(var(--h) var(--soft-s) var(--soft-l));text-decoration:none}
+.dycat.dyrep{background:var(--panel);border:1px solid var(--line)}
+.dycat.dystu{background:var(--brand-soft);color:var(--brand-text);font-weight:600}
+.dynotes{margin-top:6px;font-size:14px;color:var(--muted);white-space:pre-wrap}
+.dyempty{margin:10px 0 0}
+.dyweek{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:8px}
+.dywcol{background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:8px;min-width:0;display:flex;flex-direction:column;gap:6px;min-height:210px;box-shadow:var(--shadow)}
+.dywcol.vac{background:repeating-linear-gradient(135deg,color-mix(in srgb,var(--teal) 12%,var(--panel)) 0 9px,color-mix(in srgb,var(--teal) 7%,var(--panel)) 9px 18px)}
+.dywcol.today{border-color:var(--brand-text);box-shadow:0 0 0 1px var(--brand-text),var(--shadow)}
+.dywhead{display:flex;flex-direction:column;align-items:center;text-decoration:none;padding-bottom:6px;border-bottom:1px solid var(--line);line-height:1.25}
+.dywhead b{font-size:13px;color:var(--muted);font-weight:600}
+.dywhead span{font-size:20px;font-weight:800;font-variant-numeric:tabular-nums}
+.dywhead small{font-size:11.5px;color:var(--muted)}
+.dywcol.today .dywhead span{color:var(--brand-text)}
+.dywadd{margin-top:auto;align-self:center}
+.dyagm{margin:20px 0 6px;font-size:17px}
+.dyagm:first-child{margin-top:0}
+.dyag{display:flex;gap:12px;padding:10px 0;border-top:1px solid var(--line)}
+.dyagd{flex:0 0 62px;display:flex;flex-direction:column;align-items:center;text-decoration:none;padding:6px 4px;border-radius:14px;background:var(--bg2);line-height:1.25;align-self:flex-start}
+.dyagd b{font-size:21px;font-weight:800}
+.dyagd span,.dyagd small{font-size:11.5px;color:var(--muted);text-align:center}
+.dyag.today .dyagd{background:var(--brand);color:var(--brand-ink)}
+.dyag.today .dyagd span,.dyag.today .dyagd small{color:inherit}
+.dyagb{flex:1;min-width:0;display:flex;flex-direction:column;gap:6px}
+.dyagb .dyrows{margin-top:0}
+.dylegend{display:flex;flex-wrap:wrap;gap:6px 14px;margin:14px 0 0;font-size:12.5px;color:var(--muted)}
+.dylegend span{--h:200;display:inline-flex;align-items:center;gap:5px}
+.dylegend i{width:10px;height:10px;border-radius:3px;background:hsl(var(--h) var(--sat) var(--lt))}
+.dylegend .lv i{background:color-mix(in srgb,var(--teal) 55%,var(--panel))}
+.dysrc{margin:12px 0 0;font-size:12.5px;color:var(--muted);line-height:1.65}
+.dysrc a{color:var(--brand-text);word-break:break-all}
+.dyform .dyrow3{display:grid;grid-template-columns:1.4fr 1fr 1fr;gap:10px}
+.dyflab{font-size:13.5px;color:var(--muted);display:block;margin-bottom:6px}
+.dycats{display:flex;flex-wrap:wrap;gap:6px}
+.dycats label{--h:200;position:relative;cursor:pointer}
+.dycats input{position:absolute;opacity:0;pointer-events:none}
+.dycats span{display:inline-flex;gap:5px;align-items:center;padding:6px 12px;border-radius:999px;border:1px solid var(--line);background:var(--bg);font-size:13.5px;transition:background .15s,border-color .15s}
+.dycats input:checked+span{background:hsl(var(--h) var(--soft-s) var(--soft-l));border-color:hsl(var(--h) var(--sat) var(--lt));font-weight:700;box-shadow:inset 0 0 0 1px hsl(var(--h) var(--sat) var(--lt))}
+.dycats input:focus-visible+span{outline:2px solid var(--ring);outline-offset:2px}
+.dydone{display:flex;gap:8px;align-items:center;font-size:15px;cursor:pointer}
+.dydone input{width:18px;height:18px;accent-color:var(--ok)}
+.dytoday{display:flex;flex-wrap:wrap;align-items:center;gap:6px 10px;padding:10px 16px;margin:0 0 14px;border-radius:16px;background:var(--panel);border:1px solid var(--line);text-decoration:none;box-shadow:var(--shadow);font-size:14px;line-height:1.45;transition:border-color .2s}
+.dytoday:hover{border-color:var(--brand-text)}
+.dytl{font-weight:800}
+.dytc{padding:2px 10px;border-radius:999px;background:color-mix(in srgb,var(--gold,#f5c451) 18%,var(--panel));font-size:13px;font-weight:600}
+.dytc.e{background:color-mix(in srgb,var(--teal) 20%,var(--panel))}
+.dyte{color:var(--muted);flex:1;min-width:0}
+.dytgo{color:var(--brand-text);font-weight:700}
+@media screen and (max-width:980px){.dyics{margin-inline-start:0}}
+@media screen and (max-width:760px){
+  .dyup{grid-template-columns:1fr}
+  .dybar{gap:8px}
+  .dyseg{display:flex;width:100%}
+  .dyseg a{flex:1;padding:7px 4px}
+  .dywd span{padding:6px 0;font-size:12px}
+  .dywd .l{display:none}.dywd .s{display:inline}
+  .dycell{min-height:60px;padding:4px 1px 5px;align-items:center;gap:2px}
+  .dytop{flex-direction:column;gap:0}
+  .dyg{min-width:26px;height:26px;font-size:14px;padding:0 4px}
+  .dyh{font-size:10px;text-align:center}
+  .dycell .dychips,.dycell .dyents,.dyadd{display:none}
+  .dydots{display:flex;gap:3px;justify-content:center;flex-wrap:wrap}
+  .dydots i{--h:200;width:6px;height:6px;border-radius:50%;background:hsl(var(--h) var(--sat) var(--lt))}
+  .dydots i.v{background:var(--teal)}.dydots i.e{background:none;box-shadow:inset 0 0 0 1.5px var(--teal)}.dydots i.j{background:var(--gold,#f5c451)}
+  .dyweek{grid-template-columns:1fr}
+  .dywcol{min-height:0}
+  .dywhead{flex-direction:row;gap:10px;justify-content:flex-start;align-items:baseline}
+  .dywadd{align-self:flex-start}
+  .dyform .dyrow3{grid-template-columns:1fr 1fr}
+  .dyform .dyrow3 label:first-child{grid-column:1/-1}
+  .dynxd{flex-basis:64px}
+}
+@media print{
+  .dymonth{box-shadow:none;border-color:#999;border-radius:6px}
+  .dywd{background:#eee!important}
+  .dywd .l{display:inline!important}.dywd .s{display:none!important}
+  .dycell{min-height:88px!important;background:#fff!important;border-color:#bbb!important;break-inside:avoid}
+  .dycell.vac{background:#e8f5f1!important}
+  .dycell.out>*{opacity:.45}
+  .dycell.sel{box-shadow:none}
+  .dycell.today .dyg{background:none;color:#000;box-shadow:inset 0 0 0 1.5px #000}
+  .dychip,.dyent{background:#fff!important;color:#000!important;border:1px solid #bbb!important;font-size:8.5pt}
+  .dyent i,.dylegend i{-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  .dywcol,.dyrow{box-shadow:none;background:#fff!important;border-color:#bbb}
+  .dyweek{grid-template-columns:repeat(7,minmax(0,1fr))!important}
+  .dysrc{font-size:8.5pt;color:#333}
+  .dybanner{padding:10px 14px}
+}
 </style>
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="apple-touch-icon" href="icon-192.png">
@@ -3906,6 +4088,184 @@ window.__rolesState = S;   // for testing in the console
 
 </script>
 <script>
+/* edu-calendar.js – לוח החופשות של משרד החינוך, חינוך רשמי (ממלכתי וממלכתי-דתי), בית ספר יסודי.
+   מקור: הודעת מנכ"ל "לוח החופשות והחגים בשנת הלימודים תשפ"ז בגני ילדים, בבתי ספר יסודיים, בחטיבות הביניים
+   ובכל מוסדות החינוך הרשמי" (י"ב בניסן תשפ"ו, 30.3.2026). נקרא ונבדק מול המקור ב-29.9.2026.
+   כל טווח = ימים שאין בהם לימודים, כולל היום הראשון והאחרון ("הלימודים יתחדשו ביום…" = היום שאחרי `to`).
+   לא הוזן שום תאריך שלא הופיע במקור. */
+(function(){
+'use strict';
+const SRC = 'https://apps.education.gov.il/mankal/Hodaa.aspx?siduri=362';
+window.EDU_META = {
+  src: SRC,
+  srcTitle: 'לוח החופשות והחגים בשנת הלימודים תשפ״ז – חינוך רשמי (הודעת מנכ״ל, 30.3.2026)',
+  fetched: '2026-09-29',
+  years: 'תשפ״ז (2026–2027) · מתשפ״ח פורסם עד כה רק מועד הפתיחה',
+  unverified: [
+    'תשפ״ח: לוח החופשות המלא עדיין לא פורסם – מופיע רק יום הפתיחה (1.9.2027).',
+    'יום הבחירות לכנסת (27.10.2026) אינו מופיע בלוח החופשות, ולכן לא סומן כיום חופש.'
+  ]
+};
+window.EDU_CAL = [
+  {from:'2026-09-01', to:'2026-09-01', title:'פתיחת שנת הלימודים תשפ״ז', kind:'event', src:SRC},
+  {from:'2026-09-11', to:'2026-09-13', title:'חופשת ראש השנה', kind:'vacation', src:SRC, note:'הלימודים מתחדשים ביום שני, 14.9'},
+  {from:'2026-09-14', to:'2026-09-14', title:'צום גדליה – סיום ב-13:30', kind:'short', src:SRC, note:'יום לימודים; בבתי ספר שבהם המורים והתלמידים צמים הלימודים מסתיימים ב-13:30'},
+  {from:'2026-09-20', to:'2026-09-21', title:'חופשת יום הכיפורים', kind:'vacation', src:SRC},
+  {from:'2026-09-22', to:'2026-09-24', title:'חופשה בין יום הכיפורים לסוכות', kind:'vacation', src:SRC},
+  {from:'2026-09-25', to:'2026-10-03', title:'חופשת סוכות', kind:'vacation', src:SRC, note:'הלימודים מתחדשים ביום ראשון, 4.10 (אסרו חג הוא יום לימודים)'},
+  {from:'2026-10-05', to:'2026-10-05', title:'יום הזיכרון לאירועי 7 באוקטובר', kind:'event', src:SRC, note:'יום לימודים'},
+  {from:'2026-10-22', to:'2026-10-22', title:'יום הזיכרון ליצחק רבין', kind:'event', src:SRC, note:'יום לימודים'},
+  {from:'2026-12-06', to:'2026-12-12', title:'חופשת חנוכה', kind:'vacation', src:SRC, note:'הלימודים מתחדשים ביום ראשון, 13.12'},
+  {from:'2026-12-20', to:'2026-12-20', title:'עשרה בטבת – סיום ב-13:30', kind:'short', src:SRC, note:'יום לימודים; בבתי ספר שבהם המורים והתלמידים צמים הלימודים מסתיימים ב-13:30'},
+  {from:'2027-03-22', to:'2027-03-22', title:'תענית אסתר – סיום ב-13:30', kind:'short', src:SRC, note:'יום לימודים; בבתי ספר שבהם המורים והתלמידים צמים הלימודים מסתיימים ב-13:30'},
+  {from:'2027-03-23', to:'2027-03-24', title:'חופשת פורים', kind:'vacation', src:SRC, note:'הלימודים מתחדשים ביום חמישי, 25.3'},
+  {from:'2027-04-13', to:'2027-04-28', title:'חופשת פסח', kind:'vacation', src:SRC, note:'הלימודים מתחדשים ביום חמישי, 29.4 (אסרו חג הוא יום לימודים)'},
+  {from:'2027-05-04', to:'2027-05-04', title:'יום הזיכרון לשואה ולגבורה', kind:'event', src:SRC, note:'יום לימודים'},
+  {from:'2027-05-11', to:'2027-05-11', title:'יום הזיכרון – סיום ב-12:00', kind:'short', src:SRC, note:'הלימודים מסתיימים ב-12:00'},
+  {from:'2027-05-12', to:'2027-05-12', title:'יום העצמאות – אין לימודים', kind:'noschool', src:SRC},
+  {from:'2027-05-25', to:'2027-05-25', title:'ל״ג בעומר – יום לימודים', kind:'event', src:SRC},
+  {from:'2027-06-10', to:'2027-06-11', title:'חופשת שבועות', kind:'vacation', src:SRC, note:'הלימודים מתחדשים ביום ראשון, 13.6'},
+  {from:'2027-06-30', to:'2027-06-30', title:'יום הלימודים האחרון ביסודי', kind:'event', src:SRC, note:'בחטיבות הביניים השנה מסתיימת ב-20.6.2027'},
+  {from:'2027-09-01', to:'2027-09-01', title:'פתיחת שנת הלימודים תשפ״ח', kind:'event', src:SRC}
+];
+})();
+
+</script>
+<script>
+/* hebday.js – the home hero's day line: live clock · greeting · Hebrew date · holiday / special day · Omer count.
+   Works in the app (#view, .hero.withkid) and in the library site (#app, section.hero). Pure Intl – no data files. */
+(function(){
+'use strict';
+if (window.hebDay) return;
+const DAY = 864e5;
+const add = (d, n) => new Date(d.getFullYear(), d.getMonth(), d.getDate() + n);
+const fmtEn = new Intl.DateTimeFormat('en-u-ca-hebrew', {day: 'numeric', month: 'long', year: 'numeric'});
+const fmtHe = new Intl.DateTimeFormat('he-IL-u-ca-hebrew', {month: 'long'});
+function heb(d){ const p = {}; fmtEn.formatToParts(d).forEach(x => p[x.type] = x.value); return {d: +p.day, m: p.month, y: +p.year}; }
+const leap = y => ((7 * y + 1) % 19) < 7;
+function gem(n){
+  const L = [[400,'ת'],[300,'ש'],[200,'ר'],[100,'ק'],[90,'צ'],[80,'פ'],[70,'ע'],[60,'ס'],[50,'נ'],[40,'מ'],[30,'ל'],[20,'כ'],[10,'י'],[9,'ט'],[8,'ח'],[7,'ז'],[6,'ו'],[5,'ה'],[4,'ד'],[3,'ג'],[2,'ב'],[1,'א']];
+  let s = ''; n %= 1000;
+  for (const [v, c] of L) while (n >= v) { if (n === 15) { s += 'טו'; n = 0; break; } if (n === 16) { s += 'טז'; n = 0; break; } s += c; n -= v; }
+  return s.length > 1 ? s.slice(0, -1) + '״' + s.slice(-1) : s + '׳';
+}
+function hebDate(d){ try { const h = heb(d); return `${gem(h.d)} ב${fmtHe.format(d).replace(/^ב/, '')} ${gem(h.y)}`; } catch (e) { return ''; } }
+/* the date on which Hebrew day `day` of the current Hebrew month falls */
+const sameMonth = (d, h, day) => add(d, day - h.d);
+const same = (a, b) => a.getFullYear() === b.getFullYear() && a.getMonth() === b.getMonth() && a.getDate() === b.getDate();
+
+/* holidays & special days (Israel) for civil date d → list of labels */
+function special(d){
+  const h = heb(d), m = h.m, dd = h.d, dow = d.getDay(), out = [];
+  const on = (mon, day) => m === mon && dd === day;
+  const purimMonth = leap(h.y) ? 'Adar II' : 'Adar';
+  // Tishrei
+  if (on('Elul', 29)) out.push('ערב ראש השנה');
+  if (on('Tishri', 1) || on('Tishri', 2)) out.push('ראש השנה');
+  if (m === 'Tishri') { const g = sameMonth(d, h, 3); const obs = g.getDay() === 6 ? add(g, 1) : g; if (same(d, obs)) out.push('צום גדליה'); }
+  if (on('Tishri', 9)) out.push('ערב יום כיפור');
+  if (on('Tishri', 10)) out.push('יום כיפור');
+  if (on('Tishri', 14)) out.push('ערב סוכות');
+  if (on('Tishri', 15)) out.push('סוכות');
+  if (m === 'Tishri' && dd >= 16 && dd <= 20) out.push('חול המועד סוכות');
+  if (on('Tishri', 21)) out.push('הושענא רבה');
+  if (on('Tishri', 22)) out.push('שמיני עצרת ושמחת תורה');
+  // Chanukah: 25 Kislev + 8 days (Kislev has 29 or 30 days)
+  if (m === 'Kislev' && dd >= 25) out.push(`חנוכה – נר ${gem(dd - 24)}`);
+  if (m === 'Tevet' && dd <= 3) { const kisLast = heb(add(d, -dd)).d; const n = kisLast - 24 + dd; if (n <= 8) out.push(`חנוכה – נר ${gem(n)}`); }
+  if (on('Tevet', 10)) out.push('עשרה בטבת');
+  if (on('Shevat', 15)) out.push('ט״ו בשבט');
+  // Adar / Purim
+  if (m === 'Adar I' && dd === 14) out.push('פורים קטן');
+  if (m === purimMonth) { const t = sameMonth(d, h, 13); const obs = t.getDay() === 6 ? add(t, -2) : t; if (same(d, obs)) out.push('תענית אסתר'); }
+  if (m === purimMonth && dd === 14) out.push('פורים');
+  if (m === purimMonth && dd === 15) out.push('שושן פורים');
+  // Nisan
+  if (on('Nisan', 14)) out.push('ערב פסח');
+  if (on('Nisan', 15)) out.push('פסח');
+  if (m === 'Nisan' && dd >= 16 && dd <= 20) out.push('חול המועד פסח');
+  if (on('Nisan', 21)) out.push('שביעי של פסח');
+  if (m === 'Nisan') { const s = sameMonth(d, h, 27), w = s.getDay(); const obs = w === 5 ? add(s, -1) : w === 0 ? add(s, 1) : s; if (same(d, obs)) out.push('יום הזיכרון לשואה ולגבורה'); }
+  // Iyar: Yom HaZikaron / HaAtzmaut with the Israeli moves
+  if (m === 'Iyar' || (m === 'Nisan' && dd >= 29)) {
+    const i5 = m === 'Iyar' ? sameMonth(d, h, 5) : add(d, 30 - dd + 5), w = i5.getDay();
+    const atz = w === 5 ? add(i5, -1) : w === 6 ? add(i5, -2) : w === 1 ? add(i5, 1) : i5, zik = add(atz, -1);
+    if (same(d, zik)) out.push('יום הזיכרון לחללי מערכות ישראל'); if (same(d, atz)) out.push('יום העצמאות');
+  }
+  if (on('Iyar', 18)) out.push('ל״ג בעומר');
+  if (on('Iyar', 28)) out.push('יום ירושלים');
+  if (on('Sivan', 5)) out.push('ערב שבועות');
+  if (on('Sivan', 6)) out.push('שבועות');
+  if (m === 'Tamuz') { const t = sameMonth(d, h, 17); const obs = t.getDay() === 6 ? add(t, 1) : t; if (same(d, obs)) out.push('צום י״ז בתמוז'); }
+  if (m === 'Av') { const t = sameMonth(d, h, 9); const obs = t.getDay() === 6 ? add(t, 1) : t; if (same(d, obs)) out.push(obs === t ? 'תשעה באב' : 'תשעה באב (נדחה)'); }
+  if (on('Av', 15)) out.push('ט״ו באב');
+  // Rosh Chodesh (not Rosh Hashana)
+  if (dd === 30 || (dd === 1 && m !== 'Tishri')) { const nm = dd === 30 ? add(d, 1) : d; out.push('ראש חודש ' + fmtHe.format(nm).replace(/^ב/, '')); }
+  if (dow === 5) out.push('ערב שבת'); if (dow === 6) out.push('שבת שלום');
+  return out;
+}
+function omer(d){ const h = heb(d); const n = h.m === 'Nisan' && h.d >= 16 ? h.d - 15 : h.m === 'Iyar' ? h.d + 15 : h.m === 'Sivan' && h.d <= 5 ? h.d + 44 : 0; return n; }
+const greet = d => { const x = d.getHours(); return x >= 5 && x < 12 ? 'בוקר טוב' : x >= 12 && x < 17 ? 'צהריים טובים' : x >= 17 && x < 22 ? 'ערב טוב' : 'לילה טוב'; };
+const clock = d => String(d.getHours()).padStart(2, '0') + ':' + String(d.getMinutes()).padStart(2, '0');
+const ICON = s => /חנוכה/.test(s) ? '🕎' : /שבת/.test(s) ? '🕯️' : /סוכות|הושענא|שמיני/.test(s) ? '🌿' : /פסח/.test(s) ? '🍷' : /פורים/.test(s) ? '🎭' : /עצמאות|ירושלים/.test(s) ? '🇮🇱' : /זיכרון|שואה|צום|תענית|תשעה|כיפור|עשרה/.test(s) ? '🕯️' : /ראש השנה/.test(s) ? '🍎' : /שבועות/.test(s) ? '🌾' : /בשבט/.test(s) ? '🌳' : /ל״ג/.test(s) ? '🔥' : /ראש חודש/.test(s) ? '🌙' : '✨';
+
+function barHTML(now){
+  const hol = special(now), om = omer(now), hd = hebDate(now);
+  return `<span class="hd-clock"><time dir="ltr" datetime="${now.toISOString()}">${clock(now)}</time></span><span class="hd-greet">${greet(now)}</span>${hd ? `<span class="hd-dot" aria-hidden="true"></span><span class="hd-date">${hd}</span>` : ''}${hol.map(s => `<span class="hd-hol"><span aria-hidden="true">${ICON(s)}</span> ${s}</span>`).join('')}${om ? `<span class="hd-hol hd-omer"><span aria-hidden="true">🌾</span> ספירת העומר: היום ${gem(om)} לעומר</span>` : ''}`;
+}
+function tick(){ const now = window.__hdNow ? new Date(window.__hdNow) : new Date(); document.querySelectorAll('.hebday').forEach(el => { el.innerHTML = barHTML(now); }); }
+let timer = 0;
+function schedule(){ clearTimeout(timer); const n = new Date(); timer = setTimeout(() => { tick(); schedule(); }, (60 - n.getSeconds()) * 1000 - n.getMilliseconds() + 50); }
+
+const CSS = `
+.hebday{display:flex;flex-wrap:wrap;align-items:center;gap:8px 10px;width:fit-content;max-width:100%;margin:0 0 18px;padding:7px 14px 7px 8px;border-radius:999px;position:relative;
+  background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.22);-webkit-backdrop-filter:blur(10px) saturate(1.4);backdrop-filter:blur(10px) saturate(1.4);box-shadow:inset 0 1px 0 rgba(255,255,255,.18),0 10px 26px -14px rgba(0,0,0,.5);color:#fff;font-size:14.5px;font-weight:600;line-height:1.35}
+.hebday::after{content:"";position:absolute;inset:auto 18px -1px;height:1px;background:linear-gradient(90deg,transparent,#f5c451,transparent);opacity:.9}
+.hd-clock{display:inline-grid;place-items:center;padding:3px 11px;border-radius:999px;background:linear-gradient(135deg,rgba(245,196,81,.3),rgba(224,145,58,.22));border:1px solid rgba(245,196,81,.55);font-weight:800;font-size:15.5px;letter-spacing:.5px;font-variant-numeric:tabular-nums;color:#fff3d6}
+.hd-greet{font-weight:800}
+.hd-dot{width:5px;height:5px;border-radius:50%;background:#f5c451;opacity:.85}
+.hd-date{color:#f3eeff}
+.hd-hol{display:inline-flex;align-items:center;gap:4px;padding:3px 11px;border-radius:999px;background:rgba(245,196,81,.16);border:1px solid rgba(245,196,81,.45);color:#fff1c9;font-weight:700;font-size:13.5px}
+.hero .hebday{animation:hd-in .6s cubic-bezier(.2,.8,.2,1) both}
+@keyframes hd-in{from{opacity:0;transform:translateY(-6px)}to{opacity:1;transform:none}}
+@media (max-width:700px){.hebday{border-radius:18px;padding:8px 10px;font-size:13.5px;gap:6px 8px}.hd-clock{font-size:14.5px}}
+@media (prefers-reduced-motion:reduce){.hero .hebday{animation:none}}
+@media print{.hebday{display:none!important}}
+`;
+function boot(){
+  if (!document.getElementById('hebday-css')) { const s = document.createElement('style'); s.id = 'hebday-css'; s.textContent = CSS; document.head.appendChild(s); }
+  const view = document.getElementById('view'), app = !view && document.getElementById('app'), root = view || app; if (!root) return;
+  const scan = () => {
+    const hero = root.querySelector(view ? '.hero.withkid' : 'section.hero'); if (!hero || hero.querySelector('.hebday')) return;
+    const div = '<div class="hebday" role="status" aria-live="off"></div>';
+    if (view) { const h1 = hero.querySelector('h1'); h1 ? h1.insertAdjacentHTML('beforebegin', div) : hero.insertAdjacentHTML('afterbegin', div); }
+    else { const c = hero.querySelector('.container') || hero; c.insertAdjacentHTML('afterbegin', div); }
+    tick();
+  };
+  scan(); new MutationObserver(scan).observe(root, {childList: true}); schedule();
+  document.addEventListener('visibilitychange', () => { if (!document.hidden) { tick(); schedule(); } });
+}
+/* calendar use (📅 יומן): the Hebrew date + special-day labels of any civil date, each with an icon and a kind
+   kind: erev · hag (yom tov) · nat (national) · fast · mem (memorial) · rc (rosh chodesh) · shab · minor */
+const KIND = s => /^ערב/.test(s) ? 'erev' : /^ראש השנה$|^יום כיפור$|^סוכות$|^שמיני עצרת|^פסח$|^שביעי של פסח$|^שבועות$/.test(s) ? 'hag'
+  : /עצמאות|ירושלים/.test(s) ? 'nat' : /צום|תענית|תשעה באב|עשרה בטבת/.test(s) ? 'fast' : /זיכרון/.test(s) ? 'mem' : /^ראש חודש/.test(s) ? 'rc' : /^שבת$/.test(s) ? 'shab' : 'minor';
+const memo = new Map();
+function dayInfo(d){
+  const k = d.getFullYear() + '-' + d.getMonth() + '-' + d.getDate(); if (memo.has(k)) return memo.get(k);
+  let o;
+  try {
+    const h = heb(d), om = omer(d);
+    const items = special(d).filter(s => s !== 'ערב שבת').map(s => s === 'שבת שלום' ? 'שבת' : s).map(t => ({t, icon: ICON(t), kind: KIND(t)}));
+    o = {heb: h, hebDate: hebDate(d), day: gem(h.d), month: fmtHe.format(d).replace(/^ב/, ''), year: gem(h.y), items, omer: om, omerText: om ? `${gem(om)} לעומר` : ''};
+  } catch (e) { o = {heb: null, hebDate: '', day: '', month: '', year: '', items: [], omer: 0, omerText: ''}; }
+  if (memo.size > 3000) memo.clear(); memo.set(k, o); return o;
+}
+if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', boot); else boot();
+window.hebDay = {special, omer, hebDate, greet, heb, tick, dayInfo, gem};
+})();
+
+</script>
+<script>
 /* CBT app – school counseling. Plain JS, no dependencies. */
 (function(){
 'use strict';
@@ -4244,7 +4604,7 @@ function ui(){
 }
 
 /* ================= routing & shell ================= */
-const NAV = [['home','🏠','בית'],['ask','💬','שאל שאלה'],['problems','🧭','מנווט בעיות'],['students','🧒','תלמידים'],['workflow','🗺️','סדר עבודה'],['crole','🎯','תפקיד היועץ'],['roles','👥','מי פונה למי'],['circ','📜','חוזרי מנכ״ל'],['aklim','⚖️','אקלים ומדרג התגובות'],['tools','🧰','כלים לילדים'],['tracks','🧭','טיפול מובנה'],['distress','🚨','סימני מצוקה'],['talk','🗣️','ראיון ושיח רגשי'],['sel','💞','למידה רגשית-חברתית'],['mafteach','🧩','כישורי חיים ומפתח הל״ב'],['sped','🧩','חינוך מיוחד והכלה'],['tzalach','🛟','צל״ח – צוות חירום'],['develop','🌳','התפתחות הילד'],['cbtclass','🏫','יישום CBT בכיתה'],['groups','👥','הנחיית קבוצות'],['programs','🏗️','תוכניות התערבות'],['transitions','🚪','מעברים'],['newteachers','🌱','מורים חדשים'],['parents','🤝','הורים'],['reports','🎓','תעודות'],['games','🎲','משחקים טיפוליים'],['videos','🎬','סרטונים'],['library','📚','ספרייה'],['settings','⚙️','הגדרות']];
+const NAV = [['home','🏠','בית'],['diary','📅','יומן'],['ask','💬','שאל שאלה'],['problems','🧭','מנווט בעיות'],['students','🧒','תלמידים'],['workflow','🗺️','סדר עבודה'],['crole','🎯','תפקיד היועץ'],['roles','👥','מי פונה למי'],['circ','📜','חוזרי מנכ״ל'],['aklim','⚖️','אקלים ומדרג התגובות'],['tools','🧰','כלים לילדים'],['tracks','🧭','טיפול מובנה'],['distress','🚨','סימני מצוקה'],['talk','🗣️','ראיון ושיח רגשי'],['sel','💞','למידה רגשית-חברתית'],['mafteach','🧩','כישורי חיים ומפתח הל״ב'],['sped','🧩','חינוך מיוחד והכלה'],['tzalach','🛟','צל״ח – צוות חירום'],['develop','🌳','התפתחות הילד'],['cbtclass','🏫','יישום CBT בכיתה'],['groups','👥','הנחיית קבוצות'],['programs','🏗️','תוכניות התערבות'],['transitions','🚪','מעברים'],['newteachers','🌱','מורים חדשים'],['parents','🤝','הורים'],['reports','🎓','תעודות'],['games','🎲','משחקים טיפוליים'],['videos','🎬','סרטונים'],['library','📚','ספרייה'],['settings','⚙️','הגדרות']];
 function route(){ const h = location.hash.replace(/^#\/?/, '').split('/').map(decodeURIComponent); return {r: h[0] || 'home', id: h[1], sub: h[2], x: h[3]}; }
 let timers = [];
 function clearTimers(){ timers.forEach(t => { clearTimeout(t); clearInterval(t); }); timers = []; }
@@ -4267,7 +4627,7 @@ function render(){
   document.body.classList.toggle('locked', isLocked());
   if (isLocked()) { const o = lockView(); $('#title').textContent = ''; $('#view').innerHTML = `<div class="page">${o.html}</div>`; document.title = 'CBT בבית הספר'; return; }
   if (WEB && !ARTIFACT && !LITE && !PROBLEMS.length) { $('#title').textContent = ''; $('#view').innerHTML = `<div class="empty" style="padding-top:120px"><span class="big">⏳</span>${Cloud.status === 'error' ? esc(Cloud.err) + ' <br><br><button class="btn primary" data-act="cloud-retry">נסו שוב</button>' : 'טוען את התוכן מ-OneDrive…'}</div>`; return; }
-  const views = LITE ? {home: liteHome, problems, problem: problemView, tools, tool: toolView, settings: liteSettings, ask, workflow, roles: rolesView, circ: circView, circsrc: circSrcView, libsrc: libSrcView, circask: circAskView, find: findView, more: moreView, games: gamesView, game: gameView, tracks: tracksView, track: trackView, groups: groupsView, transitions: hubView, newteachers: hubView, programs: hubView, distress: hubView, talk: hubView, parents: hubView, reports: hubView, sel: hubView, mafteach: hubView, sped: hubView, tzalach: hubView, aklim: hubView,develop: hubView, cbtclass: hubView, crole: hubView, videos: videosView} : {home, problems, problem: problemView, students, student: studentView, tools, tool: toolView, library, settings, ask, workflow, roles: rolesView, circ: circView, circsrc: circSrcView, libsrc: libSrcView, circask: circAskView, find: findView, more: moreView, games: gamesView, game: gameView, tracks: tracksView, track: trackView, groups: groupsView, transitions: hubView, newteachers: hubView, programs: hubView, distress: hubView, talk: hubView, parents: hubView, reports: hubView, sel: hubView, mafteach: hubView, sped: hubView, tzalach: hubView, aklim: hubView,develop: hubView, cbtclass: hubView, crole: hubView, videos: videosView};
+  const views = LITE ? {home: liteHome, problems, problem: problemView, tools, tool: toolView, settings: liteSettings, ask, workflow, roles: rolesView, circ: circView, circsrc: circSrcView, libsrc: libSrcView, circask: circAskView, find: findView, more: moreView, games: gamesView, game: gameView, tracks: tracksView, track: trackView, groups: groupsView, transitions: hubView, newteachers: hubView, programs: hubView, distress: hubView, talk: hubView, parents: hubView, reports: hubView, sel: hubView, mafteach: hubView, sped: hubView, tzalach: hubView, aklim: hubView,develop: hubView, cbtclass: hubView, crole: hubView, videos: videosView, diary: diaryView} : {home, problems, problem: problemView, students, student: studentView, tools, tool: toolView, library, settings, ask, workflow, roles: rolesView, circ: circView, circsrc: circSrcView, libsrc: libSrcView, circask: circAskView, find: findView, more: moreView, games: gamesView, game: gameView, tracks: tracksView, track: trackView, groups: groupsView, transitions: hubView, newteachers: hubView, programs: hubView, distress: hubView, talk: hubView, parents: hubView, reports: hubView, sel: hubView, mafteach: hubView, sped: hubView, tzalach: hubView, aklim: hubView,develop: hubView, cbtclass: hubView, crole: hubView, videos: videosView, diary: diaryView};
   const fn = views[R.r] || home;
   const out = fn(R);
   $('#title').textContent = out.title;
@@ -4350,6 +4710,7 @@ function home(){
     <div class="actions"><button class="btn" data-act="newstudent">＋ תלמיד חדש</button><a class="btn" href="#/problems">🧭 בחירת בעיה</a><a class="btn" href="#/workflow">🗺️ סדר עבודה</a><a class="btn" href="#/tools">🧰 כלים לילדים</a></div></section>`;
   if (SYNC.status === 'signedout') h += `<div class="note warn no-print">☁️ כדי לראות את התלמידים ואת הספרייה מכל מכשיר – <button class="btn primary sm" data-act="cloud-login">התחברות עם חשבון מיקרוסופט</button></div>`;
   else if (SYNC.status !== 'ok' && SYNC.status !== 'connecting') h += `<div class="note warn no-print">💾 הנתונים נשמרים כרגע רק במכשיר הזה. <a href="#/settings">להגדרת סנכרון עם OneDrive</a></div>`;
+  h += dyTodayStrip();
   h += `<div class="three" style="margin-top:16px"><div class="stat"><b>${act.length}</b><span>תלמידים בטיפול</span></div><div class="stat"><b>${sessMonth}</b><span>מפגשים החודש</span></div><div class="stat"><b>${PROBLEMS.length}</b><span>מפות טיפול</span></div></div>`;
   h += homeTiles();
   if (a) h += `<h2 class="sec">⭐ בעבודה עכשיו</h2><div class="grid wide">${studentCard(a)}</div>`;
@@ -5221,6 +5582,7 @@ function liteHome(){
     <p>מפות טיפול CBT לבעיות נפוצות בבית הספר היסודי, עוזר לשאלות, סדר עבודה וכלים אינטראקטיביים לילדים.</p>
     <form id="homeask" style="display:flex;gap:8px;margin-top:18px;max-width:720px"><input class="inp" id="homeq" placeholder="💬 שאלו שאלה… למשל: ילד שבוכה כל בוקר בשער" style="flex:1;height:48px;border:0;font-size:16px"><button class="btn primary" type="submit">תשובה</button></form>
     <div class="actions"><a class="btn" href="#/problems">🧭 בחירת בעיה</a><a class="btn" href="#/workflow">🗺️ סדר עבודה</a><a class="btn" href="#/tools">🧰 כלים לילדים</a></div></section>`;
+  h += dyTodayStrip();
   h += `<div class="three"><div class="stat"><b>${PROBLEMS.length}</b><span>מפות טיפול</span></div><div class="stat"><b>${sessions}</b><span>מפגשים מפורטים</span></div><div class="stat"><b>${TOOLS.length}</b><span>כלים לילדים</span></div></div>`;
   h += `<h2 class="sec">🧭 מפות טיפול <small>לפי תחום</small></h2><div class="grid">${PROBLEMS.slice(0, 8).map(problemCard).join('')}</div>
     <div style="margin-top:12px"><a class="btn" href="#/problems">לכל ${PROBLEMS.length} הבעיות ←</a></div>`;
@@ -7301,7 +7663,7 @@ function doOut(k){
     setTimeout(() => { window.print(); document.querySelectorAll('#view details').forEach(d => { d.open = !!d.dataset.wasOpen; }); if (sel) { sel.remove(); document.body.classList.remove('selprint'); } }, k === 'pdf' ? 900 : 50);
 }
 const SHARE_BASE = 'https://nadav1948-lgtm.github.io/nadavcbt/';
-function shareBlocked(){ const r = route().r; if (['student', 'students', 'settings'].includes(r) || (r === 'tool' && route().id === 'sociometry')) { toast('⛔ מהעמוד הזה אי אפשר לשתף – יש בו מידע על תלמידים.'); return true; } return false; }
+function shareBlocked(){ const r = route().r; if (['student', 'students', 'settings', 'diary'].includes(r) || (r === 'tool' && route().id === 'sociometry')) { toast('⛔ מהעמוד הזה אי אפשר לשתף – יש בו מידע על תלמידים.'); return true; } return false; }
 function shareSnapshot(){
   document.querySelectorAll('#view details').forEach(d => d.open = true);
   let clone = $('#view .page').cloneNode(true);
@@ -7383,6 +7745,296 @@ function slideShow(){
   document.body.appendChild(o); document.addEventListener('keydown', key); show();
   try { o.requestFullscreen && o.requestFullscreen().then(show).catch(() => {}); } catch(e){}
 }
+/* ================= 📅 יומן – my planner (S.diary, synced by save()) · Ministry of Education vacations (app/edu-calendar.js) · Hebrew calendar (app/hebday.js) =================
+   entry: {id, title, date:'YYYY-MM-DD', time, end, cat, notes, sid (student id only), rep:{freq:'weekly'|'monthly', until} | null, done, doneOn:[dates of a series], skip:[deleted dates of a series]} */
+const DY_CATS = [
+  {id: 'student', name: 'פגישה עם תלמיד', icon: '🧒', h: 210},
+  {id: 'parents', name: 'פגישת הורים', icon: '🤝', h: 28},
+  {id: 'staff', name: 'ישיבת צוות', icon: '👥', h: 265},
+  {id: 'teacher', name: 'שיחת מחנך', icon: '🗣️', h: 168},
+  {id: 'committee', name: 'ועדה / שילוב', icon: '📋', h: 330},
+  {id: 'training', name: 'השתלמות', icon: '🎓', h: 48},
+  {id: 'reminder', name: 'תזכורת', icon: '🔔', h: 0},
+  {id: 'other', name: 'אחר', icon: '📌', h: 120}
+];
+const DYCAT = id => DY_CATS.find(c => c.id === id) || DY_CATS[DY_CATS.length - 1];
+const DY_WD = ['ראשון', 'שני', 'שלישי', 'רביעי', 'חמישי', 'שישי', 'שבת'];
+const DY_WS = ['א׳', 'ב׳', 'ג׳', 'ד׳', 'ה׳', 'ו׳', 'ש׳'];
+const DY_MN = ['ינואר', 'פברואר', 'מרץ', 'אפריל', 'מאי', 'יוני', 'יולי', 'אוגוסט', 'ספטמבר', 'אוקטובר', 'נובמבר', 'דצמבר'];
+const DY_EDU_ICON = {vacation: '🏖️', noschool: '🚫', short: '⏱️', event: '🏫'};
+const dyYmd = d => `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+const dyParse = s => { const m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(s || ''); if (!m) return null; const d = new Date(+m[1], +m[2] - 1, +m[3]); return isNaN(d) ? null : d; };
+const dyAdd = (d, n) => new Date(d.getFullYear(), d.getMonth(), d.getDate() + n);
+const dyNow = () => dyYmd(new Date());
+const dyDiff = (a, b) => Math.round((dyParse(b) - dyParse(a)) / 864e5);
+const dyShort = s => { const d = dyParse(s); return d ? `${d.getDate()}.${d.getMonth() + 1}` : ''; };
+const dyLong = s => { const d = dyParse(s); return `יום ${DY_WD[d.getDay()]}, ${d.getDate()} ב${DY_MN[d.getMonth()]} ${d.getFullYear()}`; };
+const dyList = () => { if (!Array.isArray(S.diary)) S.diary = []; return S.diary; };
+const dyJew = s => { try { if (window.hebDay && window.hebDay.dayInfo) return window.hebDay.dayInfo(dyParse(s)); } catch(e){} return {items: [], day: '', month: '', year: '', hebDate: '', omerText: '', heb: null}; };
+const dyEdu = s => (window.EDU_CAL || []).filter(x => x.from <= s && s <= (x.to || x.from));
+const dyIsDone = (e, s) => e.rep ? (e.doneOn || []).includes(s) : !!e.done;
+const DY_L = Object.assign({mine: true, edu: true, jew: true}, ls.get('cbtapp.diary.layers', {}));
+let DY_CUR = null, DY_SEL = null;
+/* every occurrence between two dates (inclusive), repeats expanded, sorted by date and time (all-day first) */
+function dyOcc(from, to){
+  const out = [];
+  for (const e of dyList()) {
+    if (!dyParse(e.date)) continue;
+    const r = e.rep && e.rep.freq;
+    if (!r) { if (e.date >= from && e.date <= to) out.push({e, date: e.date}); continue; }
+    const start = dyParse(e.date), until = e.rep.until && e.rep.until >= e.date ? e.rep.until : dyYmd(dyAdd(start, 365));
+    const end = until < to ? until : to, skip = e.skip || [];
+    for (let i = 0; i < 600; i++) {
+      const d = r === 'weekly' ? dyAdd(start, 7 * i) : new Date(start.getFullYear(), start.getMonth() + i, start.getDate());
+      if (r === 'monthly' && d.getDate() !== start.getDate()) continue;   // no 31st in this month – skipped, like Google/Outlook
+      const s = dyYmd(d); if (s > end) break; if (s < from || skip.includes(s)) continue;
+      out.push({e, date: s});
+    }
+  }
+  return out.sort((a, b) => a.date.localeCompare(b.date) || (a.e.time || '').localeCompare(b.e.time || ''));
+}
+const dyJewChip = x => `<span class="dychip j-${x.kind}"><span aria-hidden="true">${x.icon}</span> ${esc(x.t)}</span>`;
+const dyEduChip = x => `<span class="dychip e-${x.kind}"><span aria-hidden="true">${DY_EDU_ICON[x.kind] || '🏫'}</span> ${esc(x.title)}</span>`;
+const dyEntChip = o => { const c = DYCAT(o.e.cat);
+  return `<button type="button" class="dyent${dyIsDone(o.e, o.date) ? ' done' : ''}" style="--h:${c.h}" data-dy="edit" data-id="${esc(o.e.id)}" data-d="${o.date}" title="${esc(c.name)}"><i aria-hidden="true"></i><span>${o.e.time ? `<b dir="ltr">${esc(o.e.time)}</b> ` : ''}${esc(o.e.title)}</span></button>`; };
+function dyRow(o){
+  const e = o.e, c = DYCAT(e.cat), st = e.sid ? student(e.sid) : null, dn = dyIsDone(e, o.date);
+  return `<div class="dyrow${dn ? ' done' : ''}" style="--h:${c.h}">
+    <label class="dychk no-print"><input type="checkbox" data-dy="done" data-id="${esc(e.id)}" data-d="${o.date}" ${dn ? 'checked' : ''} aria-label="בוצע"></label>
+    <div class="dyrt"><div class="dyrtitle">${e.time ? `<b class="dytime" dir="ltr">${esc(e.time)}${e.end ? '–' + esc(e.end) : ''}</b>` : ''}<span>${esc(e.title)}</span></div>
+      <div class="dyrmeta"><span class="dycat">${c.icon} ${c.name}</span>${e.rep ? `<span class="dycat dyrep">🔁 ${e.rep.freq === 'weekly' ? 'כל שבוע' : 'כל חודש'} עד ${dyShort(e.rep.until)}</span>` : ''}${st ? `<a class="dycat dystu" href="#/student/${esc(st.id)}">⭐ ${esc(st.alias)}</a>` : ''}</div>
+      ${e.notes ? `<div class="dynotes">${esc(e.notes)}</div>` : ''}</div>
+    <button type="button" class="btn sm ghost no-print" data-dy="edit" data-id="${esc(e.id)}" data-d="${o.date}" aria-label="עריכה">✏️</button></div>`;
+}
+function dyDayHTML(s){
+  const J = dyJew(s), E = DY_L.edu ? dyEdu(s) : [], occ = DY_L.mine ? dyOcc(s, s) : [];
+  const jch = DY_L.jew ? J.items.map(dyJewChip).join('') + (J.omerText ? `<span class="dychip j-omer"><span aria-hidden="true">🌾</span> ספירת העומר: ${esc(J.omerText)}</span>` : '') : '';
+  return `<div class="dydhead"><div><h3>${dyLong(s)}${s === dyNow() ? ' <span class="pill brand">היום</span>' : ''}</h3><div class="muted">${esc(J.hebDate)}</div></div>
+      <button type="button" class="btn primary sm no-print" data-dy="add" data-d="${s}">＋ הוספה ליום הזה</button></div>
+    ${E.length || jch ? `<div class="dychips big">${E.map(dyEduChip).join('')}${jch}</div>` : ''}
+    ${E.filter(x => x.note).map(x => `<p class="dyenote">🏫 ${esc(x.note)}</p>`).join('')}
+    ${occ.length ? `<div class="dyrows">${occ.map(dyRow).join('')}</div>` : DY_L.mine ? '<p class="muted dyempty">אין רשומות ביום הזה.</p>' : ''}`;
+}
+function dyMonthHTML(cur){
+  const d0 = dyParse(cur), first = new Date(d0.getFullYear(), d0.getMonth(), 1), last = new Date(d0.getFullYear(), d0.getMonth() + 1, 0);
+  const start = dyAdd(first, -first.getDay()), n = Math.ceil((first.getDay() + last.getDate()) / 7) * 7;
+  const byDay = {}; if (DY_L.mine) dyOcc(dyYmd(start), dyYmd(dyAdd(start, n - 1))).forEach(o => (byDay[o.date] = byDay[o.date] || []).push(o));
+  const T = dyNow(); let cells = '';
+  for (let i = 0; i < n; i++) {
+    const d = dyAdd(start, i), s = dyYmd(d), out = d.getMonth() !== d0.getMonth(), J = dyJew(s), E = DY_L.edu ? dyEdu(s) : [], os = byDay[s] || [];
+    const vac = E.some(x => x.kind === 'vacation' || x.kind === 'noschool');
+    const jit = DY_L.jew ? J.items.filter(x => x.kind !== 'shab') : [];
+    const showE = E.filter(x => x.kind !== 'vacation' || x.from === s || d.getDay() === 0 || i === 0 || d.getDate() === 1);   // a vacation's name: on its first day and at the start of each week row
+    const hl = J.day ? J.day + (J.heb && (J.heb.d === 1 || i === 0) ? ' ' + J.month : '') : '';
+    cells += `<div class="dycell${out ? ' out' : ''}${s === T ? ' today' : ''}${s === DY_SEL ? ' sel' : ''}${vac ? ' vac' : ''}${d.getDay() === 6 ? ' shab' : ''}" data-dy="sel" data-d="${s}" tabindex="0" role="gridcell" aria-label="${esc(dyLong(s) + (J.hebDate ? ' · ' + J.hebDate : ''))}">
+      <div class="dytop"><span class="dyg">${d.getDate()}</span><span class="dyh">${esc(hl)}</span><button type="button" class="dyadd no-print" data-dy="add" data-d="${s}" aria-label="הוספה ל-${dyShort(s)}" title="הוספה ליום הזה">＋</button></div>
+      ${showE.length || jit.length ? `<div class="dychips">${showE.map(dyEduChip).join('')}${jit.map(dyJewChip).join('')}</div>` : ''}
+      ${os.length ? `<div class="dyents">${os.slice(0, 4).map(dyEntChip).join('')}${os.length > 4 ? `<span class="dymore">ועוד ${os.length - 4}</span>` : ''}</div>` : ''}
+      <div class="dydots" aria-hidden="true">${vac ? '<i class="v"></i>' : E.length ? '<i class="e"></i>' : ''}${jit.some(x => x.kind !== 'rc') ? '<i class="j"></i>' : ''}${os.slice(0, 3).map(o => `<i style="--h:${DYCAT(o.e.cat).h}"></i>`).join('')}</div></div>`;
+  }
+  return `<div class="dymonth" role="grid" aria-label="${DY_MN[d0.getMonth()]} ${d0.getFullYear()}"><div class="dywd" role="row">${DY_WD.map((w, i) => `<span role="columnheader"><b class="l">${w}</b><b class="s" aria-hidden="true">${DY_WS[i]}</b></span>`).join('')}</div><div class="dygrid">${cells}</div></div>`;
+}
+function dyWeekHTML(cur){
+  const d0 = dyParse(cur), start = dyAdd(d0, -d0.getDay()), T = dyNow(); let h = '';
+  const occ = DY_L.mine ? dyOcc(dyYmd(start), dyYmd(dyAdd(start, 6))) : [];
+  for (let i = 0; i < 7; i++) {
+    const d = dyAdd(start, i), s = dyYmd(d), J = dyJew(s), E = DY_L.edu ? dyEdu(s) : [], os = occ.filter(o => o.date === s);
+    const vac = E.some(x => x.kind === 'vacation' || x.kind === 'noschool');
+    const jch = DY_L.jew ? J.items.map(dyJewChip).join('') + (J.omerText ? `<span class="dychip j-omer"><span aria-hidden="true">🌾</span> ${esc(J.omerText)}</span>` : '') : '';
+    h += `<div class="dywcol${s === T ? ' today' : ''}${vac ? ' vac' : ''}"><a class="dywhead" href="#/diary/day/${s}"><b>${DY_WD[i]}</b><span>${d.getDate()}.${d.getMonth() + 1}</span><small>${esc(J.day + ' ' + J.month)}</small></a>
+      ${E.length || jch ? `<div class="dychips">${E.map(dyEduChip).join('')}${jch}</div>` : ''}
+      ${os.length ? `<div class="dyents">${os.map(dyEntChip).join('')}</div>` : ''}
+      <button type="button" class="btn sm ghost dywadd no-print" data-dy="add" data-d="${s}">＋ הוספה</button></div>`;
+  }
+  return `<div class="dyweek">${h}</div>`;
+}
+function dyAgendaHTML(cur){
+  const d0 = dyParse(cur), T = dyNow(), N = 60, byDay = {};
+  if (DY_L.mine) dyOcc(cur, dyYmd(dyAdd(d0, N - 1))).forEach(o => (byDay[o.date] = byDay[o.date] || []).push(o));
+  let h = '', lastM = '';
+  for (let i = 0; i < N; i++) {
+    const d = dyAdd(d0, i), s = dyYmd(d), J = dyJew(s), E = DY_L.edu ? dyEdu(s) : [], os = byDay[s] || [];
+    const jit = DY_L.jew ? J.items.filter(x => x.kind !== 'shab') : [];
+    if (!E.length && !jit.length && !os.length) continue;
+    const mk = DY_MN[d.getMonth()] + ' ' + d.getFullYear(); if (mk !== lastM) { h += `<h3 class="dyagm">${mk}</h3>`; lastM = mk; }
+    h += `<div class="dyag${s === T ? ' today' : ''}"><a class="dyagd" href="#/diary/day/${s}"><b>${d.getDate()}</b><span>${DY_WS[d.getDay()]}</span><small>${esc(J.day + ' ' + J.month)}</small></a>
+      <div class="dyagb">${E.length || jit.length ? `<div class="dychips big">${E.map(dyEduChip).join('')}${jit.map(dyJewChip).join('')}</div>` : ''}${os.length ? `<div class="dyrows">${os.map(dyRow).join('')}</div>` : ''}</div></div>`;
+  }
+  return h || '<div class="panel empty"><span class="big">🗓️</span>אין רשומות, חגים או חופשות ב-60 הימים האלה.</div>';
+}
+const dyCount = (n, t) => n <= 0 ? `היום: ${t}` : n === 1 ? `מחר: ${t}` : n === 2 ? `עוד יומיים ל${t}` : `עוד ${n} ימים ל${t}`;
+function dyUpcoming(){
+  const T = dyNow(), cards = [];
+  if (DY_L.edu) {
+    const vs = (window.EDU_CAL || []).filter(x => x.kind === 'vacation' || x.kind === 'noschool').sort((a, b) => a.from.localeCompare(b.from));
+    let ev = vs.find(x => (x.to || x.from) >= T);
+    if (ev) { ev = Object.assign({}, ev, {to: ev.to || ev.from});   // back-to-back ranges (יום כיפור → בין החגים → סוכות) read as one break
+      for (const x of vs) if (x.from > ev.from && dyDiff(ev.to, x.from) === 1) ev.to = x.to || x.from; }
+    if (ev) { const n = dyDiff(T, ev.from); let back = dyAdd(dyParse(ev.to), 1); if (back.getDay() === 6) back = dyAdd(back, 1);
+      cards.push({h: 168, i: DY_EDU_ICON[ev.kind], t: n <= 0 ? `עכשיו: ${ev.title}` : dyCount(n, ev.title), sub: n <= 0 ? `עד ${dyLong(ev.to)} · חוזרים ללימודים ב-${dyShort(dyYmd(back))}` : ev.from === ev.to ? dyLong(ev.from) : `${DY_WD[dyParse(ev.from).getDay()]} ${dyShort(ev.from)} – ${DY_WD[dyParse(ev.to).getDay()]} ${dyShort(ev.to)}`, s: n <= 0 ? T : ev.from}); }
+  }
+  if (DY_L.jew) {
+    for (let i = 1; i <= 400; i++) { const s = dyYmd(dyAdd(dyParse(T), i));
+      const x = dyJew(s).items.find(x => ['hag', 'nat', 'fast'].includes(x.kind) || /^חנוכה – נר א׳$|^פורים$|^ל״ג בעומר$|^ט״ו בשבט$/.test(x.t));
+      if (x) { const t = x.t.replace(/ – נר א׳$/, ''); cards.push({h: 42, i: x.icon, t: dyCount(i, t), sub: dyLong(s) + ' · ' + dyJew(s).hebDate, s}); break; } }
+  }
+  const wk = DY_L.mine ? dyOcc(T, dyYmd(dyAdd(dyParse(T), 6))).filter(o => !dyIsDone(o.e, o.date)) : [];
+  const dname = s => { const n = dyDiff(T, s); return n === 0 ? 'היום' : n === 1 ? 'מחר' : `${DY_WS[dyParse(s).getDay()]} ${dyShort(s)}`; };
+  return `<div class="dyup no-print">
+    <div class="dycount">${cards.map(c => `<a class="dycd" href="#/diary/day/${c.s}" style="--h:${c.h}"><span class="i" aria-hidden="true">${c.i}</span><span><b>${esc(c.t)}</b><small>${esc(c.sub)}</small></span></a>`).join('') || '<div class="panel muted">כל השכבות כבויות.</div>'}</div>
+    <div class="panel dynext"><h3>🗓️ שבעת הימים הקרובים <small class="muted">${wk.length ? wk.length + ' רשומות פתוחות' : ''}</small></h3>
+      ${DY_L.mine ? (wk.length ? wk.slice(0, 8).map(o => `<a class="dynx" href="#/diary/day/${o.date}" style="--h:${DYCAT(o.e.cat).h}"><span class="dynxd">${dname(o.date)}</span><i aria-hidden="true"></i><span>${o.e.time ? `<b dir="ltr">${esc(o.e.time)}</b> ` : ''}${esc(o.e.title)}</span></a>`).join('') + (wk.length > 8 ? `<a class="dynx more" href="#/diary/agenda/${T}">ועוד ${wk.length - 8} ברשימה ←</a>` : '') : '<p class="muted" style="margin:0">אין רשומות פתוחות בשבוע הקרוב. <button type="button" class="btn sm" data-dy="add" data-d="' + T + '">＋ רשומה חדשה</button></p>') : '<p class="muted" style="margin:0">השכבה ״הרשומות שלי״ כבויה.</p>'}</div></div>`;
+}
+function dyTodayStrip(){
+  try {
+    const T = dyNow(), J = dyJew(T), E = dyEdu(T), os = dyOcc(T, T).filter(o => !dyIsDone(o.e, o.date));
+    return `<a class="dytoday no-print" href="#/diary/day/${T}"><span class="dytl">📅 היום</span>${E.map(x => `<span class="dytc e">${DY_EDU_ICON[x.kind] || ''} ${esc(x.title)}</span>`).join('')}${J.items.filter(x => x.kind !== 'shab').map(x => `<span class="dytc">${x.icon} ${esc(x.t)}</span>`).join('')}<span class="dyte">${os.length ? os.slice(0, 3).map(o => (o.e.time ? o.e.time + ' ' : '') + esc(o.e.title)).join(' · ') + (os.length > 3 ? ` · ועוד ${os.length - 3}` : '') : 'אין רשומות להיום ביומן'}</span><span class="dytgo" aria-hidden="true">←</span></a>`;
+  } catch(e){ return ''; }
+}
+function diaryView(R){
+  const V = ['month', 'week', 'agenda', 'day'].includes(R.id) ? R.id : 'month', T = dyNow();
+  const cur = dyParse(R.sub) ? R.sub : /^\d{4}-\d{2}$/.test(R.sub || '') ? R.sub + '-01' : (DY_CUR || T);
+  DY_CUR = cur;
+  if (V === 'day') DY_SEL = cur;
+  else if (V === 'month' && (!DY_SEL || DY_SEL.slice(0, 7) !== cur.slice(0, 7))) DY_SEL = cur.slice(0, 7) === T.slice(0, 7) ? T : cur;
+  const d0 = dyParse(cur);
+  const step = {month: [new Date(d0.getFullYear(), d0.getMonth() - 1, 1), new Date(d0.getFullYear(), d0.getMonth() + 1, 1)], week: [dyAdd(d0, -7), dyAdd(d0, 7)], day: [dyAdd(d0, -1), dyAdd(d0, 1)], agenda: [dyAdd(d0, -30), dyAdd(d0, 30)]}[V];
+  const lbl = {month: ['חודש קודם', 'חודש הבא'], week: ['שבוע קודם', 'שבוע הבא'], day: ['יום קודם', 'יום הבא'], agenda: ['30 יום אחורה', '30 יום קדימה']}[V];
+  let period = '', heb = '';
+  if (V === 'month') { const f = new Date(d0.getFullYear(), d0.getMonth(), 1), l = new Date(d0.getFullYear(), d0.getMonth() + 1, 0), a = dyJew(dyYmd(f)), b = dyJew(dyYmd(l));
+    period = `${DY_MN[d0.getMonth()]} ${d0.getFullYear()}`; heb = a.month === b.month ? `${a.month} ${a.year}` : a.year === b.year ? `${a.month}–${b.month} ${b.year}` : `${a.month} ${a.year} – ${b.month} ${b.year}`; }
+  else if (V === 'week') { const a = dyAdd(d0, -d0.getDay()), b = dyAdd(a, 6); period = a.getMonth() === b.getMonth() ? `${a.getDate()}–${b.getDate()} ב${DY_MN[a.getMonth()]} ${b.getFullYear()}` : `${a.getDate()} ב${DY_MN[a.getMonth()]} – ${b.getDate()} ב${DY_MN[b.getMonth()]} ${b.getFullYear()}`;
+    const ja = dyJew(dyYmd(a)), jb = dyJew(dyYmd(b)); heb = `${ja.day} ${ja.month} – ${jb.day} ${jb.month} ${jb.year}`; }
+  else if (V === 'day') { period = dyLong(cur); heb = dyJew(cur).hebDate; }
+  else { period = `מ-${dyShort(cur)} ל-60 יום`; heb = 'רשומות, חגים וחופשות'; }
+  const M = window.EDU_META || {};
+  const tab = (k, t) => `<a href="#/diary/${k}/${k === 'month' ? cur.slice(0, 7) : cur}" class="${V === k ? 'on' : ''}" ${V === k ? 'aria-current="page"' : ''}>${t}</a>`;
+  let body = V === 'month' ? dyMonthHTML(cur) + `<div class="panel dysel no-print" id="dysel" aria-live="polite">${dyDayHTML(DY_SEL)}</div>`
+    : V === 'week' ? dyWeekHTML(cur) : V === 'day' ? `<div class="panel dysel dyfull">${dyDayHTML(cur)}</div>` : dyAgendaHTML(cur);
+  const h = `<section class="banner dybanner" style="--h:205"><span class="emoji">📅</span><div><h1>יומן</h1><p>הרשומות שלי, חופשות משרד החינוך והלוח העברי – במקום אחד</p></div>
+      <div class="actions no-print"><button type="button" class="btn" data-dy="add" data-d="${V === 'month' ? DY_SEL : cur}">＋ רשומה חדשה</button></div></section>
+    ${V === 'month' || V === 'agenda' ? dyUpcoming() : ''}
+    <div class="dybar no-print">
+      <nav class="dyseg" aria-label="תצוגה">${tab('month', 'חודש')}${tab('week', 'שבוע')}${tab('agenda', 'רשימה')}${tab('day', 'יום')}</nav>
+      <div class="dynav"><a class="btn sm" href="#/diary/${V}/${dyYmd(step[0])}" aria-label="${lbl[0]}" title="${lbl[0]}">→</a><a class="btn sm" href="#/diary/${V}/${T}">היום</a><a class="btn sm" href="#/diary/${V}/${dyYmd(step[1])}" aria-label="${lbl[1]}" title="${lbl[1]}">←</a>
+        <label class="dyjump" title="קפיצה לחודש"><span class="sr">קפיצה לחודש</span><input type="month" id="dyjump" value="${cur.slice(0, 7)}"></label></div>
+      <div class="dylays" role="group" aria-label="שכבות"><label><input type="checkbox" data-dyl="mine" ${DY_L.mine ? 'checked' : ''}> ✏️ הרשומות שלי</label><label><input type="checkbox" data-dyl="edu" ${DY_L.edu ? 'checked' : ''}> 🏫 משרד החינוך</label><label><input type="checkbox" data-dyl="jew" ${DY_L.jew ? 'checked' : ''}> 🕯️ לוח עברי</label></div>
+      <button type="button" class="btn sm dyics" data-dy="ics" title="קובץ ‎.ics‏ לייבוא ל-Google Calendar או ל-Outlook">⬇️ ייצוא ליומן Google / Outlook</button>
+    </div>
+    ${V === 'day' ? '' : `<div class="dyperiod"><h2>${esc(period)}</h2><span class="heb">${esc(heb)}</span></div>`}
+    ${body}
+    <div class="dylegend">${DY_CATS.map(c => `<span style="--h:${c.h}"><i aria-hidden="true"></i>${c.icon} ${c.name}</span>`).join('')}<span class="lv"><i aria-hidden="true"></i>🏖️ חופשה / אין לימודים</span></div>
+    <p class="dysrc">🏫 חופשות וימים מיוחדים: לפי לוח החופשות של משרד החינוך – ${esc(M.srcTitle || '')}, <a href="${esc(M.src || '')}" target="_blank" rel="noopener" dir="ltr">${esc(M.src || '')}</a> (נבדק ב-${M.fetched ? dyShort(M.fetched) + '.' + M.fetched.slice(0, 4) : ''}). ${(M.unverified || []).map(esc).join(' ')} בימי צום הלימודים מסתיימים ב-13:30 רק בבתי ספר שבהם המורים והתלמידים צמים. התאריך העברי, החגים, ראשי החודשים וספירת העומר מחושבים אוטומטית לפי לוח ארץ ישראל.</p>`;
+  return {title: 'יומן', html: h};
+}
+function dyForm(id, date){
+  const L = dyList(), e0 = id ? L.find(x => x.id === id) : null;
+  const e = e0 || {title: '', date: date || DY_SEL || dyNow(), time: '', end: '', cat: 'student', notes: '', sid: '', rep: null, done: false};
+  const studs = S.students.filter(s => !s.archived || s.id === e.sid);
+  const m = $('#modal'); m.className = 'modal open';
+  m.innerHTML = `<div class="box dyform" role="dialog" aria-modal="true" aria-labelledby="dyFT">
+    <div class="mhead"><h3 id="dyFT">${e0 ? '✏️ עריכת רשומה' : '＋ רשומה חדשה ביומן'}</h3><button type="button" class="iconbtn" data-act="close" aria-label="סגירה">✕</button></div>
+    <div class="form">
+      <label class="f">כותרת *<input id="dyT" value="${esc(e.title)}" maxlength="140" placeholder="למשל: שיחה עם המחנך של ה׳2" autocomplete="off"></label>
+      <div class="dyrow3"><label class="f">תאריך *<input type="date" id="dyD" value="${esc(e.date)}"></label><label class="f">שעה<input type="time" id="dyH" value="${esc(e.time || '')}"></label><label class="f">עד שעה<input type="time" id="dyE" value="${esc(e.end || '')}"></label></div>
+      <div role="radiogroup" aria-label="קטגוריה"><span class="dyflab">קטגוריה</span><div class="dycats">${DY_CATS.map(c => `<label style="--h:${c.h}"><input type="radio" name="dyC" value="${c.id}" ${c.id === DYCAT(e.cat).id ? 'checked' : ''}><span>${c.icon} ${c.name}</span></label>`).join('')}</div></div>
+      ${studs.length ? `<label class="f">שיוך לתלמיד (לא חובה)<select id="dyS"><option value="">— בלי שיוך —</option>${studs.map(s => `<option value="${esc(s.id)}" ${s.id === e.sid ? 'selected' : ''}>${esc(s.alias)}${s.grade ? ' · ' + esc(s.grade) : ''}</option>`).join('')}</select></label>` : ''}
+      <label class="f">הערות<textarea id="dyN" rows="3" placeholder="מה חשוב לזכור">${esc(e.notes || '')}</textarea></label>
+      <div class="row2"><label class="f">חזרה<select id="dyR"><option value="">בלי חזרה</option><option value="weekly" ${e.rep && e.rep.freq === 'weekly' ? 'selected' : ''}>כל שבוע</option><option value="monthly" ${e.rep && e.rep.freq === 'monthly' ? 'selected' : ''}>כל חודש, באותו תאריך</option></select></label>
+        <label class="f">עד תאריך<input type="date" id="dyU" value="${esc(e.rep && e.rep.until || '')}"></label></div>
+      ${e0 && e0.rep ? '<p class="note" style="margin:0">🔁 שינוי כאן חל על כל הסדרה. את ״בוצע״ מסמנים לכל מופע ביומן עצמו.</p>' : ''}
+      ${e0 && !e0.rep ? `<label class="dydone"><input type="checkbox" id="dyX" ${e0.done ? 'checked' : ''}> ✅ בוצע</label>` : ''}
+      <div class="actions"><button type="button" class="btn primary" id="dySave">💾 שמירה</button><button type="button" class="btn" data-act="close">ביטול</button>${e0 ? '<button type="button" class="btn danger" id="dyDel" style="margin-inline-start:auto">🗑️ מחיקה</button>' : ''}</div>
+    </div></div>`;
+  const U = $('#dyU'), Rr = $('#dyR'), syncU = () => { U.disabled = !Rr.value; }; Rr.onchange = syncU; syncU();
+  setTimeout(() => { const t = $('#dyT'); if (t) t.focus(); }, 60);
+  $('#dySave').onclick = () => {
+    const t = $('#dyT').value.trim(), d = $('#dyD').value, hh = $('#dyH').value, en = $('#dyE').value, r = Rr.value; let u = U.value;
+    if (!t) { toast('חסרה כותרת'); return $('#dyT').focus(); }
+    if (!dyParse(d)) return toast('חסר תאריך');
+    if (en && !hh) return toast('כדי לציין שעת סיום צריך גם שעת התחלה');
+    if (hh && en && en <= hh) return toast('שעת הסיום צריכה להיות אחרי שעת ההתחלה');
+    if (r && u && u < d) return toast('תאריך סוף החזרה מוקדם מתאריך הרשומה');
+    if (r && !u) u = dyYmd(dyAdd(dyParse(d), 365));
+    const x = e0 || {id: uid(), created: Date.now()};
+    Object.assign(x, {title: t, date: d, time: hh, end: hh ? en : '', cat: (m.querySelector('input[name="dyC"]:checked') || {}).value || 'other', notes: $('#dyN').value.trim(), sid: ($('#dyS') || {}).value || '', rep: r ? {freq: r, until: u} : null, updated: Date.now()});
+    if (!r) { delete x.skip; delete x.doneOn; if ($('#dyX')) x.done = $('#dyX').checked; else if (!e0) x.done = false; } else delete x.done;
+    if (!e0) L.push(x);
+    DY_SEL = d; save(); closeModal(); render(); toast(e0 ? 'הרשומה עודכנה' : 'נוסף ליומן');
+  };
+  if (e0) $('#dyDel').onclick = () => dyDelete(e0, date);
+}
+async function dyDelete(e0, occ){
+  if (e0.rep && occ) {
+    const m = $('#modal'); m.className = 'modal open';
+    m.innerHTML = `<div class="box" style="max-width:460px"><p style="font-size:17px;margin:0 0 16px">🔁 ״${esc(e0.title)}״ היא רשומה חוזרת. מה למחוק?</p><div class="actions"><button type="button" class="btn" id="dyD1">רק את המופע של ${dyShort(occ)}</button><button type="button" class="btn danger" id="dyDA">את כל הסדרה</button><button type="button" class="btn" data-act="close">ביטול</button></div></div>`;
+    $('#dyD1').onclick = () => { e0.skip = [...new Set([...(e0.skip || []), occ])]; save(); closeModal(); render(); toast('המופע נמחק'); };
+    $('#dyDA').onclick = () => { S.diary = dyList().filter(x => x !== e0); save(); closeModal(); render(); toast('הסדרה נמחקה'); };
+    return;
+  }
+  if (!(await uiConfirm(`למחוק את ״${e0.title}״ מהיומן?`))) return;
+  S.diary = dyList().filter(x => x !== e0); save(); render(); toast('נמחק מהיומן');
+}
+/* .ics for Google Calendar / Outlook – floating local times; the student link and category stay out of the file */
+function dyICS(){
+  const L = dyList(); if (!L.length) return toast('אין עדיין רשומות לייצוא');
+  const ic = s => String(s || '').replace(/\\/g, '\\\\').replace(/;/g, '\\;').replace(/,/g, '\\,').replace(/\r?\n/g, '\\n');
+  const dt = s => s.replace(/-/g, ''), tm = t => t.replace(':', '') + '00';
+  const plus1h = t => { const [h, m] = t.split(':').map(Number); const x = Math.min(h * 60 + m + 60, 23 * 60 + 59); return String(Math.floor(x / 60)).padStart(2, '0') + ':' + String(x % 60).padStart(2, '0'); };
+  const stamp = new Date().toISOString().replace(/[-:]/g, '').replace(/\.\d+/, '');
+  const out = ['BEGIN:VCALENDAR', 'VERSION:2.0', 'PRODID:-//CBT school counseling//Diary//HE', 'CALSCALE:GREGORIAN', 'METHOD:PUBLISH', 'X-WR-CALNAME:' + ic('יומן ייעוץ')];
+  for (const e of L) {
+    if (!dyParse(e.date)) continue;
+    out.push('BEGIN:VEVENT', 'UID:' + e.id + '@cbt-diary', 'DTSTAMP:' + stamp);
+    if (e.time) { out.push('DTSTART:' + dt(e.date) + 'T' + tm(e.time), 'DTEND:' + dt(e.date) + 'T' + tm(e.end && e.end > e.time ? e.end : plus1h(e.time))); }
+    else out.push('DTSTART;VALUE=DATE:' + dt(e.date), 'DTEND;VALUE=DATE:' + dt(dyYmd(dyAdd(dyParse(e.date), 1))));
+    out.push('SUMMARY:' + ic(e.title));
+    if (e.notes) out.push('DESCRIPTION:' + ic(e.notes));
+    if (e.rep) {
+      out.push('RRULE:FREQ=' + (e.rep.freq === 'weekly' ? 'WEEKLY' : 'MONTHLY') + ';UNTIL=' + dt(e.rep.until) + (e.time ? 'T235959' : ''));
+      (e.skip || []).forEach(s => out.push(e.time ? 'EXDATE:' + dt(s) + 'T' + tm(e.time) : 'EXDATE;VALUE=DATE:' + dt(s)));
+    }
+    out.push('END:VEVENT');
+  }
+  out.push('END:VCALENDAR');
+  const enc = new TextEncoder();   // fold lines at 75 octets without splitting a character
+  const fold = line => { const parts = []; let cur = '', n = 0; for (const ch of line) { const b = enc.encode(ch).length; if (n + b > (parts.length ? 74 : 75)) { parts.push(cur); cur = ''; n = 0; } cur += ch; n += b; } parts.push(cur); return parts.join('\r\n '); };
+  const blob = new Blob([out.map(fold).join('\r\n') + '\r\n'], {type: 'text/calendar;charset=utf-8'});
+  const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = 'יומן-ייעוץ-' + dyNow() + '.ics'; document.body.appendChild(a); a.click();
+  setTimeout(() => { URL.revokeObjectURL(a.href); a.remove(); }, 1500);
+  toast(`יוצאו ${L.length} רשומות – פותחים את הקובץ ב-Google Calendar או ב-Outlook`);
+}
+function dySelect(s, el){
+  DY_SEL = s;
+  document.querySelectorAll('.dycell.sel').forEach(c => c.classList.remove('sel')); if (el) el.classList.add('sel');
+  const p = $('#dysel'); if (!p) return;
+  p.innerHTML = dyDayHTML(s); try { kidifyEmojis(p); } catch(e){}
+  if (innerWidth <= 760) p.scrollIntoView({behavior: 'smooth', block: 'nearest'});
+}
+document.addEventListener('click', e => {
+  const b = e.target.closest('[data-dy]'); if (!b) return;
+  const a = b.dataset.dy, d = b.dataset.d;
+  if (a === 'done') return;
+  if (a === 'sel') return dySelect(d, b);
+  if (a === 'add') { e.stopPropagation(); return dyForm(null, d); }
+  if (a === 'edit') { e.stopPropagation(); return dyForm(b.dataset.id, d); }
+  if (a === 'ics') return dyICS();
+});
+document.addEventListener('dblclick', e => { const c = e.target.closest('.dycell[data-d]'); if (c && !e.target.closest('[data-dy="edit"],[data-dy="add"]')) dyForm(null, c.dataset.d); });
+document.addEventListener('keydown', e => { const c = e.target.closest && e.target.closest('.dycell[data-d]'); if (!c || e.target !== c) return;
+  if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); dySelect(c.dataset.d, c); }
+  else if (e.key === 'n' || e.key === '+') { e.preventDefault(); dyForm(null, c.dataset.d); } });
+document.addEventListener('change', e => {
+  const t = e.target;
+  if (t.matches('[data-dyl]')) { DY_L[t.dataset.dyl] = t.checked; ls.set('cbtapp.diary.layers', DY_L); render(); }
+  else if (t.matches('[data-dy="done"]')) {
+    const x = dyList().find(y => y.id === t.dataset.id); if (!x) return;
+    if (x.rep) { const set = new Set(x.doneOn || []); t.checked ? set.add(t.dataset.d) : set.delete(t.dataset.d); x.doneOn = [...set]; } else x.done = t.checked;
+    save();
+    document.querySelectorAll(`[data-id="${CSS.escape(x.id)}"][data-d="${t.dataset.d}"]`).forEach(n => { const r = n.closest('.dyrow') || (n.classList.contains('dyent') ? n : null); if (r) r.classList.toggle('done', t.checked); });
+  }
+  else if (t.id === 'dyjump' && /^\d{4}-\d{2}$/.test(t.value)) location.hash = `#/diary/month/${t.value}`;
+});
 /* ================= boot ================= */
 { const t = ls.get('cbtapp.theme', null); if (t) document.documentElement.dataset.theme = t; }
 $('#nav').innerHTML = NAV.filter(n => !LITE || !['students','library'].includes(n[0])).map(([k, i, l]) => `<a href="#/${k}" data-nav="${k}"><span class="i">${i}</span>${l}</a>`).join('');
@@ -7396,125 +8048,6 @@ if (!SHARE_MODE) AI.init().then(() => { if (route().r === 'ask') render(); });
 document.body.classList.toggle('artifact', ARTIFACT); document.body.classList.toggle('lite', LITE);
 if (!SHARE_MODE) SYNC.init();
 if (WEB && !ARTIFACT && 'serviceWorker' in navigator && location.protocol === 'https:') navigator.serviceWorker.register('sw.js').catch(() => {});
-})();
-
-</script>
-<script>
-/* hebday.js – the home hero's day line: live clock · greeting · Hebrew date · holiday / special day · Omer count.
-   Works in the app (#view, .hero.withkid) and in the library site (#app, section.hero). Pure Intl – no data files. */
-(function(){
-'use strict';
-if (window.hebDay) return;
-const DAY = 864e5;
-const add = (d, n) => new Date(d.getFullYear(), d.getMonth(), d.getDate() + n);
-const fmtEn = new Intl.DateTimeFormat('en-u-ca-hebrew', {day: 'numeric', month: 'long', year: 'numeric'});
-const fmtHe = new Intl.DateTimeFormat('he-IL-u-ca-hebrew', {month: 'long'});
-function heb(d){ const p = {}; fmtEn.formatToParts(d).forEach(x => p[x.type] = x.value); return {d: +p.day, m: p.month, y: +p.year}; }
-const leap = y => ((7 * y + 1) % 19) < 7;
-function gem(n){
-  const L = [[400,'ת'],[300,'ש'],[200,'ר'],[100,'ק'],[90,'צ'],[80,'פ'],[70,'ע'],[60,'ס'],[50,'נ'],[40,'מ'],[30,'ל'],[20,'כ'],[10,'י'],[9,'ט'],[8,'ח'],[7,'ז'],[6,'ו'],[5,'ה'],[4,'ד'],[3,'ג'],[2,'ב'],[1,'א']];
-  let s = ''; n %= 1000;
-  for (const [v, c] of L) while (n >= v) { if (n === 15) { s += 'טו'; n = 0; break; } if (n === 16) { s += 'טז'; n = 0; break; } s += c; n -= v; }
-  return s.length > 1 ? s.slice(0, -1) + '״' + s.slice(-1) : s + '׳';
-}
-function hebDate(d){ try { const h = heb(d); return `${gem(h.d)} ב${fmtHe.format(d).replace(/^ב/, '')} ${gem(h.y)}`; } catch (e) { return ''; } }
-/* the date on which Hebrew day `day` of the current Hebrew month falls */
-const sameMonth = (d, h, day) => add(d, day - h.d);
-const same = (a, b) => a.getFullYear() === b.getFullYear() && a.getMonth() === b.getMonth() && a.getDate() === b.getDate();
-
-/* holidays & special days (Israel) for civil date d → list of labels */
-function special(d){
-  const h = heb(d), m = h.m, dd = h.d, dow = d.getDay(), out = [];
-  const on = (mon, day) => m === mon && dd === day;
-  const purimMonth = leap(h.y) ? 'Adar II' : 'Adar';
-  // Tishrei
-  if (on('Elul', 29)) out.push('ערב ראש השנה');
-  if (on('Tishri', 1) || on('Tishri', 2)) out.push('ראש השנה');
-  if (m === 'Tishri') { const g = sameMonth(d, h, 3); const obs = g.getDay() === 6 ? add(g, 1) : g; if (same(d, obs)) out.push('צום גדליה'); }
-  if (on('Tishri', 9)) out.push('ערב יום כיפור');
-  if (on('Tishri', 10)) out.push('יום כיפור');
-  if (on('Tishri', 14)) out.push('ערב סוכות');
-  if (on('Tishri', 15)) out.push('סוכות');
-  if (m === 'Tishri' && dd >= 16 && dd <= 20) out.push('חול המועד סוכות');
-  if (on('Tishri', 21)) out.push('הושענא רבה');
-  if (on('Tishri', 22)) out.push('שמיני עצרת ושמחת תורה');
-  // Chanukah: 25 Kislev + 8 days (Kislev has 29 or 30 days)
-  if (m === 'Kislev' && dd >= 25) out.push(`חנוכה – נר ${gem(dd - 24)}`);
-  if (m === 'Tevet' && dd <= 3) { const kisLast = heb(add(d, -dd)).d; const n = kisLast - 24 + dd; if (n <= 8) out.push(`חנוכה – נר ${gem(n)}`); }
-  if (on('Tevet', 10)) out.push('עשרה בטבת');
-  if (on('Shevat', 15)) out.push('ט״ו בשבט');
-  // Adar / Purim
-  if (m === 'Adar I' && dd === 14) out.push('פורים קטן');
-  if (m === purimMonth) { const t = sameMonth(d, h, 13); const obs = t.getDay() === 6 ? add(t, -2) : t; if (same(d, obs)) out.push('תענית אסתר'); }
-  if (m === purimMonth && dd === 14) out.push('פורים');
-  if (m === purimMonth && dd === 15) out.push('שושן פורים');
-  // Nisan
-  if (on('Nisan', 14)) out.push('ערב פסח');
-  if (on('Nisan', 15)) out.push('פסח');
-  if (m === 'Nisan' && dd >= 16 && dd <= 20) out.push('חול המועד פסח');
-  if (on('Nisan', 21)) out.push('שביעי של פסח');
-  if (m === 'Nisan') { const s = sameMonth(d, h, 27), w = s.getDay(); const obs = w === 5 ? add(s, -1) : w === 0 ? add(s, 1) : s; if (same(d, obs)) out.push('יום הזיכרון לשואה ולגבורה'); }
-  // Iyar: Yom HaZikaron / HaAtzmaut with the Israeli moves
-  if (m === 'Iyar' || (m === 'Nisan' && dd >= 29)) {
-    const i5 = m === 'Iyar' ? sameMonth(d, h, 5) : add(d, 30 - dd + 5), w = i5.getDay();
-    const atz = w === 5 ? add(i5, -1) : w === 6 ? add(i5, -2) : w === 1 ? add(i5, 1) : i5, zik = add(atz, -1);
-    if (same(d, zik)) out.push('יום הזיכרון לחללי מערכות ישראל'); if (same(d, atz)) out.push('יום העצמאות');
-  }
-  if (on('Iyar', 18)) out.push('ל״ג בעומר');
-  if (on('Iyar', 28)) out.push('יום ירושלים');
-  if (on('Sivan', 5)) out.push('ערב שבועות');
-  if (on('Sivan', 6)) out.push('שבועות');
-  if (m === 'Tamuz') { const t = sameMonth(d, h, 17); const obs = t.getDay() === 6 ? add(t, 1) : t; if (same(d, obs)) out.push('צום י״ז בתמוז'); }
-  if (m === 'Av') { const t = sameMonth(d, h, 9); const obs = t.getDay() === 6 ? add(t, 1) : t; if (same(d, obs)) out.push(obs === t ? 'תשעה באב' : 'תשעה באב (נדחה)'); }
-  if (on('Av', 15)) out.push('ט״ו באב');
-  // Rosh Chodesh (not Rosh Hashana)
-  if (dd === 30 || (dd === 1 && m !== 'Tishri')) { const nm = dd === 30 ? add(d, 1) : d; out.push('ראש חודש ' + fmtHe.format(nm).replace(/^ב/, '')); }
-  if (dow === 5) out.push('ערב שבת'); if (dow === 6) out.push('שבת שלום');
-  return out;
-}
-function omer(d){ const h = heb(d); const n = h.m === 'Nisan' && h.d >= 16 ? h.d - 15 : h.m === 'Iyar' ? h.d + 15 : h.m === 'Sivan' && h.d <= 5 ? h.d + 44 : 0; return n; }
-const greet = d => { const x = d.getHours(); return x >= 5 && x < 12 ? 'בוקר טוב' : x >= 12 && x < 17 ? 'צהריים טובים' : x >= 17 && x < 22 ? 'ערב טוב' : 'לילה טוב'; };
-const clock = d => String(d.getHours()).padStart(2, '0') + ':' + String(d.getMinutes()).padStart(2, '0');
-const ICON = s => /חנוכה/.test(s) ? '🕎' : /שבת/.test(s) ? '🕯️' : /סוכות|הושענא|שמיני/.test(s) ? '🌿' : /פסח/.test(s) ? '🍷' : /פורים/.test(s) ? '🎭' : /עצמאות|ירושלים/.test(s) ? '🇮🇱' : /זיכרון|שואה|צום|תענית|תשעה|כיפור|עשרה/.test(s) ? '🕯️' : /ראש השנה/.test(s) ? '🍎' : /שבועות/.test(s) ? '🌾' : /בשבט/.test(s) ? '🌳' : /ל״ג/.test(s) ? '🔥' : /ראש חודש/.test(s) ? '🌙' : '✨';
-
-function barHTML(now){
-  const hol = special(now), om = omer(now), hd = hebDate(now);
-  return `<span class="hd-clock"><time dir="ltr" datetime="${now.toISOString()}">${clock(now)}</time></span><span class="hd-greet">${greet(now)}</span>${hd ? `<span class="hd-dot" aria-hidden="true"></span><span class="hd-date">${hd}</span>` : ''}${hol.map(s => `<span class="hd-hol"><span aria-hidden="true">${ICON(s)}</span> ${s}</span>`).join('')}${om ? `<span class="hd-hol hd-omer"><span aria-hidden="true">🌾</span> ספירת העומר: היום ${gem(om)} לעומר</span>` : ''}`;
-}
-function tick(){ const now = window.__hdNow ? new Date(window.__hdNow) : new Date(); document.querySelectorAll('.hebday').forEach(el => { el.innerHTML = barHTML(now); }); }
-let timer = 0;
-function schedule(){ clearTimeout(timer); const n = new Date(); timer = setTimeout(() => { tick(); schedule(); }, (60 - n.getSeconds()) * 1000 - n.getMilliseconds() + 50); }
-
-const CSS = `
-.hebday{display:flex;flex-wrap:wrap;align-items:center;gap:8px 10px;width:fit-content;max-width:100%;margin:0 0 18px;padding:7px 14px 7px 8px;border-radius:999px;position:relative;
-  background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.22);-webkit-backdrop-filter:blur(10px) saturate(1.4);backdrop-filter:blur(10px) saturate(1.4);box-shadow:inset 0 1px 0 rgba(255,255,255,.18),0 10px 26px -14px rgba(0,0,0,.5);color:#fff;font-size:14.5px;font-weight:600;line-height:1.35}
-.hebday::after{content:"";position:absolute;inset:auto 18px -1px;height:1px;background:linear-gradient(90deg,transparent,#f5c451,transparent);opacity:.9}
-.hd-clock{display:inline-grid;place-items:center;padding:3px 11px;border-radius:999px;background:linear-gradient(135deg,rgba(245,196,81,.3),rgba(224,145,58,.22));border:1px solid rgba(245,196,81,.55);font-weight:800;font-size:15.5px;letter-spacing:.5px;font-variant-numeric:tabular-nums;color:#fff3d6}
-.hd-greet{font-weight:800}
-.hd-dot{width:5px;height:5px;border-radius:50%;background:#f5c451;opacity:.85}
-.hd-date{color:#f3eeff}
-.hd-hol{display:inline-flex;align-items:center;gap:4px;padding:3px 11px;border-radius:999px;background:rgba(245,196,81,.16);border:1px solid rgba(245,196,81,.45);color:#fff1c9;font-weight:700;font-size:13.5px}
-.hero .hebday{animation:hd-in .6s cubic-bezier(.2,.8,.2,1) both}
-@keyframes hd-in{from{opacity:0;transform:translateY(-6px)}to{opacity:1;transform:none}}
-@media (max-width:700px){.hebday{border-radius:18px;padding:8px 10px;font-size:13.5px;gap:6px 8px}.hd-clock{font-size:14.5px}}
-@media (prefers-reduced-motion:reduce){.hero .hebday{animation:none}}
-@media print{.hebday{display:none!important}}
-`;
-function boot(){
-  if (!document.getElementById('hebday-css')) { const s = document.createElement('style'); s.id = 'hebday-css'; s.textContent = CSS; document.head.appendChild(s); }
-  const view = document.getElementById('view'), app = !view && document.getElementById('app'), root = view || app; if (!root) return;
-  const scan = () => {
-    const hero = root.querySelector(view ? '.hero.withkid' : 'section.hero'); if (!hero || hero.querySelector('.hebday')) return;
-    const div = '<div class="hebday" role="status" aria-live="off"></div>';
-    if (view) { const h1 = hero.querySelector('h1'); h1 ? h1.insertAdjacentHTML('beforebegin', div) : hero.insertAdjacentHTML('afterbegin', div); }
-    else { const c = hero.querySelector('.container') || hero; c.insertAdjacentHTML('afterbegin', div); }
-    tick();
-  };
-  scan(); new MutationObserver(scan).observe(root, {childList: true}); schedule();
-  document.addEventListener('visibilitychange', () => { if (!document.hidden) { tick(); schedule(); } });
-}
-if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', boot); else boot();
-window.hebDay = {special, omer, hebDate, greet, heb, tick};
 })();
 
 </script>
