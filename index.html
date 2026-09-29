@@ -4341,7 +4341,7 @@ function build(){
   // the pinned shortcuts (בית, יומן, שאל שאלה, חיפוש) are not sections – left out of the map
   if (0) C.pins.filter(([k]) => k !== 'sitemap').forEach(([k, i, l]) => mk(root, 'pin-' + k, {label: l, icon: i, href: '#/' + k, hue: C.hubHue(k), pin: true, desc: PIN_DESC[k] || ''}));
   C.groups.forEach(([i, l, items]) => {
-    const g = mk(root, 'g-' + l, {label: l, icon: i, href: '#/more', hue: C.hubHue(items[0] ? items[0][0] : l), desc: items.map(x => x[2]).join(' · ')});
+    const g = mk(root, 'g-' + l, {label: l, icon: i, href: '#/more', group: true, hue: C.hubHue(items[0] ? items[0][0] : l), desc: items.map(x => x[2]).join(' · ')});
     items.forEach(([k, ic, lb]) => {
       const a = mk(g, k, {label: lb, icon: ic, href: '#/' + k, hue: C.hubHue(k), desc: C.HUBS[k] ? oneLine(C.HUBS[k].intro) : AREA_DESC[k] || ''});
       if (k === 'problems') fillProblems(a);
@@ -4391,7 +4391,7 @@ const EL = new Map(), WIRE = new Map(), POS = new Map();   // id -> element / pa
 let ANIM = 0, mode = 'map';
 
 function nodeHTML(n, out){
-  const lk = `<a class="sm-l" href="${esc(n.href)}"${n.act ? ` data-act="${esc(n.act)}" data-v="${esc(n.v)}"` : ''}${n.desc ? ` data-d="${esc(n.desc)}"` : ''}><span class="sm-i" aria-hidden="true">${n.icon}</span><span class="sm-t">${nb(n.label)}</span></a>`;
+  const lk = `<a class="sm-l" href="${n.group ? "#/sitemap" : esc(n.href)}"${n.group ? ` data-tg="${esc(n.id)}"` : ""}${n.act ? ` data-act="${esc(n.act)}" data-v="${esc(n.v)}"` : ''}${n.desc ? ` data-d="${esc(n.desc)}"` : ''}><span class="sm-i" aria-hidden="true">${n.icon}</span><span class="sm-t">${nb(n.label)}</span></a>`;
   if (!n.kids.length || !n.parent) return lk;
   const o = isOpen(n);
   const bt = `<button type="button" class="${out ? 'sm-ox' : 'sm-x'}" aria-expanded="${o}" aria-label="${o ? 'סגירת הענף' : 'פתיחת הענף'} ${esc(n.label)} (${n.kids.length} פריטים)" title="בענף הזה ${n.kids.length} פריטים" data-tg="${esc(n.id)}"><span aria-hidden="true">${o ? '−' : '+' + n.kids.length}</span></button>`;
