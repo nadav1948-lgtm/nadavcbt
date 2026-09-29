@@ -1978,6 +1978,16 @@ body,body *{overflow-wrap:normal!important;word-break:normal!important;hyphens:m
 #nav .navbottom{margin-top:8px;padding-top:8px;border-top:1px solid var(--line)}
 .htgroup{margin:16px 0 8px;font-size:16px;font-weight:800;color:var(--muted)}
 @media (prefers-reduced-motion:reduce){#nav details.navg>summary::after{transition:none}}
+/* ===== questionnaire item lists (s.qitems) — שאלון ועדת זכאות ואפיון ===== */
+.qzscale{display:flex;flex-wrap:wrap;gap:6px;margin:10px 0 12px}
+.qzscale span{padding:5px 12px;border-radius:999px;font-size:.88rem;font-weight:600;background:color-mix(in srgb,hsl(calc(200 + var(--i)*28) 70% 55%) 18%,var(--panel));border:1px solid color-mix(in srgb,hsl(calc(200 + var(--i)*28) 70% 55%) 45%,transparent)}
+.qzlist{list-style:none;margin:0 0 12px;padding:0;display:grid;gap:6px}
+.qzlist li{display:flex;gap:12px;align-items:flex-start;padding:9px 12px;border-radius:12px;background:color-mix(in srgb,var(--accent,#6366f1) 7%,var(--panel));border-inline-start:4px solid color-mix(in srgb,var(--accent,#6366f1) 55%,transparent)}
+.qzlist li b{flex:0 0 auto;min-width:2.6em;text-align:center;padding:2px 6px;border-radius:8px;background:color-mix(in srgb,var(--accent,#6366f1) 16%,var(--panel));font-variant-numeric:tabular-nums;white-space:nowrap}
+.qzlist li span{line-height:1.55}
+.qzlist li.gap{opacity:.75;border-inline-start-style:dashed;font-style:italic}
+.qzext{display:flex;flex-wrap:wrap;gap:8px;margin:6px 0 12px}
+@media print{.qzlist li{break-inside:avoid}}
 
 </style>
 <link rel="manifest" href="manifest.webmanifest">
@@ -4238,6 +4248,456 @@ window.__rolesState = S;   // for testing in the console
 
 </script>
 <script>
+/* 🗺️ מפת האתר (#/sitemap) – מפת חשיבה אינטראקטיבית של כל האתר.
+   הכול נבנה דינמית מהנתונים שהאפליקציה מעבירה (NAV_PIN, navGroups, HUBS, TRACKS, PROBLEMS, TOOLS, GAMES, החוזרים והספרייה) – תוכן חדש מופיע במפה מעצמו.
+   app.js (עטוף ב-IIFE) קורא ל-window.sitemapUI(ctx) ומקבל {title, html, after}.
+   מחשב: מפת חשיבה דו-צדדית (SVG לחוטים + HTML לצמתים), זום, גרירה, פתיחה וסגירה של ענפים. טלפון: רשימה מקוננת מתקפלת. */
+(function(){
+'use strict';
+
+/* ---------------- helpers ---------------- */
+const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'}[c]));
+const nb = s => esc(s).replace(/([–\-־])(?=[^\s⁠])/g, '$1⁠');   // never break a word after a dash or maqaf
+const strip = s => String(s || '').replace(/<[^>]*>/g, ' ').replace(/\s+/g, ' ').trim();
+const lead = s => strip(s).replace(/^[^\p{L}\p{N}"״(]+/u, '');   // drop a leading emoji
+// one line for a tooltip: the first sentence; a very long one ends at a comma (no ellipsis)
+function oneLine(s){ let t = lead(s); if (!t) return ''; const m = t.match(/^(.{20,}?[.!?])(\s|$)/); if (m) t = m[1]; if (t.length > 190) { const c = t.lastIndexOf(',', 180), k = t.lastIndexOf(' – ', 180), cut = Math.max(c, k); if (cut > 60) t = t.slice(0, cut); } return t; }
+const LSK = 'cbtapp.sitemap';
+const store = { get(){ try { return JSON.parse(localStorage.getItem(LSK) || '{}') || {}; } catch(e){ return {}; } }, set(o){ try { localStorage.setItem(LSK, JSON.stringify(Object.assign(store.get(), o))); } catch(e){} } };
+const RM = () => { try { return matchMedia('(prefers-reduced-motion: reduce)').matches; } catch(e){ return false; } };
+const WIDE = () => innerWidth > 760;
+const PIN_DESC = {home: 'דף הבית – התלמידים, היומן של היום וכל המדורים', diary: 'יומן העבודה – מפגשים, משימות ולוח השנה', ask: 'שואלים שאלה במילים שלך ומקבלים תשובה מכל החומרים', find: 'חיפוש בכל האפליקציה – בעיות, מסלולים, חוזרים וספרייה'};
+const AREA_DESC = {problems: 'לכל בעיה מפה ומסלול טיפול מובנה במקום אחד', students: 'התיק של כל תלמיד – בעיות, תוכנית, מפגשים ושאלונים', workflow: 'סדר עבודה לכל תלמיד – משלב ההפניה ועד הסיום', tools: 'כלים אינטראקטיביים לעבודה עם הילד בחדר', games: 'משחקים טיפוליים לכל בעיה, עם הנחיות למנחה', roles: 'מי פונה למי – המסלול בין המורה, המחנך, ההורים, היועץ וההנהלה', circ: 'חוזרי המנכ״ל והמצבים המעשיים בהם – טיפולי ומשמעתי', library: 'כל החומרים מהספרייה לפי נושאים', videos: 'סרטונים לפי נושאים', groups: 'המדריך להנחיית קבוצות ומתווים קבוצתיים לפי נושאים'};
+const AREA_ICON = {'חרדות': '😰', 'רגש והתנהגות': '🌋', 'חברה': '🤝', 'למידה וקשב': '🎯', 'גוף והרגלים': '🌙', 'משבר ואובדן': '🕯️', 'צוות, כיתה והורים': '🏫'};
+const KIND_ICON = {info: 'ℹ️', form: '📝', checklist: '✅', scale: '📊', fivep: '🌸', cycle: '🔄', plan: '🗓️', cards: '🃏', sessions: '📅'};
+const MAXW = [320,210, 230, 250, 260, 270];
+
+/* ---------------- the tree ---------------- */
+let C = null, TREE = null, BY = new Map();
+function mk(parent, key, o){
+  let id = parent ? parent.id + '/' + key : 'root'; if (BY.has(id)) { let i = 2; while (BY.has(id + '~' + i)) i++; id += '~' + i; }
+  const n = Object.assign({kids: [], icon: '•', desc: ''}, o, {id, parent, lvl: parent ? parent.lvl + 1 : 0});
+  if (n.hue == null) n.hue = parent ? parent.hue : 255;
+  if (parent) { parent.kids.push(n); if (parent.deep && !o.deep) n.deep = true; }
+  BY.set(id, n); return n;
+}
+function trackNode(parent, t, over = {}){
+  const tn = mk(parent, over.key || t.id, Object.assign({label: t.title, icon: t.icon || '🧭', href: '#/track/' + t.id, hue: t.hue ?? parent.hue, desc: t['for'] ? lead(t['for']) + ' · ' + t.steps.length + ' שלבים' : oneLine(t.intro) || t.steps.length + ' שלבים'}, over));
+  (t.steps || []).forEach((s, j) => mk(tn, 's' + (j + 1), {label: s.title, icon: s.icon || KIND_ICON[s.kind] || '•', href: '#/track/' + t.id + '/' + (j + 1), deep: true, desc: oneLine(s.intro) || ('שלב ' + (j + 1) + ' מתוך ' + t.steps.length)}));
+  return tn;
+}
+function fillHub(a, k){
+  const h = C.HUBS[k]; if (!h) return;
+  const all = C.TRACKS.filter(t => t[h.flag]), guide = h.guide && all.find(t => t.id === h.guide), list = all.filter(t => t !== guide);
+  if (guide) trackNode(a, guide, {star: true});
+  if (h.areas) {
+    const used = new Set();
+    h.areas.forEach(([ak, ai, al]) => { const inA = list.filter(t => t.distArea === ak); if (!inA.length) return; const sub = mk(a, 'ar-' + ak, {label: al, icon: ai, href: '#/' + k, desc: inA.map(t => t.title).slice(0, 6).join(' · ')});
+      inA.sort((x, y) => (y.distOverview ? 1 : 0) - (x.distOverview ? 1 : 0)).forEach(t => { used.add(t); trackNode(sub, t, t.distOverview ? {star: true} : {}); }); });
+    list.filter(t => !used.has(t)).forEach(t => trackNode(a, t));
+  } else list.forEach(t => trackNode(a, t));
+}
+function probNode(parent, p){
+  const pn = mk(parent, p.id, {label: p.name, icon: p.icon || '🧭', href: '#/problem/' + p.id, desc: lead(p.summary)});
+  mk(pn, 'map', {label: 'המפה', icon: '📖', href: '#/problem/' + p.id, desc: 'סקירה, המשגה, מפגשים וטכניקות' + (p.sessions ? ' · ' + p.sessions.length + ' מפגשים' : '')});
+  const t = C.TRACK(p.id); if (t) trackNode(pn, t, {key: 'track', label: 'הטיפול המובנה', icon: '🧭', desc: t.steps.length + ' שלבים, שלב אחרי שלב'});
+  C.probExtraTracks(p.id).forEach(x => trackNode(pn, x));
+}
+function fillProblems(a){
+  const isAdult = p => C.ADULT_TRACKS.includes(p.id);
+  C.AREAS.forEach(ar => { const ps = C.PROBLEMS.filter(p => p.area === ar && !isAdult(p)); if (!ps.length) return;
+    const an = mk(a, 'pa-' + ar, {label: ar, icon: AREA_ICON[ar] || ps[0].icon, href: '#/problems', act: 'area', v: ar, hue: C.hueOf(ar), desc: ps.map(p => p.name).join(' · ')}); ps.forEach(p => probNode(an, p)); });
+  const adults = C.PROBLEMS.filter(isAdult), lone = C.TRACKS.filter(t => !C.isHubTrack(t) && !C.probOfTrack(t));
+  if (adults.length || lone.length) { const m = String(C.ADULT_AREA).match(/^(\S+)\s+(.*)$/) || [0, '👨‍🏫', C.ADULT_AREA];
+    const an = mk(a, 'pa-adult', {label: m[2], icon: m[1], href: '#/problems', act: 'area', v: C.ADULT_AREA, hue: 205, desc: 'מסלולי הדרכה והתייעצות למורים, להורים ולצוות'}); adults.forEach(p => probNode(an, p)); lone.forEach(t => trackNode(an, t)); }
+  if (C.HUBS.ariel && C.TRACKS.some(t => t.ariel)) { const h = C.HUBS.ariel; const an = mk(a, 'ariel', {label: h.title, icon: h.icon || '📘', href: '#/ariel', hue: C.hubHue('ariel'), desc: oneLine(h.intro)}); fillHub(an, 'ariel'); }
+}
+function fillGroups(a){
+  const all = C.TRACKS.filter(t => t.group), guide = all.find(t => t.id === 'grp-guide'), deep = all.filter(t => t.deep), list = all.filter(t => t !== guide && !t.deep);
+  if (guide) trackNode(a, guide, {star: true});
+  if (deep.length) { const d = mk(a, 'deep', {label: 'העמקה – מתוך קורס הנחיית הקבוצות', icon: '🎓', href: '#/groups', desc: deep.map(t => t.title).slice(0, 6).join(' · ')}); deep.forEach(t => trackNode(d, t)); }
+  if (list.length) { const d = deep.length ? mk(a, 'topics', {label: 'מתווים קבוצתיים לפי נושאים', icon: '📚', href: '#/groups', desc: list.length + ' מתווים, כל אחד עם מיון, מפגשים ומדדים'}) : a; list.forEach(t => trackNode(d, t)); }
+}
+function fillGames(a){
+  const by = new Map(); C.GAMES.forEach(g => { const ar = (C.P[g.id] && C.P[g.id].area) || g.area || 'עוד'; if (!by.has(ar)) by.set(ar, []); by.get(ar).push(g); });
+  const gn = (p, g) => mk(p, g.id, {label: g.title, icon: g.icon || '🎲', href: '#/game/' + g.id, desc: lead(C.P[g.id] ? C.P[g.id].name + ' · ' + (g.tagline || '') : g.tagline || '')});
+  if (C.GAMES.length > 12 && by.size > 1) by.forEach((gs, ar) => { const s = mk(a, 'ga-' + ar, {label: ar, icon: AREA_ICON[ar] || '🎲', href: '#/games', hue: C.hueOf(ar), desc: gs.map(g => g.title).join(' · ')}); gs.forEach(g => gn(s, g)); });
+  else C.GAMES.forEach(g => gn(a, g));
+}
+function fillCirc(a){
+  C.circList.forEach(m => { const G = C.circGuide.filter(g => g.circ === m.id);
+    const cn = mk(a, m.id, {label: m.title, icon: C.CIRC_ICON[m.id] || '📜', href: '#/circ/' + m.id, hue: C.hueOf(m.id + m.title), desc: oneLine(m.summary) || G.length + ' מצבים'});
+    G.forEach(g => mk(cn, g.id, {label: g.title, icon: (C.KIND[g.kind] || ['📌'])[0], href: '#/circ/' + m.id + '/' + g.id, deep: true, desc: oneLine(g.summary)})); });
+}
+function fillLibrary(a){
+  const by = new Map(); C.LIBTOPICS.forEach(t => { const g = t.group || 'עוד'; if (!by.has(g)) by.set(g, []); by.get(g).push(t); });
+  const tn = (p, t) => mk(p, t.id, {label: t.name, icon: t.icon || '📚', href: '#/library', act: 'findtopic', v: t.id, desc: lead(t.desc)});
+  if (by.size > 1) by.forEach((ts, g) => { const s = mk(a, 'lg-' + g, {label: g, icon: ts[0].icon || '📚', href: '#/library', hue: C.hueOf(g), desc: ts.map(t => t.name).join(' · ')}); ts.forEach(t => tn(s, t)); });
+  else C.LIBTOPICS.forEach(t => tn(a, t));
+}
+function build(){
+  BY = new Map();
+  const root = mk(null, '', {label: 'האתר של נדב דוד', icon: '🧠', href: '#/home', hue: 258, desc: 'יועץ חינוכי ומטפל CBT – כל המדורים במבט אחד'});
+  C.pins.filter(([k]) => k !== 'sitemap').forEach(([k, i, l]) => mk(root, 'pin-' + k, {label: l, icon: i, href: '#/' + k, hue: C.hubHue(k), pin: true, desc: PIN_DESC[k] || ''}));
+  C.groups.forEach(([i, l, items]) => {
+    const g = mk(root, 'g-' + l, {label: l, icon: i, href: '#/more', hue: C.hubHue(items[0] ? items[0][0] : l), desc: items.map(x => x[2]).join(' · ')});
+    items.forEach(([k, ic, lb]) => {
+      const a = mk(g, k, {label: lb, icon: ic, href: '#/' + k, hue: C.hubHue(k), desc: C.HUBS[k] ? oneLine(C.HUBS[k].intro) : AREA_DESC[k] || ''});
+      if (k === 'problems') fillProblems(a);
+      else if (k === 'groups') fillGroups(a);
+      else if (k === 'tools') C.TOOLS.forEach(t => mk(a, t.id, {label: t.name, icon: t.icon || '🧰', href: '#/tool/' + t.id, desc: lead(t.desc)}));
+      else if (k === 'games') fillGames(a);
+      else if (k === 'circ') fillCirc(a);
+      else if (k === 'library') fillLibrary(a);
+      else if (k === 'workflow') C.TRACKS.filter(t => t.workflow).forEach(t => trackNode(a, t));
+      else if (C.HUBS[k]) fillHub(a, k);
+    });
+  });
+  BY.forEach(n => { n.text = norm(n.label + ' ' + (n.desc || '')); n.ltext = norm(n.label); });
+  return root;
+}
+
+/* ---------------- state ---------------- */
+let OPEN = new Set(), SOPEN = new Set(), HITS = [], HIT_I = -1, Q = '';
+const isOpen = n => !n.parent || OPEN.has(n.id) || SOPEN.has(n.id);
+const visKids = n => isOpen(n) ? n.kids : [];
+function defaultOpen(){ const s = new Set(); TREE.kids.forEach(n => { if (!n.pin) s.add(n.id); }); return s; }
+function loadOpen(){ const o = store.get().open; OPEN = Array.isArray(o) ? new Set(o.filter(id => BY.has(id))) : defaultOpen(); }
+const saveOpen = () => store.set({open: [...OPEN]});
+function countDesc(n, deep){ let c = 0; for (const k of n.kids) { if (!deep && k.deep) continue; c += 1 + countDesc(k, deep); } return c; }
+
+/* ---------------- search (Hebrew-prefix tolerant) ---------------- */
+const FINALS = {'ך': 'כ', 'ם': 'מ', 'ן': 'נ', 'ף': 'פ', 'ץ': 'צ'};
+function norm(s){ return String(s || '').toLowerCase().replace(/[֑-ׇ]/g, '').replace(/[״"׳'`]/g, '').replace(/[־–—\-_/.,:;()]/g, ' ').replace(/[ךםןףץ]/g, c => FINALS[c]).replace(/\s+/g, ' ').trim(); }
+function variants(t){ const v = [t]; let x = t; for (let i = 0; i < 2; i++) { if (x.length > 2 && /^[והבלמשכ]/.test(x)) { x = x.slice(1); v.push(x); } else break; } return v; }
+function runSearch(q){
+  Q = q; SOPEN = new Set(); HITS = []; HIT_I = -1;
+  const toks = norm(q).split(' ').filter(t => t.length >= 2);
+  if (toks.length) { const vs = toks.map(variants);
+    const rx = vs.map(v => new RegExp('(^| )[והבלמשכ]{0,2}(' + v.map(x => x.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')).join('|') + ')'));
+    const score = n => !vs.every(v => v.some(x => n.text.includes(x))) ? 0 : rx.every(r => r.test(n.ltext)) ? 4 : vs.every(v => v.some(x => n.ltext.includes(x))) ? 2 : rx.every(r => r.test(n.text)) ? 1.5 : 1;
+    BY.forEach(n => { if (n.parent) { const s = score(n); if (s) HITS.push([n, s - (n.deep ? 0.5 : 0) - n.lvl * 0.01]); } });
+    HITS = HITS.sort((a, b) => b[1] - a[1]).map(x => x[0]).slice(0, 300);
+    HITS.forEach(n => { for (let p = n.parent; p; p = p.parent) SOPEN.add(p.id); });
+    if (HITS.length) HIT_I = 0;
+  }
+}
+
+/* ---------------- DOM refs ---------------- */
+let R = null;   // {root, canvas, stage, svg, layer, outline, tip, count}
+const VIEW = {x: 0, y: 0, k: 1};
+const EL = new Map(), WIRE = new Map(), POS = new Map();   // id -> element / path / current position {x,y,w,h,s}
+let ANIM = 0, mode = 'map';
+
+function nodeHTML(n, out){
+  const lk = `<a class="sm-l" href="${esc(n.href)}"${n.act ? ` data-act="${esc(n.act)}" data-v="${esc(n.v)}"` : ''}${n.desc ? ` data-d="${esc(n.desc)}"` : ''}><span class="sm-i" aria-hidden="true">${n.icon}</span><span class="sm-t">${nb(n.label)}</span></a>`;
+  if (!n.kids.length || !n.parent) return lk;
+  const o = isOpen(n);
+  const bt = `<button type="button" class="${out ? 'sm-ox' : 'sm-x'}" aria-expanded="${o}" aria-label="${o ? 'סגירת הענף' : 'פתיחת הענף'} ${esc(n.label)} (${n.kids.length} פריטים)" data-tg="${esc(n.id)}"><span aria-hidden="true">${o ? '−' : n.kids.length}</span></button>`;
+  return out ? bt + lk : lk + bt;
+}
+function cls(n){ return 'lv' + Math.min(n.lvl, 5) + (n.deep ? ' deep' : '') + (n.star ? ' star' : '') + (n.pin ? ' pin' : '') + (Q && HITS.includes(n) ? ' hit' : '') + (HITS[HIT_I] === n ? ' cur' : ''); }
+
+/* ---------------- map: layout ---------------- */
+function sides(){
+  const ks = TREE.kids, tot = ks.reduce((s, n) => s + w0(n), 0); let acc = 0; const side = new Map();
+  ks.forEach(n => { side.set(n, acc < tot / 2 ? 1 : -1); acc += w0(n); });
+  return side;
+}
+const w0 = n => 2 + Math.sqrt(countDesc(n, false));   // stable weight – the split does not jump when branches open
+function countVis(n){ let c = 0; for (const k of visKids(n)) c += 1 + countVis(k); return c; }
+function visible(){ const out = []; (function walk(n){ out.push(n); visKids(n).forEach(walk); })(TREE); return out; }
+function ensureEls(list){
+  const fresh = [];
+  list.forEach(n => { if (EL.has(n.id)) return; const d = document.createElement('div'); d.dataset.id = n.id; d.setAttribute('role', 'treeitem'); d.setAttribute('aria-level', n.lvl + 1);
+    d.style.setProperty('--h', n.hue); d.style.maxWidth = MAXW[Math.min(n.lvl, 5)] + 'px'; d.innerHTML = nodeHTML(n); d.className = 'sm-n ' + cls(n);
+    d.style.opacity = '0'; R.layer.appendChild(d); EL.set(n.id, d); fresh.push(n); });
+  if (fresh.length) { try { C.kidify && C.kidify(R.layer); } catch(e){}
+    fresh.forEach(n => { const d = EL.get(n.id); n._w = d.offsetWidth; n._h = d.offsetHeight; }); }
+  // DOM order = tree order, so Tab walks the map in reading order
+  list.forEach(n => R.layer.appendChild(EL.get(n.id)));
+}
+function refreshEl(n){ const d = EL.get(n.id); if (!d) return; d.className = 'sm-n ' + cls(n); const b = d.querySelector('.sm-x'); if (b) { const o = isOpen(n); b.setAttribute('aria-expanded', o); b.setAttribute('aria-label', `${o ? 'סגירת הענף' : 'פתיחת הענף'} ${n.label} (${n.kids.length} פריטים)`); b.firstChild.textContent = o ? '−' : n.kids.length; } d.setAttribute('aria-expanded', n.kids.length ? isOpen(n) : null); if (!n.kids.length) d.removeAttribute('aria-expanded'); }
+function layout(){
+  const vis = visible(); ensureEls(vis);
+  vis.forEach(n => { if (!n._w) { const d = EL.get(n.id); n._w = d.offsetWidth; n._h = d.offsetHeight; } });
+  const GX = 58, GY = 8, GG = 18, side = sides(), tgt = new Map();
+  const rw = TREE._w, rh = TREE._h;
+  tgt.set(TREE.id, {x: -rw / 2, y: -rh / 2, w: rw, h: rh, s: 0});
+  for (const s of [1, -1]) {
+    const tops = TREE.kids.filter(n => side.get(n) === s); if (!tops.length) continue;
+    const colW = []; (function cw(ns, d){ ns.forEach(n => { colW[d] = Math.max(colW[d] || 0, n._w); cw(visKids(n), d + 1); }); })(tops, 0);
+    const colX = [rw / 2 + GX]; for (let d = 1; d < colW.length; d++) colX[d] = colX[d - 1] + colW[d - 1] + GX;
+    const H = n => { if (n._H != null) return n._H; const ks = visKids(n); const kh = ks.reduce((a, k) => a + H(k), 0) + GY * Math.max(0, ks.length - 1); return n._H = Math.max(n._h, kh); };
+    vis.forEach(n => { n._H = null; });
+    const total = tops.reduce((a, n) => a + H(n), 0) + GG * (tops.length - 1);
+    const place = (n, top, d) => { const hh = H(n), cy = top + hh / 2, xi = s * colX[d]; tgt.set(n.id, {x: s > 0 ? xi : xi - n._w, y: cy - n._h / 2, w: n._w, h: n._h, s});
+      const ks = visKids(n); const kh = ks.reduce((a, k) => a + H(k), 0) + GY * Math.max(0, ks.length - 1); let y = top + (hh - kh) / 2; ks.forEach(k => { place(k, y, d + 1); y += H(k) + GY; }); };
+    let y = -total / 2; tops.forEach(n => { place(n, y, 0); y += H(n) + GG; });
+  }
+  return {vis, tgt};
+}
+function anchor(p, s){ if (!p) return null; if (p.s === 0) return {x: s * p.w / 2 + p.x + p.w / 2, y: p.y + p.h / 2}; return {x: p.s > 0 ? p.x + p.w + 12 : p.x - 12, y: p.y + p.h / 2}; }
+function wireD(pp, cp){ const a = anchor(pp, cp.s), bx = cp.s > 0 ? cp.x : cp.x + cp.w, by = cp.y + cp.h / 2; const m = (a.x + bx) / 2; return `M${a.x.toFixed(1)} ${a.y.toFixed(1)}C${m.toFixed(1)} ${a.y.toFixed(1)} ${m.toFixed(1)} ${by.toFixed(1)} ${bx.toFixed(1)} ${by.toFixed(1)}`; }
+function wireFor(n){ let p = WIRE.get(n.id); if (!p) { p = document.createElementNS('http://www.w3.org/2000/svg', 'path'); p.style.setProperty('--h', n.hue); p.setAttribute('class', 'lv' + Math.min(n.lvl, 5) + (n.deep ? ' deep' : '')); R.svg.appendChild(p); WIRE.set(n.id, p); } return p; }
+
+/* one transition: nodes glide from where they were (new ones grow out of their parent), leaving ones fold back into it */
+function update(opts = {}){
+  if (!R || mode !== 'map') return;
+  cancelAnimationFrame(ANIM); clearTimeout(update.t);
+  const {vis, tgt} = layout(); const visSet = new Set(vis.map(n => n.id));
+  const from = new Map(), to = new Map(), leaving = [];
+  vis.forEach(n => { const t = tgt.get(n.id); let f = POS.get(n.id);
+    if (!f) { let a = n.parent; while (a && !POS.has(a.id)) a = a.parent; const ap = a ? POS.get(a.id) : t; f = {x: ap.x + (ap.w - t.w) / 2, y: ap.y + (ap.h - t.h) / 2, w: t.w, h: t.h, s: t.s, o: 0}; }
+    const el = EL.get(n.id); if (el && el.dataset.s !== String(t.s)) el.dataset.s = t.s;
+    from.set(n.id, Object.assign({o: 1}, f)); to.set(n.id, Object.assign({o: 1}, t)); refreshEl(n); });
+  EL.forEach((el, id) => { if (visSet.has(id)) return; const n = BY.get(id); let a = n && n.parent; while (a && !visSet.has(a.id)) a = a.parent; const at = a ? tgt.get(a.id) : null, f = POS.get(id);
+    if (!f || !at) { el.remove(); EL.delete(id); const w = WIRE.get(id); if (w) { w.remove(); WIRE.delete(id); } POS.delete(id); return; }
+    leaving.push(id); from.set(id, Object.assign({o: 1}, f)); to.set(id, {x: at.x + (at.w - f.w) / 2, y: at.y + (at.h - f.h) / 2, w: f.w, h: f.h, s: f.s, o: 0}); });
+  // keep an anchor node still on screen (the one that was clicked)
+  const v0 = Object.assign({}, VIEW); let v1 = Object.assign({}, VIEW);
+  if (opts.keep && POS.get(opts.keep) && tgt.get(opts.keep)) { const a = POS.get(opts.keep), b = tgt.get(opts.keep); v1.x -= (b.x - a.x) * VIEW.k; v1.y -= (b.y - a.y) * VIEW.k; }
+  if (opts.view) v1 = opts.view(tgt);
+  const draw = e => { const cur = new Map();
+    from.forEach((f, id) => { const t = to.get(id); const p = {x: f.x + (t.x - f.x) * e, y: f.y + (t.y - f.y) * e, w: t.w, h: t.h, s: t.s, o: f.o + (t.o - f.o) * e}; cur.set(id, p);
+      const el = EL.get(id); el.style.transform = `translate(${p.x.toFixed(1)}px,${p.y.toFixed(1)}px)`; el.style.opacity = p.o; });
+    cur.forEach((p, id) => { const n = BY.get(id); if (!n || !n.parent) return; const pp = cur.get(n.parent.id) || POS.get(n.parent.id); if (!pp) return; const w = wireFor(n); w.setAttribute('d', wireD(pp, p)); w.style.opacity = p.o; });
+    VIEW.x = v0.x + (v1.x - v0.x) * e; VIEW.y = v0.y + (v1.y - v0.y) * e; VIEW.k = v0.k + (v1.k - v0.k) * e; applyView();
+    return cur; };
+  const finish = () => { cancelAnimationFrame(ANIM); clearTimeout(update.t); const cur = draw(1);
+    leaving.forEach(id => { const el = EL.get(id); if (el) el.remove(); EL.delete(id); const w = WIRE.get(id); if (w) { w.remove(); WIRE.delete(id); } cur.delete(id); POS.delete(id); });
+    cur.forEach((p, id) => POS.set(id, p)); R.canvas.classList.remove('busy'); };
+  const instant = opts.instant || RM() || vis.length + leaving.length > 700 || !POS.size;
+  if (instant) return finish();
+  const D = 340, t0 = performance.now(); R.canvas.classList.add('busy');
+  const step = now => { const k = Math.min(1, (now - t0) / D); if (k >= 1) return finish(); draw(1 - Math.pow(1 - k, 3)); ANIM = requestAnimationFrame(step); };
+  ANIM = requestAnimationFrame(step); update.t = setTimeout(finish, D + 120);   // rAF sleeps in a hidden tab – still land on the final state
+}
+
+/* ---------------- map: zoom & pan ---------------- */
+function applyView(){ if (R) R.stage.style.transform = `translate(${VIEW.x}px,${VIEW.y}px) scale(${VIEW.k})`; if (R && R.zl) R.zl.textContent = Math.round(VIEW.k * 100) + '%'; }
+const clampK = k => Math.max(0.12, Math.min(2.6, k));
+function zoomAt(f, cx, cy){ const k = clampK(VIEW.k * f); f = k / VIEW.k; VIEW.x = cx - (cx - VIEW.x) * f; VIEW.y = cy - (cy - VIEW.y) * f; VIEW.k = k; applyView(); hideTip(); }
+function bbox(pos){ let a = Infinity, b = Infinity, c = -Infinity, d = -Infinity; pos.forEach(p => { if (p.o === 0) return; a = Math.min(a, p.x); b = Math.min(b, p.y); c = Math.max(c, p.x + p.w); d = Math.max(d, p.y + p.h); }); return {x: a, y: b, w: c - a, h: d - b}; }
+function fitView(pos){ const cw = R.canvas.clientWidth, ch = R.canvas.clientHeight; if (!cw || !ch || !pos.size) return Object.assign({}, VIEW); const b = bbox(pos); const k = clampK(Math.min((cw - 48) / b.w, (ch - 48) / b.h, 1.1)); return {k, x: cw / 2 - (b.x + b.w / 2) * k, y: ch / 2 - (b.y + b.h / 2) * k}; }
+function fit(){ const v = fitView(POS); animView(v); }
+function animView(v){ if (RM()) { Object.assign(VIEW, v); return applyView(); } const v0 = Object.assign({}, VIEW), t0 = performance.now(); cancelAnimationFrame(animView.a);
+  const st = now => { const k = Math.min(1, (now - t0) / 300), e = 1 - Math.pow(1 - k, 3); VIEW.x = v0.x + (v.x - v0.x) * e; VIEW.y = v0.y + (v.y - v0.y) * e; VIEW.k = v0.k + (v.k - v0.k) * e; applyView(); if (k < 1) animView.a = requestAnimationFrame(st); };
+  animView.a = requestAnimationFrame(st); setTimeout(() => { if (VIEW.k !== v.k || VIEW.x !== v.x) { cancelAnimationFrame(animView.a); Object.assign(VIEW, v); applyView(); } }, 360); }
+function centerOn(id, k){ const p = POS.get(id); if (!p || !R) return; const kk = k || Math.max(VIEW.k, 0.8); animView({k: kk, x: R.canvas.clientWidth / 2 - (p.x + p.w / 2) * kk, y: R.canvas.clientHeight / 2 - (p.y + p.h / 2) * kk}); }
+function ensureVisible(id){ const el = EL.get(id); if (!el) return; const c = R.canvas.getBoundingClientRect(), r = el.getBoundingClientRect(); if (r.left < c.left + 8 || r.right > c.right - 8 || r.top < c.top + 8 || r.bottom > c.bottom - 8) centerOn(id, VIEW.k < 0.55 ? 0.8 : VIEW.k); }
+
+function bindCanvas(){
+  const cv = R.canvas, pts = new Map(); let drag = null, moved = false, pinch = null;
+  cv.addEventListener('wheel', e => { e.preventDefault(); const r = cv.getBoundingClientRect(); zoomAt(Math.exp(-e.deltaY * (e.ctrlKey ? 0.01 : 0.0016)), e.clientX - r.left, e.clientY - r.top); }, {passive: false});
+  cv.addEventListener('pointerdown', e => { if (e.button !== 0 && e.pointerType === 'mouse') return; if (e.target.closest('.sm-ctl')) return; pts.set(e.pointerId, {x: e.clientX, y: e.clientY}); moved = false;
+    if (pts.size === 1) drag = {x: e.clientX, y: e.clientY, vx: VIEW.x, vy: VIEW.y, id: e.pointerId};
+    if (pts.size === 2) { const [a, b] = [...pts.values()]; pinch = {d: Math.hypot(a.x - b.x, a.y - b.y), k: VIEW.k}; } });
+  cv.addEventListener('pointermove', e => { if (!pts.has(e.pointerId)) return; pts.set(e.pointerId, {x: e.clientX, y: e.clientY});
+    if (pts.size === 2 && pinch) { const [a, b] = [...pts.values()], r = cv.getBoundingClientRect(); const d = Math.hypot(a.x - b.x, a.y - b.y); zoomAt(clampK(pinch.k * d / pinch.d) / VIEW.k, (a.x + b.x) / 2 - r.left, (a.y + b.y) / 2 - r.top); moved = true; return; }
+    if (!drag) return; const dx = e.clientX - drag.x, dy = e.clientY - drag.y;
+    if (!moved && Math.hypot(dx, dy) < 6) return;
+    if (!moved) { moved = true; try { cv.setPointerCapture(e.pointerId); } catch(_){} cv.classList.add('grab'); hideTip(); }
+    VIEW.x = drag.vx + dx; VIEW.y = drag.vy + dy; applyView(); });
+  const up = e => { pts.delete(e.pointerId); if (pts.size < 2) pinch = null; if (!pts.size) { drag = null; cv.classList.remove('grab'); } };
+  cv.addEventListener('pointerup', up); cv.addEventListener('pointercancel', up);
+  cv.addEventListener('click', e => { if (moved) { e.preventDefault(); e.stopPropagation(); moved = false; } }, true);   // a drag is not a click
+  cv.addEventListener('keydown', e => { if (e.target.closest('input')) return; const cw = cv.clientWidth / 2, ch = cv.clientHeight / 2;
+    if (e.key === '+' || e.key === '=') { zoomAt(1.2, cw, ch); e.preventDefault(); } else if (e.key === '-' || e.key === '_') { zoomAt(1 / 1.2, cw, ch); e.preventDefault(); } else if (e.key === '0') { fit(); e.preventDefault(); }
+    else if (e.target === cv && /^Arrow/.test(e.key)) { const s = 60; VIEW.x += e.key === 'ArrowLeft' ? s : e.key === 'ArrowRight' ? -s : 0; VIEW.y += e.key === 'ArrowUp' ? s : e.key === 'ArrowDown' ? -s : 0; applyView(); e.preventDefault(); } });
+  cv.addEventListener('focusin', e => { const n = e.target.closest('.sm-n'); if (n) { ensureVisible(n.dataset.id); showTip(e.target.closest('.sm-l') || n.querySelector('.sm-l')); } });
+  cv.addEventListener('focusout', hideTip);
+  cv.addEventListener('pointerover', e => { if (e.pointerType !== 'mouse') return; const l = e.target.closest('.sm-l'); if (l) showTip(l); });
+  cv.addEventListener('pointerout', e => { const l = e.target.closest('.sm-l'); if (l && !l.contains(e.relatedTarget)) hideTip(); });
+}
+
+/* ---------------- tooltip ---------------- */
+function showTip(l){ if (!R || !l || !l.dataset.d) return hideTip(); const t = R.tip; t.textContent = l.dataset.d; t.hidden = false; const r = l.getBoundingClientRect(), tw = Math.min(340, innerWidth - 24); t.style.maxWidth = tw + 'px';
+  const w = t.offsetWidth, h = t.offsetHeight; let x = r.left + r.width / 2 - w / 2; x = Math.max(12, Math.min(innerWidth - w - 12, x)); let y = r.bottom + 8; if (y + h > innerHeight - 8) y = r.top - h - 8; t.style.left = x + 'px'; t.style.top = y + 'px'; }
+function hideTip(){ if (R && R.tip) R.tip.hidden = true; }
+
+/* ---------------- outline (phones, and the list view) ---------------- */
+function outlineHTML(n, all){
+  const ks = all ? n.kids : visKids(n);
+  const kids = ks.length ?`<ul role="group">${ks.map(k => outlineLi(k, all)).join('')}</ul>` : '';
+  return kids;
+}
+function outlineLi(n, all){
+  const open = n.kids.length && (all ? !n.kids[0].deep || OPEN.has(n.id) : isOpen(n));
+  return `<li role="treeitem" aria-level="${n.lvl}"${n.kids.length ? ` aria-expanded="${!!open}"` : ''} class="${cls(n)}" data-id="${esc(n.id)}" style="--h:${n.hue}"><div class="sm-row">${all ? `<a class="sm-l" href="${esc(n.href)}"><span class="sm-i" aria-hidden="true">${n.icon}</span><span class="sm-t">${nb(n.label)}</span></a>` : nodeHTML(n, true)}</div>${open ? outlineHTML(n, all) : ''}</li>`;
+}
+function renderOutline(focusId){
+  if (!R) return; const root = TREE;
+  R.outline.innerHTML = `<div class="sm-orow0" style="--h:${root.hue}"><a class="sm-l" href="${root.href}"><span class="sm-i" aria-hidden="true">${root.icon}</span><span class="sm-t">${nb(root.label)}</span></a></div><ul role="tree" aria-label="מפת האתר">${root.kids.map(k => outlineLi(k, false)).join('')}</ul>`;
+  try { C.kidify && C.kidify(R.outline); } catch(e){}
+  if (focusId) { const b = R.outline.querySelector(`[data-tg="${CSS.escape(focusId)}"]`); if (b) b.focus({preventScroll: true}); }
+}
+function renderPrint(){ if (!R) return; R.print.innerHTML = `<h2>🗺️ מפת האתר – האתר של נדב דוד</h2><ul>${TREE.kids.map(k => outlineLi(k, true)).join('')}</ul>`; }
+
+/* ---------------- actions ---------------- */
+function toggle(id){ const n = BY.get(id); if (!n || !n.kids.length) return; if (isOpen(n)) { OPEN.delete(id); SOPEN.delete(id); } else OPEN.add(id); saveOpen(); refresh({keep: id, focus: id}); }
+function refresh(o = {}){ if (mode === 'map') update(o); else renderOutline(o.focus); renderStatus(); }
+function expandAll(){ BY.forEach(n => { if (n.kids.length && !n.kids[0].deep && n.parent) OPEN.add(n.id); }); saveOpen(); refresh({view: tgt => { const v = fitView(tgt); if (v.k >= 0.35) return v; const r = tgt.get('root'), k = 0.35; return {k, x: R.canvas.clientWidth / 2 - (r.x + r.w / 2) * k, y: R.canvas.clientHeight / 2 - (r.y + r.h / 2) * k}; }}); }
+function collapseAll(){ OPEN = new Set(); SOPEN = new Set(); saveOpen(); refresh({view: tgt => fitView(tgt)}); }
+function renderStatus(){ if (!R) return; const c = R.count; if (!Q.trim()) { c.textContent = ''; R.root.classList.remove('searching'); } else { R.root.classList.add('searching'); c.textContent = HITS.length ? `${HIT_I + 1} מתוך ${HITS.length}${HITS.length >= 300 ? '+' : ''}` : 'לא נמצא'; }
+  R.root.querySelectorAll('[data-sm="prev"],[data-sm="next"]').forEach(b => b.disabled = HITS.length < 2); }
+function gotoHit(d){ if (!HITS.length) return; HIT_I = (HIT_I + d + HITS.length) % HITS.length; const n = HITS[HIT_I];
+  if (mode === 'map') { BY.forEach(x => refreshEl(x)); centerOn(n.id, Math.max(VIEW.k, 0.85)); }
+  else { renderOutline(); const li = R.outline.querySelector(`li[data-id="${CSS.escape(n.id)}"]`); if (li) li.scrollIntoView({block: 'center', behavior: RM() ? 'auto' : 'smooth'}); }
+  renderStatus(); }
+function doSearch(q){ runSearch(q); if (mode === 'map') update({view: tgt => { if (!HITS.length) return Object.assign({}, VIEW); const t = tgt.get(HITS[0].id); if (!t) return Object.assign({}, VIEW); const k = Math.max(VIEW.k, 0.85); return {k, x: R.canvas.clientWidth / 2 - (t.x + t.w / 2) * k, y: R.canvas.clientHeight / 2 - (t.y + t.h / 2) * k}; }}); else { renderOutline(); gotoHit(0); }
+  renderStatus(); }
+
+function setMode(m){ mode = m; R.root.dataset.mode = m; R.root.querySelectorAll('[data-sm="mode"]').forEach(b => { b.textContent = m === 'map' ? '🌳 תצוגת רשימה' : '🗺️ תצוגת מפה'; b.setAttribute('aria-pressed', m === 'list'); });
+  EL.clear(); WIRE.clear(); POS.clear(); R.layer.innerHTML = ''; R.svg.innerHTML = '';
+  if (m === 'map') { update({instant: true}); Object.assign(VIEW, fitView(POS)); applyView(); } else renderOutline(); }
+
+/* ---------------- page ---------------- */
+function counts(){ const lv = []; BY.forEach(n => { lv[n.lvl] = (lv[n.lvl] || 0) + 1; }); return lv; }
+window.sitemapUI = function(ctx){
+  C = ctx; TREE = build(); loadOpen(); Q = ''; SOPEN = new Set(); HITS = []; HIT_I = -1;
+  const nTr = C.TRACKS.length, nSt = C.TRACKS.reduce((a, t) => a + t.steps.length, 0);
+  const html = `<div class="sm-root" id="smRoot" data-mode="map">
+  <div class="banner hubhero" style="--h:258"><span class="emoji">🗺️</span><div><h1>מפת האתר</h1><p>${BY.size - 1} מקומות באתר במבט אחד · ${C.PROBLEMS.length} בעיות · ${nTr} מסלולים ו־${nSt} שלבים · ${C.circList.length} חוזרים. לוחצים על שם כדי להגיע, ועל העיגול כדי לפתוח ענף.</p></div></div>
+  ${C.guide || ''}
+  <div class="sm-bar no-print" role="toolbar" aria-label="כלי המפה">
+    <div class="search sm-search"><input id="smq" type="search" placeholder="חיפוש במפה… למשל: חרדה, צל״ח, אסיפת הורים" aria-label="חיפוש במפת האתר" autocomplete="off"><span class="ic">🔍</span></div>
+    <span class="sm-count" id="smCount" aria-live="polite"></span>
+    <button type="button" class="btn sm" data-sm="prev" aria-label="התוצאה הקודמת" disabled>→</button><button type="button" class="btn sm" data-sm="next" aria-label="התוצאה הבאה" disabled>←</button>
+    <span class="sm-sep" aria-hidden="true"></span>
+    <button type="button" class="btn sm" data-sm="expand" title="פותח את כל הענפים (השלבים והמצבים נשארים סגורים)">➕ פתיחת הכול</button><button type="button" class="btn sm" data-sm="collapse">➖ סגירת הכול</button>
+    <button type="button" class="btn sm sm-wideonly" data-sm="mode" aria-pressed="false">🌳 תצוגת רשימה</button>
+  </div>
+  <div class="sm-canvas" id="smCanvas" tabindex="0" aria-label="מפת החשיבה של האתר. גוררים כדי להזיז, גלגלת או צביטה לזום, פלוס ומינוס לזום מהמקלדת, אפס להתאמה למסך" role="region">
+    <div class="sm-stage"><svg class="sm-wires" aria-hidden="true" width="1" height="1"></svg><div class="sm-layer" role="tree" aria-label="מפת האתר"></div></div>
+    <div class="sm-ctl no-print" role="group" aria-label="זום"><button type="button" data-sm="zin" aria-label="הגדלה">＋</button><span class="sm-zl" aria-hidden="true">100%</span><button type="button" data-sm="zout" aria-label="הקטנה">－</button><button type="button" data-sm="fit" aria-label="התאמה למסך" title="התאמה למסך">⤢</button></div>
+    <div class="sm-hint no-print" aria-hidden="true">✋ גוררים להזזה · 🖱️ גלגלת לזום · לחיצה על העיגול פותחת ענף</div>
+  </div>
+  <nav class="sm-outline" id="smOutline" aria-label="מפת האתר – רשימה"></nav>
+  <div class="sm-print" aria-hidden="true"></div>
+  <div class="sm-tip" role="tooltip" hidden></div>
+</div>`;
+  return {title: 'מפת האתר', html, after(){
+    const root = document.getElementById('smRoot'); if (!root) return;
+    R = {root, canvas: root.querySelector('.sm-canvas'), stage: root.querySelector('.sm-stage'), svg: root.querySelector('.sm-wires'), layer: root.querySelector('.sm-layer'), outline: root.querySelector('.sm-outline'), print: root.querySelector('.sm-print'), tip: root.querySelector('.sm-tip'), count: root.querySelector('#smCount'), zl: root.querySelector('.sm-zl')};
+    EL.clear(); WIRE.clear(); POS.clear();
+    bindCanvas();
+    root.addEventListener('click', e => {
+      const tg = e.target.closest('[data-tg]'); if (tg) { e.preventDefault(); toggle(tg.dataset.tg); return; }
+      const b = e.target.closest('[data-sm]'); if (!b) return; const a = b.dataset.sm, cw = R.canvas.clientWidth / 2, ch = R.canvas.clientHeight / 2;
+      if (a === 'zin') zoomAt(1.25, cw, ch); else if (a === 'zout') zoomAt(1 / 1.25, cw, ch); else if (a === 'fit') fit();
+      else if (a === 'expand') expandAll(); else if (a === 'collapse') collapseAll();
+      else if (a === 'prev') gotoHit(-1); else if (a === 'next') gotoHit(1);
+      else if (a === 'mode') { const m = mode === 'map' ? 'list' : 'map'; store.set({mode: m}); setMode(m); } });
+    const q = root.querySelector('#smq');
+    q.addEventListener('input', () => { clearTimeout(q.t); q.t = setTimeout(() => doSearch(q.value), 160); });
+    q.addEventListener('keydown', e => { if (e.key === 'Enter') { e.preventDefault(); clearTimeout(q.t); if (norm(q.value) !== norm(Q)) doSearch(q.value); else gotoHit(e.shiftKey ? -1 : 1); } else if (e.key === 'Escape') { q.value = ''; doSearch(''); } });
+    renderPrint();
+    const want = () => WIDE() ? (store.get().mode === 'list' ? 'list' : 'map') : 'list';
+    setMode(want());
+    if (mode === 'map' && !R.canvas.clientWidth) setTimeout(() => { if (R && R.canvas.isConnected && mode === 'map') { EL.forEach(el => el.remove()); EL.clear(); WIRE.clear(); R.svg.innerHTML = ''; POS.clear(); BY.forEach(n => { n._w = 0; }); setMode('map'); } }, 400);
+    onResize.want = want;
+  }};
+};
+function onResize(){ if (!R || !R.root.isConnected) { R = null; return; } const m = onResize.want(); if (m !== mode) setMode(m); }
+addEventListener('resize', () => { clearTimeout(onResize.t); onResize.t = setTimeout(onResize, 200); });
+window.sitemapCounts = () => counts();
+window.sitemapLinks = () => [...BY.values()].map(n => ({id: n.id, lvl: n.lvl, href: n.href, act: n.act, v: n.v, deep: !!n.deep}));   // for the link check
+
+/* ---------------- styles ---------------- */
+const CSS_TXT = `
+.sm-root{position:relative}
+.sm-root .banner p{max-width:760px}
+.sm-bar{display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin:6px 0 12px}
+.sm-bar .sm-search{flex:1 1 260px;min-width:0;margin:0}
+.sm-bar .sm-search input{width:100%}
+.sm-count{font-size:14px;color:var(--muted);min-width:0;white-space:nowrap}
+.sm-sep{flex:0 0 1px;height:24px;background:var(--line)}
+.sm-canvas{position:relative;height:clamp(460px,calc(100vh - 250px),980px);border:1px solid var(--line);border-radius:var(--r);overflow:hidden;touch-action:none;cursor:grab;user-select:none;-webkit-user-select:none;
+  background:radial-gradient(circle at 50% 45%,color-mix(in srgb,var(--brand) 13%,transparent),transparent 62%),radial-gradient(color-mix(in srgb,var(--muted) 26%,transparent) 1px,transparent 1.2px) 0 0/22px 22px,var(--bg2);box-shadow:var(--shadow)}
+.sm-canvas:focus-visible{outline:3px solid var(--ring);outline-offset:2px}
+.sm-canvas.grab{cursor:grabbing}
+.sm-stage{position:absolute;inset:0 auto auto 0;width:0;height:0;transform-origin:0 0;will-change:transform}
+.sm-wires{position:absolute;left:0;top:0;overflow:visible;pointer-events:none}
+.sm-wires path{fill:none;stroke:hsl(var(--h) var(--sat) var(--lt) / .78);stroke-width:2.2;stroke-linecap:round}
+.sm-wires path.lv1{stroke-width:4.2}.sm-wires path.lv2{stroke-width:3.1}.sm-wires path.lv3{stroke-width:2.4}.sm-wires path.deep{stroke-width:1.5;stroke-dasharray:4 4}
+.sm-layer{position:absolute;left:0;top:0}
+.sm-n{position:absolute;left:0;top:0;width:max-content;display:flex;align-items:center;gap:0;border-radius:14px;background:var(--panel);border:1.5px solid hsl(var(--h) var(--sat) var(--lt) / .55);box-shadow:var(--shadow);font-size:14px;line-height:1.3;transition:box-shadow .2s,opacity .2s}
+.sm-n .sm-l{display:flex;align-items:center;gap:7px;padding:6px 11px;color:var(--ink);text-decoration:none;border-radius:inherit;min-width:0;flex:1}
+.sm-t{white-space:normal;overflow-wrap:normal;word-break:keep-all;hyphens:none;font-weight:600}
+.sm-i{flex:0 0 auto;width:26px;height:26px;border-radius:8px;display:grid;place-items:center;font-size:15px;background:hsl(var(--h) var(--soft-s) var(--soft-l))}
+.sm-i .kidico,.sm-t .kidico{display:inline-grid;width:1.3em;height:1.3em;vertical-align:-.25em}.sm-i .kidico svg,.sm-t .kidico svg{width:100%;height:100%}
+.sm-n .sm-l:hover{background:hsl(var(--h) var(--soft-s) var(--soft-l) / .6)}
+.sm-n .sm-l:focus-visible,.sm-x:focus-visible,.sm-ox:focus-visible{outline:3px solid var(--ring);outline-offset:2px}
+.sm-n.lv0{border:3px solid var(--gold,#f5c451);background:var(--grad);box-shadow:0 0 0 6px color-mix(in srgb,var(--brand) 22%,transparent),var(--shadow-hi);border-radius:22px}
+.sm-n.lv0 .sm-l{padding:13px 20px;color:#fff;font-size:19px;font-family:var(--display)}.sm-n.lv0 .sm-i{width:40px;height:40px;font-size:24px;background:rgba(255,255,255,.18)}
+.sm-n.lv0 .sm-t{font-weight:800}
+.sm-n.lv1{border:0;background:linear-gradient(135deg,hsl(var(--h) 62% 46%),hsl(calc(var(--h) + 28) 62% 38%));box-shadow:0 6px 18px -8px hsl(var(--h) 70% 40% / .8)}
+.sm-n.lv1 .sm-l{color:#fff;font-size:16px;padding:9px 14px;font-family:var(--display)}.sm-n.lv1 .sm-t{font-weight:700}.sm-n.lv1 .sm-i{background:rgba(255,255,255,.2);width:30px;height:30px;font-size:17px}
+.sm-n.lv1.pin{background:var(--panel);border:1.5px dashed hsl(var(--h) var(--sat) var(--lt) / .8)}.sm-n.lv1.pin .sm-l{color:var(--ink);font-size:15px}
+.sm-n.lv2 .sm-l{font-size:15px}.sm-n.lv2{border-width:2px}
+.sm-n.deep{font-size:13px;box-shadow:none;background:color-mix(in srgb,var(--panel) 85%,transparent)}.sm-n.deep .sm-t{font-weight:500}.sm-n.deep .sm-i{width:22px;height:22px;font-size:13px}
+.sm-n.star{border-color:var(--gold,#f5c451);border-width:2px}
+.sm-x{position:absolute;top:50%;transform:translateY(-50%);min-width:22px;height:22px;padding:0 5px;border-radius:999px;border:2px solid hsl(var(--h) var(--sat) var(--lt));background:var(--panel);color:var(--ink);font:700 11.5px/1 var(--display);display:grid;place-items:center;cursor:pointer;box-shadow:var(--shadow);z-index:1}
+.sm-x[aria-expanded="false"]{background:hsl(var(--h) var(--sat) var(--lt));color:#fff}
+.sm-x:hover{transform:translateY(-50%) scale(1.12)}
+.sm-n[data-s="1"] .sm-x{right:-12px}.sm-n[data-s="-1"] .sm-x{left:-12px}
+.sm-canvas.busy .sm-n{transition:none}
+.sm-root.searching .sm-n:not(.hit):not(.lv0){opacity:.38!important}
+.sm-root.searching .sm-n.hit{box-shadow:0 0 0 3px var(--gold,#f5c451),var(--shadow-hi)}
+.sm-n.cur,.sm-outline li.cur>.sm-row{box-shadow:0 0 0 4px var(--gold,#f5c451),0 0 24px var(--glow)!important}
+.sm-ctl{position:absolute;bottom:12px;inset-inline-start:12px;display:flex;align-items:center;gap:4px;padding:5px;border-radius:14px;background:var(--glass);backdrop-filter:blur(8px);border:1px solid var(--line);box-shadow:var(--shadow);cursor:default}
+.sm-ctl button{width:34px;height:34px;border-radius:10px;border:1px solid var(--line);background:var(--panel);color:var(--ink);font-size:18px;cursor:pointer}
+.sm-ctl button:hover{background:var(--brand-soft)}
+.sm-ctl button:focus-visible{outline:3px solid var(--ring)}
+.sm-zl{min-width:44px;text-align:center;font:600 12.5px var(--display);color:var(--muted)}
+.sm-hint{position:absolute;top:10px;inset-inline-start:12px;font-size:12.5px;color:var(--muted);background:var(--glass);padding:4px 10px;border-radius:999px;pointer-events:none}
+.sm-tip{position:fixed;z-index:60;padding:7px 11px;border-radius:10px;background:var(--ink);color:var(--bg);font-size:13.5px;line-height:1.4;box-shadow:var(--shadow-hi);pointer-events:none;direction:rtl}
+.sm-outline{display:none}
+.sm-root[data-mode="list"] .sm-canvas{display:none}
+.sm-root[data-mode="list"] .sm-outline{display:block}
+.sm-outline ul{list-style:none;margin:0;padding:0}
+.sm-outline ul ul{margin-inline-start:13px;padding-inline-start:9px;border-inline-start:2px solid hsl(var(--h) var(--sat) var(--lt) / .45)}
+.sm-outline li{margin:5px 0;min-width:0}
+.sm-orow0{margin-bottom:8px}
+.sm-orow0 .sm-l{display:flex;align-items:center;gap:10px;padding:12px 14px;border-radius:16px;background:var(--grad);color:#fff;text-decoration:none;font:800 18px var(--display);border:2px solid var(--gold,#f5c451)}
+.sm-orow0 .sm-i{background:rgba(255,255,255,.18);width:34px;height:34px;font-size:20px}
+.sm-row{display:flex;align-items:center;gap:6px;min-width:0;border-radius:12px;background:var(--panel);border:1px solid hsl(var(--h) var(--sat) var(--lt) / .45)}
+.sm-row .sm-l{flex:1 1 auto;min-width:0;display:flex;align-items:center;gap:8px;padding:8px 10px;color:var(--ink);text-decoration:none;font-size:15px}
+.sm-outline li.lv1>.sm-row{background:linear-gradient(135deg,hsl(var(--h) 62% 46%),hsl(calc(var(--h) + 28) 62% 38%));border:0}
+.sm-outline li.lv1>.sm-row .sm-l{color:#fff;font:700 16px var(--display)}.sm-outline li.lv1>.sm-row .sm-i{background:rgba(255,255,255,.2)}
+.sm-outline li.lv1.pin>.sm-row{background:var(--panel);border:1.5px dashed hsl(var(--h) var(--sat) var(--lt))}.sm-outline li.lv1.pin>.sm-row .sm-l{color:var(--ink)}
+.sm-outline li.deep>.sm-row{background:transparent}.sm-outline li.deep .sm-l{font-size:14px}
+.sm-root.searching .sm-outline li.hit>.sm-row{box-shadow:0 0 0 3px var(--gold,#f5c451)}
+.sm-ox{flex:0 0 auto;margin-inline-end:6px;min-width:30px;height:30px;padding:0 7px;border-radius:999px;border:2px solid hsl(var(--h) var(--sat) var(--lt));background:var(--panel);color:var(--ink);font:700 13px var(--display);cursor:pointer}
+.sm-ox[aria-expanded="false"]{background:hsl(var(--h) var(--sat) var(--lt));color:#fff}
+.sm-wideonly{}
+@media (max-width:760px){.sm-wideonly,.sm-sep{display:none}.sm-bar .btn.sm{padding-inline:10px}}
+@media (prefers-reduced-motion:reduce){.sm-n,.sm-x{transition:none!important}}
+.sm-print{display:none}
+.smlink{display:inline-flex;align-items:center;gap:4px;margin-inline-start:10px;padding:3px 11px;border-radius:999px;font-size:14px;font-weight:600;background:var(--brand-soft);color:var(--brand-text);text-decoration:none;vertical-align:middle;white-space:nowrap}
+.smlink:hover{background:color-mix(in srgb,var(--brand) 24%,transparent)}
+@media print{
+  .sm-bar,.sm-canvas,.sm-outline,.sm-tip,.sm-root .gguide{display:none!important}
+  .sm-print{display:block!important;font-size:11.5px;color:#000}
+  .sm-print h2{font-size:17px;margin:0 0 8px}
+  .sm-print ul{list-style:none;margin:0;padding-inline-start:14px;border-inline-start:1px solid #bbb}
+  .sm-print>ul{padding:0;border:0;columns:2;column-gap:22px}
+  .sm-print>ul>li{break-inside:avoid-column}
+  .sm-print li{margin:1px 0;break-inside:avoid}
+  .sm-print .sm-row{border:0;background:none!important;box-shadow:none!important}
+  .sm-print .sm-l{color:#000!important;text-decoration:none;padding:0;font-size:inherit;display:inline}
+  .sm-print .sm-i{display:inline;background:none;width:auto;height:auto;margin-inline-end:3px}
+  .sm-print li.lv1>.sm-row .sm-l{font-weight:800;font-size:13px}
+  .sm-print li.lv2>.sm-row .sm-l{font-weight:700}
+}
+`;
+function injectCSS(){ if (document.getElementById('sm-css')) return; const s = document.createElement('style'); s.id = 'sm-css'; s.textContent = CSS_TXT; (document.head || document.documentElement).appendChild(s); }
+injectCSS();
+})();
+
+</script>
+<script>
 /* edu-calendar.js – לוח החופשות של משרד החינוך, חינוך רשמי (ממלכתי וממלכתי-דתי), בית ספר יסודי.
    מקור: הודעת מנכ"ל "לוח החופשות והחגים בשנת הלימודים תשפ"ז בגני ילדים, בבתי ספר יסודיים, בחטיבות הביניים
    ובכל מוסדות החינוך הרשמי" (י"ב בניסן תשפ"ו, 30.3.2026). נקרא ונבדק מול המקור ב-29.9.2026.
@@ -4777,7 +5237,7 @@ function render(){
   document.body.classList.toggle('locked', isLocked());
   if (isLocked()) { const o = lockView(); $('#title').textContent = ''; $('#view').innerHTML = `<div class="page">${o.html}</div>`; document.title = 'האתר של נדב דוד – יועץ חינוכי ומטפל CBT'; return; }
   if (WEB && !ARTIFACT && !LITE && !PROBLEMS.length) { $('#title').textContent = ''; $('#view').innerHTML = `<div class="empty" style="padding-top:120px"><span class="big">⏳</span>${Cloud.status === 'error' ? esc(Cloud.err) + ' <br><br><button class="btn primary" data-act="cloud-retry">נסו שוב</button>' : 'טוען את התוכן מ-OneDrive…'}</div>`; return; }
-  const views = LITE ? {home: liteHome, problems, problem: problemView, tools, tool: toolView, settings: liteSettings, ask, workflow, roles: rolesView, circ: circView, circsrc: circSrcView, libsrc: libSrcView, circask: circAskView, find: findView, more: moreView, games: gamesView, game: gameView, tracks: problems, track: trackView, groups: groupsView, transitions: hubView, newteachers: hubView, programs: hubView, distress: hubView, talk: hubView, parents: hubView, reports: hubView, sel: hubView, mafteach: hubView, sped: hubView, tzalach: hubView, aklim: hubView,develop: hubView, cbtclass: hubView, crole: hubView, quest: hubView, ariel: hubView, videos: videosView, diary: diaryView} : {home, problems, problem: problemView, students, student: studentView, tools, tool: toolView, library, settings, ask, workflow, roles: rolesView, circ: circView, circsrc: circSrcView, libsrc: libSrcView, circask: circAskView, find: findView, more: moreView, games: gamesView, game: gameView, tracks: problems, track: trackView, groups: groupsView, transitions: hubView, newteachers: hubView, programs: hubView, distress: hubView, talk: hubView, parents: hubView, reports: hubView, sel: hubView, mafteach: hubView, sped: hubView, tzalach: hubView, aklim: hubView,develop: hubView, cbtclass: hubView, crole: hubView, quest: hubView, ariel: hubView, videos: videosView, diary: diaryView};
+  const views = LITE ? {home: liteHome, problems, problem: problemView, tools, tool: toolView, settings: liteSettings, ask, workflow, roles: rolesView, circ: circView, circsrc: circSrcView, libsrc: libSrcView, circask: circAskView, find: findView, more: moreView, games: gamesView, game: gameView, tracks: problems, track: trackView, groups: groupsView, transitions: hubView, newteachers: hubView, programs: hubView, distress: hubView, talk: hubView, parents: hubView, reports: hubView, sel: hubView, mafteach: hubView, sped: hubView, tzalach: hubView, aklim: hubView,develop: hubView, cbtclass: hubView, crole: hubView, quest: hubView, ariel: hubView, videos: videosView, diary: diaryView, sitemap: sitemapView} : {home, problems, problem: problemView, students, student: studentView, tools, tool: toolView, library, settings, ask, workflow, roles: rolesView, circ: circView, circsrc: circSrcView, libsrc: libSrcView, circask: circAskView, find: findView, more: moreView, games: gamesView, game: gameView, tracks: problems, track: trackView, groups: groupsView, transitions: hubView, newteachers: hubView, programs: hubView, distress: hubView, talk: hubView, parents: hubView, reports: hubView, sel: hubView, mafteach: hubView, sped: hubView, tzalach: hubView, aklim: hubView,develop: hubView, cbtclass: hubView, crole: hubView, quest: hubView, ariel: hubView, videos: videosView, diary: diaryView, sitemap: sitemapView};
   const fn = views[R.r] || home;
   const out = fn(R);
   $('#title').textContent = out.title;
@@ -4831,17 +5291,17 @@ function mainFile(p){
   return at.length ? at.slice().sort((a, b) => rank(a) - rank(b))[0] : null;
 }
 /* the side menu in 7 groups (approved by the user): pinned items on top, collapsible groups, settings at the bottom; any NAV item not listed falls into "עוד" */
-const NAV_PIN = ['home', 'diary', 'ask', 'find'];
+const NAV_PIN = ['home', 'diary', 'ask', 'find', 'sitemap'];
 const NAV_GROUPS = [
-  ['🧒', 'הטיפול בתלמיד', ['problems', 'students', 'workflow', 'talk', 'quest', 'distress', 'develop']],
-  ['🧰', 'כלים לעבודה עם ילדים', ['tools', 'games']],
+  ['🧒', 'הטיפול בתלמיד', ['problems', 'students', 'workflow', 'talk', 'quest', 'distress', 'develop', 'tools', 'games']],
   ['🏫', 'כיתה ובית ספר', ['aklim', 'cbtclass', 'sel', 'mafteach', 'programs', 'groups']],
-  ['🤝', 'הורים וצוות', ['parents', 'roles', 'reports', 'newteachers']],
+  ['🏡', 'הורים', ['parents', 'reports']],
+  ['👥', 'צוות', ['roles', 'newteachers', 'reports']],
   ['🛟', 'מצבים ואוכלוסיות מיוחדים', ['tzalach', 'sped', 'transitions']],
   ['🎯', 'התפקיד והנהלים', ['crole', 'circ']],
   ['📚', 'ספרייה ומקורות', ['library', 'videos']]
 ];
-const navItem = k => k === 'find' ? ['find', '🔍', 'חיפוש'] : NAV.find(n => n[0] === k);
+const navItem = k => k === 'find' ? ['find', '🔍', 'חיפוש'] : k === 'sitemap' ? ['sitemap', '🗺️', 'מפת האתר'] : NAV.find(n => n[0] === k);
 const navShown = n => n && !(LITE && ['students', 'library'].includes(n[0]));
 function navGroups(){ const used = new Set([...NAV_PIN, 'settings', ...NAV_GROUPS.flatMap(g => g[2])]); const rest = NAV.filter(n => !used.has(n[0]));
   return NAV_GROUPS.map(([i, l, ks]) => [i, l, ks.map(navItem).filter(navShown)]).concat(rest.length ? [['➕', 'עוד', rest.filter(navShown)]] : []).filter(g => g[2].length); }
@@ -6675,6 +7135,12 @@ function circlesSVG(){
   });
   return `<svg viewBox="0 0 620 620" style="width:100%;max-width:520px;display:block;margin:0 auto" role="img" aria-label="מעגלי הגורמים סביב הילד">${g}</svg>`;
 }
+/* 🗺️ מפת האתר – the mind map itself lives in app/sitemap.js (loaded before this file); it gets the live data, so new content shows up by itself */
+function sitemapView(){
+  if (!window.sitemapUI) return {title: 'מפת האתר', html: '<div class="empty">⏳ מפת האתר נטענת…</div>'};
+  try { return window.sitemapUI({pins: NAV_PIN.map(navItem).filter(navShown), groups: navGroups(), HUBS, TRACKS: TRACKS(), TRACK, PROBLEMS, P, AREAS, ADULT_AREA, ADULT_TRACKS, isHubTrack, probOfTrack, probExtraTracks, TOOLS, GAMES: GAMES(), circList: circList(), circGuide: circGuide(), CIRC_ICON, KIND, LIBTOPICS: LITE ? [] : LIBTOPICS, hubHue, hueOf, kidify: kidifyEmojis, guide: gGuide('כל האתר במפה אחת – לוחצים על שם ומגיעים בדיוק לשם 🗺️', 'שמחה', 5)}); }
+  catch(e){ console.error('sitemapUI', e); return {title: 'מפת האתר', html: '<div class="empty">מפת האתר לא נטענה.</div>'}; }
+}
 function rolesView(){
   const G = window.CBT_ROLES;
   if (!G) return {title:'מי פונה למי', html:'<div class="empty">⏳ המדריך עוד לא נטען</div>'};
@@ -7300,7 +7766,7 @@ const HUBS = {
     areas: [['emo', '💛', 'זיהוי בעיות רגשיות'], ['mental', '🧠', 'זיהוי בעיות נפשיות'], ['behav', '🌋', 'זיהוי בעיות התנהגות'], ['social', '🤝', 'זיהוי בעיות חברתיות']]},
   sel: {flag: 'sel', guide: 'sel-guide', title: 'SEL – למידה רגשית-חברתית', icon: '💞', say: 'רגש, חבר, החלטה – לומדים את זה כמו כל מקצוע. בוא נבנה את זה יחד 💞', intro: '💞 למידה רגשית-חברתית בבית ספר יסודי לבנים (א׳–ו׳): המדריך (מה זה SEL, חמש המיומנויות והקשר לכישורי חיים ולמפתח הל״ב, תפקיד היועץ לפי החוזר, מבנה שיעור, רשימת בדיקה לאקלים וטופס תכנון), מסלול לכל מיומנות – מודעות עצמית, ניהול עצמי, מודעות חברתית, בין-אישי וקבלת החלטות – עם מטרות לפי גיל ומערכים מוכנים מתוך החומרים, תוכנית שנתית לפי חודשי השנה העברית, הדרכת מחנכים ושיתוף הורים. לכל פריט מצוין המקור, והצד הטיפולי נשמר נפרד מהמשמעתי.', extra: [['#/mafteach', '💗', 'מדור מפתח הל״ב'], ['#/circ/c09', '📜', 'חוזר כישורי חיים (0351)'], ['#/track/prog-social', '🏗️', 'תוכנית התערבות: SEL'], ['#/track/class-climate', '🧭', 'מסלול טיפול: אקלים כיתתי'], ['#/tool/sociometry', '🕸️', 'שאלון סוציומטרי – מיפוי חברתי'], ['#/distress', '🚨', 'זיהוי סימני מצוקה']]},
   mafteach: {flag: 'mafteach', guide: 'ks-guide', title: 'כישורי חיים ומפתח הל״ב', icon: '🔑', say: 'שיעור טוב מתחיל במעגל – חוויה, שיתוף, המשגה ויישום. בוא נתכונן יחד! 🧩', intro: '🧩🔑 שתי השעות החברתיות-רגשיות של השבוע: כישורי חיים (תוכנית ״הכ״חות שבדרך״ של שפ״י לחמ״ד ולחברה החרדית, גרסת בנים – כל השיעורים לפי שכבה, בסדר של אתר שפ״י, וכל מצגת נפתחת בלחיצה) ומפתח הל״ב לשעת החינוך (הערך של כל תקופה, ארבעת המעגלים, לפי תקופה ולפי שכבה). מתחילים במדריך ״איך מעבירים שיעור כישורי חיים״.', extra: [['#/sel', '💞', 'מדור SEL – למידה רגשית-חברתית'], ['#/circ/c09', '📜', 'חוזר כישורי חיים (0351)']], areas: [['ks', '🧩', 'כישורי חיים (חמ״ד)'], ['mh', '🔑', 'מפתח הל״ב']]},
-  sped: {flag: 'sped', guide: 'sped-guide', title: 'חינוך מיוחד והכלה', icon: '🧩', say: 'כל ילד לומד אחרת – בוא נמצא יחד את הדרך שלו 🧩', intro: '🧩 חינוך מיוחד והכלה: מפת התהליך המלאה (איתור ← תמיכה בבית הספר ← צוות רב-מקצועי ← ועדת זכאות ואפיון ← חידוש זכאות ← תח״י/תל״א) עם הטופס של כל שלב, ערכת כל הטפסים שלך (נפתחים בלחיצה), הכנה לוועדה, חידוש זכאות וקיצור יום, כלי הערכת הקריאה והאוריינות לכיתות א׳–ג׳ עם נקודות החתך, הכלה בכיתה ומחוננים – לפי חוזר 0287 והחומרים שלך. הצד הטיפולי והצד המנהלי מופרדים, ולכל פריט מצוין המקור.', extra: [['#/circ/c02', '📜', 'חוזר ועדות חינוך מיוחד (0287)'], ['#/circ/c16', '📜', 'מוסדות חינוך מכילים (0483)'], ['#/circ/c02/c02-iep-personal-program', '📜', 'תוכנית אישית – תח״י (0287)'],['#/track/prog-guide', '🏗️', 'בניית תוכנית התערבות']]},
+  sped: {flag: 'sped', guide: 'sped-guide', title: 'חינוך מיוחד והכלה', icon: '🧩', say: 'כל ילד לומד אחרת – בוא נמצא יחד את הדרך שלו 🧩', intro: '🧩 חינוך מיוחד והכלה: מפת התהליך המלאה (איתור ← תמיכה בבית הספר ← צוות רב-מקצועי ← ועדת זכאות ואפיון ← חידוש זכאות ← תח״י/תל״א) עם הטופס של כל שלב, ערכת כל הטפסים שלך (נפתחים בלחיצה), הכנה לוועדה, חידוש זכאות וקיצור יום, כלי הערכת הקריאה והאוריינות לכיתות א׳–ג׳ עם נקודות החתך, הכלה בכיתה ומחוננים – לפי חוזר 0287 והחומרים שלך. הצד הטיפולי והצד המנהלי מופרדים, ולכל פריט מצוין המקור.', extra: [['#/circ/c02', '📜', 'חוזר ועדות חינוך מיוחד (0287)'], ['#/circ/c16', '📜', 'מוסדות חינוך מכילים (0483)'], ['#/circ/c02/c02-iep-personal-program', '📜', 'תוכנית אישית – תח״י (0287)'],['#/track/prog-guide', '🏗️', 'בניית תוכנית התערבות'], ['#/track/sped-zaa-q', '📝', 'שאלון המורה לוועדת זכאות ואפיון (ד׳–⁠ו׳)']]},
   develop: {flag: 'develop', guide: 'dev-guide', title: 'התפתחות הילד', icon: '🌳', say: 'כל ילד גדל בקצב שלו – בוא נבין מה צפוי בגיל הזה ומתי כדאי לבדוק 🌳', intro: '🌳 התפתחות הילד מהגן ועד כיתה ו׳: המדריך (שבעת תחומי ההתפתחות, טבע וסביבה, ציר הזמן, טווח תקין מול דגל אדום ואיך היועץ משתמש במבט התפתחותי), מסלול לכל שכבת גיל – גן ובשלות לכיתה א׳, א׳–ב׳, ג׳–ד׳, ה׳–ו׳ וראשית ההתבגרות – עם מה צפוי בכל תחום, דאגות נפוצות (תקין או לבדוק), דגלים אדומים, שיחה עם הילד והנחיות להורים ולמחנכים; תיאוריות (פיאז׳ה, אריקסון, התקשרות וניופלד, ויגוצקי, קולברג, ברונפנברנר, מושג המוות), העמקה לפי תחומים, מתי מפנים ולמי, והדרכת הורים לפי גיל. לכל פריט מצוין המקור, ומה שאינו מהחומרים מסומן ״ידע מקצועי כללי״.', extra: [['#/transitions', '🚪', 'מעברים'], ['#/sped', '🧩', 'חינוך מיוחד והכלה'], ['#/distress', '🚨', 'זיהוי סימני מצוקה'], ['#/sel', '💞', 'למידה רגשית-חברתית'], ['#/parents', '🤝', 'הורים']]},
   cbtclass: {flag: 'cbtclass', guide: 'cbtc-guide', title: 'יישום CBT בכיתה', icon: '🏫', say: 'כל הכיתה לומדת לחשוב, להרגיש ולפעול אחרת – בוא נביא את ה-CBT לכיתה 🏫', intro: '🏫 יישום CBT בכיתה (א׳–⁠ו׳): המדריך (למה CBT בכיתה כמניעה לכולם, משולש המחשבה-הרגש-ההתנהגות לילדים, פירמידת שלוש הרמות – כיתה, קבוצה ופרטני – ומה תפקיד היועץ ומה תפקיד המורה, השיחה המכבדת והמאתגרת, והפרדה בין הטיפולי למשמעתי), סדרת שיעורים מוכנה לפי שכבות גיל עם כלים ומשחקים מהאפליקציה, המורה כמאמן CBT (שפה משותפת, בנק משפטים, שבח שבונה מסוגלות, חרדה בכיתה בלי מלכודת ההימנעות, פרוטוקול להתפרצות כעס וכרטיסי עזר), ניהול התנהגות (ניתוח ABC, סדרי חיזוק, כלכלת אסימונים, שגרות והקו של חוזר 0470), תוכנית כיתתית לחרדת מבחנים, אקלים כיתתי ופעילויות קבוצתיות, ומעגל ההתייעצות עם המורה עם טפסים. לפי ״CBT מערכתי בעצימות נמוכה לחינוכיים״ של יששכר עשת ושאר חומרי הספרייה; מה שאינו מהחומרים מסומן ״ידע מקצועי כללי״.', extra: [['#/track/teacher-consult', '🧭', 'הדרכת מורה בניהול כיתה'], ['#/track/class-climate', '🌈', 'אקלים כיתתי'], ['#/sel', '💞', 'למידה רגשית-חברתית'], ['#/mafteach', '🔑', 'כישורי חיים ומפתח הל״ב'], ['#/programs', '🏗️', 'תוכניות התערבות'], ['#/tool/sociometry', '🕸️', 'שאלון סוציומטרי'], ['#/circ/c04', '📜', 'חוזר 0470 – אקלים חינוכי מיטבי']]},
   crole: {flag: 'crole', guide: 'role-guide', title: 'תפקיד היועץ החינוכי', icon: '🎯', say: 'היועץ הוא הלב הרגשי של בית הספר – בוא נראה את כל התפקיד במבט אחד 🎯', intro: '🎯 תפקיד היועץ החינוכי: המדריך (ההגדרה לפי שפ״י וההסכם הקיבוצי, שמונה מטרות הייעוץ, ארבע מיומנויות היסוד, מעגלי העבודה ותהליך העבודה, מודל היהלום, מה חוזרי המנכ״ל מטילים על היועץ, הפרדה בין הטיפולי למשמעתי, איך מסבירים לתלמידים מה עושה היועץ ומפת האפליקציה לפי תחומי התפקיד), המודלים של התפקיד (הכוון, טיפולי, מניעתי לפי Caplan, מערכתי, מייעץ, מתאם ומנהל מקרה, מבוסס נתונים ומודלים בינלאומיים – עם השוואות ומה מתאים ליסודי לבנים), חלוקת עבודה וזמן (אופק חדש, דוח מבקר המדינה, מה כן ומה לא בתפקיד והגבולות מול כל שותף), אתיקה (הקוד האתי, סודיות וחריגיה, קשרים כפולים, חובת דיווח, תיעוד וכרטיסי דילמה), השנה של היועץ (חודשי השנה העברית, איתור בארבעה ממדים, מטרות עם ת.ב.ל.י.ן, תוכנית עבודה, ועדה מלווה ואוגדן סוף שנה), העבודה עם המנהל והצוות, והיועץ עצמו (זהות מקצועית, מסלול ההתפתחות, סופרוויז׳ן ושמירה מפני שחיקה). לכל פריט מצוין מקור; מה שאינו מהחומרים מסומן ״ידע מקצועי כללי״.', extra: [['#/workflow', '🗺️', 'סדר עבודה – מהפניה ועד סיום'], ['#/roles', '👥', 'מי פונה למי'], ['#/track/ak-counselor', '⚖️', 'תפקיד היועץ לפי חוזר האקלים'], ['#/circ/c04/c04-role-counselor-psychologist', '📜', 'תפקיד היועץ בחוזר 0470'], ['#/circ/c09/c09-counselor-role', '📜', 'תפקיד היועץ בכישורי חיים (0351)'], ['#/circ/c13/c13-counselor-role-shefi', '📜', 'היועץ בשעת חירום'], ['#/circ/c05/c05-counselor-role-info', '📜', 'סמכויות היועץ בהעברת מידע'], ['#/track/teacher-stress', '🧯', 'דחק ושחיקה']]},
@@ -7476,7 +7942,7 @@ function hubHero(k, icon, title, n){ return `<div class="banner hubhero" style="
 function hubMap(list, H){ if (list.length < 3 || list.length > 40) return '';
   return `<nav class="hubmap no-print" aria-label="מפת המדור" style="--h:${H}"><h2 class="sec">🗺️ מפת המדור</h2><ol>${list.map((t, i) => `<li style="--k:${i}"><a href="#/track/${t.id}"><span class="hmn">${i + 1}</span><span class="hmi" aria-hidden="true">${t.icon || '🧭'}</span><span class="hmt">${esc(t.title)}</span></a></li>`).join('')}</ol></nav>`; }
 function homeTiles(){ const tile = ([k, i, l]) => `<a class="htile" href="#/${k}" style="--h:${hubHue(k)}"><span class="hti" aria-hidden="true">${i}</span><span class="htl">${esc(l)}</span></a>`;
-  return `<h2 class="sec">🧩 כל המדורים</h2>` + navGroups().map(([i, l, items]) => `<h3 class="htgroup">${i} ${esc(l)}</h3><div class="hometiles">${items.map(tile).join('')}</div>`).join(''); }
+  return `<h2 class="sec">🧩 כל המדורים <a class="smlink" href="#/sitemap">🗺️ מפת האתר</a></h2>` + navGroups().map(([i, l, items]) => `<h3 class="htgroup">${i} ${esc(l)}</h3><div class="hometiles">${items.map(tile).join('')}</div>`).join(''); }
 const TR_KIND = {info: ['ℹ️', 'הסבר', 210], form: ['📝', 'טופס', 45], checklist: ['✅', 'רשימת בדיקה', 140], scale: ['📊', 'סולם', 20], fivep: ['🌸', '5P', 320], cycle: ['🔄', 'מעגל', 270], plan: ['🗓️', 'תוכנית', 180], cards: ['🃏', 'כרטיסים', 300], sessions: ['📅', 'מפגשים', 100], diagram: ['🎨', 'תרשים', 250], psy: ['🧠', 'הסבר', 210], tabs: ['📑', 'לפי גיל ובעיה', 60], viz: ['📈', 'כלי חזותי', 160]};
 /* info steps made visual – the words stay exactly as written, only their shape changes:
    an arrow chain (א ← ב ← ג, 3–8 links) → a flow of colored chips (a circle when the paragraph speaks of a מעגל);
@@ -7509,6 +7975,9 @@ function trInfoHTML(s){
     h += num ? `<ol class="trnum">${pts.map(x => `<li><span>${esc(x.replace(/^\d{1,2}[.)]\s*/, ''))}</span></li>`).join('')}</ol>`
       : nNo >= 2 && nNo < pts.length ? `<ul class="clean trpts trdo">${pts.map(x => `<li class="${no(x) ? 'no' : 'yes'}"><span class="trmk" aria-label="${no(x) ? 'לא לעשות' : 'כן לעשות'}">${no(x) ? '✖' : '✔'}</span><span>${esc(x)}</span></li>`).join('')}</ul>`
       : `<ul class="clean trpts trdots">${pts.map(x => `<li>${trRich(x)}</li>`).join('')}</ul>`; }
+  /* questionnaire items with their own numbers (s.qitems = [[n, text]], s.scale = answer labels) and outside links (s.ext = [[url, label]]) */
+  if (s.qitems) h += (s.scale ? `<div class="qzscale">${s.scale.map((x, i) => `<span style="--i:${i}">${esc(x)}</span>`).join('')}</div>` : '') + `<ol class="qzlist">${s.qitems.map(([n, t]) => `<li class="${/לא צולם/.test(t) ? 'gap' : ''}"><b>${esc(String(n))}</b><span>${esc(t)}</span></li>`).join('')}</ol>`;
+  if (s.ext) h += `<div class="qzext">${s.ext.map(([u, l]) => `<a class="btn" href="${esc(u)}" target="_blank" rel="noopener">${esc(l)}</a>`).join('')}</div>`;
   return h + (s.diagrams || []).map(g => diagramHTML(g, {head: 1})).join('');
 }
 /* checklist ring: fills as items are ticked (its own listener; the saving is in the data-trc handler above) */
@@ -7857,7 +8326,7 @@ function kidifyEmojis(root){
 function outMenu(btn){
   let m = $('#outmenu'); if (m) { m.remove(); return; }
   m = document.createElement('div'); m.id = 'outmenu'; m.className = 'outmenu';
-  m.innerHTML = `<button data-out="print">🖨️ הדפסה במדפסת</button><button data-out="pdf">📄 שמירה כ-PDF</button><button data-out="slides">🎞️ הצגה כמצגת</button><button data-out="share">📤 שמירה כעמוד לשיתוף</button><button data-out="link">🔗 קישור לצוות</button>`;
+  m.innerHTML = `<button data-out="print">🖨️ הדפסה במדפסת</button><button data-out="pdf">📄 שמירה כ-PDF</button><button data-out="slides">🎞️ הצגה כמצגת</button><button data-out="pptx">📊 הורדה כמצגת PowerPoint</button><button data-out="share">📤 שמירה כעמוד לשיתוף</button><button data-out="link">🔗 קישור לצוות</button>`;
   document.body.appendChild(m);
   const r = btn.getBoundingClientRect(); m.style.top = (r.bottom + 6) + 'px'; m.style.left = Math.max(8, r.left - 120) + 'px';
   m.onclick = e => { const b = e.target.closest('[data-out]'); if (!b) return; m.remove(); const k = b.dataset.out;
@@ -7869,7 +8338,7 @@ function outMenu(btn){
 const OUT_SEL = {steps: null, picked: false};
 function pickSteps(tr, R, k){
   const cur = Math.min(tr.steps.length - 1, Math.max(0, R.sub && /^\d+$/.test(R.sub) ? +R.sub - 1 : 0));
-  const verb = {print: 'להדפסה', pdf: 'ל-PDF', slides: 'למצגת', share: 'לקובץ שיתוף', link: 'לקישור לצוות'}[k] || '';
+  const verb = {print: 'להדפסה', pdf: 'ל-PDF', slides: 'למצגת', pptx: 'למצגת PowerPoint', share: 'לקובץ שיתוף', link: 'לקישור לצוות'}[k] || '';
   const m = $('#modal'); m.className = 'modal open';
   m.innerHTML = `<div class="box"><div class="mhead"><h3>מה לקחת ${verb}?</h3><button class="iconbtn" data-act="close">✕</button></div>
     <div class="list" style="gap:8px"><button class="btn primary" data-pk="one" style="justify-content:flex-start">📄 רק השלב הזה: <b style="margin-inline-start:6px">${esc(tr.steps[cur].title)}</b></button>
@@ -7893,6 +8362,7 @@ function doOut(k){
     if (k === 'slides') return slideShow();
     if (k === 'share') return sharePage();
     if (k === 'link') return shareLink();
+    if (k === 'pptx') return pptExport();
     let sel = null;
     if (selTrack()) { sel = document.createElement('div'); sel.id = 'selview'; sel.className = 'page'; sel.innerHTML = selHTML(true); document.body.appendChild(sel); document.body.classList.add('selprint'); }
     document.querySelectorAll('#view details').forEach(d => { d.dataset.wasOpen = d.open ? '1' : ''; d.open = true; });
@@ -7981,6 +8451,336 @@ function slideShow(){
   o.addEventListener('click', e => { const b = e.target.closest('[data-sl]'); if (!b) return; e.stopPropagation(); ({close, prev: () => go(-1), next: () => go(1)})[b.dataset.sl](); });
   document.body.appendChild(o); document.addEventListener('keydown', key); show();
   try { o.requestFullscreen && o.requestFullscreen().then(show).catch(() => {}); } catch(e){}
+}
+/* ================= 📊 PowerPoint – the page's structure (not screenshots) → a native, editable RTL .pptx =================
+   PptxGenJS is loaded from the CDN only when asked for (nothing is bundled). Built from shareSnapshot(), so a pupil's answers never get in. */
+const PPT_LIBS = ['https://cdn.jsdelivr.net/npm/pptxgenjs@3.12.0/dist/pptxgen.bundle.js', 'https://unpkg.com/pptxgenjs@3.12.0/dist/pptxgen.bundle.js'];
+let pptLoading = null;
+function pptLoad(){
+  if (window.PptxGenJS) return Promise.resolve(window.PptxGenJS);
+  if (pptLoading) return pptLoading;
+  const one = src => new Promise((ok, no) => { const s = document.createElement('script'); s.src = src; s.async = true;
+    const tm = setTimeout(() => { s.remove(); no(new Error('timeout')); }, 20000);
+    s.onload = () => { clearTimeout(tm); window.PptxGenJS ? ok(window.PptxGenJS) : no(new Error('no lib')); };
+    s.onerror = () => { clearTimeout(tm); s.remove(); no(new Error('load')); }; document.head.appendChild(s); });
+  pptLoading = one(PPT_LIBS[0]).catch(() => one(PPT_LIBS[1])).catch(e => { pptLoading = null; throw e; });
+  return pptLoading;
+}
+/* ---- 1. the page → sections of blocks: {k:'b'} bullet · {k:'cards'} · {k:'dg'} diagram · {k:'table'} ---- */
+const PPT_BLOCK = 'div,p,ul,ol,li,table,h1,h2,h3,h4,h5,h6,figure,figcaption,details,summary,section,label,form,article,header,footer,blockquote,dl,dt,dd,aside,main';
+const pptT = el => el ? (el.textContent || '').replace(/[\s ]+/g, ' ').replace(/\s*[↗＋]\s*/g, ' ').trim() : '';
+function pptModel(html){
+  const root = document.createElement('div'); root.innerHTML = html;
+  root.querySelectorAll('script,style,svg,nav,button:not(.dgn),input,textarea,select,.no-print,.back,.banner,.gguide,.dgm,.igarr,.dgar,.dgvs,.ccut,.trkind,.trringw,.trsrow b,.dgbar2,.cbreak .btn,[data-act="outmenu"],.trchkw > p,.trscale > p').forEach(x => x.remove());   // no counters or averages – those are a pupil's data
+  root.querySelectorAll('.trsends').forEach(x => { x.textContent = [...x.children].map(pptT).filter(Boolean).join(' ⟷ '); });
+  root.querySelectorAll('span,small,b,strong,a,i,em').forEach(x => { if (x.nextSibling && x.nextSibling.nodeType === 1) x.after(' '); });   // "name" + "sub" must not run together
+  const secs = []; let cur = null;
+  const sec = h => { cur = {h, blocks: [], src: []}; secs.push(cur); return cur; };
+  const add = b => { if (!cur) sec(''); const L = cur.blocks[cur.blocks.length - 1];
+    if (b.k === 'cards' && !b.lead && L && L.k === 'cards' && !L.lead) { L.items.push(...b.items); return; } cur.blocks.push(b); };
+  const bul = (t, lvl = 0, bold = false) => { t = String(t || '').replace(/\s+/g, ' ').trim(); if (t && !/^[·•\-–|]+$/.test(t)) add({k: 'b', t, lvl, bold}); };
+  const src = t => { if (!cur) sec(''); t = t.replace(/^📚\s*/, '').trim(); if (t && !cur.src.includes(t)) cur.src.push(t); };
+  const isSrc = el => el.matches('.wfsrc') || (el.matches('p,div,small') && !el.querySelector(PPT_BLOCK) && /^📚/.test(pptT(el)) && pptT(el).length < 400);
+  const card = el => { const c = el.cloneNode(true); const ic = c.querySelector('.emoji,.dgi,.igpi,.igci'); const icon = pptT(ic); if (ic) ic.remove();
+    const tt = c.querySelector('.name,b,strong,h3,h4,.igpt,.igct'); const t = pptT(tt); if (tt) tt.remove();
+    c.querySelectorAll('li,.sub,p,.pill,.igcx').forEach(x => x.append(' · '));
+    const d = pptT(c).replace(/(\s*·\s*){2,}/g, ' · ').replace(/^\s*·\s*|\s*·\s*$/g, '');
+    return t ? {icon, t, d} : {icon, t: d, d: ''}; };
+  const list = (el, lvl) => [...el.children].forEach(li => { const c = li.cloneNode(true); c.querySelectorAll('ul,ol').forEach(x => x.remove()); bul(pptT(c), Math.min(lvl, 2));
+    li.querySelectorAll(':scope > ul, :scope > ol').forEach(n => list(n, lvl + 1)); });
+  const dg = fig => { const type = (fig.className.match(/dg-t-(\w+)/) || [])[1] || 'grid';
+    const dets = {}; fig.querySelectorAll('.dgdet').forEach(d => { const m = d.id.match(/-d(\d+)$/); if (m) dets[m[1]] = d; });
+    const items = [...fig.querySelectorAll('.dgn')].map(n => { const d = dets[n.dataset.i]; return {icon: pptT(n.querySelector('.dgi')), t: pptT(n.querySelector('.dgt')), d: d ? [...d.querySelectorAll('p')].map(pptT).join(' ') : ''}; });
+    const g = {k: 'dg', type, items, title: pptT(fig.querySelector('.dghead')), note: pptT(fig.querySelector('.dgnote')), center: pptT(fig.querySelector('.dgc,.dgroot'))};
+    const side = s => s && {title: pptT(s.querySelector('h4')), items: [...s.querySelectorAll('li')].map(pptT).filter(Boolean)};
+    if (type === 'compare') { g.a = side(fig.querySelector('.dgside-a')); g.b = side(fig.querySelector('.dgside-b')); }
+    if (type === 'iceberg') { const grp = sel => { const b = fig.querySelector(sel); return b && {title: pptT(b.querySelector('small')), items: [...b.querySelectorAll('.dgn')].map(n => { const it = items[+n.dataset.i] || {}; return (it.icon ? it.icon + ' ' : '') + (it.t || '') + (it.d ? ' – ' + it.d : ''); })}; };
+      Object.assign(g, {type: 'compare', ice: true, a: grp('.dgice-top'), b: grp('.dgice-bot'), items: []}); }
+    fig.querySelectorAll('.wfsrc').forEach(s => src(pptT(s)));
+    if (g.title) bul(g.title, 0, true);
+    const intro = pptT(fig.querySelector('.dgintro')); if (intro) bul(intro);
+    add(g); };
+  const cyc = el => { const title = pptT(el.querySelector('.ctitle')); if (title) bul(title, 0, true);
+    const node = n => ({icon: '', t: pptT(n.querySelector(':scope > b')), d: pptT(n.querySelector(':scope > span'))});
+    const no = [...el.querySelectorAll('.cnode.no')].map(node), nb = [...el.querySelectorAll('.cnode.nb')].map(node);
+    if (no.length) add({k: 'dg', type: 'cycle', items: no, center: pptT(el.querySelector('.cold'))});
+    if (nb.length) { bul('🌱 המעגל החדש', 0, true); add({k: 'dg', type: 'cycle', items: nb, center: pptT(el.querySelector('.cnew'))}); }
+    const br = el.querySelector('.cbreaks'); if (br) { bul(pptT(br.querySelector('h4')), 0, true);
+      br.querySelectorAll('.cbreak').forEach(b => { const n = pptT(b.querySelector('.cbn')), h = pptT(b.querySelector('b')), m = pptT(b.querySelector('.muted')), d = pptT(b.querySelector(':scope > div > div'));
+        bul(`${n ? n + '. ' : ''}${h}${m ? ' ' + m : ''}${d ? ' – ' + d : ''}`); }); } };
+  const infog = el => { const items = [...el.querySelectorAll('.igp')].map(p => ({icon: pptT(p.querySelector('.igpi')), t: pptT(p.querySelector('.igpt')), d: [...p.querySelectorAll('li')].map(pptT).filter(Boolean).join(' · ')}));
+    const core = el.querySelector('.igcore'); if (core) items.unshift({icon: pptT(core.querySelector('.igci')), t: pptT(core.querySelector('.igct')), d: pptT(core.querySelector('.igcx'))});
+    if (items.length) add({k: 'cards', items, lead: pptT(el.querySelector('.igtag'))}); };
+  const table = el => { const rows = [...el.querySelectorAll('tr')].map(tr => [...tr.children].map(pptT)).filter(r => r.some(Boolean)); if (rows.length) add({k: 'table', rows, head: !!el.querySelector('tr:first-child th')}); };
+  const walk = el => {
+    if (el.matches('h1')) return;
+    if (el.matches('h2,h3')) return void sec(pptT(el));
+    if (el.matches('h4,h5,h6,figcaption,.ctitle')) return bul(pptT(el), 0, true);
+    if (el.matches('details')) { const s = el.querySelector(':scope > summary'); if (s) sec(pptT(s)); [...el.children].forEach(c => c !== s && walk(c)); return; }
+    if (el.matches('summary')) return bul(pptT(el), 0, true);
+    if (isSrc(el)) return src(pptT(el));
+    if (el.matches('figure.dg')) return dg(el);
+    if (el.matches('.cyc')) return cyc(el);
+    if (el.matches('.infog')) return infog(el);
+    if (el.matches('.grid,.trcards,.model')) { const it = [...el.children].filter(c => pptT(c)).map(card); if (it.length) add({k: 'cards', items: it}); return; }
+    if (el.matches('.card,.trcard')) return add({k: 'cards', items: [card(el)]});
+    if (el.matches('table')) return table(el);
+    if (el.matches('ul,ol')) return list(el, 0);
+    if (el.matches('.actions')) { [...el.children].forEach(a => bul(pptT(a))); return; }   // in-app links are plain spans in the snapshot
+    const kids = [...el.childNodes], blk = k => k.nodeType === 1 && k.matches(PPT_BLOCK + ',.card,.trcard,.grid,.actions');
+    if (!kids.some(blk)) return bul(pptT(el));
+    let buf = ''; const fl = () => { bul(buf); buf = ''; };
+    for (const k of kids) { if (k.nodeType === 3) buf += k.nodeValue; else if (k.nodeType === 1) { if (blk(k)) { fl(); walk(k); } else buf += ' ' + pptT(k) + ' '; } }
+    fl();
+  };
+  [...root.children].forEach(walk);
+  return secs.filter(s => s.blocks.length || s.src.length);
+}
+/* ---- 2. measuring (a conservative estimate, so text never overflows its box) ---- */
+const PPT = {W: 13.333, H: 7.5, X: 0.6, CW: 12.133, Y: 1.42, B: 6.72, F: 'Arial', FH: 'Arial', EMO: 'Segoe UI Emoji',   // Arial, not Rubik: a PowerPoint without Rubik substitutes an East-Asian font and the Hebrew turns to gibberish
+  ink: '1E1B4B', txt: '334155', mut: '64748B', ind: '4F46E5', vio: '7C3AED', gold: 'F59E0B', bg: 'FAFAFF',
+  acc: ['4F46E5', '7C3AED', '0891B2', '059669', 'D97706', 'DB2777', '2563EB', '9333EA'], ramp: ['16A34A', '65A30D', 'CA8A04', 'D97706', 'EA580C', 'DC2626', 'B91C1C']};
+const pptMix = (hex, k) => { const n = parseInt(hex, 16); return [16, 8, 0].map(s => Math.round(((n >> s) & 255) * (1 - k) + 255 * k).toString(16).padStart(2, '0')).join('').toUpperCase(); };
+const pptLines = (t, w, pt, bold) => { const cpl = Math.max(5, Math.floor(w * 72 / (pt * (bold ? .52 : .47)))); let L = 0;   // Arial Hebrew averages ~.44 em a glyph (measured in PowerPoint) – kept on the safe side
+  for (const para of String(t || '').split('\n')) { let n = 0, l = 1; for (const wd of para.split(/\s+/).filter(Boolean)) { const k = [...wd].length; if (n && n + 1 + k > cpl) { l++; n = k; } else n += (n ? 1 : 0) + k; while (n > cpl) { l++; n -= cpl; } } L += l; } return L; };
+const pptH = (t, w, pt, bold) => pptLines(t, w - 0.2, pt, bold) * pt * 1.3 / 72 + 0.12;   // inches, with the box's inner margins
+function pptSplit(t, w, pt, max){   // a long paragraph → pieces of at most `max` lines, cut only between sentences or words
+  if (pptLines(t, w, pt) <= max) return [t];
+  const out = []; let cur = '';
+  const push = p => { const nx = cur ? cur + ' ' + p : p; if (cur && pptLines(nx, w, pt) > max) { out.push(cur); cur = p; } else cur = nx; };
+  for (const s of t.split(/(?<=[.!?:;])\s+/)) { if (pptLines(s, w, pt) > max) s.split(' ').forEach(push); else push(s); }
+  if (cur) out.push(cur); return out;
+}
+const pptR = (text, o) => ({text, options: Object.assign({rtlMode: /[֐-׿]/.test(text), align: 'right', lang: 'he-IL', fontFace: PPT.F, breakLine: true}, o)});   // an all-English line (a book title) keeps its own order
+const pptO = o => Object.assign({rtlMode: true, align: 'right', valign: 'top', lang: 'he-IL', fontFace: PPT.F, color: PPT.txt}, o);
+function pptGrad(w, h, deco){   // the indigo → violet gradient as an image (PowerPoint shapes can't take a CSS gradient)
+  const c = document.createElement('canvas'); c.width = w; c.height = h; const x = c.getContext('2d');
+  const g = x.createLinearGradient(0, 0, w, h); g.addColorStop(0, '#4f46e5'); g.addColorStop(1, '#7c3aed'); x.fillStyle = g; x.fillRect(0, 0, w, h);
+  if (deco) { x.fillStyle = 'rgba(255,255,255,.07)'; [[.12, .2, .32], [.9, .95, .42], [.78, .08, .14]].forEach(([a, b, r]) => { x.beginPath(); x.arc(a * w, b * h, r * h, 0, 7); x.fill(); });
+    x.strokeStyle = 'rgba(245,158,11,.55)'; x.lineWidth = h * .012; x.beginPath(); x.arc(.1 * w, .82 * h, .09 * h, 0, 7); x.stroke(); }
+  return c.toDataURL('image/jpeg', 0.92).replace(/^data:/, '');
+}
+/* ---- 3. slides ---- */
+function pptBuild(P, title, model){
+  const pptx = new P(); pptx.layout = 'LAYOUT_WIDE'; pptx.rtlMode = true; pptx.title = title; pptx.author = 'נדב דוד'; pptx.company = 'ייעוץ חינוכי · נדב דוד'; pptx.subject = title;
+  try { pptx.theme = {headFontFace: PPT.FH, bodyFontFace: PPT.F}; } catch(e){}
+  const {W, X, CW, Y} = PPT, FOOT = 'ייעוץ חינוכי · נדב דוד';
+  const num = color => ({x: X - 0.1, y: 7.02, w: 0.8, h: 0.32, fontFace: PPT.F, fontSize: 10.5, color, align: 'left'});
+  pptx.defineSlideMaster({title: 'CBT', background: {color: PPT.bg}, slideNumber: num(PPT.ind), objects: [
+    {image: {x: 0, y: 0, w: W, h: 0.1, data: pptGrad(1600, 12)}},
+    {rect: {x: W - X - 1.1, y: 1.13, w: 1.1, h: 0.06, fill: {color: PPT.gold}}},
+    {line: {x: X, y: 6.97, w: CW, h: 0, line: {color: 'DDD6FE', width: 1}}},
+    {text: {text: FOOT, options: pptO({x: W - X - 5, y: 7.0, w: 5, h: 0.34, fontSize: 10.5, color: PPT.mut, valign: 'middle'})}}]});
+  pptx.defineSlideMaster({title: 'CBT_T', background: {data: pptGrad(1600, 900, true)}, slideNumber: num('C7D2FE'), objects: [
+    {text: {text: FOOT, options: pptO({x: W - X - 5, y: 7.0, w: 5, h: 0.34, fontSize: 10.5, color: 'E0E7FF', valign: 'middle'})}}]});
+  // title slide
+  const t0 = pptx.addSlide({masterName: 'CBT_T'}); t0.slideNumber = num('C7D2FE');
+  let tp = 40; while (tp > 26 && pptLines(title, 11.3, tp, true) > 2) tp -= 2;
+  t0.addText(title, pptO({x: 0.9, y: 1.2, w: 11.6, h: 2.9, fontFace: PPT.FH, fontSize: tp, bold: true, color: 'FFFFFF', valign: 'bottom', fit: 'shrink'}));
+  t0.addShape('rect', {x: 12.5 - 1.6, y: 4.3, w: 1.6, h: 0.08, fill: {color: PPT.gold}, line: {type: 'none'}});
+  t0.addText('האתר של נדב דוד – יועץ חינוכי ומטפל CBT', pptO({x: 0.9, y: 4.5, w: 11.6, h: 0.6, fontSize: 21, color: 'EEF2FF', valign: 'middle'}));
+  t0.addText(new Date().toLocaleDateString('he-IL', {day: 'numeric', month: 'long', year: 'numeric'}), pptO({x: 0.9, y: 5.1, w: 11.6, h: 0.45, fontSize: 14, color: 'C7D2FE', valign: 'middle'}));
+
+  for (const sec of model) {
+    const head = sec.h || title; let n = 0;
+    let srcTxt = sec.src.length ? '📚 ' + sec.src.join(' · ') : '', srcPt = 10;
+    if (srcTxt && pptLines(srcTxt, CW - 0.2, 10) > 2) srcPt = 9;
+    if (srcTxt && pptLines(srcTxt, CW - 0.2, 9) > 2) { sec.blocks.push({k: 'b', t: '📚 מקורות', lvl: 0, bold: true}, ...sec.src.map(t => ({k: 'b', t, lvl: 0}))); srcTxt = ''; }
+    const srcH = srcTxt ? pptLines(srcTxt, CW - 0.2, srcPt) * srcPt * 1.3 / 72 + 0.1 : 0;
+    const B = PPT.B - (srcH ? srcH + 0.06 : 0) - 0.12;   // content bottom
+    const slide = () => { const s = pptx.addSlide({masterName: 'CBT'}); s.slideNumber = num(PPT.ind);
+      const tt = head + (n ? ' (המשך)' : ''); let pt = 28; while (pt > 18 && pptLines(tt, CW - 0.2, pt, true) > 1) pt -= 2;
+      s.addText(tt, pptO({x: X, y: 0.24, w: CW, h: 0.86, fontFace: PPT.FH, fontSize: pt, bold: true, color: PPT.ink, valign: 'middle', fit: 'shrink'}));
+      if (srcTxt) s.addText(srcTxt, pptO({x: X, y: PPT.B - srcH + 0.12, w: CW, h: srcH, fontSize: srcPt, color: PPT.mut, valign: 'bottom'}));
+      n++; return s; };
+    const leadBox = (s, lead) => { if (!lead) return Y; const h = pptH(lead, CW, 15); s.addText(lead, pptO({x: X, y: Y, w: CW, h, fontSize: 15, color: '475569'})); return Y + h + 0.08; };
+    let pend = [];
+    const flush = () => { if (pend.length) pptBullets(slide, pend, B); pend = []; };
+    for (const b of sec.blocks) {
+      if (b.k === 'b') { pend.push(b); continue; }
+      let lead = b.lead || ''; const L = pend[pend.length - 1];
+      if (!lead && L && !L.bold && L.t.length <= 190) { lead = L.t; pend.pop(); }
+      flush();
+      if (b.k === 'cards') pptCards(slide, b.items, lead, B, leadBox);
+      else if (b.k === 'table') pptTable(slide, b, lead, B, leadBox);
+      else pptDiagram(slide, b, lead, B, leadBox, pend);
+      flush();
+    }
+    flush();
+  }
+  return pptx;
+}
+// bullets: ≤ 7 per slide, long paragraphs split between sentences, continuation slides as needed
+function pptBullets(slide, items, B){
+  const {X, CW, Y} = PPT, avail = B - Y;
+  const ind = b => b.bold ? 0 : 0.4 + b.lvl * 0.4;
+  const hOf = (b, pt) => { const p = b.bold ? pt + 1 : b.lvl ? pt - 2 : pt; return pptLines(b.t, CW - 0.25 - ind(b), p, b.bold) * p * 1.3 / 72 + (b.bold ? 0.16 : 0.1); };
+  const list = []; items.forEach(b => pptSplit(b.t, CW - 0.25 - ind(b), 18, 6).forEach(t => list.push(Object.assign({}, b, {t}))));
+  const paginate = max => { const pages = []; let pg = [], h = 0.12;
+    for (const b of list) { const bh = hOf(b, 18);
+      if (pg.length && (h + bh > avail || (!b.bold && pg.filter(x => !x.bold).length >= max))) { const carry = []; while (pg.length > 1 && pg[pg.length - 1].bold) carry.unshift(pg.pop()); pages.push(pg); pg = carry; h = 0.12 + carry.reduce((a, x) => a + hOf(x, 18), 0); }
+      pg.push(b); h += bh; }
+    if (pg.length) pages.push(pg); return pages; };
+  let pages = paginate(7);   // ≤ 7 bullets a slide – then spread evenly, so no slide is left with one lonely line
+  if (pages.length > 1) { const even = paginate(Math.ceil(list.filter(x => !x.bold).length / pages.length)); if (even.length === pages.length) pages = even; }
+  for (const p of pages) {
+    if (p.every(b => b.bold)) continue;   // only headings left – nothing to show
+    let pt = 18; for (const c of [24, 22, 20]) if (0.12 + p.reduce((a, b) => a + hOf(b, c), 0) <= avail * 0.9) { pt = c; break; }
+    const s = slide();
+    s.addText(p.map(b => b.bold ? pptR(b.t, {bold: true, color: PPT.ind, fontSize: pt + 1, paraSpaceBefore: 4, paraSpaceAfter: 4})
+      : pptR(b.t, {bullet: {indent: 22}, indentLevel: b.lvl, fontSize: b.lvl ? pt - 2 : pt, color: PPT.txt, paraSpaceAfter: 6})), pptO({x: X, y: Y, w: CW, h: B - Y}));
+  }
+}
+// cards → a grid of rounded boxes (as many per slide as fit while the text stays readable)
+const pptCardH = (c, w, pt) => { const iw = c.icon ? 0.62 : 0; return 0.16 + Math.max(c.icon ? 0.52 : 0, pptH(c.t, w - 0.3 - iw, pt + 2, true)) + (c.d ? 0.04 + pptH(c.d, w - 0.3, pt) : 0) + 0.14; };
+function pptCards(slide, items, lead, B, leadBox, note){
+  const {X, CW} = PPT, g = 0.22, noteH = note ? pptH(note, CW - 0.3, 13) + 0.17 : 0; let i = 0;
+  while (i < items.length) {
+    const s = slide(), top = leadBox(s, i ? '' : lead), H = B - top - noteH; let pick = null;
+    for (const minPt of [13, 12]) { for (const [c, r] of [[4, 2], [3, 2], [2, 2], [3, 1], [2, 1], [1, 1]]) {
+      const rest = items.length - i, cap = c * r, n = rest > cap ? Math.ceil(rest / Math.ceil(rest / cap)) : rest;
+      const rows = Math.ceil(n / Math.min(c, n)), cols = Math.ceil(n / rows), w = (CW - g * (cols - 1)) / cols, h = (H - g * (rows - 1)) / rows, chunk = items.slice(i, i + n);
+      const pt = [16, 14.5, 13, 12].find(p => chunk.every(it => pptCardH(it, w, p) <= h));
+      if (pt && pt >= minPt) { pick = {n, cols, w, h, chunk, pt}; break; } } if (pick) break; }
+    if (pick) { const {n, cols, w, h, chunk, pt} = pick;
+      const ch = Math.min(h, Math.max(...chunk.map(it => pptCardH(it, w, pt))) + 0.3);   // no needlessly tall boxes
+      chunk.forEach((it, k) => { const col = k % cols, row = Math.floor(k / cols), x = X + CW - (col + 1) * w - col * g, y = top + row * (ch + g), a = PPT.acc[(i + k) % 8];
+        s.addShape('roundRect', {x, y, w, h: ch, rectRadius: 0.12, fill: {color: 'FFFFFF'}, line: {color: pptMix(a, .55), width: 1.25}, shadow: {type: 'outer', blur: 6, offset: 2, angle: 90, color: '1E1B4B', opacity: 0.1}});
+        const iw = it.icon ? 0.62 : 0, th = Math.max(it.icon ? 0.52 : 0, pptH(it.t, w - 0.3 - iw, pt + 2, true)); let ty = y + 0.16;
+        if (it.icon) { s.addShape('ellipse', {x: x + w - 0.68, y: ty, w: 0.52, h: 0.52, fill: {color: pptMix(a, .85)}, line: {type: 'none'}}); s.addText(it.icon, {x: x + w - 0.68, y: ty, w: 0.52, h: 0.52, align: 'center', valign: 'middle', fontSize: 17, fontFace: PPT.EMO, margin: 0}); }
+        s.addText(it.t, pptO({x: x + 0.15, y: ty, w: w - 0.3 - iw, h: th, fontSize: pt + 2, bold: true, color: a, valign: 'middle'}));
+        ty += th + 0.04; if (it.d) s.addText(it.d, pptO({x: x + 0.15, y: ty, w: w - 0.3, h: y + ch - ty - 0.08, fontSize: pt}));
+      });
+      i += n;
+    } else { const it = items[i++]; const tt = (it.icon ? it.icon + ' ' : '') + it.t;   // one card longer than a whole slide → a heading and its text as bullets
+      const parts = pptSplit(it.d, CW - 0.65, 18, 6); let k = 0, first = true;
+      while (k < parts.length) { const s2 = first ? s : slide(), y0 = first ? top : PPT.Y, pg = []; let h = pptH(tt, CW, 19, true);
+        while (k < parts.length && pg.length < 6 && h + pptH(parts[k], CW - 0.4, 18) <= B - y0) { h += pptH(parts[k], CW - 0.4, 18); pg.push(parts[k++]); }
+        if (!pg.length) pg.push(parts[k++]);
+        s2.addText([pptR(tt, {bold: true, color: PPT.ind, fontSize: 19, paraSpaceAfter: 6}), ...pg.map(t => pptR(t, {bullet: {indent: 22}, fontSize: 18, paraSpaceAfter: 6}))], pptO({x: X, y: y0, w: CW, h: B - y0})); first = false; }
+    }
+    if (note && i >= items.length) { const nh = noteH - 0.17; s.addShape('roundRect', {x: X, y: B - nh - 0.05, w: CW, h: nh + 0.05, rectRadius: 0.08, fill: {color: 'FEF3C7'}, line: {color: PPT.gold, width: 1}}); s.addText(note, pptO({x: X + 0.15, y: B - nh - 0.03, w: CW - 0.3, h: nh, fontSize: 13, color: '78350F', valign: 'middle'})); }
+  }
+}
+function pptTable(slide, t, lead, B, leadBox){
+  const {X, CW} = PPT, cols = Math.max(...t.rows.map(r => r.length)), cw = CW / cols;
+  const rowH = r => Math.max(0.4, ...r.map(c => pptH(c, cw, 12)));
+  const head = t.head ? t.rows[0] : null, body = t.head ? t.rows.slice(1) : t.rows; let i = 0;
+  const cell = (c, hd) => ({text: c, options: {rtlMode: true, align: 'right', valign: 'middle', lang: 'he-IL', fontFace: PPT.F, fontSize: 12, bold: !!hd, color: hd ? 'FFFFFF' : PPT.txt, fill: {color: hd ? PPT.ind : 'FFFFFF'}}});
+  const full = r => { const x = r.slice(); while (x.length < cols) x.push(''); return x.reverse(); };   // RTL: the first column on the right
+  do { const s = slide(), top = leadBox(s, i ? '' : lead); let h = head ? rowH(head) : 0; const rows = [];
+    while (i < body.length && (!rows.length || h + rowH(body[i]) <= B - top)) { h += rowH(body[i]); rows.push(body[i++]); }
+    s.addTable([...(head ? [full(head).map(c => cell(c, 1))] : []), ...rows.map(r => full(r).map(c => cell(c)))], {x: X, y: top, w: CW, colW: Array(cols).fill(cw), border: {type: 'solid', pt: 0.75, color: 'DDD6FE'}});
+  } while (i < body.length);
+}
+function pptDiagram(slide, g, lead, B, leadBox, pend){
+  const {X, CW, Y} = PPT, items = g.items || [], n = items.length;
+  const noteBox = (s, bottom) => { if (!g.note) return bottom; const h = pptH(g.note, CW - 0.3, 13); s.addShape('roundRect', {x: X, y: bottom - h - 0.05, w: CW, h: h + 0.05, rectRadius: 0.08, fill: {color: 'FEF3C7'}, line: {color: PPT.gold, width: 1}}); s.addText(g.note, pptO({x: X + 0.15, y: bottom - h - 0.03, w: CW - 0.3, h, fontSize: 13, color: '78350F', valign: 'middle'})); return bottom - h - 0.17; };
+  const noteH = g.note ? pptH(g.note, CW - 0.3, 13) + 0.17 : 0;
+  const nm = it => (it.icon ? it.icon + ' ' : '') + it.t;
+  if (g.type === 'compare' && g.a && g.b) {
+    const cols = [[g.a, g.ice ? '0284C7' : PPT.ind], [g.b, g.ice ? '1E3A8A' : 'D97706']], colW = (CW - 0.7) / 2, hh = 0.62;
+    const fits = (sa, sb, pt, H) => [sa, sb].every(l => 0.2 + l.reduce((a, t) => a + pptLines(t, colW - 0.6, pt) * pt * 1.3 / 72 + 0.08, 0) <= H);
+    let ia = 0, ib = 0, first = true;
+    while (first || ia < g.a.items.length || ib < g.b.items.length) {
+      const s = slide(), top = leadBox(s, first ? lead : ''); let bottom = B - (g.note ? noteH : 0);
+      const H = bottom - top - hh - 0.08; let pt = 20, ea = g.a.items.length, eb = g.b.items.length;
+      while (pt > 13 && !fits(g.a.items.slice(ia, ea), g.b.items.slice(ib, eb), pt, H)) pt--;
+      while (!fits(g.a.items.slice(ia, ea), g.b.items.slice(ib, eb), pt, H) && (ea > ia + 1 || eb > ib + 1)) { if (ea - ia >= eb - ib) ea--; else eb--; }
+      const last = ea >= g.a.items.length && eb >= g.b.items.length;
+      if (last) bottom = noteBox(s, B); else bottom = B;
+      [[g.a, ia, ea], [g.b, ib, eb]].forEach(([sd, a0, a1], k) => { const col = cols[k][1], x = k ? X : X + CW - colW;
+        s.addShape('roundRect', {x, y: top, w: colW, h: hh, rectRadius: 0.1, fill: {color: col}, line: {type: 'none'}});
+        s.addText(sd.title, pptO({x, y: top, w: colW, h: hh, fontFace: PPT.FH, fontSize: 17, bold: true, color: 'FFFFFF', align: 'center', valign: 'middle'}));
+        s.addShape('roundRect', {x, y: top + hh + 0.08, w: colW, h: bottom - top - hh - 0.08, rectRadius: 0.1, fill: {color: pptMix(col, .93)}, line: {color: pptMix(col, .7), width: 1}});
+        const L = sd.items.slice(a0, a1); if (L.length) s.addText(L.map(t => pptR(t, {bullet: {indent: 20}, fontSize: pt, color: PPT.txt, paraSpaceAfter: 6})), pptO({x: x + 0.15, y: top + hh + 0.16, w: colW - 0.3, h: bottom - top - hh - 0.24}));
+      });
+      s.addShape('ellipse', {x: X + CW / 2 - 0.26, y: top + 0.05, w: 0.52, h: 0.52, fill: {color: PPT.gold}, line: {type: 'none'}});
+      s.addText('⇄', {x: X + CW / 2 - 0.26, y: top + 0.05, w: 0.52, h: 0.52, align: 'center', valign: 'middle', fontSize: 16, bold: true, color: 'FFFFFF', margin: 0, fontFace: PPT.F});
+      ia = ea; ib = eb; first = false;
+    }
+    if (n) pptCards(slide, items, '', B, leadBox);
+    return;
+  }
+  if (!n) { if (g.note) pend.push({k: 'b', t: g.note, lvl: 0}); return; }
+  if (['flow', 'timeline', 'ladder', 'pyramid', 'scale'].includes(g.type)) {
+    const col = i => ['ladder', 'scale'].includes(g.type) ? PPT.ramp[n > 1 ? Math.round(i * (PPT.ramp.length - 1) / (n - 1)) : 0] : PPT.acc[i % 8];
+    // horizontal: numbered boxes right → left with arrows, the explanation under each
+    { const aw = 0.42, w = (CW - (n - 1) * aw) / n, th = Math.max(0.8, ...items.map(it => pptH(nm(it), w - 0.1, 15, true)));
+      const top = Y + (lead ? pptH(lead, CW, 15) + 0.08 : 0), by = top + 0.52, dy = by + th + 0.12, dH = B - noteH - dy;
+      const dp = n <= 5 && w >= 1.9 ? [16, 15, 14, 13, 12].find(p => items.every(it => !it.d || pptH(it.d, w - 0.1, p) <= dH)) : 0;
+      if (dp) {
+        const s = slide(); leadBox(s, lead); noteBox(s, B);
+        items.forEach((it, i) => { const x = X + CW - (i + 1) * w - i * aw, c = col(i);
+          s.addShape('ellipse', {x: x + w / 2 - 0.21, y: top, w: 0.42, h: 0.42, fill: {color: PPT.gold}, line: {type: 'none'}});
+          s.addText(String(i + 1), {x: x + w / 2 - 0.21, y: top, w: 0.42, h: 0.42, align: 'center', valign: 'middle', fontSize: 14, bold: true, color: 'FFFFFF', margin: 0, fontFace: PPT.F});
+          s.addShape('roundRect', {x, y: by, w, h: th, rectRadius: 0.1, fill: {color: c}, line: {type: 'none'}});
+          s.addText(nm(it), pptO({x, y: by, w, h: th, fontSize: 15, bold: true, color: 'FFFFFF', align: 'center', valign: 'middle'}));
+          if (it.d) { const hh = Math.min(dH, pptH(it.d, w - 0.1, dp) + 0.15); s.addShape('roundRect', {x, y: dy, w, h: hh, rectRadius: 0.08, fill: {color: pptMix(c, .92)}, line: {color: pptMix(c, .7), width: 0.75}}); s.addText(it.d, pptO({x: x + 0.03, y: dy + 0.05, w: w - 0.06, h: hh - 0.1, fontSize: dp})); }
+          if (i < n - 1) s.addShape('leftArrow', {x: x - aw + 0.06, y: by + th / 2 - 0.16, w: aw - 0.12, h: 0.32, fill: {color: PPT.gold}, line: {type: 'none'}});
+        });
+        return;
+      } }
+    // vertical: a numbered row per item, the slides evenly filled (continuation slides when needed)
+    const tw = 3.2, dx = X, dw = CW - 0.62 - tw - 0.14, avail = B - noteH - Y - (lead ? pptH(lead, CW, 15) + 0.08 : 0);
+    const rh = (it, p) => Math.max(0.5, pptH(nm(it), tw - 0.1, 15, true), it.d ? pptH(it.d, dw - 0.1, p) + 0.06 : 0);
+    const dp = [16, 15, 14, 13].find(p => items.reduce((a, it) => a + rh(it, p) + 0.12, 0) <= avail) || [16, 15, 14, 13].find(p => items.every(it => rh(it, p) + 0.12 <= avail)) || 13;   // all on one slide if a smaller size allows
+    let pages = 0; for (let k = 0, h = 0; k < n; k++) { const r = rh(items[k], dp) + 0.12; if (!k || h + r > avail) { pages++; h = r; } else h += r; }
+    const per = Math.ceil(n / pages); let i = 0;
+    while (i < n) { const s = slide(), top = leadBox(s, i ? '' : lead); let y = top;
+      const rows = []; let h = 0; while (i + rows.length < n && rows.length < per && (!rows.length || h + rh(items[i + rows.length], dp) + 0.12 <= B - noteH - top)) { h += rh(items[i + rows.length], dp) + 0.12; rows.push(items[i + rows.length]); }
+      rows.forEach((it, k) => { const j = i + k, c = col(j), hh = rh(it, dp);
+        s.addShape('ellipse', {x: X + CW - 0.48, y: y + hh / 2 - 0.24, w: 0.48, h: 0.48, fill: {color: c}, line: {type: 'none'}});
+        s.addText(String(j + 1), {x: X + CW - 0.48, y: y + hh / 2 - 0.24, w: 0.48, h: 0.48, align: 'center', valign: 'middle', fontSize: 14, bold: true, color: 'FFFFFF', margin: 0, fontFace: PPT.F});
+        s.addShape('roundRect', {x: X + CW - 0.62 - tw, y, w: tw, h: hh, rectRadius: 0.1, fill: {color: c}, line: {type: 'none'}});
+        s.addText(nm(it), pptO({x: X + CW - 0.62 - tw, y, w: tw, h: hh, fontSize: 15, bold: true, color: 'FFFFFF', align: 'center', valign: 'middle'}));
+        if (it.d) { s.addShape('roundRect', {x: dx, y, w: dw, h: hh, rectRadius: 0.08, fill: {color: pptMix(c, .92)}, line: {color: pptMix(c, .7), width: 0.75}}); s.addText(it.d, pptO({x: dx + 0.05, y, w: dw - 0.1, h: hh, fontSize: dp, valign: 'middle'})); }
+        y += hh + 0.12; });
+      i += rows.length; if (i >= n) noteBox(s, B);
+    }
+    return;
+  }
+  if (['cycle', 'wheel'].includes(g.type) && n >= 3 && n <= 8) {
+    let center = g.center || '🔄', ld = lead;
+    if (pptLines(center, 1.4, 11) > 6) { ld = ld ? ld : center; center = '🔄'; }
+    const s = slide(), top = leadBox(s, ld), bottom = noteBox(s, B), H = bottom - top;
+    const expW = 5.5, withD = items.filter(it => it.d), expH = p => 0.15 + withD.reduce((a, it) => a + pptLines(it.t + ': ' + it.d, expW - 0.5, p) * p * 1.3 / 72 + 0.08, 0);
+    const ep = withD.length ? [16, 15, 14, 13].find(p => expH(p) <= H) : 0, expFits = !!ep;
+    const exp = withD.map(it => pptR(it.t + ': ' + it.d, {bullet: {indent: 18}, fontSize: ep || 13, paraSpaceAfter: 6}));
+    const bw = n > 6 ? 1.8 : 2.1, bh = Math.max(0.62, ...items.map(it => pptH(nm(it), bw - 0.05, 13, true)));
+    const R = Math.max(1.2, Math.min(2.1, H / 2 - bh / 2 - 0.05)), cy = top + H / 2, cx = exp.length && expFits ? X + CW - bw / 2 - R - 0.1 : X + CW / 2;
+    s.addShape('ellipse', {x: cx - R, y: cy - R, w: 2 * R, h: 2 * R, fill: {type: 'none'}, line: {color: pptMix(PPT.ind, .55), width: 2.5}});
+    for (let i = 0; i < n && g.type === 'cycle'; i++) { const a = (-90 + (i + .5) * 360 / n) * Math.PI / 180;
+      s.addShape('triangle', {x: cx + R * Math.cos(a) - 0.13, y: cy + R * Math.sin(a) - 0.12, w: 0.26, h: 0.24, rotate: ((-90 + (i + .5) * 360 / n) + 180 + 360) % 360, fill: {color: PPT.gold}, line: {type: 'none'}}); }
+    const cd = Math.min(2.2, 2 * R - bw * 0.9);
+    if (cd > 0.9) { s.addShape('ellipse', {x: cx - cd / 2, y: cy - cd / 2, w: cd, h: cd, fill: {color: 'EEF2FF'}, line: {color: pptMix(PPT.vio, .6), width: 1}});
+      s.addText(center, pptO({x: cx - cd / 2 + 0.12, y: cy - cd / 2 + 0.12, w: cd - 0.24, h: cd - 0.24, fontSize: pptLines(center, cd - 0.45, 12) > Math.floor((cd - 0.3) / 0.21) ? 10 : 12, color: PPT.ink, align: 'center', valign: 'middle', fit: 'shrink'})); }
+    items.forEach((it, i) => { const a = (-90 + i * 360 / n) * Math.PI / 180, px = cx + R * Math.cos(a), py = cy + R * Math.sin(a), c = PPT.acc[i % 8];
+      s.addShape('roundRect', {x: px - bw / 2, y: py - bh / 2, w: bw, h: bh, rectRadius: 0.12, fill: {color: c}, line: {color: 'FFFFFF', width: 1.5}, shadow: {type: 'outer', blur: 5, offset: 2, angle: 90, color: '1E1B4B', opacity: 0.15}});
+      s.addText(nm(it), pptO({x: px - bw / 2, y: py - bh / 2, w: bw, h: bh, fontSize: 13, bold: true, color: 'FFFFFF', align: 'center', valign: 'middle'})); });
+    if (exp.length && expFits) s.addText(exp, pptO({x: X, y: top, w: expW, h: H, valign: 'middle'}));
+    else if (exp.length) pend.push(...items.filter(it => it.d).map(it => ({k: 'b', t: nm(it) + ': ' + it.d, lvl: 0})));
+    return;
+  }
+  // triangle / venn / tree / grid / wheel… → boxes with their explanations
+  const tree = g.type === 'tree' && g.center, ctr = g.center && !tree ? '🎯 ' + g.center : '';
+  pptCards(slide, items, lead || (tree ? '🌳 ' + g.center : ''), B, leadBox, [ctr, g.note].filter(Boolean).join('   ·   '));
+}
+async function pptExport(){
+  if (shareBlocked()) return;
+  if (ARTIFACT) return toast('📊 בגרסה שבתוך Claude אי אפשר להוריד קבצים. את המצגת מורידים מהאפליקציה שבמחשב או מהאתר.');
+  const closed = [...document.querySelectorAll('#view details')].filter(d => !d.open);
+  let title, model;
+  try { title = selTitle().trim(); model = pptModel(shareSnapshot()); } finally { closed.forEach(d => { d.open = false; }); }
+  if (!model.length) return toast('אין בעמוד הזה תוכן שאפשר להפוך למצגת');
+  toast('📊 מכין את המצגת…');
+  let P; try { P = await pptLoad(); } catch(e){ return toast('⚠️ לא הצלחתי לטעון את רכיב המצגות – צריך חיבור לאינטרנט. כדאי לבדוק את החיבור ולנסות שוב.'); }
+  try {
+    const blob = await pptBuild(P, title, model).write({outputType: 'blob'});
+    const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = (title.replace(/[\\/:*?"<>|]/g, '').trim() || 'מצגת') + '.pptx';
+    document.body.appendChild(a); a.click(); setTimeout(() => { URL.revokeObjectURL(a.href); a.remove(); }, 4000);
+    toast('📊 המצגת נשמרה בהורדות – אפשר לפתוח אותה ב-PowerPoint ולערוך');
+  } catch(e){ console.error(e); toast('⚠️ לא הצלחתי ליצור את המצגת: ' + (e && e.message || e)); }
 }
 /* ================= 📅 יומן – my planner (S.diary, synced by save()) · Ministry of Education vacations (app/edu-calendar.js) · Hebrew calendar (app/hebday.js) =================
    entry: {id, title, date:'YYYY-MM-DD', time, end, cat, notes, sid (student id only), rep:{freq:'weekly'|'monthly', until} | null, done, doneOn:[dates of a series], skip:[deleted dates of a series]} */
