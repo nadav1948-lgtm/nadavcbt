@@ -3705,14 +3705,14 @@ function rolesUI(ctx = {}){
   if (!Gr.roles) return '';
   injectCSS();
   return `<div class="ro-root">
-    <div class="panel ro-intro"><h3>👥 מי פונה למי – מעגל הגורמים סביב הילד</h3><p>${T(Gr.intro)}</p></div>
+    ${ctx.compact ? '' : `<div class="panel ro-intro"><h3>👥 מי פונה למי – מעגל הגורמים סביב הילד</h3><p>${T(Gr.intro)}</p></div>`}
     <div class="panel ro-wiz"><div class="ro-wh"><h3>🧭 מה קרה?</h3><p class="muted ro-small">בוחרים את המצב, עונים על 2–3 שאלות – ומקבלים מסלול: מי פועל ראשון, את מי מעדכנים, מתי מערבים הורים, יועץ, הנהלה וגורמי חוץ.</p></div><div class="ro-wizbody">${wizBody()}</div></div>
     <div class="ro-stage"><div class="panel ro-cpanel">${circlesHTML()}</div><div class="panel ro-side">${sideHTML()}</div></div>
-    <div class="panel ro-emerg"><h3>🚨 במצב של סכנה – בלי מדרגות</h3><p>${T(Gr.emergency)}</p><button type="button" class="btn sm ro-red ro-noprint" data-ro="dangergo">הצגת מסלול החירום בתרשים</button></div>
+    ${ctx.compact ? '' : `<div class="panel ro-emerg"><h3>🚨 במצב של סכנה – בלי מדרגות</h3><p>${T(Gr.emergency)}</p><button type="button" class="btn sm ro-red ro-noprint" data-ro="dangergo">הצגת מסלול החירום בתרשים</button></div>
     <h2 class="sec">📞 מי פונה להורים – לפי מצב</h2>
     <div class="panel ro-parents">${gridHTML()}</div>
     <div class="two ro-two2"><div class="panel"><h3>📘 ➡️ 🏠 מתי המורה המקצועי פונה למחנך</h3>${ul(Gr.teacherToHomeroom)}</div><div class="panel"><h3>✅ כללי זהב</h3>${ul(Gr.rules)}</div></div>
-    <div class="panel">${summaryHTML()}</div>
+    <div class="panel">${summaryHTML()}</div>`}
   </div>`;
 }
 
@@ -6125,7 +6125,8 @@ function rolesView(){
   const G = window.CBT_ROLES;
   if (!G) return {title:'מי פונה למי', html:'<div class="empty">⏳ המדריך עוד לא נטען</div>'};
   // the interactive page (app/roles-ui.js); the static page below stays as a fallback
-  if (window.rolesUI) { try { const html = window.rolesUI({kid: kidMini('שמחה', 5, 'rokid')}); if (html) return {title:'מי פונה למי', html}; } catch(e){ console.error('rolesUI', e); } }
+  // the familiar page stays as it was; the interactive part (app/roles-ui.js) is added at the top
+  let inter = ''; if (window.rolesUI) { try { inter = window.rolesUI({kid: kidMini('שמחה', 5, 'rokid'), compact: true}) || ''; } catch(e){ console.error('rolesUI', e); } }
   const roleCard = r => `<div class="panel" style="margin:0"><h3>${r.icon} ${esc(r.name)}</h3><p class="muted" style="margin:0 0 10px;font-size:14.5px">${esc(r.who)}</p>
     <h4 style="margin:6px 0 4px;font-size:14px">באחריותו</h4>${ul(r.owns)}
     <h4 style="margin:10px 0 4px;font-size:14px">📞 פונה להורים כש…</h4>${ul(r.parents)}
@@ -6141,7 +6142,8 @@ function rolesView(){
     <div class="two" style="margin-top:14px"><div class="panel" style="margin:0"><h3>📘 ➡️ 🏠 מתי המורה המקצועי פונה למחנך</h3>${ul(G.teacherToHomeroom)}</div>
     <div class="panel" style="margin:0"><h3>✅ כללי זהב</h3>${ul(G.rules)}</div></div>
     <h2 class="sec">🧑‍🤝‍🧑 התפקידים</h2><div class="grid wide">${G.roles.map(roleCard).join('')}</div>`;
-  return {title:'מי פונה למי', html:h};
+  const ih = inter ? `<details class="panel ro-inter" open style="margin:4px 0 16px"><summary style="cursor:pointer;font-size:18px;font-weight:800">🧭 שאלה אינטראקטיבית: מה קרה – ומי פונה למי?</summary><div style="margin-top:12px">${inter}</div></details><h2 class="sec">📘 המדריך המלא – מי פונה למי</h2>` : '';
+  return {title:'מי פונה למי', html: ih + h};
 }
 function mapRolesHTML(p){
   const R = (window.CBT_MAP_ROLES || {})[p.id];
