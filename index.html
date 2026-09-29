@@ -8332,6 +8332,7 @@ function outMenu(btn){
   m.onclick = e => { const b = e.target.closest('[data-out]'); if (!b) return; m.remove(); const k = b.dataset.out;
     const R0 = route(); if (R0.r === 'track' && TRACK(R0.id) && !OUT_SEL.picked) return pickSteps(TRACK(R0.id), R0, k);
     if (HUBS[R0.r] && HUBS[R0.r].flag && !R0.id && !OUT_SEL.picked && hubTracks(R0.r).length) return pickHub(R0.r, k);
+    if (k !== 'link' && !OUT_SEL.picked) { const secs = pageSections(); if (secs.length >= 2) return pickSections(secs, k); }
     doOut(k); };
   setTimeout(() => document.addEventListener('click', function off(e){ if (!e.target.closest('#outmenu') && !e.target.closest('[data-act="outmenu"]')) { const x = $('#outmenu'); if (x) x.remove(); document.removeEventListener('click', off); } }), 0);
 }
@@ -8377,13 +8378,46 @@ function runHubOut(key, tracks, k){
   OUT_SEL.hub = {key, tracks}; OUT_SEL.picked = true;
   try { doOut(k); } finally { setTimeout(() => { OUT_SEL.hub = null; OUT_SEL.picked = false; }, 1500); }
 }
-function selAny(){ return selTrack() || OUT_SEL.hub; }
+/* any other page: the whole page, or chosen parts of it. Parts = the top-level blocks of the page, split at its section headings (h2.sec);
+   a page without such headings is split into its titled panels. Blocks before the first heading form the page opening. */
+function pageSections(){
+  const p = $('#view .page'); if (!p) return [];
+  const kids = [...p.children].filter(c => !c.matches('.back, nav, .search, .chips, script, style'));
+  const head = el => { const h = el.matches('h2,h3') ? el : el.querySelector(':scope > h2, :scope > h3, :scope > summary, :scope > .mhead h3, h2, h3, summary'); return h ? h.textContent.replace(/\s+/g, ' ').replace(/\s\d+$/, '').trim() : ''; };
+  const secs = [];
+  if (kids.some(c => c.matches('h2.sec'))) {
+    let cur = null;
+    kids.forEach(c => { if (c.matches('h2.sec')) { cur = {title: head(c), nodes: [c]}; secs.push(cur); }
+      else if (cur) cur.nodes.push(c);
+      else { if (!secs.length || secs[0].title) secs.unshift({title: '', nodes: []}); secs[0].nodes.push(c); } });
+    if (secs[0] && !secs[0].title) secs[0].title = head(secs[0].nodes.find(n => head(n)) || secs[0].nodes[0] || document.body) || 'פתיחת העמוד';
+  } else kids.filter(c => c.matches('.panel, details') && head(c)).forEach(c => secs.push({title: head(c), nodes: [c]}));
+  return secs.filter(s => s.nodes.some(n => n.textContent.trim().length > 20));
+}
+function pickSections(secs, k){
+  const verb = {print: 'להדפסה', pdf: 'ל-PDF', slides: 'למצגת', pptx: 'למצגת PowerPoint', share: 'לקובץ שיתוף'}[k] || '';
+  const m = $('#modal'); m.className = 'modal open';
+  m.innerHTML = `<div class="box"><div class="mhead"><h3>מה לקחת ${verb}?</h3><button class="iconbtn" data-act="close">✕</button></div>
+    <div class="list" style="gap:8px"><button class="btn primary" data-pk="page" style="justify-content:flex-start">📄 כל העמוד – ${secs.length} החלקים</button></div>
+    <details open style="margin-top:12px"><summary><b>☑️ לבחור חלקים מסוימים</b></summary><div style="margin:8px 0;display:flex;flex-direction:column;gap:4px;max-height:45vh;overflow:auto">${secs.map((s, i) => `<label style="display:flex;gap:8px;align-items:center;cursor:pointer"><input type="checkbox" value="${i}"> ${esc(s.title)}</label>`).join('')}</div>
+    <button class="btn primary" data-pk="some">✔ המשך עם החלקים שסימנתי</button></details></div>`;
+  m.onclick = e => { const b = e.target.closest('[data-pk]'); if (!b) return; const w = b.dataset.pk;
+    if (w === 'page') { m.onclick = null; closeModal(); OUT_SEL.picked = true; try { doOut(k); } finally { setTimeout(() => { OUT_SEL.picked = false; }, 1500); } return; }
+    const pick = [...m.querySelectorAll('input[type=checkbox]:checked')].map(x => secs[+x.value]);
+    if (!pick.length) return toast('לא סומן אף חלק');
+    m.onclick = null; closeModal(); OUT_SEL.secs = pick; OUT_SEL.picked = true;
+    try { doOut(k); } finally { setTimeout(() => { OUT_SEL.secs = null; OUT_SEL.picked = false; }, 1500); } };
+}
+function selAny(){ return selTrack() || OUT_SEL.hub || OUT_SEL.secs; }
 function selTrack(){ const R = route(); return R.r === 'track' && TRACK(R.id) && OUT_SEL.steps ? TRACK(R.id) : null; }
-function selTitle(){ const hb = OUT_SEL.hub; if (hb) { const h = HUBS[hb.key], n = hubTracks(hb.key).length; return hb.tracks.length === 1 ? hb.tracks[0].title : hb.tracks.length === n ? h.title : `${h.title} (${hb.tracks.length} מסלולים נבחרים)`; }
+function selTitle(){ const sc = OUT_SEL.secs; if (sc) { const t = ($('#title').textContent || document.title).trim(); return sc.length === 1 ? `${t} – ${sc[0].title}` : `${t} (${sc.length} חלקים נבחרים)`; }
+  const hb = OUT_SEL.hub; if (hb) { const h = HUBS[hb.key], n = hubTracks(hb.key).length; return hb.tracks.length === 1 ? hb.tracks[0].title : hb.tracks.length === n ? h.title : `${h.title} (${hb.tracks.length} מסלולים נבחרים)`; }
   const tr = selTrack(); if (!tr) return $('#title').textContent || document.title; const st = OUT_SEL.steps;
   return st.length === 1 ? `${tr.title} – ${tr.steps[st[0]].title}` : st.length === tr.steps.length ? tr.title : `${tr.title} (${st.length} שלבים נבחרים)`; }
 // the chosen steps rendered as one page (own answers for print; empty for sharing)
-function selHTML(withData){ const hb = OUT_SEL.hub;
+function selHTML(withData){ const sc = OUT_SEL.secs;
+  if (sc) { const w = document.createElement('div'); sc.forEach(s => s.nodes.forEach(n => { const c = n.cloneNode(true); if (c.tagName === 'DETAILS') c.open = true; c.querySelectorAll('details').forEach(d => d.open = true); w.appendChild(c); })); return `<h1>${esc(selTitle())}</h1>` + w.innerHTML; }
+  const hb = OUT_SEL.hub;
   if (hb) { const h = HUBS[hb.key]; return `<h1>${h.icon || ''} ${esc(selTitle())}</h1>` + hb.tracks.map(tr => { const D = withData ? trData(tr.id) : {};
     return `<h2 class="sec">${tr.icon || ''} ${esc(tr.title)}</h2>` + tr.steps.map((s, i) => `<div class="panel trprint"><h3>${i + 1}. ${s.icon || ''} ${esc(s.title)}</h3>${trStepHTML(tr, s, D)}</div>`).join(''); }).join(''); }
   const tr = selTrack(); const D = withData ? trData(tr.id) : {};
