@@ -2024,6 +2024,61 @@ body,body *{overflow-wrap:normal!important;word-break:normal!important;hyphens:m
 .bqmiss p{margin:4px 0}
 @media (max-width:640px){.bqopts{grid-template-columns:1fr}.bqbar{grid-template-columns:1fr auto}.bqprog{grid-column:1 / -1;order:3}}
 .bqprint ol li{margin-bottom:6px;break-inside:avoid}
+/* ---------- interactive applications (#/app/<id>): formulation cards and the treatment outline ---------- */
+.aph{margin:14px 0 8px;font-size:15.5px}
+.apcards{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(260px,100%),1fr));gap:10px}
+.apcard{position:relative;border-radius:16px;padding:12px 14px 12px;background:var(--bg);border:1px solid var(--line);box-shadow:var(--shadow);overflow:hidden}
+.apcard::before{content:"";position:absolute;inset:0 0 auto 0;height:4px;background:var(--c,var(--brand))}
+.apcard.trap{--c:#f472b6}.apcard.mech{--c:#a78bfa}.apcard.worse{--c:#fb923c}
+.apcard b{display:block;font-size:15px;margin:2px 0 4px}
+.apcard p{margin:0 0 6px;font-size:14px;line-height:1.6;color:var(--ink)}
+.apq{display:flex;flex-direction:column;gap:4px}
+.apq span{font-size:13px;color:var(--muted);background:color-mix(in srgb,var(--c,var(--brand)) 10%,transparent);border-radius:10px;padding:4px 8px}
+.apsteps{display:grid;gap:14px;counter-reset:ap}
+.apstep{display:grid;grid-template-columns:46px 1fr;gap:14px;align-items:start;background:linear-gradient(135deg,color-mix(in srgb,var(--brand) 7%,var(--panel)),var(--panel));border:1px solid var(--line);border-radius:18px;padding:16px;box-shadow:var(--shadow)}
+.apnum{width:46px;height:46px;border-radius:14px;display:grid;place-items:center;font-weight:900;font-size:20px;color:var(--brand-ink);background:linear-gradient(135deg,var(--brand),var(--accent,#f2a93b));box-shadow:0 6px 16px color-mix(in srgb,var(--brand) 35%,transparent)}
+.apbody h4{margin:4px 0 10px;font-size:17px}
+.apwhy{background:color-mix(in srgb,#60a5fa 12%,var(--panel));border-inline-start:4px solid #60a5fa;border-radius:12px;padding:10px 12px;font-size:14.5px;line-height:1.7}
+.apwhy b,.aphow b{display:block;font-size:13px;margin-bottom:4px;color:var(--brand-text)}
+.aphow{margin-top:10px;background:color-mix(in srgb,#34d399 10%,var(--panel));border-inline-start:4px solid #34d399;border-radius:12px;padding:10px 12px}
+.aphow ul{margin:0;padding-inline-start:18px;display:grid;gap:4px;font-size:14.5px}
+@media (max-width:600px){.apstep{grid-template-columns:1fr}.apnum{width:38px;height:38px;font-size:17px}}
+@media print{.apstep,.apcard{box-shadow:none;break-inside:avoid}}
+.apcard.risk{--c:#ef4444}.apcard.good{--c:#22c55e}.apcard.info{--c:#60a5fa}
+.aplevel{border-radius:18px;padding:18px 20px;margin:0 0 14px;background:linear-gradient(135deg,color-mix(in srgb,var(--c) 22%,var(--panel)),var(--panel));border:2px solid var(--c);box-shadow:0 10px 26px color-mix(in srgb,var(--c) 22%,transparent)}
+.aplevel b{display:block;font-size:22px;font-weight:900;margin-bottom:6px}
+.aplevel p{margin:0;font-size:15px;line-height:1.7}
+.apbars{display:grid;gap:10px}
+.apbar{display:grid;grid-template-columns:minmax(120px,190px) 1fr 34px;align-items:center;gap:10px;font-size:14.5px}
+.apbar i{height:14px;background:var(--bg2);border-radius:99px;overflow:hidden}
+.apbar em{display:block;height:100%;border-radius:99px;background:linear-gradient(90deg,#a78bfa,#60a5fa);transition:width .8s cubic-bezier(.34,1.4,.64,1)}
+.apbar.top span{font-weight:800}.apbar.top em{background:linear-gradient(90deg,var(--brand),var(--accent,#f2a93b))}
+.apbar b{text-align:center}
+
+/* ---------- storyboard and curve diagrams ---------- */
+.dgstory{display:flex;align-items:stretch;gap:8px;flex-wrap:wrap;justify-content:center;margin:6px 0}
+.dgscene{position:relative;flex:1 1 180px;max-width:280px;display:flex;flex-direction:column;align-items:center;text-align:center;gap:6px;padding:18px 14px 14px;border-radius:20px;background:linear-gradient(160deg,color-mix(in srgb,var(--c) 22%,var(--panel)),var(--panel) 70%);border:1px solid color-mix(in srgb,var(--c) 45%,var(--line));box-shadow:0 10px 24px color-mix(in srgb,var(--c) 18%,transparent);animation:k-pop .5s ease both}
+.dgscene:nth-child(3){animation-delay:.12s}.dgscene:nth-child(5){animation-delay:.24s}.dgscene:nth-child(7){animation-delay:.36s}
+.dgsn{position:absolute;top:-11px;inset-inline-start:14px;width:26px;height:26px;border-radius:50%;display:grid;place-items:center;font-weight:900;font-size:13px;background:var(--c);color:#fff;box-shadow:0 3px 8px rgba(0,0,0,.25)}
+.dgsv{display:flex;align-items:center;justify-content:center;gap:6px;min-height:64px;padding:8px 10px;border-radius:16px;background:color-mix(in srgb,#fff 7%,transparent);width:100%}
+.dgsv span{font-size:40px;line-height:1;filter:drop-shadow(0 4px 6px rgba(0,0,0,.25))}
+.dgsv span.op{font-size:24px;font-weight:900;color:var(--c);filter:none}
+.dgscene b{font-size:15.5px}
+.dgscene p{margin:0;font-size:13.5px;line-height:1.55;color:var(--ink)}
+.dgscene .dgex{color:var(--muted)}
+.dgsar{align-self:center;font-size:26px;font-weight:900;color:var(--muted)}
+@media (max-width:640px){.dgsar{transform:rotate(-90deg);width:100%;text-align:center}.dgscene{max-width:none}}
+.dgcurve{background:var(--bg);border:1px solid var(--line);border-radius:18px;padding:10px 8px 4px;margin:6px 0}
+.dgcurve svg{width:100%;max-width:820px;margin:0 auto;height:auto;display:block;overflow:visible}
+.dgcg{stroke:var(--line);stroke-width:.3;stroke-dasharray:1 1}
+.dgcl{fill:none;stroke:var(--brand);stroke-width:1.3;stroke-linecap:round;stroke-dasharray:400;stroke-dashoffset:400;animation:dgdraw 1.6s ease forwards}
+@keyframes dgdraw{to{stroke-dashoffset:0}}
+.dgcp{fill:var(--panel);stroke:var(--brand);stroke-width:.6}.dgcp.mk{fill:var(--accent,#f2a93b);stroke:#fff}
+.dgcm{font-size:2.6px;font-weight:800;fill:var(--ink);text-anchor:middle}
+.dgcx{font-size:2.4px;fill:var(--muted);text-anchor:middle}
+.dgcy{font-size:2.4px;fill:var(--muted);text-anchor:start}
+@media (prefers-reduced-motion:reduce){.dgscene,.dgcl{animation:none;stroke-dashoffset:0}}
+
 </style>
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="apple-touch-icon" href="icon-192.png">
@@ -5352,7 +5407,7 @@ function ui(){
 }
 
 /* ================= routing & shell ================= */
-const NAV = [['home','🏠','בית'],['diary','📅','יומן'],['ask','💬','שאל שאלה'],['problems','🧭','טיפול לפי בעיה'],['students','🧒','תלמידים'],['workflow','🗺️','סדר עבודה'],['crole','🎯','תפקיד היועץ'],['roles','👥','מי פונה למי'],['circ','📜','חוזרי מנכ״ל'],['aklim','⚖️','אקלים ומדרג התגובות'],['tools','🧰','כלים לילדים'],['quest','📋','שאלונים ומדדים'],['distress','🚨','סימני מצוקה'],['talk','🗣️','ראיון ושיח רגשי'],['sel','💞','למידה רגשית-חברתית'],['mafteach','🧩','כישורי חיים ומפתח הל״ב'],['sped','🧩','חינוך מיוחד והכלה'],['autism','🧩','אוטיזם – ילדים על הרצף'],['tzalach','🛟','צל״ח – צוות חירום'],['develop','🌳','התפתחות הילד'],['cbtclass','🏫','יישום CBT בכיתה'],['behave','🏅','עיצוב התנהגות'],['groups','👥','הנחיית קבוצות'],['programs','🏗️','תוכניות התערבות'],['transitions','🚪','מעברים'],['newteachers','🌱','מורים חדשים'],['parents','🤝','הורים'],['reports','🎓','תעודות'],['games','🎲','משחקים טיפוליים'],['videos','🎬','סרטונים'],['library','📚','ספרייה'],['settings','⚙️','הגדרות']];
+const NAV = [['home','🏠','בית'],['diary','📅','יומן'],['ask','💬','שאל שאלה'],['problems','🧭','טיפול לפי בעיה'],['cbt','🧠','שיטת טיפול CBT'],['students','🧒','תלמידים'],['workflow','🗺️','סדר עבודה'],['crole','🎯','תפקיד היועץ'],['roles','👥','מי פונה למי'],['circ','📜','חוזרי מנכ״ל'],['aklim','⚖️','אקלים ומדרג התגובות'],['tools','🧰','כלים לילדים'],['quest','📋','שאלונים ומדדים'],['distress','🚨','סימני מצוקה'],['talk','🗣️','ראיון ושיח רגשי'],['sel','💞','למידה רגשית-חברתית'],['mafteach','🧩','כישורי חיים ומפתח הל״ב'],['sped','🧩','חינוך מיוחד והכלה'],['autism','🧩','אוטיזם – ילדים על הרצף'],['tzalach','🛟','צל״ח – צוות חירום'],['develop','🌳','התפתחות הילד'],['cbtclass','🏫','יישום CBT בכיתה'],['behave','🏅','עיצוב התנהגות'],['groups','👥','הנחיית קבוצות'],['programs','🏗️','תוכניות התערבות'],['transitions','🚪','מעברים'],['newteachers','🌱','מורים חדשים'],['parents','🤝','הורים'],['reports','🎓','תעודות'],['games','🎲','משחקים טיפוליים'],['videos','🎬','סרטונים'],['library','📚','ספרייה'],['settings','⚙️','הגדרות']];
 function route(){ const h = location.hash.replace(/^#\/?/, '').split('/').map(decodeURIComponent); return {r: h[0] || 'home', id: h[1], sub: h[2], x: h[3]}; }
 let timers = [];
 function clearTimers(){ timers.forEach(t => { clearTimeout(t); clearInterval(t); }); timers = []; }
@@ -5375,13 +5430,13 @@ function render(){
   document.body.classList.toggle('locked', isLocked());
   if (isLocked()) { const o = lockView(); $('#title').textContent = ''; $('#view').innerHTML = `<div class="page">${o.html}</div>`; document.title = 'האתר של נדב דוד – יועץ חינוכי ומטפל CBT'; return; }
   if (WEB && !ARTIFACT && !LITE && !PROBLEMS.length) { $('#title').textContent = ''; $('#view').innerHTML = `<div class="empty" style="padding-top:120px"><span class="big">⏳</span>${Cloud.status === 'error' ? esc(Cloud.err) + ' <br><br><button class="btn primary" data-act="cloud-retry">נסו שוב</button>' : 'טוען את התוכן מ-OneDrive…'}</div>`; return; }
-  const views = LITE ? {home: liteHome, problems, problem: problemView, tools, tool: toolView, settings: liteSettings, ask, workflow, roles: rolesView, circ: circView, circsrc: circSrcView, libsrc: libSrcView, circask: circAskView, find: findView, more: moreView, games: gamesView, game: gameView, tracks: problems, track: trackView, groups: groupsView, transitions: hubView, newteachers: hubView, programs: hubView, distress: hubView, talk: hubView, parents: hubView, reports: hubView, sel: hubView, mafteach: hubView, sped: hubView, autism: hubView, tzalach: hubView, aklim: hubView,develop: hubView, cbtclass: hubView, behave: hubView, crole: hubView, quest: hubView, ariel: hubView, videos: videosView, diary: diaryView, sitemap: sitemapView} : {home, problems, problem: problemView, students, student: studentView, tools, tool: toolView, library, settings, ask, workflow, roles: rolesView, circ: circView, circsrc: circSrcView, libsrc: libSrcView, circask: circAskView, find: findView, more: moreView, games: gamesView, game: gameView, tracks: problems, track: trackView, groups: groupsView, transitions: hubView, newteachers: hubView, programs: hubView, distress: hubView, talk: hubView, parents: hubView, reports: hubView, sel: hubView, mafteach: hubView, sped: hubView, autism: hubView, tzalach: hubView, aklim: hubView,develop: hubView, cbtclass: hubView, behave: hubView, crole: hubView, quest: hubView, ariel: hubView, videos: videosView, diary: diaryView, sitemap: sitemapView};
+  const views = LITE ? {home: liteHome, problems, problem: problemView, tools, tool: toolView, settings: liteSettings, ask, askc: R => ask(R, true), workflow, roles: rolesView, circ: circView, circsrc: circSrcView, libsrc: libSrcView, circask: circAskView, find: findView, more: moreView, games: gamesView, game: gameView, tracks: problems, track: trackView, groups: groupsView, transitions: hubView, newteachers: hubView, programs: hubView, distress: hubView, talk: hubView, parents: hubView, reports: hubView, sel: hubView, mafteach: hubView, sped: hubView, autism: hubView, tzalach: hubView, aklim: hubView,develop: hubView, cbtclass: hubView, behave: hubView, cbt: hubView, cbtmaps: cbtMapsView, app: appView, crole: hubView, quest: hubView, ariel: hubView, videos: videosView, diary: diaryView, sitemap: sitemapView} : {home, problems, problem: problemView, students, student: studentView, tools, tool: toolView, library, settings, ask, askc: R => ask(R, true), workflow, roles: rolesView, circ: circView, circsrc: circSrcView, libsrc: libSrcView, circask: circAskView, find: findView, more: moreView, games: gamesView, game: gameView, tracks: problems, track: trackView, groups: groupsView, transitions: hubView, newteachers: hubView, programs: hubView, distress: hubView, talk: hubView, parents: hubView, reports: hubView, sel: hubView, mafteach: hubView, sped: hubView, autism: hubView, tzalach: hubView, aklim: hubView,develop: hubView, cbtclass: hubView, behave: hubView, cbt: hubView, cbtmaps: cbtMapsView, app: appView, crole: hubView, quest: hubView, ariel: hubView, videos: videosView, diary: diaryView, sitemap: sitemapView};
   const fn = views[R.r] || home;
   const out = fn(R);
   $('#title').textContent = out.title;
   $('#view').innerHTML = `<div class="page">${out.html}</div>`;
   setTimeout(igEqualize, 60); setTimeout(igEqualize, 600);
-  const navKey = (k => k === 'ariel' ? 'problems' : k)(R.r === 'track' ? (TRACK(R.id) ? HUBOF(TRACK(R.id))[0] : 'problems') : {problem:'problems', tracks:'problems', student:'students', tool:'tools', circsrc:'circ', libsrc:'library', circask:'circ'}[R.r] || R.r);   // #/ariel lives under 🧭 טיפול לפי בעיה
+  const navKey = (k => k === 'ariel' ? 'problems' : k)(R.r === 'track' ? (TRACK(R.id) ? HUBOF(TRACK(R.id))[0] : 'problems') : {problem:'problems', tracks:'problems', student:'students', tool:'tools', circsrc:'circ', libsrc:'library', circask:'circ', askc:'ask', cbtmaps:'cbt', app:(allApps()[R.id] || {}).hub || 'cbt'}[R.r] || R.r);   // #/ariel lives under 🧭 טיפול לפי בעיה
   document.querySelectorAll('[data-nav]').forEach(a => a.classList.toggle('on', a.dataset.nav === navKey));
   document.querySelectorAll('#nav details.navg').forEach(d => { if (d.querySelector('a.on')) d.open = true; });
   document.title = out.title + ' · האתר של נדב דוד';
@@ -5389,7 +5444,7 @@ function render(){
   if (out.after) out.after();
   ui();
 }
-window.addEventListener('hashchange', () => { aiFast = !ARTIFACT; if (aiCtl) aiCtl.abort(); render(); window.scrollTo({top:0}); });
+window.addEventListener('hashchange', () => { aiFast = true; if (aiCtl) aiCtl.abort(); render(); window.scrollTo({top:0}); });
 
 /* ================= shared pieces ================= */
 function problemCard(p, i){
@@ -5400,7 +5455,7 @@ function problemCard(p, i){
 }
 /* 🧭 טיפול לפי בעיה: a problem's map and its structured track are one place – the switch on top of both pages */
 const ADULT_TRACKS = ['teacher-consult', 'parent-consult', 'teacher-stress'];
-const HUB_FLAGS = ['group', 'transition', 'newteachers', 'program', 'distress', 'talk', 'parents', 'reports', 'workflow', 'sel', 'sped', 'autism', 'mafteach', 'develop', 'tzalach', 'aklim', 'cbtclass', 'crole', 'quest', 'ariel', 'behave'];
+const HUB_FLAGS = ['group', 'transition', 'newteachers', 'program', 'distress', 'talk', 'parents', 'reports', 'workflow', 'sel', 'sped', 'autism', 'mafteach', 'develop', 'tzalach', 'aklim', 'cbtclass', 'crole', 'quest', 'ariel', 'behave', 'cbt'];
 const isHubTrack = t => HUB_FLAGS.some(k => t[k]);
 const probExtraTracks = pid => TRACKS().filter(x => x.id !== pid && x.problem === pid && !isHubTrack(x));
 const probOfTrack = t => P[t.id] ? t.id : t.problem && P[t.problem] && !isHubTrack(t) ? t.problem : null;
@@ -5431,7 +5486,7 @@ function mainFile(p){
 /* the side menu in 7 groups (approved by the user): pinned items on top, collapsible groups, settings at the bottom; any NAV item not listed falls into "עוד" */
 const NAV_PIN = ['home', 'diary', 'ask', 'find', 'sitemap'];
 const NAV_GROUPS = [
-  ['🧒', 'הטיפול בתלמיד', ['problems', 'students', 'workflow', 'talk', 'quest', 'distress', 'behave', 'develop', 'tools', 'games']],
+  ['🧒', 'הטיפול בתלמיד', ['cbt', 'problems', 'students', 'workflow', 'talk', 'quest', 'distress', 'behave', 'develop', 'tools', 'games']],
   ['🏫', 'כיתה ובית ספר', ['cbtclass', 'behave', 'sel', 'mafteach', 'programs', 'groups', 'transitions']],
   ['🚨', 'מצבי חירום ואקלים מיטבי', ['tzalach', 'aklim']],
   ['🧩', 'אוכלוסיות מיוחדות', ['sped', 'autism']],
@@ -5484,7 +5539,7 @@ function home(){
   const a = active();
   let h = `<section class="hero withkid"><div class="heromascot" aria-hidden="true"><div class="hsay">שלום! בוא נתחיל 😊</div>${kidMini('שמחה', 6, 'wave')}</div><h1>שלום! במה נטפל היום? 👋</h1>
     <p>מפות טיפול CBT לבעיות נפוצות בבית הספר היסודי, מתכנן מפגשים, כלים אינטראקטיביים לילדים ותיק לכל תלמיד – יחד עם כל החומרים מהספרייה שלך.</p>
-    <form id="homeask" style="display:flex;gap:8px;margin-top:18px;max-width:720px"><input class="inp" id="homeq" placeholder="💬 שאלו שאלה… למשל: ילד שבוכה כל בוקר בשער" style="flex:1;height:48px;border:0;font-size:16px"><button class="btn primary" type="submit">תשובה</button></form>
+    <form id="homeask" style="display:flex;gap:8px;margin-top:18px;max-width:720px"><input class="inp" id="homeq" placeholder="💬 שאלו שאלה… למשל: ילד שבוכה כל בוקר בשער" style="flex:1;height:48px;border:0;font-size:16px"><button class="btn primary" type="submit" title="מסלול חינמי">💬 תשובה</button>${claudeTrack() ? `<button class="btn" type="submit" data-claude="1" title="מסלול Claude – נספר במכסת המנוי" style="background:rgba(255,255,255,.16);border-color:rgba(255,255,255,.3);color:#fff">🤖 Claude</button>` : ""}</form>
     <div class="actions"><button class="btn" data-act="newstudent">＋ תלמיד חדש</button><a class="btn" href="#/problems">🧭 בחירת בעיה</a><a class="btn" href="#/workflow">🗺️ סדר עבודה</a><a class="btn" href="#/tools">🧰 כלים לילדים</a></div></section>`;
   if (SYNC.status === 'signedout') h += `<div class="note warn no-print">☁️ כדי לראות את התלמידים ואת הספרייה מכל מכשיר – <button class="btn primary sm" data-act="cloud-login">התחברות עם חשבון מיקרוסופט</button></div>`;
   else if (SYNC.status !== 'ok' && SYNC.status !== 'connecting') h += `<div class="note warn no-print">💾 הנתונים נשמרים כרגע רק במכשיר הזה. <a href="#/settings">להגדרת סנכרון עם OneDrive</a></div>`;
@@ -5497,7 +5552,7 @@ function home(){
   h += `<h2 class="sec">🧭 מפות טיפול <small>לפי תחום</small></h2><div class="grid">${PROBLEMS.slice(0, 8).map(problemCard).join('')}</div>
     <div style="margin-top:12px"><a class="btn" href="#/problems">לכל ${PROBLEMS.length} הבעיות ←</a></div>`;
   h += `<h2 class="sec">🧰 כלים לשימוש בחדר</h2><div class="grid">${TOOLS.slice(0, 4).map(toolCard).join('')}</div>`;
-  return {title:'בית', html:h, after(){ const f = $('#homeask'); f.onsubmit = e => { e.preventDefault(); const v = $('#homeq').value.trim(); if (v) { const hist = ls.get('cbtapp.asks', []); ls.set('cbtapp.asks', [v, ...hist.filter(x => x !== v)].slice(0, 15)); location.hash = '#/ask/' + encodeURIComponent(v); } }; }};
+  return {title:'בית', html:h, after(){ const f = $('#homeask'); f.onsubmit = e => { e.preventDefault(); const v = $('#homeq').value.trim(); if (v) { const hist = ls.get('cbtapp.asks', []); ls.set('cbtapp.asks', [v, ...hist.filter(x => x !== v)].slice(0, 15)); location.hash = '#/' + (e.submitter && e.submitter.dataset.claude ? 'askc' : 'ask') + '/' + encodeURIComponent(v); } }; }};
 }
 
 let areaFilter = 'הכל', probQuery = '';
@@ -6281,7 +6336,7 @@ function answerHTML(A){
   return h;
 }
 const ASK_EXAMPLES = ['ילד בכיתה ב׳ בוכה כל בוקר בשער ולא מוכן להיפרד מאמא','מה אומרים למחנכת על ילד שמתפרץ ומכה בהפסקות','ילד עם כאבי בטן לפני מבחנים והולכת לאחות','איך מתחילים מפגש ראשון עם ילד שיש לו טיקים','תלמיד שמחרימים אותו בקבוצת הוואטסאפ של הכיתה','ילד שאבא שלו נהרג – מה עושים בבית הספר','אילו שאלונים יש לחרדה','מתי להפנות ילד עם הרטבה לרופא','תלמיד קילל מורה באמצע השיעור – מה עושים?','מתי מותר להשעות תלמיד ומי מחליט','אבא גרוש מבקש לקבל את התעודה','ילד כתב במחברת שהוא רוצה למות – מה חובה לעשות'];
-let lastAsk = '', aiFast = !(window.claude && typeof window.claude.use === 'function');
+let lastAsk = '', aiFast = true;   // free engine first everywhere; Claude only on a click (it spends the plan's usage)
 /* follow-up: add a detail to the question already answered instead of starting over (keyword engine, no tokens) */
 const REFINE_SEP = ' · ';
 const REFINE_CHIPS = ['מה תפקיד המחנך?', 'מה תפקיד היועץ?', 'מה אומרים להורים?', 'ומה אם זה חוזר על עצמו?', 'מה חובת הדיווח?'];
@@ -6298,29 +6353,49 @@ function refineGo(add){
   const v = add === null ? parts.slice(0, -1).join(REFINE_SEP) : (base ? base + REFINE_SEP : '') + add.trim();
   if (!v) return;
   lastAsk = v;
-  location.hash = '#/' + (R.r === 'circask' ? 'circask' : 'ask') + '/' + encodeURIComponent(v);
+  location.hash = '#/' + (R.r === 'circask' ? 'circask' : R.r === 'askc' ? 'askc' : 'ask') + '/' + encodeURIComponent(v);
 }
 function refineAfter(){
   const f = $('#refineform'), i = $('#refineq'); if (!f) return;
   f.onsubmit = e => { e.preventDefault(); const v = i.value.trim(); if (v) refineGo(v); };
 }
-function ask(R){
-  const q = R.id ? R.id : lastAsk;
+/* "שאל שאלה" has two tracks the user picks up front: #/ask – the free on-device engine, #/askc – a full Claude answer (spends the plan's usage) */
+const claudeTrack = () => ARTIFACT || !!(window.CBT_AI_CONFIG && window.CBT_AI_CONFIG.anthropicKey);
+function ask(R, viaClaude = false){
+  const q = R.id ? R.id : (viaClaude ? '' : lastAsk);
   const hist = ls.get('cbtapp.asks', []);
-  let h = `<div class="panel" style="margin-top:4px"><h3>💬 מה השאלה?</h3>${askerChips()}
-    <form id="askform" style="display:flex;gap:8px;flex-wrap:wrap"><textarea class="inp" id="askq" rows="2" style="flex:1;min-width:240px;min-height:52px" placeholder="מתארים את המצב במילים שלך – מה רואים, איפה ומתי">${esc(q || '')}</textarea><button class="btn primary" type="submit" style="align-self:stretch">🔎 קבלת תשובה</button></form>
-    <p class="muted" style="margin:10px 0 0;font-size:13.5px">התשובות נבנות מתוך ${PROBLEMS.length} מפות הטיפול, חוזרי המנכ״ל והספרייה שלך – תמיד בהפרדה בין המענה הטיפולי למענה המשמעתי / מסגרתי / מנהלי. הן מכוונות ומסדרות – ושיקול הדעת המקצועי נשאר שלך.</p></div>`;
-  const useAI = q && AI.available() && !aiFast;
-  if (useAI) h += '<div id="aiPanel"></div>';
+  const tabs = claudeTrack() ? `<div class="tabs" style="margin:0 0 14px"><a href="#/ask" class="${viaClaude ? '' : 'on'}">💬 מסלול חינמי – שאל באתר</a><a href="#/askc" class="${viaClaude ? 'on' : ''}">🤖 מסלול Claude – תשובה מקיפה</a></div>` : '';
+  const about = viaClaude
+    ? `🤖 <b>מסלול Claude:</b> Claude כותב תשובה מקיפה ומוסברת מתוך ${PROBLEMS.length} מפות הטיפול, חוזרי המנכ״ל והספרייה שבאתר, עם מקור לכל פריט. ידע מקצועי מבחוץ מופיע רק בחלק נפרד ומסומן 🌐. לוקח עד דקה-שתיים, ונספר במכסת המנוי.`
+    : `💬 <b>מסלול חינמי:</b> התשובות נבנות מתוך ${PROBLEMS.length} מפות הטיפול, חוזרי המנכ״ל והספרייה שלך – תמיד בהפרדה בין המענה הטיפולי למענה המשמעתי / מסגרתי / מנהלי. מתאים לשאלה על נושא אחד. בלי עלות.`;
+  let h = tabs + `<div class="panel" style="margin-top:4px"><h3>${viaClaude ? '🤖' : '💬'} מה השאלה?</h3>${askerChips()}
+    <form id="askform" style="display:flex;gap:8px;flex-wrap:wrap"><textarea class="inp" id="askq" rows="2" style="flex:1;min-width:240px;min-height:52px" placeholder="מתארים את המצב במילים שלך – מה רואים, איפה ומתי">${esc(q || '')}</textarea><button class="btn primary" type="submit" style="align-self:stretch">${viaClaude ? '🤖 תשובה מ-Claude' : '🔎 קבלת תשובה'}</button></form>
+    <p class="muted" style="margin:10px 0 0;font-size:13.5px">${about}</p></div>`;
+  if (viaClaude) {
+    if (q && AI.available()) h += '<div id="aiPanel"></div>';
+    else if (q) h += `<div class="note warn">🤖 ${esc(AI.status === 'off' && AI.err ? (AI_ERR[AI.err] || 'Claude לא זמין כרגע.') : 'Claude מתחבר… אם זה לא עובר, טענו את הדף מחדש.')} <a href="#/ask/${encodeURIComponent(q)}">לתשובה מהמסלול החינמי</a></div>`;
+    else h += `<h2 class="sec">💡 דוגמאות לשאלות מורכבות</h2><div class="actions">${ASK_EXAMPLES.map(e => `<button class="chip" data-act="askfill" data-v="${esc(e)}">${esc(e)}</button>`).join('')}</div>`;
+    if (q) h += refineHTML(q);
+    if (hist.length) h += `<h2 class="sec">🕘 שאלות אחרונות <small>לחיצה מעתיקה לתיבה – השליחה ל-Claude רק בכפתור</small></h2><div class="actions">${hist.slice(0, 10).map(e => `<button class="chip" data-act="askfill" data-v="${esc(e)}">${esc(e)}</button>`).join('')}</div>`;
+    return {title: 'שאל שאלה', html: h, after(){
+      const f = $('#askform'), i = $('#askq');
+      i.addEventListener('keydown', e => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); f.requestSubmit(); } });
+      f.onsubmit = e => { e.preventDefault(); const v = i.value.trim(); if (!v) return; ls.set('cbtapp.asks', [v, ...hist.filter(x => x !== v)].slice(0, 15)); location.hash = '#/askc/' + encodeURIComponent(v); };
+      if (!q) i.focus();
+      refineAfter();
+      if (q && $('#aiPanel')) aiAnswerRun(q);
+    }};
+  }
+  const useAI = false;
   let claudeBox = '';
-  if (q && !useAI && !AI.available() && !ARTIFACT) claudeBox += `<div class="note" style="margin-bottom:12px;display:flex;gap:10px;align-items:center;flex-wrap:wrap"><span>🤖 התשובה לא מספיקה? אפשר לשאול את Claude בפרויקט ״ייעוץ חינוכי״.</span><a class="btn primary sm" href="https://claude.ai/code/project/chan_01CFpYoDVdzGd2AtMmFxgTNk" target="_blank" rel="noopener" data-act="copyq" data-v="${esc(q)}">שאל את Claude בפרויקט</a><span class="muted" style="font-size:13px">השאלה מועתקת. בפרויקט שנפתח מדביקים אותה בתיבת השאלה ושולחים. נספר במנוי.</span></div>`;
-  if (q && !useAI && AI.available()) claudeBox += `<div class="note" style="margin-bottom:12px;display:flex;gap:10px;align-items:center;flex-wrap:wrap"><span>🤖 התשובה לא מספיקה?</span><button class="btn primary sm" data-act="ai-go">🤖 תשובה מלאה מ-Claude</button><span class="muted" style="font-size:13px">רק בלחיצה – נספר במכסת המנוי</span></div>`;
+  if (q && !claudeTrack()) claudeBox += `<div class="note" style="margin-bottom:12px;display:flex;gap:10px;align-items:center;flex-wrap:wrap"><span>🤖 התשובה לא מספיקה? אפשר לשאול את Claude בפרויקט ״ייעוץ חינוכי״.</span><a class="btn primary sm" href="https://claude.ai/code/project/chan_01CFpYoDVdzGd2AtMmFxgTNk" target="_blank" rel="noopener" data-act="copyq" data-v="${esc(q)}">שאל את Claude בפרויקט</a><span class="muted" style="font-size:13px">השאלה מועתקת. בפרויקט שנפתח מדביקים אותה בתיבת השאלה ושולחים. נספר במנוי.</span></div>`;
   if (q && !useAI && semAvailable() && !SEM_Q[q]) h += '<p id="semNote" class="muted" style="font-size:13px;margin:0 0 10px"></p>';
-  if (q && !useAI) h += (AI.status === 'off' && AI.err ? `<div class="note warn" style="margin-bottom:12px">🤖 ${esc(AI_ERR[AI.err] || 'Claude לא זמין כרגע – התשובה מהמנוע המהיר.')}</div>` : '') + answerHTML(answer(q));
+  if (q && !useAI) h += answerHTML(answer(q));
   else if (!q) h += `<h2 class="sec">💡 דוגמאות לשאלות</h2><div class="actions">${ASK_EXAMPLES.map(e => `<button class="chip" data-act="askex" data-v="${esc(e)}">${esc(e)}</button>`).join('')}</div>`;
   if (q) h += '<div id="libPanel"></div>';
   if (q) h += refineHTML(q);
   if (claudeBox) h += claudeBox;
+  if (q && claudeTrack()) h += `<p class="muted" style="font-size:13.5px">🤖 שאלה מורכבת? <a href="#/askc/${encodeURIComponent(q)}">לשאול אותה במסלול Claude</a> (נספר במכסת המנוי)</p>`;
   if (hist.length) h += `<h2 class="sec">🕘 שאלות אחרונות</h2><div class="actions">${hist.slice(0, 10).map(e => `<button class="chip" data-act="askex" data-v="${esc(e)}">${esc(e)}</button>`).join('')}</div>`;
   return {title:'שאל שאלה', html:h, after(){
     const f = $('#askform'), i = $('#askq');
@@ -6360,7 +6435,7 @@ function stagesHTML(s){
 }
 function workflow(){
   const act = S.students.filter(s => !s.archived);
-  let h = `${infog('workflow', TRACKS().filter(t => t.workflow))}<div class="panel" style="margin-top:4px"><h3>🗺️ סדר עבודה לכל תלמיד – משלב ההפניה ועד הסיום</h3><p class="muted" style="margin:0">השלבים מסומנים אוטומטית לפי מה שנרשם בתיק (מטרות, שאלונים, תוכנית, מפגשים). אפשר גם לסמן ידנית. כל שלב נפתח ל״פירוט, הסבר והערות״ – ומשם ל״🔎 פתיחה והעמקה״ עם התאמה לגיל ולסוג הבעיה, כלים חזותיים וטפסים.</p></div>
+  let h = `${infog('workflow', TRACKS().filter(t => t.workflow))}${hubAppsHTML('workflow')}<div class="panel" style="margin-top:4px"><h3>🗺️ סדר עבודה לכל תלמיד – משלב ההפניה ועד הסיום</h3><p class="muted" style="margin:0">השלבים מסומנים אוטומטית לפי מה שנרשם בתיק (מטרות, שאלונים, תוכנית, מפגשים). אפשר גם לסמן ידנית. כל שלב נפתח ל״פירוט, הסבר והערות״ – ומשם ל״🔎 פתיחה והעמקה״ עם התאמה לגיל ולסוג הבעיה, כלים חזותיים וטפסים.</p></div>
     <div class="list" style="margin-top:14px">${STAGES.map((st, i) => `<div class="li wfrow"><span class="pill brand">${i + 1}</span><div class="grow"><b>${st.icon} ${st.name}</b><div style="font-size:14.5px">${st.what}</div></div>${wfExpand(st, null)}</div>`).join('')}</div>`;
   if (LITE) return {title:'סדר עבודה', html: h + `<h2 class="sec">📅 שגרה שבועית מומלצת</h2><div class="panel"><ul class="clean"><li>אחרי כל מפגש: רישום קצר – מה עשינו, משימת בית ועוצמת קושי (0–10).</li><li>פעם בשבועיים: עדכון קצר למחנך, לפי ההנחיות ב״הורים וצוות״ של מפת הטיפול.</li><li>סוף חודש: מדידה חוזרת באותו שאלון כמו בהתחלה.</li></ul></div>`};
   h += `<h2 class="sec">🧒 איפה כל תלמיד עומד</h2>`;
@@ -6394,14 +6469,14 @@ function liteHome(){
   const sessions = PROBLEMS.reduce((n, p) => n + p.sessions.length, 0);
   let h = `<section class="hero withkid"><div class="heromascot" aria-hidden="true"><div class="hsay">שלום! בוא נתחיל 😊</div>${kidMini('שמחה', 6, 'wave')}</div><h1>שלום! במה נטפל היום? 👋</h1>
     <p>מפות טיפול CBT לבעיות נפוצות בבית הספר היסודי, עוזר לשאלות, סדר עבודה וכלים אינטראקטיביים לילדים.</p>
-    <form id="homeask" style="display:flex;gap:8px;margin-top:18px;max-width:720px"><input class="inp" id="homeq" placeholder="💬 שאלו שאלה… למשל: ילד שבוכה כל בוקר בשער" style="flex:1;height:48px;border:0;font-size:16px"><button class="btn primary" type="submit">תשובה</button></form>
+    <form id="homeask" style="display:flex;gap:8px;margin-top:18px;max-width:720px"><input class="inp" id="homeq" placeholder="💬 שאלו שאלה… למשל: ילד שבוכה כל בוקר בשער" style="flex:1;height:48px;border:0;font-size:16px"><button class="btn primary" type="submit" title="מסלול חינמי">💬 תשובה</button>${claudeTrack() ? `<button class="btn" type="submit" data-claude="1" title="מסלול Claude – נספר במכסת המנוי" style="background:rgba(255,255,255,.16);border-color:rgba(255,255,255,.3);color:#fff">🤖 Claude</button>` : ""}</form>
     <div class="actions"><a class="btn" href="#/problems">🧭 בחירת בעיה</a><a class="btn" href="#/workflow">🗺️ סדר עבודה</a><a class="btn" href="#/tools">🧰 כלים לילדים</a></div></section>`;
   h += dyTodayStrip();
   h += `<div class="three"><div class="stat"><b>${PROBLEMS.length}</b><span>מפות טיפול</span></div><div class="stat"><b>${sessions}</b><span>מפגשים מפורטים</span></div><div class="stat"><b>${TOOLS.length}</b><span>כלים לילדים</span></div></div>`;
   h += `<h2 class="sec">🧭 מפות טיפול <small>לפי תחום</small></h2><div class="grid">${PROBLEMS.slice(0, 8).map(problemCard).join('')}</div>
     <div style="margin-top:12px"><a class="btn" href="#/problems">לכל ${PROBLEMS.length} הבעיות ←</a></div>`;
   h += `<h2 class="sec">🧰 כלים לשימוש בחדר</h2><div class="grid">${TOOLS.slice(0, 4).map(toolCard).join('')}</div>`;
-  return {title:'בית', html:h, after(){ $('#homeask').onsubmit = e => { e.preventDefault(); const v = $('#homeq').value.trim(); if (v) { const hist = ls.get('cbtapp.asks', []); ls.set('cbtapp.asks', [v, ...hist.filter(x => x !== v)].slice(0, 15)); location.hash = '#/ask/' + encodeURIComponent(v); } }; }};
+  return {title:'בית', html:h, after(){ $('#homeask').onsubmit = e => { e.preventDefault(); const v = $('#homeq').value.trim(); if (v) { const hist = ls.get('cbtapp.asks', []); ls.set('cbtapp.asks', [v, ...hist.filter(x => x !== v)].slice(0, 15)); location.hash = '#/' + (e.submitter && e.submitter.dataset.claude ? 'askc' : 'ask') + '/' + encodeURIComponent(v); } }; }};
 }
 function liteSettings(){
   return {title:'אודות', html:`<div class="panel"><h3>ℹ️ על הגרסה הזו</h3><p style="margin:0">${PROBLEMS.length} מפות טיפול · ${TOOLS.length} כלים לילדים · עוזר לשאלות · סדר עבודה.</p>
@@ -6424,9 +6499,9 @@ const AI = {
   },
   available(){ return this.status === 'ready' && !!this.backend; },
   disable(reason){ this.status = 'off'; this.err = reason || ''; },
-  async ask(prompt, {quick = false, signal, onText} = {}){
+  async ask(prompt, {quick = false, tier, signal, onText} = {}){
     if (this.backend === 'sample') {
-      return await this.sample.json(prompt, {modelTier: quick ? 'quick' : 'default', signal, onText, cache: false});
+      return await this.sample.json(prompt, {modelTier: tier || (quick ? 'quick' : 'default'), signal, onText, cache: false});
     }
     if (this.backend === 'api') {
       const c = window.CBT_AI_CONFIG;
@@ -6482,7 +6557,7 @@ ${idx}
 
 ${circClassifyList(q)}
 
-בחר את המפה המתאימה ביותר לשאלה, ועד מפה נוספת אחת אם היא באמת רלוונטית. בנוסף בחר עד 4 "מצבים מחוזרי המנכ״ל" (circIds) שנוגעים לשאלה – במיוחד בכל שאלה על משמעת, אלימות, השעיה, תקנון, דיווח, זכויות, הורים, מידע, חירום, חינוך מיוחד או אובדנות, גם אם השאלה טיפולית ביסודה (למשל ילד שמכה – גם מפת כעס וגם מצבי אלימות מחוזר האקלים). אם השאלה אינה קשורה לאף מפה, למדריך התפקידים או לחוזרים – החזר רשימות ריקות ו-offTopic true. אל תבחר "בכוח". סמן safety true אם יש בשאלה רמז לסכנה: אובדנות, פגיעה עצמית, אלימות חמורה, חשד לפגיעה או להזנחה בבית, פגיעה מינית.
+בחר את המפה המתאימה ביותר לשאלה, ועד שתי מפות נוספות אם הן באמת רלוונטיות (למשל ילד שמכה בגלל חרדה – גם מפת הכעס וגם מפת החרדה). בנוסף בחר עד 4 "מצבים מחוזרי המנכ״ל" (circIds) שנוגעים לשאלה – במיוחד בכל שאלה על משמעת, אלימות, השעיה, תקנון, דיווח, זכויות, הורים, מידע, חירום, חינוך מיוחד או אובדנות, גם אם השאלה טיפולית ביסודה (למשל ילד שמכה – גם מפת כעס וגם מצבי אלימות מחוזר האקלים). אם השאלה אינה קשורה לאף מפה, למדריך התפקידים או לחוזרים – החזר רשימות ריקות ו-offTopic true. אל תבחר "בכוח". סמן safety true אם יש בשאלה רמז לסכנה: אובדנות, פגיעה עצמית, אלימות חמורה, חשד לפגיעה או להזנחה בבית, פגיעה מינית.
 
 השב אך ורק ב-JSON אחד בצורה: {"mapIds": ["id"], "circIds": ["id"], "roles": false, "safety": false, "offTopic": false}`;
 }
@@ -6502,13 +6577,15 @@ function aiAnswerPrompt(q, maps, rolesQ, circArg){
     management: 'ההנהלה – רוצה לדעת מה תפקיד ההנהלה במקרה, מה לבקש מהמחנך ומהיועץ, מתי לפנות להורים, מתי לערב פיקוח או גורמי חוץ, ומה דחוף.'}[a.id];
   const circ = circArg || {items: [], excerpts: []};
   const material = JSON.stringify({maps: maps.map(compactMap), rolesGuide: rolesCompact(), circulars: circ.items.length || circ.excerpts.length ? {items: circ.items, excerpts: circ.excerpts} : undefined, library: (circ.library || []).length ? circ.library : undefined});
-  return `אתה עוזר מקצועי בתוך אפליקציה ליועץ חינוכי בבית ספר יסודי בישראל. ענה על השאלה אך ורק מתוך החומר המצורף (מפות טיפול CBT, מדריך תפקידים, ומצבים וסעיפים מחוזרי מנכ״ל של משרד החינוך). אל תוסיף ידע חיצוני, אל תמציא נהלים, סעיפים, מספרים, מועדים, שמות של שאלונים או גורמים שאינם בחומר. אם החומר לא מכסה את השאלה, אמור זאת במפורש ב-notFound ואל תנחש.
+  return `אתה עוזר מקצועי בכיר בתוך אפליקציה ליועץ חינוכי בבית ספר יסודי בישראל. המטרה: תשובה מקיפה, רצינית ומובנת, כמו של מדריך מקצועי מנוסה – לא רשימת כותרות.
+בסיס התשובה הוא החומר המצורף (מפות טיפול CBT, מדריך תפקידים, מצבים וסעיפים מחוזרי מנכ״ל, וקטעים מהספרייה האישית). כל מה שנכתב בשדות understanding, therapeutic, framework, contacts ו-watch חייב לבוא מהחומר, עם מקור מדויק. אל תמציא נהלים, סעיפים, מספרים, מועדים, שמות של שאלונים או גורמים שאינם בחומר.
+ידע מקצועי מבחוץ מותר רק בשדה הנפרד external, ורק כשהוא באמת מוסיף משהו חשוב שחסר בחומר (הסבר מחקרי, טכניקה מוכרת, ניסוח לשיחה). כל פריט שם חייב מקור מקצועי מוכר (מחבר, שם, שנה / גוף רשמי) – ואם אינך בטוח שהמקור קיים, כתוב ״מקור כללי – לבדיקה״. לעולם אל תכניס ידע מבחוץ לשדות של החומר. אם החומר לא מכסה את השאלה בכלל, סמן notFound.
 
 כלל ההפרדה (חובה): תמיד מפרידים בין
 • therapeutic – 🧠 המענה הטיפולי / חינוכי-רגשי: הבנת הילד והצורך שמאחורי ההתנהגות, שיחה, תמיכה בנפגע ובפוגע, עבודה עם הכיתה, הדרכת המורה וההורים, התערבות CBT מהמפות, ליווי ומעקב.
 • framework – 📋 המענה המשמעתי / מסגרתי / מנהלי: מה החוזר מחייב או מתיר – כללים ותקנון, מדרג תגובות, השעיה והרחקה, יידוע הורים, דיווח (הנהלה, פיקוח, משטרה, רווחה), תיעוד, מועדים, סמכויות, זכויות התלמיד והליך הוגן, איסורים. כל פריט ב-framework חייב מקור מדויק בשדה src (שם החוזר + מספר סעיף כפי שמופיע בחומר). מה שאין לו מקור בחוזרים – לא נכנס ל-framework.
 אסור לערבב: לא להציג צעד משמעתי כטיפול, ולא להציג המלצה טיפולית כחובה מנהלית. אם אחד הצדדים לא מכוסה בחומר – השאר אותו ריק וכתוב זאת ב-note.
-היה ממוקד אבל מקיף: תשובה מלאה שכוללת את כל מה שהחומר אומר על המקרה, בלי מילים מיותרות.
+היה מקיף ומעמיק: תשובה מלאה שכוללת את כל מה שהחומר אומר על המקרה – גם ההסבר (למה זה קורה, מה מחזק את הבעיה), גם מה עושים בפועל צעד אחר צעד ואיך (כולל ניסוחים לשיחה עם הילד, המורה וההורים כשהחומר מציע אותם), וגם מה לא לעשות. כתוב בפסקאות ברורות, לא בראשי פרקים.
 
 כללי המקור (חובה, לכל פריט בלי יוצא מן הכלל): לכל פריט ב-therapeutic וב-framework יש שדה src. אם הפריט נשען על מפת טיפול – src בצורה: ״מפת טיפול: <שם המפה כפי שמופיע בחומר> › <החלק: סימנים / הערכה / מטרות / מפגש N / טכניקות / הורים / צוות / מתי להפנות / המשגה>״. אם הוא נשען על חוזר – src בצורה: ״<שם החוזר כפי שמופיע בחומר>, סעיף <המספר המדויק מהחומר>״, ובשדה q ציטוט מילה במילה של המשפט הרלוונטי מתוך החומר (items או excerpts). אם נשען על מדריך התפקידים – ״מדריך התפקידים באפליקציה״. אם נשען על קטע מהספרייה האישית (library) – src בצורה: ״ספרייה: <שם הקובץ בדיוק כפי שמופיע ב-file>, עמוד <page>״ ובשדה q ציטוט קצר מדויק מהקטע. קטעי הספרייה הם חומרי לימוד ומאמרים של המשתמש – השתמש בהם להרחבת הצד הטיפולי כשהם רלוונטיים באמת, ואל תשתמש בהם לקביעת נהלים מחייבים (את אלה קובעים רק החוזרים). פריט שאין לו מקור בחומר – לא נכנס לתשובה.
 
@@ -6525,16 +6602,19 @@ ${material}
 {
  "mapId": "המזהה של המפה הראשית או null",
  "headline": "משפט אחד: מה כנראה קורה כאן ומה השורה התחתונה",
- "therapeutic": [{"t": "כותרת קצרה", "d": "מה לעשות, 1-3 משפטים", "src": "מקור מדויק – ראה כללי המקור"}],
- "framework": [{"t": "כותרת קצרה", "d": "מה החוזר קובע ומה עושים, 1-3 משפטים", "src": "שם החוזר, סעיף X", "q": "ציטוט מדויק קצר (עד 15 מילים) מתוך החומר שעליו נשען הפריט"}],
- "contacts": "מי פונה למי ומתי במקרה הזה, כולל ההורים – 2-4 משפטים",
+ "understanding": [{"d": "הסבר – מה כנראה קורה אצל הילד/הצוות ולמה, מה מחזק ומשמר את הבעיה (המשגה), 2-4 משפטים", "src": "מקור מדויק"}],
+ "therapeutic": [{"t": "כותרת קצרה", "d": "מה עושים ואיך, 2-5 משפטים, כולל דוגמה לניסוח כשיש בחומר", "src": "מקור מדויק – ראה כללי המקור"}],
+ "avoid": [{"d": "מה לא לעשות ולמה, משפט או שניים", "src": "מקור מדויק"}],
+ "framework": [{"t": "כותרת קצרה", "d": "מה החוזר קובע ומה עושים, 2-4 משפטים", "src": "שם החוזר, סעיף X", "q": "ציטוט מדויק קצר (עד 15 מילים) מתוך החומר שעליו נשען הפריט"}],
+ "contacts": "מי פונה למי ומתי במקרה הזה, כולל ההורים – 3-5 משפטים",
+ "external": [{"t": "כותרת קצרה", "d": "תוספת מקצועית שאינה בחומר, 2-4 משפטים", "src": "מקור מקצועי מוכר או ״מקור כללי – לבדיקה״"}],
  "watch": ["דגל אדום או מצב שמחייב הפניה/הסלמה/דיווח", "..."],
  "note": "הערה קצרה אם יש, אחרת מחרוזת ריקה",
  "circIds": ["המזהים של מצבי החוזרים שעליהם נשענת התשובה"],
  "notFound": false,
  "safety": false
 }
-therapeutic: 3-7 צעדים בסדר ביצוע, מותאמים לתפקיד השואל (ריק אם השאלה מנהלית בלבד והחומר לא מציע צד טיפולי). framework: כל ההוראות הרלוונטיות מהחוזרים, בסדר ביצוע (ריק אם אין חוזר רלוונטי בחומר). אם notFound=true – headline מסביר שהחומר לא מכסה את השאלה, שאר הרשימות ריקות, ואפשר להציע ב-note לאיזה גורם כדאי לפנות.`;
+understanding: 2-4 פסקאות קצרות. external: 0-4 פריטים, רק כשבאמת מוסיפים (אחרת רשימה ריקה). therapeutic: 4-9 צעדים בסדר ביצוע, מותאמים לתפקיד השואל (ריק אם השאלה מנהלית בלבד והחומר לא מציע צד טיפולי). framework: כל ההוראות הרלוונטיות מהחוזרים, בסדר ביצוע (ריק אם אין חוזר רלוונטי בחומר). אם notFound=true – headline מסביר שהחומר לא מכסה את השאלה, שאר הרשימות ריקות, ואפשר להציע ב-note לאיזה גורם כדאי לפנות.`;
 }
 let aiCtl = null, aiMaxBytes = 0;
 async function aiCircMaterial(q, maps, rolesQ, cids, local, noLib){
@@ -6565,19 +6645,20 @@ async function aiAnswerRun(q){
   const busy = t => { box.innerHTML = `<div class="panel" style="border-inline-start:5px solid var(--brand)"><h3>🤖 Claude עונה מתוך מפות הטיפול</h3><p class="muted" style="margin:0">${esc(t)}</p><div class="actions" style="margin-top:10px"><button class="btn sm" data-act="ai-stop">⏹ עצירה</button></div></div>`; };
   busy('קורא את השאלה ובוחר מפה מתאימה…');
   try {
-    const c = await AI.ask(aiClassifyPrompt(q), {quick: true, signal: aiCtl.signal});
-    let ids = Array.isArray(c && c.mapIds) ? c.mapIds.map(String).filter(id => P[id]).slice(0, 2) : [];
+    // choosing the right maps decides the whole answer, so it runs on the everyday model, not the quick one
+    const c = await AI.ask(aiClassifyPrompt(q), {signal: aiCtl.signal});
+    let ids = Array.isArray(c && c.mapIds) ? c.mapIds.map(String).filter(id => P[id]).slice(0, 3) : [];
     const rolesQ = !!(c && c.roles);
     const local = circGuide().length ? circSearch(q, {nGuide: 4, nText: 10}) : {guide: [], text: [], qt: []};
     let cids = Array.isArray(c && c.circIds) ? c.circIds.map(String).filter(circItem).slice(0, 4) : [];
     if (!cids.length && local.strong) cids = local.guide.slice(0, 2).map(x => x.g.id);
     let libHit = false; if (!ids.length && !rolesQ && !cids.length) { try { libHit = !!(await libTextLoad()) && (await libSearchAsync(q, 1)).length > 0; } catch(e){} }
     if (!ids.length && !rolesQ && !cids.length && !libHit) { box.innerHTML = aiNotFoundHTML(q, !!(c && c.safety)); return; }
-    if (cids.length && ids.length > 1) ids = ids.slice(0, 1);
+    if (cids.length && ids.length > 2) ids = ids.slice(0, 2);
     const maps = ids.map(id => P[id]);
-    busy(`מצאתי: ${[...maps.map(p => p.icon + ' ' + p.name), ...cids.map(id => '📜 ' + circItem(id).title)].join(' · ') || 'מדריך התפקידים'}. כותב תשובה מותאמת ל${askerOf().label}…`);
+    busy(`מצאתי: ${[...maps.map(p => p.icon + ' ' + p.name), ...cids.map(id => '📜 ' + circItem(id).title)].join(' · ') || 'מדריך התפקידים'}. כותב תשובה מקיפה ל${askerOf().label} – זה לוקח עד דקה או שתיים…`);
     const circMat = await aiCircMaterial(q, maps, rolesQ, cids, local);
-    const ans = await AI.ask(aiAnswerPrompt(q, maps, rolesQ, circMat), {signal: aiCtl.signal});
+    const ans = await AI.ask(aiAnswerPrompt(q, maps, rolesQ, circMat), {tier: 'complex', signal: aiCtl.signal});
     if (ans && typeof ans === 'object' && c && c.safety) ans.safety = true;
     if (ans && typeof ans === 'object') ans._cids = cids;
     box.innerHTML = aiAnswerHTML(q, ans, maps, rolesQ || !!(c && c.safety) || !!(ans && ans.safety));
@@ -6648,16 +6729,22 @@ function aiAnswerHTML(q, A, maps, rolesQ){  if (!A || typeof A !== 'object') ret
   h += `<div class="panel" style="border-inline-start:5px solid hsl(${p ? hueOf(p.area) : 160} 55% 45%)"><h3>${p ? p.icon + ' ' : '🤖 '}${esc(A.headline || '')}</h3>
     ${p ? `<p class="muted" style="margin:0;font-size:14px">מפת הטיפול: <a href="#/problem/${p.id}">${esc(p.name)}</a>${maps.length > 1 ? ' · קשור גם: ' + maps.filter(x => x !== p).map(x => `<a href="#/problem/${x.id}">${esc(x.name)}</a>`).join(', ') : ''}</p>` : ''}
     <p class="pill brand" style="margin:8px 0 0;display:inline-block">${a.icon} תשובה מותאמת ל${a.label}</p></div>`;
+  const arr = x => Array.isArray(x) ? x.filter(s => s && (s.d || s.t)) : [];
+  if (arr(A.understanding).length) h += `<div class="panel"><h3>🔍 מה קורה כאן ולמה</h3>${arr(A.understanding).map(s => `<p style="margin:0 0 10px;line-height:1.75">${esc(s.d || '')} ${aiSrcHTML(s)}</p>`).join('')}</div>`;
   const ther = Array.isArray(A.therapeutic) ? A.therapeutic : Array.isArray(A.steps) ? A.steps : [];
   const fram = Array.isArray(A.framework) ? A.framework : [];
   const cids = [...new Set([...(Array.isArray(A.circIds) ? A.circIds : []), ...(A._cids || [])].map(String))].filter(circItem);
   if (ther.length || fram.length) h += `<div class="split2">
     <div class="panel half ther"><h3>🧠 המענה הטיפולי / חינוכי</h3>${ther.length ? `<ol style="margin:0;padding-inline-start:22px;display:grid;gap:8px">${ther.map(s => `<li><b>${esc(s.t || '')}:</b> ${esc(s.d || '')} ${aiSrcHTML(s)}</li>`).join('')}</ol>` : '<p class="muted" style="margin:0">אין בחומר צד טיפולי לשאלה הזו.</p>'}</div>
     <div class="panel half fram"><h3>📋 המענה המשמעתי / מסגרתי / מנהלי</h3>${fram.length ? `<ol style="margin:0;padding-inline-start:22px;display:grid;gap:8px">${fram.map(s => `<li><b>${esc(s.t || '')}:</b> ${esc(s.d || '')} ${aiSrcHTML(s)}${s.q ? `<div class="muted" style="font-size:13px;margin-top:2px">❝ ${esc(s.q)} ❞</div>` : ''}</li>`).join('')}</ol>` : '<p class="muted" style="margin:0">לא נמצאה בחוזרים הוראה משמעתית או מנהלית לשאלה הזו.</p>'}</div></div>`;
+  if (arr(A.avoid).length) h += `<div class="panel"><h3>⛔ מה לא לעשות</h3><ul class="clean">${arr(A.avoid).map(s => `<li>${esc(s.d || '')} ${aiSrcHTML(s)}</li>`).join('')}</ul></div>`;
   if (cids.length) h += `<div class="panel"><h3>📜 המקורות בחוזרי המנכ״ל</h3><div class="list">${cids.map(id => circRowHTML(circItem(id))).join('')}</div></div>`;
   if (A.contacts) h += `<div class="panel"><h3>📞 מי פונה למי</h3><p style="margin:0">${esc(A.contacts)}</p><p style="margin:10px 0 0"><a class="btn sm" href="#/roles">👥 המדריך המלא</a>${p ? ` <a class="btn sm" href="#/problem/${p.id}/roles">מי עושה מה במפה הזו</a>` : ''}</p></div>`;
   if (Array.isArray(A.watch) && A.watch.length) h += `<div class="panel" style="border-color:color-mix(in srgb,var(--danger) 40%,var(--line))"><h3>🚩 לשים לב / מתי להפנות</h3>${ul(A.watch)}</div>`;
   if (A.note) h += `<div class="note">${esc(A.note)}</div>`;
+  if (arr(A.external).length) h += `<div class="panel" style="border:2px dashed var(--accent)"><h3>🌐 תוספת מקצועית – לא מהחומרים שלך</h3>
+    <p class="note warn" style="margin:0 0 10px;font-size:14px">החלק הזה מבוסס על הידע המקצועי הכללי של Claude, לא על המפות, החוזרים או הספרייה שבאתר. המקורות מהידע שלו ולא נבדקו מול האינטרנט – כדאי לוודא לפני שמסתמכים.</p>
+    <ol style="margin:0;padding-inline-start:22px;display:grid;gap:8px">${arr(A.external).map(s => `<li><b>${esc(s.t || '')}:</b> ${esc(s.d || '')}${s.src ? `<div style="font-size:13px">📚 מקור: ${esc(s.src)}</div>` : ''}</li>`).join('')}</ol></div>`;
   if (p) {
     const tl = (p.tools || []).filter(t => TOOL[t]);
     h += `<div class="panel"><div class="actions"><a class="btn primary" href="#/problem/${p.id}">🧭 מפת הטיפול המלאה</a>${!LITE && a.id === 'counselor' ? `<button class="btn" data-act="planfor" data-id="${p.id}">📋 תוכנית טיפול לתלמיד</button>` : ''}<a class="btn" href="#/problem/${p.id}/sessions">🗓️ המפגשים</a>${tl.map(t => `<a class="btn" href="#/tool/${t}">${TOOL[t].icon} ${TOOL[t].name}</a>`).join('')}</div></div>`;
@@ -6665,7 +6752,7 @@ function aiAnswerHTML(q, A, maps, rolesQ){  if (!A || typeof A !== 'object') ret
     if (lib.length) h += `<div class="panel"><h3>📚 חומרים מהספרייה שלך</h3><div class="list">${lib.map(libItem).join('')}</div></div>`;
   }
   h += aiGeneralOfferHTML(q, false);
-  h += `<p class="muted" style="font-size:13px">התשובה נכתבה על ידי Claude מתוך מפות הטיפול, המדריך, חוזרי המנכ״ל והספרייה שבאפליקציה בלבד. היא כלי עזר, ושיקול הדעת המקצועי נשאר של השואל. <a href="#" data-act="ai-fast">להצגת התשובה מהמנוע המהיר</a></p>`;
+  h += `<p class="muted" style="font-size:13px">התשובה נכתבה על ידי Claude מתוך מפות הטיפול, המדריך, חוזרי המנכ״ל והספרייה שבאפליקציה${arr(A.external).length ? ' – חוץ מהחלק המסומן 🌐, שהוא ידע כללי' : ''}. היא כלי עזר, ושיקול הדעת המקצועי נשאר של השואל. <a href="#/ask/${encodeURIComponent(q)}">לאותה שאלה במסלול החינמי</a></p>`;
   return h;
 }
 
@@ -7485,7 +7572,7 @@ document.addEventListener('click', async e => {
     case 'outmenu': e.preventDefault(); outMenu(el); break;
     case 'vrate': e.preventDefault(); setVRate(+d.r); break;
     case 'g-link': { const url = location.href.split('#')[0] + '#/game/' + d.id; try { navigator.clipboard.writeText(url).then(() => toast('🔗 הקישור למשחק הועתק'), () => prompt('הקישור למשחק:', url)); } catch(err){ prompt('הקישור למשחק:', url); } break; }
-    case 'asker': ASKER = d.v; ls.set('cbtapp.asker', ASKER); aiFast = !ARTIFACT; render(); break;
+    case 'asker': ASKER = d.v; ls.set('cbtapp.asker', ASKER); aiFast = true; render(); break;
     case 'copyq': try { navigator.clipboard.writeText(d.v).then(() => toast('השאלה הועתקה – הדביקו אותה בפרויקט של Claude'), () => {}); } catch(err){} break;
     case 'ai-stop': if (aiCtl) aiCtl.abort(); break;
     case 'ai-retry': if (lastAsk || route().id) aiAnswerRun(route().id || lastAsk); break;
@@ -7494,6 +7581,7 @@ document.addEventListener('click', async e => {
     case 'refine': refineGo(d.v); break;
     case 'refine-back': refineGo(null); break;
     case 'askex': location.hash = '#/ask/' + encodeURIComponent(d.v); break;
+    case 'askfill': { const i = $('#askq'); if (i) { i.value = d.v; i.focus(); } break; }
     case 'stage': { const st = STAGES.find(x => x.id === d.id); s.stages = s.stages || {}; s.stages[st.id] = !stageDone(s, st); save(); render(); break; }
     // tools
     case 'th-emo': T.emotion = d.v; T.prev = T.level; thUpdate(); break;
@@ -7873,7 +7961,7 @@ const trKey = id => (active() ? active().id : 'general') + ':' + id;
 const trData = id => { S.tracks = S.tracks || {}; return S.tracks[trKey(id)] = S.tracks[trKey(id)] || {}; };
 const FIVEP = [['predisposing', 'גורמים מקדימים', 'מה הכין את הקרקע? (מזג, רקע, היסטוריה)', '#e9d5ff'], ['precipitating', 'גורמים מזרזים', 'מה הדליק את הבעיה עכשיו?', '#fde68a'], ['presenting', 'הבעיה כפי שהיא מוצגת', 'מה רואים? מה מדאיג?', '#fecaca'], ['perpetuating', 'גורמים משמרים', 'מה מחזיק את הבעיה? (הימנעות, תגובות סביבה, מחשבות)', '#fbcfe8'], ['protective', 'גורמים מגינים', 'חוזקות, תמיכה, משאבים', '#bbf7d0']];
 const DAYS = ['ראשון', 'שני', 'שלישי', 'רביעי', 'חמישי', 'שישי'];
-const trLink = h => akSrcLinks(h).replace(/(?<![="'\/\w])#\/(track|game|problem|tool|groups|transitions|programs|newteachers|distress|talk|parents|reports|sped|autism|sel|mafteach|develop|tzalach|aklim|cbtclass|behave|crole|quest|ariel|workflow|roles|videos|circ)((?:\/[\w-]+){0,2})/g, (m, r, p) => { const [id, sub] = p.split('/').slice(1); const x = id && r === 'track' ? TRACK(id) : id && r === 'game' ? GAME(id) : null;
+const trLink = h => akSrcLinks(h).replace(/(?<![="'\/\w])#\/(track|game|problem|tool|groups|transitions|programs|newteachers|distress|talk|parents|reports|sped|autism|sel|mafteach|develop|tzalach|aklim|cbtclass|behave|cbt|cbtmaps|app|crole|quest|ariel|workflow|roles|videos|circ)((?:\/[\w-]+){0,2})/g, (m, r, p) => { const [id, sub] = p.split('/').slice(1); const x = id && r === 'track' ? TRACK(id) : id && r === 'game' ? GAME(id) : null;
   const cg = r === 'circ' && sub ? circGuide().find(g => g.id === sub) : null, cm = r === 'circ' && id && !cg ? (window.CIRC_META || []).find(c => c.id === id) : null;
   const lab = x ? x.title : r === 'problem' && id && P[id] ? '🧭 ' + P[id].name : r === 'tool' && id && TOOL[id] ? TOOL[id].icon + ' ' + TOOL[id].name : cg ? '📜 ' + cg.title : cm ? '📜 ' + cm.title : r === 'distress' && !id ? '🚨 ' + HUBS.distress.title : (r === 'mafteach' || r === 'sel' || r === 'develop' || r === 'transitions') && !id ? HUBS[r].icon + ' ' + HUBS[r].title : (r === 'parents' || r === 'reports' || r === 'sped' || r === 'tzalach' || r === 'aklim' || r === 'cbtclass' || r === 'crole' || r === 'quest') && !id ? HUBS[r].icon + ' ' + HUBS[r].title : HUBS[r] && !id ? HUBS[r].icon + ' ' + HUBS[r].title : r === 'groups' && !id ? '👥 הנחיית קבוצות' : r === 'workflow' && !id ? '🗺️ סדר עבודה' : r === 'roles' && !id ? '👥 מי פונה למי' : null;
   return `<a href="${m}" class="trlink">${lab ? esc(lab) : m}</a>`; }).replace(/(?<![="'\/\w])#\/file\/([\w-]+)/g, (m, k) => trFile(k) ? trFileBtn(k) : m);   // #/file/<key> → opens a file from window.TRFILES (tracks-sped.js)
@@ -7955,7 +8043,7 @@ function groupsView(){
   const all = TRACKS().filter(t => t.group), guide = all.find(t => t.id === 'grp-guide'), list = all.filter(t => t.id !== 'grp-guide' && !t.deep), deep = all.filter(t => t.deep);
   return {title: 'הנחיית קבוצות', html: `${hubHero('groups', '👥', 'הנחיית קבוצות', all.length)}${gGuide('בקבוצה לומדים אחד מהשני – בוא נבנה קבוצה טובה! 👥', 'שמחה', 6)}${infog('groups', all)}
     <div class="note" style="margin:4px 0 16px">👥 מדור להנחיית קבוצות ילדים ונוער: המדריך המלא (בנייה, מיון, חוזה, שלבי קבוצה, מבנה מפגש, מיומנויות מנחה, מצבים מאתגרים, הערכה וסיום) ומתווים טיפוליים קבוצתיים לפי נושאים – כל מתווה עם מיון, פנייה להורים, מפגשים מפורטים, מדדים לפני ואחרי ומעקב. לכל עמוד יש קישור משלו.</div>
-    ${guide ? `<a class="card" href="#/track/${guide.id}" style="margin-bottom:16px;border:2px solid var(--brand)"><span class="emoji">${guide.icon || '👥'}</span><span class="name">${esc(guide.title)}</span><span class="sub">${guide.steps.length} פרקים · מתחילים כאן</span></a>` : ''}
+    ${hubAppsHTML('groups')}${guide ? `<a class="card" href="#/track/${guide.id}" style="margin-bottom:16px;border:2px solid var(--brand)"><span class="emoji">${guide.icon || '👥'}</span><span class="name">${esc(guide.title)}</span><span class="sub">${guide.steps.length} פרקים · מתחילים כאן</span></a>` : ''}
     ${deep.length ? `<h2 class="sec">🎓 העמקה – מתוך קורס הנחיית הקבוצות (יעל מלמד)</h2><div class="grid" style="margin-bottom:16px">${deep.map(t => `<a class="card accent hubc" href="#/track/${t.id}" style="--h:${t.hue ?? hubHue('groups')}"><span class="emoji">${t.icon || '🎓'}</span><span class="name">${esc(t.title)}</span><span class="sub">${t.steps.length} שלבים</span></a>`).join('')}</div>` : ''}
     <h2 class="sec">📚 מתווים טיפוליים קבוצתיים לפי נושאים</h2>
     ${list.length ? `<div class="grid">${list.map(t => `<a class="card accent hubc" href="#/track/${t.id}" style="--h:${t.hue ?? hubHue('groups')}"><span class="emoji">${t.icon || '👥'}</span><span class="name">${esc(t.title)}</span><span class="sub">${esc(t['for'] || '')}</span><span class="sub">${(t.steps.find(s => s.kind === 'sessions') || {sessions: []}).sessions.length} מפגשים</span></a>`).join('')}</div>` : '<div class="empty">⏳ המתווים נטענים…</div>'}`};
@@ -7985,17 +8073,275 @@ const HUBS = {
 HUBS.ariel = {flag: 'ariel', guide: 'ac-guide', back: ['problems', 'טיפול לפי בעיה'], title: 'חוברות מטופלים – אריאל חן', icon: '📘', say: 'ארבע חוברות עבודה – ואנחנו מתאימים כל טופס לילד שמולנו 📘', intro: '📘 ארבע חוברות העבודה למטופל מסדרת ״צעד צעד – טיפול התנהגותי-קוגניטיבי״ של אריאל חן: פאניקה ואגורפוביה, דיכאון, חרדה חברתית ו-OCD. המדריך (מה בחוברות, מה משותף לכולן, איך משלבים טופס במפגש, התאמה לפי גיל, להורים ולמחנך, ומה לא לוקחים ליסודי), ומסלול אינטראקטיבי לכל חוברת: מבנה הטיפול מפגש אחרי מפגש, המודל הפסיכו-חינוכי בתרשימים, הטפסים המרכזיים כטפסים למילוי (בניסוח שלנו), משימות בית, להורים ומניעת הישנות. לכל פריט מצוינים הטופס והעמוד, וכל טופס נפתח בעמוד שלו בקובץ. החוברות נכתבו למבוגרים – ההתאמות לילדים מסומנות; הצד הטיפולי והצד המשמעתי-מנהלי מופרדים.', extra: [['#/problem/social-anxiety', '🙈', 'מפה: חרדה חברתית'], ['#/problem/low-mood', '🌧️', 'מפה: מצב רוח ירוד'], ['#/problem/ocd', '🔁', 'מפה: OCD'], ['#/problem/gad', '💭', 'מפה: דאגנות וחרדה'], ['#/quest', '📋', 'שאלונים ומדדים'], ['#/circ/c11', '📜', 'אובדנות – חוזר 0473'], ['#/circ/c07/c07-emotional-support-parent-consent', '📜', 'הסכמת הורים למענה רגשי (0482)']]};
 /* 🏅 עיצוב התנהגות (tracks-behave.js): a hub of its own, listed under both 🧒 הטיפול בתלמיד and 🏫 כיתה ובית ספר – theory first, then the individual plan and the class */
 HUBS.behave = {flag: 'behave', guide: 'bh-guide', title: 'עיצוב התנהגות – פרטני וכיתתי', icon: '🏅', say: 'מלמדים התנהגות כמו שמלמדים קריאה – צעד קטן, חיזוק, ועוד צעד 🏅', intro: '🏅 עיצוב התנהגות: קודם התאוריה והמושגים – התניה קלאסית ואופרנטית, ABC, חיזוק ועונש (חיובי ושלילי), סוגי מחזקים ועקרון פרימאק, סדרי חיזוק, עיצוב בקירובים, שרשור, הנחיה ודעיכה, הכחדה ופרץ ההכחדה, הכללה ושימור, למידה מצפייה (בנדורה), הקשר ל-CBT והגבולות האתיים; מילון מושגים ומשחק זיהוי עם עשרות מקרים. אחר כך הרמה הפרטנית – הגדרה אופרטיבית, מדידת בסיס וטופס ABC, ניתוח תפקודי (ארבע הפונקציות), התנהגות חלופית, תוכנית התנהגותית אישית, חוזה, לוח נקודות ודוח יומי בית-ספר ובית, דעיכה ותסריטים לילד, להורים ולמורה; והרמה הכיתתית – כללים ושגרות, שבח ספציפי ויחס חיובי, תלויות קבוצתיות, משחק ההתנהגות הטובה, כלכלת אסימונים כיתתית, מודל שלוש השכבות (PBIS), התעלמות מתוכננת, הכוונה מוקדמת ותגובות מדורגות בתיאום עם מדרג התגובות של חוזר 0470. בסוף – עיצוב התנהגות בבית וטעויות נפוצות. הצד החינוכי-טיפולי והצד המשמעתי-מנהלי מוצגים בנפרד, ולכל פריט מצוין המקור.', extra: [['#/track/cbtc-behavior', '📋', 'ניהול התנהגות בכיתה ברוח CBT'], ['#/track/ak-ladder', '🪜', 'מדרג התגובות – חוזר 0470'], ['#/track/ak-discipline', '⏸️', 'אמצעי משמעת – מה מותר ומה אסור'], ['#/circ/c04', '📜', 'חוזר 0470 – אקלים חינוכי מיטבי'], ['#/track/adhd-org', '🧭', 'מסלול טיפול: קשב וארגון'], ['#/track/anger', '🌋', 'מסלול טיפול: כעס וויסות'], ['#/track/dist-odd', '🚨', 'זיהוי: התנהגות מתריסה (ODD)'], ['#/track/q-behav', '📋', 'שאלוני התנהגות וכעס'], ['#/tool/rewards', '⭐', 'טבלת מדבקות']]};
+/* 🧠 שיטת טיפול CBT (tracks-cbt.js): the method itself – theory tracks, the per-problem protocols (#/cbtmaps) and interactive applications (#/app/<id>) */
+HUBS.cbt = {flag: 'cbt', guide: 'cbt-guide', title: 'שיטת טיפול CBT', icon: '🧠', say: 'מחשבה, רגש והתנהגות – ומשנים את המעגל ביחד 🧠', intro: '🧠 המדור מרכז את שיטת הטיפול הקוגניטיבי-התנהגותי: העקרונות, המושגים, ההמשגה, האמונות, החלק הקוגניטיבי וההתנהגותי, המיומנויות ומודל פתרון בעיות. ב״יישום אינטראקטיבי״ ממלאים נתונים של נועץ ומקבלים פורמולציה ומתווה טיפול עם רציונל.', extra: [['#/cbtmaps', '🧭', 'מתווים טיפוליים לפי בעיה'], ['#/tool/abc', '🧩', 'מודל אפר״ת לילד'], ['#/tool/thoughts', '🕵️', 'בלש המחשבות'], ['#/tool/trafficlight', '🚦', 'רמזור לפתרון בעיות'], ['#/tool/ladder', '🪜', 'סולם חשיפה']]};
+
+/* ================= interactive applications: fill in the data → formulation + treatment outline with rationale =================
+   APPS[id] = {hub, icon, title, sub, intro, sections:[{title, fields:[{id, label, ph?, long?, type?:'range'|'chips', opts?, multi?, min?, max?}]}], build(d) → html}
+   The data stays in this browser only (ls 'cbtapp.app.<id>'); nothing is sent anywhere. A hub lists its apps at the top of its page. */
+const APPS = {};
+// hub applications written as data (tracks-zapps.js, window.HUB_APPS) are merged in lazily – the web build loads that content only after sign-in
+const allApps = () => { const X = window.HUB_APPS || {}; Object.keys(X).forEach(k => { if (!APPS[k]) APPS[k] = {...X[k], build: d => ruleBuild(X[k], d)}; }); return APPS; };
+const appKey = id => 'cbtapp.app.' + id;
+const appGet = id => ls.get(appKey(id), {});
+function appFieldHTML(f, v){
+  const val = v == null ? '' : v;
+  if (f.type === 'range') return `<label class="f">${esc(f.label)} <b data-appv="${f.id}">${val === '' ? '–' : esc(val)}</b><input type="range" min="${f.min ?? 0}" max="${f.max ?? 10}" value="${val === '' ? (f.min ?? 0) : esc(val)}" data-app="${f.id}" data-num="1"></label>`;
+  if (f.type === 'chips') { const on = Array.isArray(val) ? val : (val ? [val] : []), opts = f.optsFn ? f.optsFn() : f.opts;
+    return `<div class="f" style="font-size:13.5px;color:var(--muted)">${esc(f.label)}<div class="chips" style="margin:6px 0 0">${opts.map(o => `<button type="button" class="chip ${on.includes(o) ? 'on' : ''}" data-appchip="${f.id}" data-multi="${f.multi ? 1 : ''}" data-v="${esc(o)}">${esc(o)}</button>`).join('')}</div></div>`; }
+  return `<label class="f">${esc(f.label)}${f.long ? `<textarea class="inp ta" data-app="${f.id}" placeholder="${esc(f.ph || '')}">${esc(val)}</textarea>` : `<input class="inp" data-app="${f.id}" placeholder="${esc(f.ph || '')}" value="${esc(val)}">`}</label>`;
+}
+function appView(R){
+  const A = allApps()[R.id]; if (!A) return {title: 'יישום', html: '<div class="empty">היישום לא נמצא. <a href="#/cbt">לשיטת טיפול CBT</a></div>'};
+  const d = appGet(R.id), H = HUBS[A.hub] || {};
+  const html = `<a class="back no-print" href="#/${A.hub}">→ ${esc(H.title || '')}</a>
+    <div class="banner" style="--h:${hubHue(A.hub)}"><span class="emoji">${A.icon}</span><div><h1>${esc(A.title)}</h1><p>${esc(A.sub || '')}</p></div></div>
+    <div class="note no-print" style="margin-bottom:14px">${A.intro} <span class="muted">🔒 הנתונים נשמרים רק בדפדפן הזה ולא נשלחים לשום מקום. כותבים כינוי, לא שם מלא.</span></div>
+    <div class="no-print">${A.sections.map(s => `<div class="panel"><h3>${s.title}</h3><div class="form">${s.fields.map(f => appFieldHTML(f, d[f.id])).join('')}</div></div>`).join('')}
+    <div class="actions" style="margin:14px 0 20px"><button class="btn primary" data-appbuild="1">🧩 בנה פורמולציה ומתווה טיפול</button><button class="btn" data-act="print">🖨️ הדפסה</button><button class="btn ghost" data-appclear="1">🗑️ ניקוי הטופס</button></div></div>
+    <div id="appOut"></div>`;
+  return {title: A.title, html, after(){
+    const save = () => ls.set(appKey(R.id), d);
+    const build = scroll => { const o = $('#appOut'); o.innerHTML = A.build(d); if (scroll) o.scrollIntoView({behavior: 'smooth', block: 'start'}); };
+    document.querySelectorAll('[data-app]').forEach(el => el.addEventListener('input', () => { d[el.dataset.app] = el.dataset.num ? +el.value : el.value; const b = document.querySelector(`[data-appv="${el.dataset.app}"]`); if (b) b.textContent = el.value; save(); }));
+    document.querySelectorAll('[data-appchip]').forEach(el => el.addEventListener('click', () => { const k = el.dataset.appchip, v = el.dataset.v;
+      if (el.dataset.multi) { const a = Array.isArray(d[k]) ? d[k] : []; d[k] = a.includes(v) ? a.filter(x => x !== v) : [...a, v]; el.classList.toggle('on'); }
+      else { d[k] = d[k] === v ? '' : v; el.parentNode.querySelectorAll('.chip').forEach(c => c.classList.toggle('on', c === el && d[k] === v)); }
+      save(); }));
+    $('[data-appbuild]').onclick = () => build(true);
+    $('[data-appclear]').onclick = () => { if (confirm('לנקות את כל הנתונים בטופס?')) { ls.set(appKey(R.id), {}); render(); } };
+    if (Object.keys(d).some(k => d[k] !== '' && !(Array.isArray(d[k]) && !d[k].length))) build(false);
+  }};
+}
+function hubAppsHTML(k){
+  const list = Object.entries(allApps()).filter(([, a]) => a.hub === k); if (!list.length) return '';
+  return `<h2 class="sec">🧩 יישום אינטראקטיבי <small>ממלאים נתונים – ומקבלים פורמולציה ומתווה טיפול</small></h2><div class="grid" style="margin-bottom:16px">${list.map(([id, a]) => `<a class="card accent" href="#/app/${id}" style="--h:${hubHue(k)};border:2px solid var(--brand)"><span class="emoji">${a.icon}</span><span class="name">${esc(a.title)}</span><span class="sub">${esc(a.sub || '')}</span></a>`).join('')}</div>`;
+}
+
+/* ---- the analysis rules (shared by the CBT applications) ---- */
+const APP_EMO = {'פחד / חרדה': 'fear', 'דאגה': 'fear', 'בושה / מבוכה': 'shame', 'עצב': 'sad', 'ייאוש': 'sad', 'כעס': 'anger', 'תסכול': 'anger', 'אשמה': 'guilt', 'קנאה': 'anger', 'בדידות': 'sad'};
+const APP_EMO_MAPS = {fear: ['gad', 'school-refusal', 'social-anxiety', 'phobias', 'test-anxiety'], shame: ['social-anxiety', 'self-esteem'], sad: ['low-mood', 'self-esteem', 'social-rejection'], anger: ['anger', 'adhd-org'], guilt: ['low-mood', 'ocd']};
+const APP_TRAPS = [
+  ['over', 'הכללת יתר', /(^|\s)(תמיד|אף פעם|כולם|אף אחד|שום דבר|כל הזמן|בחיים לא)(\s|$|[.,!?])/, 'מסקנה כוללנית מנתון אחד.', ['האם היו פעמים שזה לא קרה?', 'אילו עובדות תומכות – ואילו תומכות בהפך?']],
+  ['mind', 'קריאת מחשבות', /(חושב(ים|ת)? ש|בטח (הוא|היא|הם|המורה|כולם)|יחשבו|יצחקו|ילעגו|לא רוצים אותי|שונא(ים|ת)? אותי)/, 'ביטחון שיודעים מה אחרים חושבים, בלי לבדוק.', ['איך אני יודע מה הם חושבים? בדקתי?', 'האם יש הסבר אחר להתנהגות שלהם?']],
+  ['future', 'ראיית העתיד', /(אכשל|לא אצליח|לא יצליח|יהיה נורא|ייגמר רע|לא יעבוד|אין סיכוי|בטוח ש)/, 'מתייחסים לתוצאה עתידית כעובדה.', ['מה הסבירות שזה באמת יקרה?', 'האם אני יודע ב-100%?']],
+  ['cat', 'חשיבה קטסטרופלית', /(אסון|נורא|הכי גרוע|הכול נהרס|סוף העולם|אמות|יקרה משהו רע)/, 'קפיצה לתרחיש הגרוע ביותר.', ['האם זה אסון? אוכל להתמודד?', 'מה הכי גרוע, מה הכי טוב ומה הכי סביר?']],
+  ['should', '״צריך / חייב / אסור״', /(חייב|צריך|מוכרח|אסור ל|אסור ש)/, 'רצון שהפך לחובה מוחלטת.', ['מה יקרה אם זה לא יהיה ״חייב״ אלא ״הייתי רוצה״?', 'מי קבע את הכלל, והאם הוא עוזר לי?']],
+  ['label', 'מתן תוויות', /(אני (טיפש|כישלון|עצלן|רע|לא שווה|גרוע|לוזר|מפגר)|הוא (רע|מניאק|טיפש))/, 'הגדרה מוחלטת של כל האדם לפי מקרה אחד.', ['האם מקרה אחד מגדיר את כל מי שאני?', 'מה הייתי אומר לחבר שאומר זאת על עצמו?']],
+  ['self', 'ייחוס עצמי', /(בגללי|אשמתי|זה עליי|אני אשם)/, 'לקחת אחריות על מה שלא בשליטה מלאה.', ['האם אני מאשים את עצמי במשהו שאין לי שליטה מלאה עליו?', 'עוגת האחריות: מה עוד השפיע?']],
+  ['emo', 'חשיבה רגשית', /(מרגיש ש|מרגישה ש|אני מרגיש שאני)/, 'רגש שמתפרש כהוכחה.', ['האם הרגשה היא עובדה?', 'מה העובדות אומרות, בלי ההרגשה?']],
+  ['bw', 'שחור-לבן', /(לגמרי|בכלל לא|רק אם|או ש.* או ש|הכול או כלום|מושלם)/, 'שתי קטגוריות בלי אמצע.', ['איפה זה על סולם 0–100?', 'מה היה נחשב ״מספיק טוב״?']]
+];
+const APP_MECH = [
+  ['avoid', 'הימנעות / בריחה', /(הקלה|נרגע כש|יצא ל(אחות|שירותים|חוץ|מזכירות)|ביקש לצאת|הלך (לאחות|הביתה)|כואב(ת)? לו|לא היה צריך ל|לא עלה|לא (פתר|עשה את)|נמנע|ברח|לא (הלך|נכנס|הגיע|ענה|השתתף|ניגש)|נשאר (בבית|בחוץ)|יצא מה|הלך הביתה|התחמק|סירב|ויתר על ה)/,
+    'ההימנעות נותנת הקלה מיידית – ולכן ״עובדת״ ומתחזקת. אבל הילד לא מגלה שהיה מסתדר, והפחד נשמר ואף גדל.',
+    {t: 'חשיפה הדרגתית', why: 'כדי שהמוח ילמד שהמצב פחות מסוכן ממה שהוא חושב, צריך לפגוש אותו בהדרגה ולהישאר עד שהפחד יורד. זה ״היפוך״ של ההימנעות.', how: ['בונים סולם של 8–10 מצבים מהקל לקשה, עם דירוג 0–10', 'מתחילים במדרגה של 3–4 ונשארים עד שהפחד יורד', 'חוזרים על אותה מדרגה, ורק אז עולים', 'מכינים מראש: בהתחלה הפחד עלול לעלות'], tool: 'ladder', track: 'cbt-behavioral'}],
+  ['safety', 'התנהגויות ביטחון / חיפוש הרגעה', /(שאל שוב|שואל שוב|שאלה שוב|הרגיע|הרגיעו|אמרו לו שהכול בסדר|בדק שוב|בודק|החזיק|ישב ליד|ביקש שיבטיחו)/,
+    'הרגעה חוזרת ובדיקות נותנות שקט לרגע – ואז הספק חוזר. הילד לומד ״אני בטוח רק כשמרגיעים אותי״.',
+    {t: 'הפחתה הדרגתית של הרגעה ובדיקות (מניעת תגובה)', why: 'ההרגעה היא סוג של טקס שמשמר את הדאגה. כשמצמצמים אותה בהדרגה, הילד לומד לשאת את אי-הוודאות ולגלות שהוא מסתדר.', how: ['מסכמים עם ההורים מספר קבוע של שאלות הרגעה ביום, ומצמצמים', 'עונים ״כבר ענינו על זה – מה אתה יכול להגיד לעצמך?״', 'מחזקים כל פעם שהילד נשאר עם הספק'], tool: 'copingcard', track: 'cbt-behavioral'}],
+  ['aggr', 'התפרצות שמשיגה משהו', /(צעק|הרביץ|היכה|זרק|קילל|בעט|דחף|התפרץ|שבר|טרק)/,
+    'אם אחרי ההתפרצות הילד יוצא מהמשימה, מקבל את מה שרצה או הרבה תשומת לב – ההתפרצות ״עובדת״ ותחזור.',
+    {t: 'פתרון בעיות (רמזור) + שינוי ״מה קורה אחרי״', why: 'ההתפרצות היא דרך לא מוצלחת לפתור בעיה. מלמדים דרך אחרת להשיג את המטרה, והמבוגרים מפסיקים לחזק את ההתפרצות ומחזקים כל ניסיון לעצור.', how: ['זיהוי סימני אזהרה בגוף ומדחום כעס', 'רמזור: עוצרים – חושבים על פתרונות – בוחרים', 'פתרון בעיות שיתופי עם המבוגר על הבעיה שחוזרת', 'תוכנית עקבית בבית ובכיתה לחיזוק החלופה'], tool: 'trafficlight', track: 'cbt-ps'}],
+  ['withdraw', 'נסיגה וחוסר פעילות', /(שכב|הסתגר|לא עשה כלום|ויתר|לא רצה (לשחק|לצאת)|ישן|הפסיק ל|נשאר לבד|לא יצא)/,
+    'במצב רוח ירוד הילד מוותר על פעילויות – ואז יש פחות הנאה ופחות הצלחות, ומצב הרוח יורד עוד.',
+    {t: 'הפעלה התנהגותית', why: 'פועלים ״מבחוץ פנימה״: צעד קטן של הנאה או הצלחה לפני שיש חשק. הפעילות מחזירה חיזוקים, ומצב הרוח עולה אחריה.', how: ['שבוע ניטור: מה עשיתי, הנאה 0–10, הצלחה 0–10', 'בוחרים 2–3 פעילויות קטנות ומשבצים ביום ובשעה', 'מפרקים משימות גדולות לצעדים', 'בודקים במפגש הבא ומקטינים מה שלא בוצע'], tool: 'rewards', track: 'cbt-behavioral'}],
+  ['rumin', 'היאחזות במחשבות / דאגה חוזרת', /(לא הפסיק לחשוב|חשב כל|מחשבות רצו|דאג כל|שוב ושוב בראש|לא הצליח להירדם)/,
+    'כשהמחשבה חוזרת שוב ושוב, היא מרגישה חשובה ואמיתית יותר, והגוף נשאר דרוך.',
+    {t: 'הבחנה בין בעיה לדאגה + ״זמן דאגה״', why: 'בבעיה אמיתית – פותרים. בדאגה על ״מה אם״ – לומדים לדחות אותה ולא להיגרר אחריה. זה מקטין את הזמן שהדאגה ״מנהלת״ את היום.', how: ['שאלה: ״זו בעיה שאפשר לפתור עכשיו?״ אם כן – פתרון בעיות', 'אם לא – ״זמן דאגה״ קבוע של 10 דקות ביום, ומחוצה לו דוחים', 'הרפיה ונשימה לפני השינה'], tool: 'breathing', track: 'cbt-ps'}],
+  ['env', 'תגובת הסביבה שמשמרת', /(ויתרו|הורידו לו|שחררו אותו|לא (היה צריך|נדרש)|אמא (לקחה|באה|הרשתה)|הורים (לקחו|ויתרו|הרשו)|המורה (ויתרה|שלחה אותו|הוציאה))/,
+    'התגובה של המבוגרים – גם כשהיא נובעת מאכפתיות – מלמדת שההימנעות או ההתפרצות עובדות.',
+    {t: 'הדרכת הורים וצוות', why: 'המבוגרים שליד הילד הם ״המפתח העיקרי לשינוי״. כשהם מחזקים את הניסיון ולא את ההימנעות – המעגל נשבר גם כשהיועץ לא שם.', how: ['משתפים את ההורים והמחנך במעגל המשמר', 'מסכמים מה עושים ״אחרי״: מחזקים ניסיון, לא מוותרים על הדרישה – מקטינים אותה', 'תוכנית חיזוק קצרה וממוקדת'], tool: 'rewards', track: 'cbt-behavioral'}]
+];
+const appTxt = (...a) => a.map(x => Array.isArray(x) ? x.join(' ') : String(x || '')).join(' ');
+function appDetect(thoughts, acts){ return {traps: APP_TRAPS.filter(t => t[2].test(thoughts)), mech: APP_MECH.filter(m => m[2].test(acts))}; }
+// clear situational words point to a map before the keyword engine; the emotion only fills in when nothing else matched
+const APP_HINTS = [[/(מול הכיתה|יצחקו|לדבר מול|להקריא|ללוח|להופיע|ביישן|מתבייש|מבוכה)/, 'social-anxiety'], [/(להיפרד|בשער|לא (רוצה|מוכן) ללכת לבית הספר|נצמד|אמא (תלך|הולכת)|יקרה משהו לאמא)/, 'school-refusal'], [/(מבחן|בוחן|ציון|בגרות)/, 'test-anxiety'],
+  [/(התפרץ|הרביץ|צעק|זרק|בעט|קילל)/, 'anger'], [/(אין טעם|לא רוצה כלום|עצוב כל|אין לי כוח)/, 'low-mood'], [/(אין לי חברים|לא משחקים איתי|דוחים אותי|לא מזמינים)/, 'social-rejection'], [/(טקס|שוטף שוב|בודק שוב|מחשבה טורדנית|מוכרח לסדר)/, 'ocd'], [/(מציקים|מחרימים|מכים אותו|בריונ)/, 'bullying']];
+function appMapsFor(text, emos, picked){
+  const ids = new Set(picked || []);
+  APP_HINTS.forEach(([re, id]) => { if (re.test(text)) ids.add(id); });
+  try { const A = answer(text); if (A.top) ids.add(A.top.p.id); A.others.slice(0, 2).forEach(o => ids.add(o.p.id)); } catch(e){}
+  if (ids.size < 2) (emos || []).forEach(e => (APP_EMO_MAPS[APP_EMO[e]] || []).slice(0, 1).forEach(id => ids.add(id)));
+  return [...ids].filter(id => P[id]).slice(0, 4).map(id => P[id]);
+}
+const appPanel = (title, body, style = '') => `<div class="panel" style="${style}"><h3>${title}</h3>${body}</div>`;
+const appLinks = (tool, track) => `${tool && TOOL[tool] ? `<a class="btn sm" href="#/tool/${tool}">${TOOL[tool].icon} ${TOOL[tool].name}</a>` : ''}${track && TRACK(track) ? `<a class="btn sm" href="#/track/${track}">${TRACK(track).icon} ${esc(TRACK(track).title.split(' – ')[0])}</a>` : ''}`;
+function appPlanHTML(steps){
+  return `<div class="apsteps">${steps.map((s, i) => `<div class="apstep"><div class="apnum">${i + 1}</div><div class="apbody"><h4>${s.t}</h4>
+    <div class="apwhy"><b>💡 למה – הרציונל</b>${esc(s.why)}</div>
+    ${s.how && s.how.length ? `<div class="aphow"><b>🛠️ איך עושים</b><ul>${s.how.map(x => `<li>${esc(x)}</li>`).join('')}</ul></div>` : ''}
+    ${s.tool || s.track || s.extra ? `<div class="actions no-print" style="margin-top:8px">${appLinks(s.tool, s.track)}${s.extra || ''}</div>` : ''}</div></div>`).join('')}</div>`;
+}
+function appMechHTML(det){
+  const traps = det.traps.length ? `<h4 class="aph">🪤 מלכודות חשיבה בפרשנות</h4><div class="apcards">${det.traps.map(t => `<div class="apcard trap"><b>${t[1]}</b><p>${t[3]}</p><div class="apq">${t[4].map(q => `<span>❓ ${q}</span>`).join('')}</div></div>`).join('')}</div>` : `<p class="muted" style="margin:6px 0">🪤 לא זוהתה מלכודת חשיבה מוכרת במילים שנכתבו. כדאי לבדוק מול הרשימה המלאה: <a href="#/track/cbt-cognitive/1">מלכודות חשיבה</a>.</p>`;
+  const mech = det.mech.length ? `<h4 class="aph">🔁 מנגנונים שמשמרים את הבעיה</h4><div class="apcards">${det.mech.map(m => `<div class="apcard mech"><b>${m[1]}</b><p>${m[3]}</p><div class="apq"><span>➜ ${m[4].t}</span></div></div>`).join('')}</div>` : `<p class="muted" style="margin:12px 0 6px">🔁 לא זוהה מנגנון שימור מתוך מה שנכתב. שאלו: מה הילד עשה כדי שיהיה לו קל יותר ברגע? ומה עשו המבוגרים אחר כך?</p>`;
+  return traps + mech;
+}
+
+/* ---- application 1: מודל אפר״ת – from one event to a maintaining formulation and a treatment outline ---- */
+const EMO_OPTS = ['פחד / חרדה', 'דאגה', 'בושה / מבוכה', 'עצב', 'ייאוש', 'כעס', 'תסכול', 'אשמה', 'קנאה', 'בדידות'];
+APPS['cbt-abc'] = {hub: 'cbt', icon: '🧩', title: 'יישום: מודל אפר״ת – מאירוע לפורמולציה ולמתווה טיפול', sub: 'אירוע, פרשנות, רגש והתנהגות ← מה משמר ומחריף, ומה עושים',
+  intro: 'ממלאים אירוע אחד אמיתי ומדויק מהשבוע האחרון. אחרי הלחיצה נבנים: המודל, המעגל המשמר עם נקודות שבירה, מלכודות החשיבה והמנגנונים שמשמרים או מחריפים את הבעיה, ומתווה טיפול שלב אחרי שלב עם רציונל.',
+  sections: [
+    {title: '⚡ א – האירוע', fields: [{id: 'event', label: 'מה קרה? (עובדות בלבד – איפה, מתי, מי)', ph: 'בשיעור חשבון המורה ביקשה ממנו לפתור תרגיל על הלוח', long: true}, {id: 'context', label: 'באיזו תדירות זה קורה ובאילו מצבים?', ph: 'כמעט בכל פעם שצריך לדבר מול הכיתה'}]},
+    {title: '💭 פ – הפרשנות', fields: [{id: 'thought', label: 'מה הוא אמר לעצמו? (במילים שלו)', ph: '״כולם יצחקו עליי, אני תמיד טועה, אני טיפש״', long: true}, {id: 'belief', label: 'כמה הוא מאמין בזה (0–100)', type: 'range', min: 0, max: 100}, {id: 'meaning', label: 'ומה זה אומר עליו? (לא חובה – חץ יורד)', ph: '״שאני לא שווה כמו האחרים״'}]},
+    {title: '💗 ר – הרגש והגוף', fields: [{id: 'emos', label: 'אילו רגשות עלו?', type: 'chips', opts: EMO_OPTS, multi: true}, {id: 'intensity', label: 'עוצמת הרגש (0–10)', type: 'range'}, {id: 'body', label: 'מה הרגיש בגוף?', ph: 'דופק מהיר, בטן מתהפכת, פנים אדומות'}]},
+    {title: '🏃 ת – ההתנהגות ומה קרה אחר כך', fields: [{id: 'behavior', label: 'מה עשה?', ph: 'אמר שכואבת לו הבטן ויצא לאחות', long: true}, {id: 'short', label: 'מה קרה מיד אחר כך? (מה הוא ״הרוויח״)', ph: 'הרגיש הקלה, לא היה צריך לעלות ללוח'}, {id: 'others', label: 'איך הגיבו המבוגרים / הילדים?', ph: 'המורה שחררה אותו, אמא באה לקחת אותו הביתה'}, {id: 'long', label: 'מה המחיר לאורך זמן?', ph: 'מפספס שיעורים, הפחד מהלוח גדל'}]}
+  ],
+  build(d){
+    const text = appTxt(d.event, d.context, d.thought, d.behavior), det = appDetect(appTxt(d.thought, d.meaning), appTxt(d.behavior, d.short, d.others, d.long)), emos = d.emos || [], I = +d.intensity || 0, B = +d.belief || 0;
+    const fam = emos.map(e => APP_EMO[e]).filter(Boolean);
+    const cyc = {title: 'המעגל המשמר – על האירוע הזה', nodes: [{k: 'trigger', label: 'מה קרה', t: d.event || '—'}, {k: 'thought', label: 'מה אמר לעצמו', t: d.thought || '—'}, {k: 'feeling', label: 'מה הרגיש', t: (emos.join(', ') || '—') + (I ? ` (${I}/10)` : '')}, {k: 'body', label: 'בגוף', t: d.body || '—'}, {k: 'behavior', label: 'מה עשה', t: d.behavior || '—'}, {k: 'result', label: 'מה קרה אחר כך', t: [d.short, d.others].filter(Boolean).join(' · ') || '—'}],
+      back: det.mech.length ? `${det.mech[0][1]} מחזק/ת את המחשבה – והמעגל חוזר` : 'מה שקורה אחר כך מחזק את המחשבה – והמעגל חוזר',
+      breaks: [{at: 1, title: 'שוברים במחשבה', t: 'בודקים את הפרשנות בשאלות סוקרטיות ומנסחים מחשבה מאוזנת.', tool: 'thoughts'}, {at: 3, title: 'מרגיעים את הגוף', t: 'נשימה והרפיה כדי לרדת בעוצמה לפני שמגיבים.', tool: 'breathing'}, {at: 4, title: 'התנהגות אחרת', t: det.mech[0] ? det.mech[0][4].t : 'צעד קטן אחר במקום התגובה הרגילה.', tool: det.mech[0] ? det.mech[0][4].tool : 'trafficlight'}, {at: 5, title: 'משנים את ״מה קורה אחרי״', t: 'המבוגרים מחזקים את הניסיון – לא את ההימנעות או ההתפרצות.', tool: 'rewards'}]};
+    const worsen = [I >= 7 ? `עוצמה רגשית גבוהה (${I}/10) – בעוצמה כזו קשה לחשוב בבהירות, ולכן מתחילים בוויסות.` : '', B >= 70 ? `אמונה חזקה בפרשנות (${B}/100) – המחשבה מרגישה כמו עובדה; שיחה לבד לא תספיק, צריך גם ניסוי בפועל.` : '', /(כמעט תמיד|כל יום|כל פעם|בכל פעם|הרבה)/.test(d.context || '') ? 'הדפוס חוזר לעיתים קרובות – כל חזרה ״מתרגלת״ ומחזקת אותו.' : '', d.long ? `המחיר לאורך זמן: ${d.long}` : ''].filter(Boolean);
+    const maps = appMapsFor(text, emos);
+    const steps = [{t: 'פסיכו-חינוך: להכיר את המעגל', why: 'כשהילד וההורים רואים איך האירוע, המחשבה, הרגש וההתנהגות מזינים זה את זה, השינוי נהיה הגיוני והמוטיבציה עולה. ״המחיר שהאדם משלם בגין הסימפטום״ הוא מנוע השינוי.', how: ['מציירים יחד את המעגל שלמעלה, במילים של הילד', 'נותנים לבעיה שם ודמות (״הפחד״, ״הר הגעש״)', 'מסכמים מטרה אחת קטנה ומדידה'], track: 'cbt-formulation'}];
+    if (I >= 6 || d.body) steps.push({t: `ויסות גופני לפני הכול`, why: 'בעוצמה גבוהה הגוף ״משתלט״ והחשיבה נחסמת. הרפיה ונשימה מורידות את העוררות, ומאפשרות להשתמש בכלים הקוגניטיביים.', how: ['מדחום רגשות – לזהות מתי מתחילים לעלות', 'נשימת בלון / הרפיית שרירים – לתרגל כשרגועים', 'לסכם ״סימן אזהרה בגוף״ ומה עושים בו'], tool: 'breathing', extra: `<a class="btn sm" href="#/tool/thermometer">🌡️ מדחום</a>`});
+    steps.push({t: `עבודה קוגניטיבית על הפרשנות`, why: `הרגש נובע מהפרשנות${d.thought ? ` (״${String(d.thought).slice(0, 60)}״)` : ''}, לא מהאירוע עצמו. כשבודקים את המחשבה ומוצאים ניסוח מאוזן ואמין, העוצמה יורדת והבחירה בהתנהגות אחרת נעשית אפשרית.`,
+      how: [...(det.traps.length ? det.traps.map(t => `${t[1]}: ${t[4][0]}`) : ['מה ההוכחות בעד ונגד?', 'האם יש הסבר אחר?']), 'לנסח יחד מחשבה מאוזנת ולדרג כמה מאמינים בה', 'כרטיס התמודדות עם המחשבה החדשה'], tool: 'thoughts', track: 'cbt-cognitive'});
+    det.mech.forEach(m => steps.push({t: `${m[4].t}`, why: m[4].why, how: m[4].how, tool: m[4].tool, track: m[4].track}));
+    if (!det.mech.length) steps.push({t: `התנהגות חלופית – ניסוי התנהגותי`, why: 'שינוי המחשבה מחזיק רק כשהילד חווה בפועל שקורה משהו אחר. ניסוי קטן בודק את התחזית שלו.', how: ['מנבאים מה יקרה ומדרגים כמה מאמינים', 'עושים צעד קטן במצב דומה', 'משווים את התוצאה לתחזית'], track: 'cbt-cognitive'});
+    if (fam.includes('sad') && !det.mech.some(m => m[0] === 'withdraw')) steps.push({t: `הפעלה התנהגותית`, why: 'עם עצב וייאוש כדאי להחזיר לשגרה פעילויות של הנאה והצלחה – גם לפני שיש חשק.', how: ['שבוע ניטור פעילויות ומצב רוח', 'שתי פעילויות קטנות בשבוע, ביום ובשעה'], track: 'cbt-behavioral'});
+    steps.push({t: `מדידה ומעקב`, why: 'כך יודעים אם הטיפול עובד, ומשנים כיוון בזמן.', how: [`לדרג שוב את האמונה בפרשנות (עכשיו ${B || '?'} /100) ואת עוצמת הרגש (עכשיו ${I || '?'} /10) בכל מפגש`, 'לספור כמה פעמים בשבוע קרה האירוע – ומה הילד עשה', 'לעדכן את המעגל כשמשהו משתנה']});
+    return `<h2 class="sec">📋 התוצאה</h2>
+      ${appPanel('🧩 המודל של האירוע', diagramHTML({type: 'flow', items: [{icon: '⚡', t: 'אירוע', d: d.event || '—'}, {icon: '💭', t: 'פרשנות', d: (d.thought || '—') + (B ? ` · מאמין ${B}/100` : '') + (d.meaning ? ` · ומתחת: ${d.meaning}` : '')}, {icon: '💗', t: 'רגש וגוף', d: [(emos.join(', ') || '—') + (I ? ` ${I}/10` : ''), d.body].filter(Boolean).join(' · ')}, {icon: '🏃', t: 'התנהגות', d: d.behavior || '—'}, {icon: '↩️', t: 'אחר כך', d: [d.short, d.others].filter(Boolean).join(' · ') || '—'}]}))}
+      ${appPanel('🔄 הפורמולציה המשמרת', cycleHTML(cyc) + `<p class="muted" style="font-size:13.5px;margin:8px 0 0">לוחצים ✂️ על חוליה כדי לראות איפה אפשר לשבור את המעגל.</p>`)}
+      ${appPanel('🔍 מה משמר את הבעיה – ומה מחריף אותה', appMechHTML(det) + (worsen.length ? `<h4 class="aph">📈 מה מחריף</h4><div class="apcards">${worsen.map(w => `<div class="apcard worse"><p>${esc(w)}</p></div>`).join('')}</div>` : ''))}
+      ${maps.length ? appPanel('🧭 מפות טיפול קשורות', `<div class="actions">${maps.map(p => `<a class="btn" href="#/problem/${p.id}">${p.icon} ${esc(p.name)}</a>`).join('')}</div><p class="muted" style="font-size:13.5px;margin:8px 0 0">לפי הרגש ולפי מה שנכתב. במפה יש את מתווה המפגשים המלא.</p>`) : ''}
+      ${appPanel('🗺️ מתווה הטיפול – שלב אחרי שלב, עם רציונל', appPlanHTML(steps), 'border-inline-start:5px solid var(--brand)')}
+      <p class="muted" style="font-size:13px">הניתוח נבנה אוטומטית לפי כללים מתוך חומרי ה-CBT באתר (מילים שמצביעות על מלכודות ועל מנגנונים). הוא נקודת פתיחה לחשיבה – ושיקול הדעת המקצועי נשאר שלך.</p>`;
+  }};
+
+/* ---- application 2: full case formulation – the whole picture of the counselee and a phased treatment plan ---- */
+APPS['cbt-case'] = {hub: 'cbt', icon: '✍️', title: 'יישום: המשגת נועץ ותוכנית טיפול', sub: 'תמונה כללית מכל ההיבטים ← תוכנית שלב אחרי שלב',
+  intro: 'טופס המשגה מלא (לפי תרשים ההמשגה של ג׳ודית בק, 4P והמעגל המשמר). לא חייבים למלא הכול – כל שדה שממלאים מעשיר את התוצאה. אחרי הלחיצה: תקציר, תרשים המשגה, 4P, מעגל משמר, מנגנונים, מפות מתאימות ותוכנית טיפול בשלבים עם רציונל.',
+  sections: [
+    {title: '🧒 פרטים והקושי', fields: [{id: 'alias', label: 'כינוי', ph: 'י׳ (בלי שם מלא)'}, {id: 'grade', label: 'גיל / כיתה', ph: 'כיתה ד׳'}, {id: 'ref', label: 'מי הפנה ולמה', ph: 'המחנכת – בוכה כל בוקר ולא נכנס לכיתה'}, {id: 'problem', label: 'תיאור הקושי במילים שלך', ph: 'מה רואים, מתי, איפה, מאז מתי', long: true}, {id: 'maps', label: 'תחומי קושי (לא חובה)', type: 'chips', multi: true, opts: []}]},
+    {title: '🎬 מצבים, מחשבות, רגשות והתנהגות', fields: [{id: 'sits', label: 'מצבים / טריגרים אופייניים', ph: 'פרידה מאמא בשער; מבחנים; הפסקה', long: true}, {id: 'ats', label: 'מחשבות אוטומטיות', ph: '״יקרה משהו לאמא״, ״לא אסתדר לבד״', long: true}, {id: 'emos', label: 'רגשות', type: 'chips', multi: true, opts: EMO_OPTS}, {id: 'intensity', label: 'עוצמה אופיינית (0–10)', type: 'range'}, {id: 'body', label: 'תחושות גוף', ph: 'כאבי בטן, בחילה, דופק'}, {id: 'beh', label: 'התנהגויות (הימנעות, ביטחון, התפרצות, נסיגה)', ph: 'נצמד, בוכה, מבקש לחזור הביתה, שואל שוב ושוב', long: true}, {id: 'after', label: 'מה קורה אחר כך ואיך מגיבה הסביבה', ph: 'אמא נשארת איתו, לפעמים לוקחת אותו הביתה', long: true}]},
+    {title: '🪨 אמונות (תרשים ההמשגה של בק)', fields: [{id: 'core', label: 'אמונת ליבה על עצמו', type: 'chips', multi: true, opts: ['חסר אונים / לא מסוגל', 'לא אהוב / לא רצוי', 'חסר ערך / פגום']}, {id: 'coreTxt', label: 'אמונת הליבה במילים שלו', ph: '״אני לא מסתדר לבד״'}, {id: 'others', label: 'אמונות על אחרים ועל העולם', ph: '״העולם מסוכן כשאמא לא לידי״'}, {id: 'rules', label: 'כללים / הנחות מותנות (אם… אז…)', ph: '״אם אמא לא לידי – יקרה משהו רע״'}, {id: 'coping', label: 'אסטרטגיות התמודדות (פיצוי)', ph: 'להישאר קרוב לאמא, לבדוק שהיא בסדר'}]},
+    {title: '🌸 4P, מטרות וסיכון', fields: [{id: 'pre', label: 'גורמים מקדימים – למה הוא?', ph: 'ילד רגיש, אמא דאגנית, מחלה במשפחה'}, {id: 'prec', label: 'גורמים מזרזים – למה עכשיו?', ph: 'חזרה מחופשה ארוכה, לידת אח'}, {id: 'prot', label: 'גורמים מגינים וחוזקות', ph: 'קשר טוב עם המחנכת, אוהב ציור, חבר קרוב'}, {id: 'goals', label: 'מטרות (של הנועץ ושל ההורים)', ph: 'להיכנס לכיתה בבוקר בלי בכי', long: true}, {id: 'measure', label: 'מדד בסיס', ph: 'מדחום פחד בבוקר 9/10; SCAS 38'}, {id: 'risk', label: 'סימני סיכון (אם יש)', type: 'chips', multi: true, opts: ['מחשבות על מוות / פגיעה עצמית', 'חשד לפגיעה או הזנחה', 'פגיעה בתפקוד בסיסי (אכילה, שינה)', 'אלימות חמורה']}]}
+  ],
+  build(d){
+    const text = appTxt(d.problem, d.sits, d.ats, d.beh), det = appDetect(appTxt(d.ats, d.rules, d.coreTxt, d.others), appTxt(d.beh, d.after, d.coping, d.problem)), emos = d.emos || [], I = +d.intensity || 0;
+    const picked = (d.maps || []).map(n => (PROBLEMS.find(p => p.name === n) || {}).id).filter(Boolean);
+    const maps = appMapsFor(text, emos, picked), p0 = maps[0], who = d.alias || 'הנועץ';
+    const core = [...(d.core || []), d.coreTxt].filter(Boolean);
+    const risk = d.risk || [];
+    const summary = [`${esc(who)}${d.grade ? ` (${esc(d.grade)})` : ''}${d.ref ? ` הופנה: ${esc(d.ref)}` : ''}.`,
+      d.problem ? esc(d.problem) : '',
+      d.sits ? `הקושי מופיע בעיקר ב: ${esc(d.sits)}.` : '',
+      d.ats || emos.length ? `במצבים אלה עולות מחשבות כמו ${d.ats ? '״' + esc(d.ats) + '״' : '—'}, עם ${esc(emos.join(', ') || 'רגש לא מוגדר')}${I ? ` בעוצמה של כ-${I}/10` : ''}${d.body ? ` ותחושות גוף (${esc(d.body)})` : ''}.` : '',
+      d.beh ? `בתגובה הוא ${esc(d.beh)}${d.after ? `, ואחר כך: ${esc(d.after)}` : ''}.` : '',
+      det.mech.length ? `מה שנראה כמשמר את הקושי: ${det.mech.map(m => m[1]).join(', ')}.` : '',
+      core.length ? `בבסיס נראית אמונה של ${esc(core.join(' / '))}${d.rules ? `, עם הכלל ״${esc(d.rules)}״` : ''}.` : '',
+      d.prot ? `הכוחות שעליהם נשענים: ${esc(d.prot)}.` : ''].filter(Boolean).join(' ');
+    const beck = diagramHTML({type: 'pyramid', items: [{icon: '👶', t: 'רקע והיסטוריה', d: d.pre || '—'}, {icon: '🪨', t: 'אמונות ליבה', d: core.join(' · ') || '—'}, {icon: '📐', t: 'כללים והנחות מותנות', d: [d.rules, d.others].filter(Boolean).join(' · ') || '—'}, {icon: '🛡️', t: 'אסטרטגיות התמודדות', d: d.coping || '—'}, {icon: '🎬', t: 'במצבים של היום', d: [d.sits, d.ats && `״${d.ats}״`, emos.join(', '), d.beh].filter(Boolean).join(' ← ') || '—'}]});
+    const fourP = diagramHTML({type: 'grid', items: [{icon: '🌱', t: 'למה הוא? (מקדימים)', d: d.pre || '—'}, {icon: '⚡', t: 'למה עכשיו? (מזרזים)', d: d.prec || '—'}, {icon: '🔁', t: 'למה זה ממשיך? (משמרים)', d: [det.mech.map(m => m[1]).join(', '), d.after].filter(Boolean).join(' · ') || '—'}, {icon: '🛡️', t: 'על מה נשענים? (מגינים)', d: d.prot || '—'}]});
+    const cyc = cycleHTML({title: 'המעגל המשמר', nodes: [{k: 'trigger', label: 'מצב', t: d.sits || '—'}, {k: 'thought', label: 'מחשבה', t: d.ats || '—'}, {k: 'feeling', label: 'רגש', t: (emos.join(', ') || '—') + (I ? ` (${I}/10)` : '')}, {k: 'body', label: 'גוף', t: d.body || '—'}, {k: 'behavior', label: 'התנהגות', t: d.beh || '—'}, {k: 'result', label: 'אחר כך', t: d.after || '—'}], back: 'מה שקורה אחר כך מחזק את המחשבה – והמעגל חוזר', breaks: [{at: 1, title: 'שוברים במחשבה', t: 'אתגור ומחשבה מאוזנת.', tool: 'thoughts'}, {at: 3, title: 'מרגיעים את הגוף', t: 'נשימה והרפיה.', tool: 'breathing'}, {at: 4, title: 'התנהגות אחרת', t: det.mech[0] ? det.mech[0][4].t : 'צעד קטן במקום הימנעות.', tool: det.mech[0] ? det.mech[0][4].tool : 'ladder'}, {at: 5, title: 'משנים את ״מה קורה אחרי״', t: 'הדרכת הורים וצוות.', tool: 'rewards'}]});
+    const ph = [];
+    if (risk.length) ph.push({t: '⚠️ קודם לכול – בטיחות', why: 'כשיש סימן סיכון, הטיפול הרגשי מחכה: קודם מוודאים שהילד מוגן ומערבים את הגורמים המחייבים.', how: ['לא נשארים לבד עם המידע – מעדכנים את המנהל והפסיכולוג', 'בחשד לפגיעה בבית – חובת דיווח לפי החוק (עו״ס לפי חוק הנוער / משטרה)', 'בחשד אובדני – שואלים ישירות, מיידעים הורים (אלא אם הם מקור הסכנה) ומפנים להערכה דחופה; ער״ן 1201', ...risk.map(r => 'זוהה: ' + r)], extra: `<a class="btn sm" href="#/distress">🚨 סימני מצוקה</a><a class="btn sm" href="#/circ/c11">📜 חוזר מניעת אובדנות</a>`});
+    ph.push({t: 'היכרות, הערכה והמשגה (מפגשים 1–3)', why: 'ההמשגה היא המפה: ממנה בוחרים את הכלים. בלי המשגה בוחרים טכניקה ״כי היא מוכרת״.', how: ['שיחה עם הילד, ההורים והמחנך; תצפית', ...(p0 && p0.assessment ? p0.assessment.slice(0, 2) : []), `מדד בסיס${d.measure ? `: ${d.measure}` : ' (מדחום / שאלון)'}`, 'להראות לילד ולהורים את המעגל – ולבדוק ״זה נכון?״'], track: 'cbt-formulation', extra: `<a class="btn sm" href="#/quest">📋 שאלונים</a>`});
+    ph.push({t: `פסיכו-חינוך ומטרות`, why: 'כשמבינים איך הקושי עובד – הוא פחות מפחיד, והשותפות בטיפול עולה. מטרות מדידות מאפשרות לראות התקדמות.', how: ['הסבר המעגל במילים של הילד; שם ודמות לבעיה', `מטרות: ${d.goals || 'לנסח 2–3 מטרות מדידות'}`, 'שיתוף ההורים במעגל ובמה ״מחזיק״ את הבעיה'], track: 'cbt-guide'});
+    if (I >= 6 || d.body || emos.some(e => ['כעס', 'פחד / חרדה', 'תסכול'].includes(e))) ph.push({t: `מיומנויות ויסות`, why: 'ויסות גופני ורגשי הוא הבסיס: בלי יכולת להוריד עוצמה, הכלים הקוגניטיביים וההתנהגותיים לא יחזיקו ״ברגע האמת״.', how: ['מדחום רגשות וזיהוי סימני אזהרה בגוף', 'נשימה והרפיה – תרגול יומי', 'כרטיס ״מה אני עושה כשאני בצהוב / באדום״'], tool: 'breathing', track: 'cbt-skills'});
+    ph.push({t: `עבודה קוגניטיבית`, why: `הרגש נובע מהפרשנות. עבודה על המחשבות${core.length ? ' ובהמשך על האמונה שמתחתן' : ''} מגמישה את החשיבה ומאפשרת תגובה אחרת.`, how: [...(det.traps.length ? det.traps.map(t => `${t[1]} – ${t[4][0]}`) : ['זיהוי מחשבות אוטומטיות ומלכודות']), 'רישום מחשבות ומחשבה מאוזנת', 'דיבור עצמי מתמודד וכרטיס התמודדות', ...(core.length ? ['עם ילד גדול: חץ יורד, רצף ויומן נתונים חיוביים לאמונת הליבה'] : [])], tool: 'thoughts', track: core.length ? 'cbt-beliefs' : 'cbt-cognitive'});
+    det.mech.forEach(m => ph.push({t: `${m[4].t}`, why: m[4].why, how: m[4].how, tool: m[4].tool, track: m[4].track}));
+    if (!det.mech.length) ph.push({t: `עבודה התנהגותית`, why: 'שינוי מחזיק רק כשהוא נחווה בפועל. בוחרים לפי מה שמשמר: חשיפה להימנעות, הפעלה התנהגותית לנסיגה, פתרון בעיות להתפרצויות.', how: ['ניסויים התנהגותיים קטנים', 'סולם חשיפה או תכנון פעילויות', 'חיזוק כל ניסיון'], track: 'cbt-behavioral'});
+    if (p0) ph.push({t: `מתווה המפגשים לפי המפה ״${p0.name}״`, why: 'המפה מרכזת את מה שעובד בקושי הזה – בסדר מפגשים מוכן, שאפשר להתאים לילד.', how: (p0.sessions || []).slice(0, 8).map((s, i) => `מפגש ${i + 1}: ${s.title || (s.goals || [])[0] || ''}`), extra: `<a class="btn sm" href="#/problem/${p0.id}/sessions">🗓️ כל המפגשים</a><a class="btn sm" href="#/problem/${p0.id}">🧭 המפה המלאה</a>`});
+    if (p0 && ((p0.parents || []).length || (p0.teachers || []).length)) ph.push({t: `הורים וצוות`, why: 'המבוגרים שליד הילד מפעילים את השינוי בין המפגשים, ובעיקר משנים את ״מה קורה אחרי״.', how: [...(p0.parents || []).slice(0, 2).map(x => 'הורים: ' + x), ...(p0.teachers || []).slice(0, 2).map(x => 'צוות: ' + x)]});
+    ph.push({t: `מדידה, הכללה ומניעת הישנות`, why: 'מדידה קבועה מראה אם הטיפול עובד. בסיום מסכמים מה למדנו ומה עושים אם הקושי חוזר – ״נסיגה אינה כישלון״.', how: [`מדד חוזר כל 3–4 מפגשים${d.measure ? ` (בסיס: ${d.measure})` : ''}`, 'תרגול במצבים ובמקומות שונים', 'תוכנית ״מה עושים אם זה חוזר״ והרווחת מפגשים', ...(p0 && p0.redFlags ? ['מתי להפנות: ' + p0.redFlags[0]] : [])], track: 'cbt-process'});
+    return `<h2 class="sec">📋 התמונה הכללית של ${esc(who)}</h2>
+      ${risk.length ? `<div class="note danger" style="margin-bottom:12px">🚨 סומנו סימני סיכון: ${esc(risk.join(', '))}. הבטיחות קודמת לכול – ראו שלב 0 בתוכנית.</div>` : ''}
+      ${appPanel('📝 תקציר ההמשגה', `<p style="margin:0;line-height:1.8">${summary || '<span class="muted">מלאו לפחות את תיאור הקושי והמצבים.</span>'}</p>`)}
+      ${appPanel('🗂️ תרשים ההמשגה (לפי ג׳ודית בק)', beck)}
+      ${appPanel('🌸 4P – למה הוא, למה עכשיו, למה זה ממשיך, על מה נשענים', fourP)}
+      ${appPanel('🔄 המעגל המשמר', cyc)}
+      ${appPanel('🔍 מה משמר את הקושי', appMechHTML(det))}
+      ${maps.length ? appPanel('🧭 מפות טיפול מתאימות', `<div class="actions">${maps.map(p => `<a class="btn" href="#/problem/${p.id}">${p.icon} ${esc(p.name)}</a>`).join('')}</div>`) : ''}
+      ${appPanel('🗺️ תוכנית הטיפול – שלב אחרי שלב, עם רציונל', appPlanHTML(ph), 'border-inline-start:5px solid var(--brand)')}
+      <p class="muted" style="font-size:13px">התוכנית נבנית אוטומטית לפי כללים מתוך חומרי ה-CBT והמפות באתר. היא טיוטה לעבודה – ושיקול הדעת המקצועי נשאר שלך.</p>`;
+  }};
+APPS['cbt-case'].sections[0].fields[4].optsFn = () => PROBLEMS.map(p => p.name);
+
+/* ---- the rule interpreter for data-defined hub applications (window.HUB_APPS, tracks-zapps.js) ----
+   spec: {hub, icon, title, sub, intro, sections, summary?:[template with {field}], visual?:[{type, title?, items:[{icon, t, f?|d?}] | nodes:[{k,label,f}], back?, center?}],
+          score?:{title, keys:{key:label}, explain?:{key:text}}, levels?:[{if, t, d, color}], rules:[{if, w?:{key:n}, find?:{kind, t, d}, step?:{t, why, how:[], tool?, track?, href?, hl?}}],
+          start?:[step], end?:[step], maps?:[field ids]}
+   conditions: {f, re} · {f, gte} · {f, lte} · {f, has} · {f, any:[…]} · {f, n:k} (at least k chips) · {filled:f} · {top:key} · {all:[…]} · {or:[…]} · {not:…} */
+function ruleVal(d, f){ const v = d[f]; return Array.isArray(v) ? v : v == null ? '' : v; }
+function ruleIf(c, d, top){
+  if (!c) return true;
+  if (c.all) return c.all.every(x => ruleIf(x, d, top));
+  if (c.or) return c.or.some(x => ruleIf(x, d, top));
+  if (c.not) return !ruleIf(c.not, d, top);
+  if (c.top) return top === c.top;
+  if (c.filled) { const v = ruleVal(d, c.filled); return Array.isArray(v) ? v.length > 0 : String(v).trim() !== ''; }
+  const v = ruleVal(d, c.f);
+  if (c.re) return new RegExp(c.re).test(Array.isArray(v) ? v.join(' ') : String(v));
+  if (c.gte != null) return v !== '' && +v >= c.gte;
+  if (c.lte != null) return v !== '' && +v <= c.lte;
+  if (c.has) return Array.isArray(v) ? v.includes(c.has) : v === c.has;
+  if (c.any) return (Array.isArray(v) ? v : [v]).some(x => c.any.includes(x));
+  if (c.n != null) return (Array.isArray(v) ? v.length : 0) >= c.n;
+  return !c.f;   // {} = always
+}
+const ruleFill = (s, d) => { let miss = false; const out = String(s).replace(/\{(\w+)\}/g, (m, k) => { const v = ruleVal(d, k); const t = Array.isArray(v) ? v.join(', ') : String(v); if (!t.trim()) miss = true; return t; }); return miss ? '' : out; };
+function ruleBuild(S, d){
+  const score = {}; if (S.score) Object.keys(S.score.keys).forEach(k => score[k] = 0);
+  (S.rules || []).forEach(r => { if (r.w && ruleIf(r.if, d)) Object.entries(r.w).forEach(([k, n]) => score[k] = (score[k] || 0) + n); });
+  const ranked = Object.entries(score).sort((a, b) => b[1] - a[1]), top = ranked[0] && ranked[0][1] > 0 ? ranked[0][0] : '';
+  const hits = (S.rules || []).filter(r => (r.find || r.step) && ruleIf(r.if, d, top));
+  const level = (S.levels || []).find(l => ruleIf(l.if, d, top));
+  const fv = f => { const v = ruleVal(d, f); return Array.isArray(v) ? v.join(', ') : String(v); };
+  let h = '<h2 class="sec">📋 התוצאה</h2>';
+  if (level) h += `<div class="aplevel" style="--c:${level.color || 'var(--brand)'}"><b>${level.t}</b><p>${esc(ruleFill(level.d, d) || level.d)}</p></div>`;
+  const sum = (S.summary || []).map(s => ruleFill(s, d)).filter(Boolean);
+  if (sum.length) h += appPanel('📝 תמונת המצב', `<p style="margin:0;line-height:1.8">${sum.map(esc).join(' ')}</p>`);
+  (S.visual || []).forEach(v => {
+    if (v.type === 'cycle') h += appPanel(v.title || '🔄 המעגל', cycleHTML({title: '', nodes: v.nodes.map(n => ({k: n.k, label: n.label, t: fv(n.f) || '—'})), back: v.back, breaks: v.breaks}));
+    else h += appPanel(v.title || '🧩 בתמונה אחת', diagramHTML({type: v.type, center: v.center, items: v.items.map(it => ({icon: it.icon, t: it.t, d: it.f ? (fv(it.f) || '—') : (it.d || ''), ex: it.ex}))}));
+  });
+  if (S.score && ranked.some(([, n]) => n > 0)) { const max = Math.max(...ranked.map(([, n]) => n), 1);
+    h += appPanel(S.score.title, `<div class="apbars">${ranked.map(([k, n]) => `<div class="apbar ${k === top ? 'top' : ''}"><span>${S.score.keys[k]}</span><i><em style="width:${Math.round(n / max * 100)}%"></em></i><b>${n}</b></div>`).join('')}</div>${top && S.score.explain && S.score.explain[top] ? `<p class="note" style="margin:12px 0 0">🎯 <b>${S.score.keys[top]}:</b> ${esc(S.score.explain[top])}</p>` : ''}`); }
+  const finds = hits.filter(r => r.find), kinds = [['risk', '🚨 סיכון – קודם לכול'], ['mech', '🔁 מה משמר את הקושי'], ['worse', '📈 מה מחריף'], ['good', '🌱 כוחות ונקודות אור'], ['info', '💡 חשוב לדעת']];
+  kinds.forEach(([k, l]) => { const L = finds.filter(r => (r.find.kind || 'info') === k); if (L.length) h += appPanel(l, `<div class="apcards">${L.map(r => `<div class="apcard ${k}"><b>${r.find.t}</b><p>${esc(ruleFill(r.find.d, d) || r.find.d)}</p></div>`).join('')}</div>`); });
+  if (S.maps) { const maps = appMapsFor(appTxt(...S.maps.map(f => ruleVal(d, f))), []); if (maps.length) h += appPanel('🧭 מפות טיפול קשורות', `<div class="actions">${maps.map(p => `<a class="btn" href="#/problem/${p.id}">${p.icon} ${esc(p.name)}</a>`).join('')}</div>`); }
+  const seen = new Set(), steps = [...(S.start || []), ...hits.filter(r => r.step).map(r => r.step), ...(S.end || [])].filter(s => !seen.has(s.t) && seen.add(s.t))
+    .map(s => ({...s, how: (s.how || []).map(x => ruleFill(x, d) || x.replace(/\{\w+\}/g, '…')), extra: s.href ? `<a class="btn sm" href="${s.href}">${s.hl || '🔗 להרחבה'}</a>` : ''}));
+  if (steps.length) h += appPanel(S.planTitle || '🗺️ מתווה – שלב אחרי שלב, עם רציונל', appPlanHTML(steps), 'border-inline-start:5px solid var(--brand)');
+  return h + `<p class="muted" style="font-size:13px">התוצאה נבנית אוטומטית לפי כללים מתוך החומרים שבמדור. היא נקודת פתיחה לחשיבה – ושיקול הדעת המקצועי נשאר שלך.</p>`;
+}
+
+/* ---- the per-problem protocols: formulation that maintains the problem, the ways to treat it, and the session outline ---- */
+function cbtMapsView(R){
+  const id = R.id && P[R.id] ? R.id : (PROBLEMS[0] || {}).id, p = P[id];
+  const chips = `<div class="chips">${PROBLEMS.map(q => `<a class="chip ${q.id === id ? 'on' : ''}" href="#/cbtmaps/${q.id}" style="text-decoration:none">${q.icon} ${esc(q.name)}</a>`).join('')}</div>`;
+  if (!p) return {title: 'מתווים טיפוליים', html: chips};
+  const m = p.model || {}, C = (window.CYCLES || {})[p.id];
+  const row = (l, a) => a && a.length ? `<li><b>${l}:</b> ${esc(a.join(' · '))}</li>` : '';
+  const html = `<a class="back no-print" href="#/cbt">→ שיטת טיפול CBT</a>
+    <div class="banner" style="--h:${hubHue('cbt')}"><span class="emoji">🧭</span><div><h1>מתווים טיפוליים לפי בעיה</h1><p>לכל בעיה: הפורמולציה שמשמרת אותה, דרכי הטיפול ומתווה המפגשים</p></div></div>
+    <div class="no-print">${chips}</div>
+    <div class="panel" style="border-inline-start:5px solid hsl(${hueOf(p.area)} 55% 45%)"><h3>${p.icon} ${esc(p.name)}</h3><p style="margin:0">${esc(p.summary || '')}</p></div>
+    <div class="panel"><h3>🌼 הפורמולציה – מה מדליק ומה משמר</h3><ul class="clean">${row('טריגרים', m.triggers)}${row('מחשבות', m.thoughts)}${row('רגשות', m.feelings)}${row('גוף', m.body)}${row('התנהגויות', m.behaviors)}</ul>${m.maintaining ? `<p class="note" style="margin:10px 0 0"><b>מה משמר את הבעיה:</b> ${esc(m.maintaining)}</p>` : ''}</div>
+    ${C ? `<div class="panel"><h3>🔄 המעגל המשמר ונקודות השבירה</h3>${cycleHTML(C)}</div>` : ''}
+    <div class="panel"><h3>🧰 דרכי הטיפול</h3>${(p.techniques || []).length ? `<div class="list">${p.techniques.map(t => `<div class="li"><div class="grow"><b>${esc(t.name)}</b><div>${esc(t.how)}</div></div></div>`).join('')}</div>` : '<p class="muted">—</p>'}</div>
+    <div class="panel"><h3>🗓️ מתווה המפגשים</h3><ol style="margin:0;padding-inline-start:22px;display:grid;gap:6px">${(p.sessions || []).map(s => `<li><b>${esc(s.title || '')}</b>${(s.goals || []).length ? ` – <span class="muted">${esc(s.goals.join(' · '))}</span>` : ''}</li>`).join('')}</ol></div>
+    <div class="two"><div class="panel"><h3>🔎 הערכה ומדידה</h3>${ul(p.assessment)}</div><div class="panel"><h3>🚩 מתי להפנות</h3>${ul(p.redFlags)}</div></div>
+    <div class="actions no-print" style="margin:12px 0"><a class="btn primary" href="#/problem/${p.id}">🧭 המפה המלאה</a><a class="btn" href="#/app/cbt-case">✍️ המשגת נועץ עם הבעיה הזו</a><button class="btn" data-act="print">🖨️ הדפסה</button></div>`;
+  return {title: 'מתווים טיפוליים לפי בעיה', html};
+}
 function hubView(R){
   const h = HUBS[R.r]; const all = TRACKS().filter(t => t[h.flag]), guide = h.guide && all.find(t => t.id === h.guide), list = all.filter(t => t !== guide);
   const H = hubHue(R.r), card = t => `<a class="card accent hubc" href="#/track/${t.id}" style="--h:${t.hue ?? H}"><span class="emoji">${t.icon || h.icon}</span><span class="name">${esc(t.title)}</span><span class="sub">${esc(t['for'] || '')} · ${t.steps.length} שלבים</span></a>`;
   return {title: h.title, html: `${h.back ? `<a class="back no-print" href="#/${h.back[0]}">→ ${esc(h.back[1])}</a>` : ''}${hubHero(R.r, h.icon, h.title, all.length)}${gGuide(h.say, 'שמחה', 6)}<div class="note" style="margin:4px 0 16px">${h.intro} ${active() ? `הכול נשמר בתיק של <b>${esc(active().alias)}</b>.` : ''}</div>${infog(R.r, all)}${hubMap([guide, ...list].filter(Boolean), H)}
-    ${guide ? `<a class="card" href="#/track/${guide.id}" style="margin-bottom:16px;border:2px solid var(--brand)"><span class="emoji">${guide.icon}</span><span class="name">${esc(guide.title)}</span><span class="sub">${guide.steps.length} שלבים · מתחילים כאן</span></a>${h.areas ? '' : '<h2 class="sec">📚 לפי נושאים</h2>'}` : ''}
+    ${hubAppsHTML(R.r)}${guide ? `<a class="card" href="#/track/${guide.id}" style="margin-bottom:16px;border:2px solid var(--brand)"><span class="emoji">${guide.icon}</span><span class="name">${esc(guide.title)}</span><span class="sub">${guide.steps.length} שלבים · מתחילים כאן</span></a>${h.areas ? '' : '<h2 class="sec">📚 לפי נושאים</h2>'}` : ''}
     ${h.areas && list.length ? h.areas.map(([k, i, l]) => { const inA = list.filter(t => t.distArea === k), ov = inA.find(t => t.distOverview), rest = inA.filter(t => t !== ov);
       return `<h2 class="sec">${i} ${esc(l)}</h2>${ov ? `<a class="card" href="#/track/${ov.id}" style="margin-bottom:10px;border:2px solid var(--brand)"><span class="emoji">${ov.icon || i}</span><span class="name">${esc(ov.title)}</span><span class="sub">${ov.steps.length} שלבים · סקירת התחום</span></a>` : ''}${rest.length ? `<div class="grid" style="margin-bottom:16px">${rest.map(card).join('')}</div>` : ''}`; }).join('')
     : list.length ? `<div class="grid">${list.map(card).join('')}</div>` : '<div class="empty">🛠️ התוכן של המדור הזה בהכנה ויעלה בקרוב.</div>'}
     ${h.extra.length ? `<h2 class="sec">🔗 עוד בנושא</h2><div class="actions">${h.extra.map(([u, i, l]) => `<a class="btn" href="${u}">${i} ${esc(l)}</a>`).join('')}</div>` : ''}`};
 }
-const HUBOF = t => t.workflow ? (active() ? ['student/' + active().id, 'סדר העבודה של ' + esc(active().alias)] : ['workflow', 'סדר עבודה']) : t.group ?['groups', 'הנחיית קבוצות'] : t.transition ? ['transitions', 'מעברים'] : t.newteachers ? ['newteachers', 'ליווי מורים חדשים'] : t.program ? ['programs', 'בניית תוכנית התערבות'] : t.distress ? ['distress', 'זיהוי סימני מצוקה'] : t.talk ? ['talk', 'ראיון ושיח רגשי'] : t.parents ? ['parents', 'הורים'] : t.reports ? ['reports', 'תעודות'] : t.sel ? ['sel', 'SEL – למידה רגשית-חברתית'] : t.mafteach ? ['mafteach', 'כישורי חיים ומפתח הל״ב'] : t.sped ? ['sped', 'חינוך מיוחד והכלה'] : t.autism ? ['autism', 'אוטיזם – ילדים על הרצף'] : t.develop ? ['develop', 'התפתחות הילד'] : t.tzalach ? ['tzalach', 'צל״ח – צוות לשעת חירום'] : t.aklim ? ['aklim', 'אקלים חינוכי – חוזר 0470'] : t.cbtclass ? ['cbtclass', 'יישום CBT בכיתה'] : t.behave ? ['behave', 'עיצוב התנהגות'] :t.crole ? ['crole', 'תפקיד היועץ החינוכי'] : t.quest ? ['quest', 'שאלונים ומדדים'] : t.ariel ? ['ariel', 'טיפול לפי בעיה › חוברות מטופלים – אריאל חן'] : ['problems', 'טיפול לפי בעיה'];
+const HUBOF = t => t.workflow ? (active() ? ['student/' + active().id, 'סדר העבודה של ' + esc(active().alias)] : ['workflow', 'סדר עבודה']) : t.group ?['groups', 'הנחיית קבוצות'] : t.transition ? ['transitions', 'מעברים'] : t.newteachers ? ['newteachers', 'ליווי מורים חדשים'] : t.program ? ['programs', 'בניית תוכנית התערבות'] : t.distress ? ['distress', 'זיהוי סימני מצוקה'] : t.talk ? ['talk', 'ראיון ושיח רגשי'] : t.parents ? ['parents', 'הורים'] : t.reports ? ['reports', 'תעודות'] : t.sel ? ['sel', 'SEL – למידה רגשית-חברתית'] : t.mafteach ? ['mafteach', 'כישורי חיים ומפתח הל״ב'] : t.sped ? ['sped', 'חינוך מיוחד והכלה'] : t.autism ? ['autism', 'אוטיזם – ילדים על הרצף'] : t.develop ? ['develop', 'התפתחות הילד'] : t.tzalach ? ['tzalach', 'צל״ח – צוות לשעת חירום'] : t.aklim ? ['aklim', 'אקלים חינוכי – חוזר 0470'] : t.cbtclass ? ['cbtclass', 'יישום CBT בכיתה'] : t.behave ? ['behave', 'עיצוב התנהגות'] : t.cbt ? ['cbt', 'שיטת טיפול CBT'] :t.crole ? ['crole', 'תפקיד היועץ החינוכי'] : t.quest ? ['quest', 'שאלונים ומדדים'] : t.ariel ? ['ariel', 'טיפול לפי בעיה › חוברות מטופלים – אריאל חן'] : ['problems', 'טיפול לפי בעיה'];
 // #/tracks (the old "טיפול מובנה" page) is now the merged "טיפול לפי בעיה" page – the route stays as an alias
 function tracksView(R){ return problems(R); }
 function trackView(R){
@@ -8095,7 +8441,7 @@ const WV_DEC = {go: ['🟢', 'ממשיכים / מתכננים סיום', 'יש �
    also: an info step may carry diagrams:[{title, type, items…}], and a PROBLEMS entry may carry diagrams:[…] (shown in its overview).
    a node with d/ex is a button – a tap opens its explanation under the diagram (every explanation prints). Narrow boxes fall back to a colored list. */
 let DG_N = 0;
-const DG_TYPES = ['cycle', 'wheel', 'flow', 'ladder', 'pyramid', 'timeline', 'compare', 'triangle', 'iceberg', 'scale', 'tree', 'venn', 'grid'];
+const DG_TYPES = ['cycle', 'wheel', 'flow', 'ladder', 'pyramid', 'timeline', 'compare', 'triangle', 'iceberg', 'scale', 'tree', 'venn', 'grid', 'story', 'curve'];
 const DG_RAMP = ['#22c55e', '#84cc16', '#eab308', '#f59e0b', '#f97316', '#ef4444', '#dc2626'];
 function diagramHTML(g, o = {}){
   if (!g) return '';
@@ -8136,6 +8482,20 @@ function diagramHTML(g, o = {}){
   else if (type === 'venn') { const V = n === 3 ? [[50, 30, 23], [37, 52, 23], [63, 52, 23]] : [[37, 40, 28], [63, 40, 28]], L = n === 3 ? [[50, 16], [27, 62], [73, 62]] : [[25, 40], [75, 40]];
     body = `<div class="dgvenn v${n}"><svg class="dgsvg" viewBox="0 0 100 80" aria-hidden="true">${V.slice(0, n).map(([cx, cy, r], i) => `<circle cx="${cx}" cy="${cy}" r="${r}" style="fill:${col(i)};stroke:${col(i)}"/>`).join('')}</svg>
       ${items.map((x, i) => node(x, i, `--x:${L[i][0]}%;--y:${L[i][1] / .8}%`)).join('')}${g.center ? `<div class="dgc" style="--x:50%;--y:${(n === 3 ? 45 : 40) / .8}%">${esc(g.center)}</div>` : ''}</div>`; }
+  else if (type === 'story') {
+    // a storyboard: illustrated scenes in order – each scene is a row of large icons (scene:[…]) with its caption shown in full
+    body = `<div class="dgstory">${items.map((x, i) => (i ? '<span class="dgsar" aria-hidden="true">←</span>' : '') + `<div class="dgscene" style="--c:${col(i)}"><span class="dgsn">${i + 1}</span><div class="dgsv" aria-hidden="true">${(x.scene || [x.icon || '•']).map(s => `<span class="${/^[➕＋+→←➜=]$/.test(s) ? 'op' : ''}">${esc(s === '→' || s === '➜' ? '←' : s)}</span>`).join('')}</div><b>${esc(x.t || '')}</b>${x.d ? `<p>${esc(x.d)}</p>` : ''}${x.ex ? `<p class="dgex">💡 ${esc(x.ex)}</p>` : ''}</div>`).join('')}</div>`;
+    items = [];
+  } else if (type === 'curve') {
+    // a real graph: g.points [{x:'label', y:number, m?:'marker text'}], g.y (axis name); items below become a legend
+    const P = (g.points || []).map(p => ({...p, y: +p.y || 0})), m = P.length, max = Math.max(10, ...P.map(p => p.y)), X = i => m > 1 ? 8 + i * 86 / (m - 1) : 50, Y = v => 52 - v / max * 44;
+    const d = P.map((p, i) => { if (!i) return `M${f2(X(0))},${f2(Y(p.y))}`; const x0 = X(i - 1), y0 = Y(P[i - 1].y), x1 = X(i), y1 = Y(p.y), cx = (x0 + x1) / 2; return `C${f2(cx)},${f2(y0)} ${f2(cx)},${f2(y1)} ${f2(x1)},${f2(y1)}`; }).join(' ');
+    body = `<div class="dgcurve"><svg viewBox="0 0 100 62" role="img" aria-label="${esc(g.title || 'גרף')}"><defs><linearGradient id="${u}-g" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="var(--brand)" stop-opacity=".45"/><stop offset="1" stop-color="var(--brand)" stop-opacity="0"/></linearGradient></defs>
+      ${[0, .25, .5, .75, 1].map(k => `<line class="dgcg" x1="6" x2="96" y1="${f2(Y(max * k))}" y2="${f2(Y(max * k))}"/>`).join('')}
+      ${m ? `<path d="${d} L${f2(X(m - 1))},52 L${f2(X(0))},52 Z" fill="url(#${u}-g)"/><path class="dgcl" d="${d}"/>` : ''}
+      ${P.map((p, i) => `<circle class="dgcp${p.m ? ' mk' : ''}" cx="${f2(X(i))}" cy="${f2(Y(p.y))}" r="${p.m ? 1.8 : 1.1}"/>${p.m ? `<text class="dgcm" x="${f2(X(i))}" y="${f2(Y(p.y) - 3.2)}">${esc(p.m)}</text>` : ''}<text class="dgcx" x="${f2(X(i))}" y="58.5">${esc(p.x || '')}</text>`).join('')}
+      ${g.y ? `<text class="dgcy" x="97" y="6">${esc(g.y)}</text>` : ''}</svg></div>${n ? `<div class="dggrid">${items.map((x, i) => node(x, i)).join('')}</div>` : ''}`;
+  }
   else body = `<div class="dggrid">${items.map((x, i) => node(x, i)).join('')}</div>`;
   const dets = items.map((x, i) => has(x) ? `<div class="dgdet" id="${u}-d${i}" style="--c:${col(i)}"><b>${x.icon ? esc(x.icon) + ' ' : ''}${esc(x.t || '')}</b>${x.d ? `<p>${esc(x.d)}</p>` : ''}${x.ex ? `<p class="dgex">💡 ${esc(x.ex)}</p>` : ''}</div>` : '').join('');
   return `<figure class="dg dg-t-${type}" id="${u}">${o.head && g.title ? `<figcaption class="dghead">${esc(g.title)}</figcaption>` : ''}${o.intro !== false && g.intro ? `<p class="dgintro">${esc(g.intro)}</p>` : ''}${body}
@@ -8143,7 +8503,7 @@ function diagramHTML(g, o = {}){
     ${g.note ? `<p class="dgnote">📌 ${esc(g.note)}</p>` : ''}${o.src !== false && g.src ? `<p class="wfsrc">📚 ${esc(g.src)}</p>` : ''}</figure>`;
 }
 /* hub color identity: one hue per hub – its hero band, its cards, its map and the headers of its tracks */
-const HUB_HUE = {transitions: 200, newteachers: 135, programs: 28, distress: 0, talk: 265, parents: 330, reports: 45, sel: 300, sped: 180, autism: 240, develop: 140, tzalach: 12, aklim: 60, cbtclass: 285, behave: 110,crole: 315, quest: 195, ariel: 212, groups: 220, tracks: 160, workflow: 90, games: 20, videos: 350, tools: 190, circ: 40, library: 250, problems: 170, roles: 100, ask: 210, students: 55};
+const HUB_HUE = {transitions: 200, newteachers: 135, programs: 28, distress: 0, talk: 265, parents: 330, reports: 45, sel: 300, sped: 180, autism: 240, develop: 140, tzalach: 12, aklim: 60, cbtclass: 285, behave: 110, cbt: 200,crole: 315, quest: 195, ariel: 212, groups: 220, tracks: 160, workflow: 90, games: 20, videos: 350, tools: 190, circ: 40, library: 250, problems: 170, roles: 100, ask: 210, students: 55};
 const hubHue = k => HUB_HUE[k] ?? hueOf(k);
 /* 🧭 מבט על – the hub's infographic (app/infographics.js) */
 const infog = (k, list) => { try { return window.infographicBlock ? window.infographicBlock(k, {hue: hubHue(k), tracks: TRACKS(), list: list || [], kid: kidMini('שמחה', 5, 'igkidsvg')}) : ''; } catch(e){ return ''; } };
@@ -9355,7 +9715,7 @@ $('#tabbar').innerHTML = TABBAR.map(k => NAV.find(n => n[0] === k)).map(([k, i, 
 { const tb = document.querySelector('.topbar [data-act="theme"]'); if (tb && !document.querySelector('[data-act="outmenu"]')) tb.insertAdjacentHTML('beforebegin', '<button class="iconbtn" data-act="outmenu" title="הדפסה, PDF או מצגת">🖨️</button>'); }
 render();
 try { kidifyEmojis($('#nav')); kidifyEmojis($('#tabbar')); } catch(e){}
-if (!SHARE_MODE) AI.init().then(() => { if (route().r === 'ask') render(); });
+if (!SHARE_MODE) AI.init().then(() => { if (['ask', 'askc'].includes(route().r)) render(); });
 document.body.classList.toggle('artifact', ARTIFACT); document.body.classList.toggle('lite', LITE);
 if (!SHARE_MODE) SYNC.init();
 if (WEB && !ARTIFACT && 'serviceWorker' in navigator && location.protocol === 'https:') navigator.serviceWorker.register('sw.js').catch(() => {});
