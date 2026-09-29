@@ -104,15 +104,19 @@
   </div>
   <form class="vt-type" id="vt-form"><input id="vt-input" placeholder="או כתבו כאן שאלה…" autocomplete="off"><button type="submit">שליחה</button></form>
   <div class="vt-set" id="vt-set">
-    <label>מפתח Claude API
+    <div class="vt-free" style="display:none;color:var(--accent,#ffda2a);font-weight:600">✅ מחובר דרך חשבון Claude שלך – בלי מפתח ובלי תשלום נוסף.</div>
+    <label class="vt-deep row" style="display:none"><input id="vt-deep" type="checkbox"> תשובות מעמיקות יותר (איטי יותר – חושב לפני שעונה)</label>
+    <div class="vt-api" style="color:var(--accent,#ffda2a);font-weight:600">✅ מצב חינמי: המורה עונה ומדריך מתוך החומרים שבאתר, בלי AI ובלי עלות. לשיחה חופשית מלאה – פתחו את האפליקציה בתוך Claude.</div>
+    <details class="vt-api"><summary style="cursor:pointer;color:var(--muted,#9a9a9a);font-size:13px">מתקדם – חיבור Claude בתשלום (לא חובה)</summary>
+    <label style="margin-top:8px">מפתח Claude API
       <input id="vt-key" type="password" autocomplete="off" placeholder="sk-ant-...">
-      <small>המפתח נשמר רק בדפדפן הזה, במחשב הזה. מקבלים מפתח ב-console.anthropic.com.</small></label>
-    <label>מודל
+      <small>רק אם רוצים שיחה חופשית גם מחוץ ל-Claude. בתשלום לפי שימוש. בלי מפתח – הכול נשאר חינמי.</small></label>
+    <label style="margin-top:8px">מודל
       <select id="vt-model">
         <option value="claude-opus-5-5">Claude Opus 5.5 – הכי חכם</option>
         <option value="claude-sonnet-5-5">Claude Sonnet 5.5 – מהיר וזול יותר</option>
         <option value="claude-haiku-4-5">Claude Haiku 4.5 – הכי מהיר</option>
-      </select></label>
+      </select></label></details>
     <label>קול
       <select id="vt-voice"></select>
       <small>את הקולות העבריים הטבעיים ביותר ("Hila" / "Avri") תמצאו בדפדפן Edge.</small></label>
@@ -130,11 +134,14 @@
     const heading = (document.querySelector('#title') && document.querySelector('#title').innerText.trim())
       || ((root.querySelector('h1') || root.querySelector('h2') || {}).innerText || '').trim()
       || document.title;
+    // pages that hold student data never leave the device
+    if (PRIVATE.test(location.hash)) return {heading: 'עמוד עם מידע על תלמידים', text: '(התוכן של העמוד הזה פרטי ולא נשלח. עונים מהידע המקצועי בלבד, בלי פרטים על תלמידים.)', where: '', priv: true};
     let text = (root.innerText || '').replace(/[ \t]+/g, ' ').replace(/\n{2,}/g, '\n').trim();
     if (text.length > 9000) text = text.slice(0, 9000) + '\n…';
     return {heading, text, where: location.hash || '#/'};
   }
-  function showCtx(){ const c = pageContext(); $('vt-ctx').textContent = '📍 הנושא עכשיו: ' + c.heading; }
+  const PRIVATE = /^#\/(students?|settings|diary)(\/|$)|^#\/tool\/sociometry/;
+  function showCtx(){ const c = pageContext(); $('vt-ctx').textContent = c.priv ? '🔒 עמוד פרטי – תוכן העמוד לא נשלח' : '📍 הנושא עכשיו: ' + c.heading; }
 
   function systemPrompt(){
     const c = pageContext();
@@ -168,7 +175,8 @@ ${c.text}
   }
   function renderHint(){
     const log = $('vt-log'); if (log.children.length) return;
-    log.innerHTML = `<div class="vt-hint">${MODES[S.mode].hint}<br><br>לוחצים על המיקרופון ומתחילים לדבר.${SR ? '' : '<br><br>⚠️ הדפדפן הזה לא תומך בזיהוי דיבור. אפשר לכתוב, והמורה יענה בקול. לדיבור מומלץ Chrome או Edge.'}</div>`;
+    const hint = LOCAL() ? (S.mode === 'guided' ? 'המורה יקריא את העמוד חלק אחרי חלק. אחרי כל חלק אומרים "המשך", "חזור", או שואלים שאלה.' : 'שואלים בקול, והמורה עונה בקול מתוך החומרים שבאתר.') + '<br><small>מצב חינמי – בלי AI ובלי עלות.</small>' : MODES[S.mode].hint;
+    log.innerHTML = `<div class="vt-hint">${hint}<br><br>לוחצים על המיקרופון ומתחילים לדבר.${SR ? '' : '<br><br>⚠️ הדפדפן הזה לא תומך בזיהוי דיבור. אפשר לכתוב, והמורה יענה בקול. לדיבור מומלץ Chrome או Edge.'}</div>`;
   }
   function setState(s, msg){
     S.state = s; const o = $('vt-orb');
@@ -240,7 +248,7 @@ ${c.text}
       if (S.heard) $('vt-status').textContent = '👂 ' + S.heard;
     };
     r.onerror = e => {
-      if (e.error === 'not-allowed' || e.error === 'service-not-allowed') { S.active = false; setState('idle', '🎤 צריך לאשר גישה למיקרופון (בסמל המנעול שבשורת הכתובת)'); S.rec = null; }
+      if (e.error === 'not-allowed' || e.error === 'service-not-allowed') { S.active = false; setState('idle', FREE ? '🎤 כאן אין גישה ישירה למיקרופון. לחצו על שורת הכתיבה ודברו עם המיקרופון של המקלדת – המורה יענה בקול.' : '🎤 צריך לאשר גישה למיקרופון (בסמל המנעול שבשורת הכתובת)'); S.rec = null; }
     };
     r.onend = () => {
       if (S.rec !== r) return; S.rec = null;
@@ -254,7 +262,85 @@ ${c.text}
   function stopListening(){ const r = S.rec; S.rec = null; if (r) { try { r.abort(); } catch(e){} } }
 
   /* ---------- Claude (streaming) ---------- */
+  // Inside claude.ai (an Artifact) the page can ask Claude on the viewer's own plan: no key, no extra cost
+  let FREE = null;
+  if (window.claude && typeof window.claude.use === 'function') {
+    window.claude.use('sample').then(s => { FREE = s; backendUI(); }).catch(() => {});
+  }
+  // everything works for free: Claude on the viewer's plan inside claude.ai, otherwise the on-device engine
+  const ready = () => true;
+  const LOCAL = () => !FREE && !cfg().key;
+
+  /* ---------- free on-device engine (no AI, no cost): answers from the site's own content ---------- */
+  const lnorm = t => ' ' + String(t || '').replace(/[֑-ׇ]/g, '').replace(/[״"׳'.,!?;:()\[\]\-–—\/+]/g, ' ').replace(/\s+/g, ' ').toLowerCase().trim() + ' ';
+  const lstem = w => { if (w.length > 4 && /^(וה|שה|וב|ול|מה|כש|שב|וכ|וש|לה|בה)/.test(w)) w = w.slice(2); else if (w.length > 3 && /^[והבלמשכ]/.test(w)) w = w.slice(1); if (w.length > 4) w = w.replace(/(יות|ים|ות)$/, ''); return w; };
+  const LSTOP = new Set(['של','את','עם','על','זה','זו','הוא','היא','הם','יש','אני','מה','איך','כל','גם','או','אם','כי','רק','עוד','מאוד','לי','לו','לה','אבל','כדי','צריך','אפשר','למה','מתי','איפה','האם','תסביר','תגיד','ספר','תספר','בבקשה','עושים','לעשות']);
+  const ltoks = t => lnorm(t).trim().split(' ').filter(w => w.length > 1 && !LSTOP.has(w)).map(lstem).filter(w => w.length > 1);
+  function pageSentences(){
+    // drop interface noise (file sizes, "view file" buttons, arrows, emoji) so only real content is read aloud
+    const t = pageContext().text
+      .replace(/[\u{1F300}-\u{1FAFF}\u{2600}-\u{27BF}\u{2190}-\u{21FF}\u{FE0F}]/gu, '')
+      .replace(/\d+(?:[.,]\d+)?\s?(?:KB|MB|GB|kB)\b/g, '')
+      .replace(/צפייה בקובץ|חזרה לכל הנושאים|לחיצה פותחת[^\n.]*|פתיחה בחלון|הורדת הקובץ/g, '')
+      .replace(/\s·\s/g, '. ');
+    const seen = new Set();
+    return t.split(/\n|(?<=[.!?])\s+/).map(s => s.replace(/\s+/g, ' ').trim())
+      .filter(s => s.length > 12 && s.length < 400 && s.split(' ').length >= 4 && !s.includes('›') && !seen.has(s) && seen.add(s));
+  }
+  function searchPage(q){
+    const qt = [...new Set(ltoks(q))]; if (!qt.length) return '';
+    const sents = pageSentences();
+    const scored = sents.map((s, i) => { const st = new Set(ltoks(s)); let n = 0; for (const t of qt) if (st.has(t)) n++; return {s, i, n}; }).filter(x => x.n > 0);
+    if (!scored.length) return '';
+    const best = Math.max(...scored.map(x => x.n));
+    return scored.filter(x => x.n >= Math.max(1, best - 1)).sort((a, b) => b.n - a.n).slice(0, 3).sort((a, b) => a.i - b.i).map(x => x.s).join('\n');
+  }
+  function lessonChunks(){
+    const out = []; let cur = '';
+    for (const s of pageSentences()) { if ((cur + ' ' + s).length > 380 && cur) { out.push(cur.trim()); cur = ''; } cur += ' ' + s; }
+    if (cur.trim()) out.push(cur.trim());
+    return out.slice(0, 60);
+  }
+  // \b does not see Hebrew letters as word characters, so words end at a space or the end
+  const GO_ON = /^(כן|המשך|תמשיך|נמשיך|להמשיך|הבא|הלאה|קדימה|יאללה|אוקיי|אוקי|בסדר|טוב|יופי|הבנתי|ok)(\s|$)/;
+  const AGAIN = /^(חזור|תחזור|שוב|עוד פעם|לא הבנתי|רגע)(\s|$)/;
+  function localAnswer(q){
+    if (window.CBT_LOCAL_ANSWER && !pageContext().priv) { try { const r = window.CBT_LOCAL_ANSWER(q); if (r && r.text) return r; } catch(e){} }
+    const found = pageContext().priv ? '' : searchPage(q);
+    if (found) return {text: 'זה מה שכתוב בעמוד על זה:\n' + found};
+    return {text: 'לא מצאתי את זה בעמוד הזה. נסו לנסח במילים אחרות, או לעבור לעמוד של הנושא ולשאול שם.'};
+  }
+  function callLocal(){
+    const q = (S.history[S.history.length - 1] || {}).content || '';
+    let r;
+    if (S.mode === 'guided') {
+      const L = S.lesson;
+      const said = lnorm(q).trim();
+      if (!L || L.where !== location.hash) {
+        const chunks = lessonChunks(); S.lesson = {chunks, i: 0, where: location.hash};
+        r = {text: chunks.length ? `נעבור יחד על "${pageContext().heading}". אקריא חלק אחרי חלק. אחרי כל חלק אפשר להגיד "המשך", "חזור", או לשאול שאלה.\n${chunks[0]}\nלהמשיך?` : 'בעמוד הזה אין טקסט להדרכה. עברו לעמוד של נושא, ולחצו שוב.'};
+      } else if (AGAIN.test(said)) r = {text: L.chunks[L.i] + '\nלהמשיך?'};
+      else if (GO_ON.test(said)) {
+        L.i++;
+        r = {text: L.i < L.chunks.length ? L.chunks[L.i] + (L.i === L.chunks.length - 1 ? '\nזה החלק האחרון. רוצים לשאול משהו?' : '\nלהמשיך?') : 'סיימנו את כל העמוד. כל הכבוד! אפשר לשאול שאלה, או לעבור לנושא הבא.'};
+      } else { const a = localAnswer(q); r = {text: a.text + '\nנמשיך בשיעור?', href: a.href}; }
+    } else r = localAnswer(q);
+    return {full: r.text, stop: '', href: r.href};
+  }
+  function backendUI(){
+    P.querySelectorAll('.vt-api').forEach(el => { el.style.display = FREE ? 'none' : ''; });
+    P.querySelectorAll('.vt-free,.vt-deep').forEach(el => { el.style.display = FREE ? '' : 'none'; });
+  }
+  async function callFree(onText){
+    S.abort = new AbortController();
+    // no system role here: the standing instructions are a leading user turn that is always kept
+    const input = [{role: 'user', content: systemPrompt() + '\n\nמכאן מתחילה השיחה עם המשתמש/ת.'}, ...S.history.slice(-30)];
+    const res = await FREE(input, {cache: false, signal: S.abort.signal, modelTier: LS.get('deep', false) ? 'default' : 'quick', onText: ({delta}) => onText(delta)});
+    return {full: res.text, stop: ''};
+  }
   async function callClaude(onText){
+    if (FREE) return callFree(onText);
+    if (LOCAL()) { const r = callLocal(); onText(r.full); return r; }
     const c = cfg();
     const body = {model: c.model, max_tokens: 8000, stream: true, system: systemPrompt(), messages: S.history.slice(-40)};
     if (c.model !== 'claude-haiku-4-5') body.output_config = {effort: 'low'};
@@ -287,6 +373,15 @@ ${c.text}
   }
   function errText(e){
     if (e && e.name === 'AbortError') return '';
+    if (e && e.code) return ({
+      cancelled: '',
+      not_granted: 'לא אושר שימוש ב-Claude בעמוד הזה. טענו את העמוד מחדש ואשרו כשתתבקשו.',
+      sampling_disabled: 'Claude לא זמין בחשבון הזה.',
+      rate_limited: 'הגעתם למגבלת השימוש של החשבון כרגע. נסו שוב מאוחר יותר.',
+      session_expired: 'צריך להתחבר מחדש ל-Claude.',
+      refused: 'על זה המורה לא יכול לענות. נסו לשאול אחרת.',
+      prompt_too_large: 'השיחה ארוכה מדי. לחצו 🔄 לשיחה חדשה.'
+    })[e.code] ?? 'Claude לא הצליח לענות כרגע. נסו שוב בעוד רגע.';
     const s = e && e.status;
     if (s === 401 || s === 403) return 'המפתח לא תקין. בדקו אותו בהגדרות (⚙️).';
     if (s === 429) return 'יותר מדי בקשות ברגע זה. נסו שוב בעוד רגע.';
@@ -297,14 +392,14 @@ ${c.text}
 
   async function send(text, hidden){
     text = (text || '').trim(); if (!text) return;
-    if (!cfg().key) { openSettings('כדי לנהל שיחה צריך להכניס מפתח Claude API (פעם אחת בלבד).'); return; }
+    if (!ready()) { openSettings('כדי לנהל שיחה צריך להכניס מפתח Claude API (פעם אחת בלבד).'); return; }
     stopListening(); stopSpeech(); if (S.abort) S.abort.abort();
     if (!hidden) addMsg('me', text);
     S.history.push({role: 'user', content: text});
     setState('thinking');
     const bubble = addMsg('ai', ''); let pending = ''; S.streamDone = false;
     try {
-      const {full, stop} = await callClaude(t => {
+      const {full, stop, href} = await callClaude(t => {
         bubble.textContent += t.replace(/\*\*/g, ''); $('vt-log').scrollTop = 1e9;
         pending += t;
         let m;
@@ -312,6 +407,7 @@ ${c.text}
       });
       if (pending.trim()) enqueue(pending);
       if (full) bubble.textContent = full.replace(/\*\*|__|^#+\s*/gm, '').trim();
+      if (href) { const a = document.createElement('a'); a.href = href; a.textContent = '📖 לתשובה המלאה עם המקורות'; a.style.cssText = 'display:block;margin-top:6px;font-size:13px;color:var(--accent,#ffda2a)'; bubble.appendChild(a); }
       if (stop === 'refusal' && !full.trim()) { bubble.textContent = 'על זה אני לא יכול לענות. אפשר לשאול משהו אחר?'; enqueue(bubble.textContent); }
       S.history.push({role: 'assistant', content: full.trim() || bubble.textContent || '...'});
       S.streamDone = true; S.state = 'speaking';
@@ -325,7 +421,7 @@ ${c.text}
 
   /* ---------- flow ---------- */
   function start(){
-    if (!cfg().key) { openSettings('כדי לנהל שיחה צריך להכניס מפתח Claude API (פעם אחת בלבד).'); return; }
+    if (!ready()) { openSettings('כדי לנהל שיחה צריך להכניס מפתח Claude API (פעם אחת בלבד).'); return; }
     S.active = true; keepAwake(true);
     if (S.mode === 'guided' && !S.history.length) send('בוא נתחיל את ההדרכה הקולית על הנושא של העמוד הזה.', true);
     else listen();
@@ -334,10 +430,10 @@ ${c.text}
     S.active = false; stopListening(); stopSpeech(); if (S.abort) S.abort.abort(); keepAwake(false);
     setState('idle', 'השיחה הסתיימה');
   }
-  function reset(){ end(); S.history = []; $('vt-log').innerHTML = ''; renderHint(); showCtx(); setState('idle'); }
+  function reset(){ end(); S.history = []; S.lesson = null; $('vt-log').innerHTML = ''; renderHint(); showCtx(); setState('idle'); }
   function openPanel(){
     S.open = true; P.classList.add('on'); fab.style.display = 'none';
-    setMode(S.mode); showCtx(); renderHint(); setState(S.state);
+    setMode(S.mode); showCtx(); renderHint(); setState(S.state); backendUI();
     if (TTS) TTS.getVoices();
   }
   function closePanel(){ end(); S.open = false; P.classList.remove('on'); fab.style.display = ''; }
@@ -350,12 +446,13 @@ ${c.text}
   function openSettings(note){
     const c = cfg();
     $('vt-key').value = LS.get('key', ''); $('vt-model').value = c.model; $('vt-rate').value = c.rate; $('vt-auto').checked = c.autoListen;
-    fillVoices(); $('vt-set').classList.add('on');
+    $('vt-deep').checked = LS.get('deep', false);
+    backendUI(); fillVoices(); $('vt-set').classList.add('on');
     if (note) { const n = $('vt-set').querySelector('.vt-note') || document.createElement('div'); n.className = 'vt-note'; n.style.cssText = 'color:var(--accent,#ffda2a);font-weight:600'; n.textContent = note; $('vt-set').prepend(n); }
   }
   function saveSettings(){
     LS.set('key', $('vt-key').value.trim()); LS.set('model', $('vt-model').value); LS.set('voice', $('vt-voice').value);
-    LS.set('rate', +$('vt-rate').value); LS.set('autoListen', $('vt-auto').checked); LS.set('noFallback', false); S.noFallback = false;
+    LS.set('rate', +$('vt-rate').value); LS.set('autoListen', $('vt-auto').checked); LS.set('deep', $('vt-deep').checked); LS.set('noFallback', false); S.noFallback = false;
     $('vt-set').classList.remove('on'); const n = $('vt-set').querySelector('.vt-note'); if (n) n.remove();
     if (TTS && $('vt-voice').value !== undefined) { const u = new SpeechSynthesisUtterance('שלום, אני המורה הקולי. אפשר להתחיל.'); const v = pickVoice(); if (v) u.voice = v; u.lang = v ? v.lang : 'he-IL'; u.rate = +cfg().rate; TTS.cancel(); TTS.speak(u); }
   }

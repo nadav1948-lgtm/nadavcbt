@@ -6192,6 +6192,29 @@ function answer(q){
   const circOn = cs > 0 && ((cw && cv >= 0.2) || cv >= 0.6 || (circFocus && cs >= 5) || (safety && cs >= 4));
   return {q, top, others, intents, sessNum, safety, snip, qt, roles, adult, circ, circOn, scores: scores.slice(0, 4).map(x => ({id: x.p.id, s: Math.round(x.s * 10) / 10, why: x.why}))};
 }
+/* the same keyword engine, told as a short spoken answer for the voice tutor (free, on-device, no Claude) */
+window.CBT_LOCAL_ANSWER = q => {
+  const A = answer(q), say = [], clip = s => String(s || '').replace(CITE_RE, '').replace(/\s+/g, ' ').trim();
+  if (A.safety) say.push('קודם כול בטיחות: לא משאירים את הילד לבד כשיש חשש לסכנה, מעדכנים מיד את המנהל ואת הפסיכולוג, ופועלים לפי נוהל בית הספר וחוזר המנכ״ל.');
+  const p = A.top && A.top.p;
+  if (p) {
+    say.push(`נראה שמדובר ב${p.name}. ${clip(p.summary)}`);
+    const s1 = p.sessions[0] || {}, tech = (p.techniques || [])[0];
+    if ((p.assessment || [])[0]) say.push('בירור ראשוני: ' + clip(p.assessment[0]) + '.');
+    if (p.area !== STAFF_AREA && (p.teachers || [])[0]) say.push('מול המחנך: ' + clip(p.teachers[0]) + '.');
+    if (p.area !== STAFF_AREA && (p.parents || [])[0]) say.push('מול ההורים: ' + clip(p.parents[0]) + '.');
+    if ((s1.activities || [])[0]) say.push('במפגש הראשון: ' + clip(s1.activities[0]) + '.');
+    if (tech) say.push(`טכניקה מרכזית היא ${clip(tech.name)}: ${clip(tech.how)}`);
+    for (const it of A.intents.slice(0, 1)) { const v = p[it.field]; if (Array.isArray(v) && typeof v[0] === 'string') say.push(it.label.replace(/^\W+/, '') + ': ' + v.slice(0, 2).map(clip).join('. ') + '.'); }
+  }
+  if (A.circOn && A.circ.guide[0]) { const g = A.circ.guide[0].g; say.push(`לפי חוזרי המנכ״ל, ${clip(g.title)}. ${clip(g.summary)}${(g.therapeutic || [])[0] ? ' ' + clip(g.therapeutic[0]) : ''}`); }
+  if (!p && !A.circOn) {
+    if (A.snip.length) say.push('לא מצאתי מפת טיפול שמתאימה בדיוק, אבל זה מה שכתוב במפות: ' + A.snip.slice(0, 2).map(x => clip(x.d.text)).join(' ') );
+    else say.push('לא מצאתי תשובה מדויקת בחומרים. נסו לנסח שוב: מי מתקשה, מה בדיוק קורה, ומתי.');
+    if (A.others.length) say.push('אולי זה קרוב ל: ' + A.others.slice(0, 3).map(o => o.p.name).join(', ') + '.');
+  }
+  return {text: say.join('\n'), href: '#/ask/' + encodeURIComponent(q)};
+};
 function libFor(q, p){
   const kw = [...(p ? p.libraryKeywords || [] : [])];
   const extra = toks(q).filter(t => t.length > 2);
