@@ -4539,7 +4539,11 @@ function renderPrint(){ if (!R) return; R.print.innerHTML = `<h2>🗺️ מפת 
 // modular: opening a branch closes its sibling branches (and everything under them), so only the chosen path stays open
 const closeSub = n => n.kids.forEach(k => { OPEN.delete(k.id); SOPEN.delete(k.id); closeSub(k); });
 function toggle(id){ const n = BY.get(id); if (!n || !n.kids.length) return; if (isOpen(n)) { OPEN.delete(id); SOPEN.delete(id); closeSub(n); } else { if (n.parent) n.parent.kids.forEach(s => { if (s !== n) { OPEN.delete(s.id); SOPEN.delete(s.id); closeSub(s); } }); OPEN.add(id); } saveOpen(); refresh({keep: id, focus: id}); }
-function refresh(o = {}){ if (mode === 'map') update(o); else renderOutline(o.focus); renderStatus(); }
+// the "חזור" button closes the deepest open branch – one step back each time
+function deepest(){ let d = null; BY.forEach(n => { if (n.parent && n.kids.length && isOpen(n) && (!d || n.lvl > d.lvl)) d = n; }); return d; }
+function updateBack(){ const b = R && R.root.querySelector(".sm-back"); if (!b) return; const d = deepest(); b.hidden = !d; if (d) b.textContent = "→ חזור " + (d.parent && d.parent.parent ? "אל: " + d.parent.label : "לכל המדורים"); }
+function goBack(){ const d = deepest(); if (!d) return; OPEN.delete(d.id); SOPEN.delete(d.id); closeSub(d); saveOpen(); refresh({keep: d.id, focus: d.id}); }
+function refresh(o = {}){ if (mode === "map") update(o); else renderOutline(o.focus); renderStatus(); updateBack(); }
 function expandAll(){ BY.forEach(n => { if (n.kids.length && !n.kids[0].deep && n.parent) OPEN.add(n.id); }); saveOpen(); refresh({view: tgt => { const v = fitView(tgt); if (v.k >= 0.35) return v; const r = tgt.get('root'), k = 0.35; return {k, x: R.canvas.clientWidth / 2 - (r.x + r.w / 2) * k, y: R.canvas.clientHeight / 2 - (r.y + r.h / 2) * k}; }}); }
 function collapseAll(){ OPEN = new Set(); SOPEN = new Set(); saveOpen(); refresh({view: tgt => fitView(tgt)}); }
 function renderStatus(){ if (!R) return; const c = R.count; if (!Q.trim()) { c.textContent = ''; R.root.classList.remove('searching'); } else { R.root.classList.add('searching'); c.textContent = HITS.length ? `${HIT_I + 1} מתוך ${HITS.length}${HITS.length >= 300 ? '+' : ''}` : 'לא נמצא'; }
@@ -4553,7 +4557,7 @@ function doSearch(q){ runSearch(q); if (mode === 'map') update({view: tgt => { i
 
 function setMode(m){ mode = m; R.root.dataset.mode = m; R.root.querySelectorAll('[data-sm="mode"]').forEach(b => { b.textContent = m === 'map' ? '🌳 תצוגת רשימה' : '🗺️ תצוגת מפה'; b.setAttribute('aria-pressed', m === 'list'); });
   EL.clear(); WIRE.clear(); POS.clear(); R.layer.innerHTML = ''; R.svg.innerHTML = '';
-  if (m === 'map') { update({instant: true}); Object.assign(VIEW, fitView(POS)); applyView(); } else renderOutline(); }
+  if (m === 'map') { update({instant: true}); Object.assign(VIEW, fitView(POS)); applyView(); } else renderOutline(); updateBack(); }
 
 /* ---------------- page ---------------- */
 function counts(){ const lv = []; BY.forEach(n => { lv[n.lvl] = (lv[n.lvl] || 0) + 1; }); return lv; }
@@ -4571,6 +4575,7 @@ window.sitemapUI = function(ctx){
     <button type="button" class="btn sm" data-sm="expand" title="פותח את כל הענפים (השלבים והמצבים נשארים סגורים)">➕ פתיחת הכול</button><button type="button" class="btn sm" data-sm="collapse">➖ סגירת הכול</button>
     <button type="button" class="btn sm sm-wideonly" data-sm="mode" aria-pressed="false">🌳 תצוגת רשימה</button>
   </div>
+  <div class="sm-backrow no-print"><button type="button" class="sm-back" data-sm="back" hidden>→ חזור</button></div>
   <div class="sm-canvas" id="smCanvas" tabindex="0" aria-label="מפת החשיבה של האתר. גוררים כדי להזיז, גלגלת או צביטה לזום, פלוס ומינוס לזום מהמקלדת, אפס להתאמה למסך" role="region">
     <div class="sm-stage"><svg class="sm-wires" aria-hidden="true" width="1" height="1"></svg><div class="sm-layer" role="tree" aria-label="מפת האתר"></div></div>
     <div class="sm-ctl no-print" role="group" aria-label="זום"><button type="button" data-sm="zin" aria-label="הגדלה">＋</button><span class="sm-zl" aria-hidden="true">100%</span><button type="button" data-sm="zout" aria-label="הקטנה">－</button><button type="button" data-sm="fit" aria-label="התאמה למסך" title="התאמה למסך">⤢</button></div>
@@ -4589,7 +4594,7 @@ window.sitemapUI = function(ctx){
       const tg = e.target.closest('[data-tg]'); if (tg) { e.preventDefault(); toggle(tg.dataset.tg); return; }
       const b = e.target.closest('[data-sm]'); if (!b) return; const a = b.dataset.sm, cw = R.canvas.clientWidth / 2, ch = R.canvas.clientHeight / 2;
       if (a === 'zin') zoomAt(1.25, cw, ch); else if (a === 'zout') zoomAt(1 / 1.25, cw, ch); else if (a === 'fit') fit();
-      else if (a === 'expand') expandAll(); else if (a === 'collapse') collapseAll();
+      else if (a === 'expand') expandAll(); else if (a === 'collapse') collapseAll(); else if (a === 'back') goBack();
       else if (a === 'prev') gotoHit(-1); else if (a === 'next') gotoHit(1);
       else if (a === 'mode') { const m = mode === 'map' ? 'list' : 'map'; store.set({mode: m}); setMode(m); } });
     const q = root.querySelector('#smq');
@@ -4616,6 +4621,9 @@ const CSS_TXT = `
 .sm-bar .sm-search input{width:100%}
 .sm-count{font-size:14px;color:var(--muted);min-width:0;white-space:nowrap}
 .sm-sep{flex:0 0 1px;height:24px;background:var(--line)}
+.sm-backrow{display:flex;justify-content:flex-start;margin:0 0 10px;min-height:0}
+.sm-back{font:700 17px/1 var(--display);padding:12px 22px;border-radius:999px;border:0;cursor:pointer;color:#fff;background:linear-gradient(135deg,#6366f1,#8b5cf6);box-shadow:0 6px 18px rgb(99 102 241 / .35);transition:transform .15s}
+.sm-back:hover{transform:translateY(-1px) scale(1.03)}.sm-back:focus-visible{outline:3px solid var(--ring);outline-offset:2px}.sm-back[hidden]{display:none}
 .sm-canvas{position:relative;height:clamp(460px,calc(100vh - 250px),980px);border:1px solid var(--line);border-radius:var(--r);overflow:hidden;touch-action:none;cursor:grab;user-select:none;-webkit-user-select:none;
   background:radial-gradient(circle at 50% 45%,color-mix(in srgb,var(--brand) 13%,transparent),transparent 62%),radial-gradient(color-mix(in srgb,var(--muted) 26%,transparent) 1px,transparent 1.2px) 0 0/22px 22px,var(--bg2);box-shadow:var(--shadow)}
 .sm-canvas:focus-visible{outline:3px solid var(--ring);outline-offset:2px}
