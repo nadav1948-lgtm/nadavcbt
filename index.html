@@ -1902,6 +1902,82 @@ body,body *{overflow-wrap:normal!important;word-break:normal!important;hyphens:m
 @media (max-width:640px){.sitehead{padding:8px 12px;gap:10px;margin-bottom:8px}.sitehead .ndlogo{width:40px;height:40px}.sitehead .shtxt b{font-size:19px}.sitehead .shtxt>span{font-size:13px}}
 @media print{.sitehead{display:none}}
 @media (prefers-reduced-motion:reduce){.sitehead:hover .ndlogo{transform:none}}
+/* ===== questionnaires hub (tracks-q.js): questionnaire cards, A–Z catalogue, recording in the student file ===== */
+.qgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,320px),1fr));gap:14px}
+.qcard{display:flex;flex-direction:column;gap:8px;border-radius:16px;padding:12px 14px 12px;background:color-mix(in srgb,var(--c) 8%,var(--panel));border:1.5px solid color-mix(in srgb,var(--c) 45%,var(--line));border-top:7px solid var(--c);min-width:0}
+.qch{display:flex;gap:10px;align-items:flex-start}
+.qch h4{margin:0;font-size:17px;line-height:1.35}
+.qic{flex:none;display:grid;place-items:center;width:40px;height:40px;border-radius:12px;background:color-mix(in srgb,var(--c) 26%,var(--panel));font-size:22px}
+.qen{display:inline-block;margin-top:3px;padding:1px 9px;border-radius:99px;background:var(--c);color:#161616;font-size:13px;font-weight:800;letter-spacing:.02em}
+.qwhat{margin:0;font-size:15px;line-height:1.5}
+.qdl{display:grid;grid-template-columns:auto 1fr;gap:4px 10px;margin:0;font-size:14px;line-height:1.45}
+.qdl dt{font-weight:700;color:var(--muted);white-space:nowrap}
+.qdl dd{margin:0;min-width:0}
+.qinf{display:inline-block;margin:0 0 3px 6px;padding:1px 8px;border-radius:8px;background:color-mix(in srgb,var(--c) 16%,var(--bg2));font-size:13px;font-weight:600;white-space:nowrap}
+.qsc{border-radius:12px;padding:8px 10px;background:color-mix(in srgb,var(--c) 5%,var(--bg2));border-inline-start:4px solid var(--c)}
+.qsc h5{margin:0 0 4px;font-size:14px}
+.qsc p{margin:0;font-size:14px;line-height:1.55;white-space:pre-line}
+.qsc .qcut{margin-top:6px;padding-top:6px;border-top:1px dashed color-mix(in srgb,var(--c) 45%,var(--line));font-weight:600}
+.qfiles{display:flex;flex-direction:column;align-items:flex-start;gap:2px}
+.qfiles .tfile{--c:var(--c);margin-inline-start:0}
+.qsrc{margin:0;font-size:12.5px;color:var(--muted);line-height:1.45}
+.qfoot{display:flex;flex-wrap:wrap;gap:8px;align-items:center;justify-content:space-between;margin-top:auto}
+.qfoot .spck{margin-top:0}
+.qcat{display:flex;flex-direction:column;gap:12px}
+.qctl{display:flex;flex-direction:column;gap:10px;padding:12px;border-radius:16px;background:var(--bg2);border:1px solid var(--line)}
+.qctl .chips{margin:0;gap:6px}
+.qctl .chip{font-size:13.5px;padding:5px 12px;border-color:color-mix(in srgb,var(--c,var(--brand)) 50%,var(--line))}
+.qctl .chip:not(.on){background:color-mix(in srgb,var(--c,var(--brand)) 12%,var(--panel))}
+.qsel{display:flex;flex-wrap:wrap;gap:10px}
+.qsel label{display:flex;align-items:center;gap:6px;font-size:14px;font-weight:600;flex:1 1 160px}
+.qsel select{flex:1;min-width:0}
+.qcount{margin:0;font-size:13.5px}
+.qminis{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,230px),1fr));gap:10px}
+.qmini{display:flex;flex-direction:column;gap:6px;padding:10px 12px;border-radius:14px;text-decoration:none;color:var(--ink);background:color-mix(in srgb,var(--c) 10%,var(--panel));border:1.5px solid color-mix(in srgb,var(--c) 45%,var(--line));border-inline-start:6px solid var(--c);transition:transform .15s,box-shadow .15s}
+.qmini:hover,.qmini:focus-visible{transform:translateY(-2px);box-shadow:0 10px 22px -14px var(--c)}
+.qmini[hidden]{display:none}
+.qmh{display:flex;flex-direction:column;gap:1px}
+.qmh b{font-size:16px;line-height:1.3}
+.qmh small{font-size:13px;color:var(--muted);line-height:1.35}
+.qmt{display:flex;flex-wrap:wrap;gap:4px}
+.qpill{font-size:12px;padding:2px 8px;border-radius:99px;background:color-mix(in srgb,var(--c) 20%,var(--bg2));font-weight:600}
+.qmi{display:flex;flex-wrap:wrap;gap:4px 10px;font-size:12.5px;color:var(--muted)}
+.qrec{list-style:none;margin:0 0 12px;padding:0;display:grid;gap:10px}
+.qrec li{display:flex;gap:10px;align-items:flex-start;padding:10px 12px;border-radius:14px;background:color-mix(in srgb,var(--c) 10%,var(--panel));border:1.5px solid color-mix(in srgb,var(--c) 40%,var(--line))}
+.qrn{flex:none;display:grid;place-items:center;width:36px;height:36px;border-radius:50%;background:var(--c);font-size:18px}
+.qrec b{font-size:15.5px}
+.qrec p{margin:3px 0 0;font-size:14.5px;line-height:1.5}
+.qrecgo{align-items:center}
+@media (max-width:640px){.qcard{padding:10px 11px}.qch h4{font-size:16px}.qdl{grid-template-columns:1fr}.qdl dt{margin-top:4px}}
+@media print{.qctl,.qfoot{display:none}.qcard,.qmini{break-inside:avoid}}
+
+/* 🧭 טיפול לפי בעיה – the map / structured-track switch on top of a problem page and its track page */
+.pswitch{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:10px;margin:2px 0 14px}
+.pswt{display:flex;align-items:center;gap:12px;padding:12px 16px;border-radius:16px;border:1.5px solid var(--line);background:var(--panel);color:var(--ink);text-decoration:none;min-width:0;box-shadow:var(--shadow);transition:border-color .18s,background-color .18s,transform .18s}
+.pswt:hover{border-color:color-mix(in srgb,var(--brand) 45%,var(--line));transform:translateY(-1px)}
+.pswt.on{border-color:var(--brand);background:color-mix(in srgb,var(--brand) 12%,var(--panel));box-shadow:0 0 0 3px var(--brand-soft)}
+.pswi{font-size:28px;line-height:1;flex:none}
+.pswl{display:flex;flex-direction:column;gap:2px;min-width:0}
+.pswl b{font-size:17px;font-weight:700;line-height:1.3}
+.pswl small{font-size:12.5px;color:var(--muted);line-height:1.35}
+.pswt.on b{color:var(--brand-text)}
+.pswt.x .pswl b{font-size:15px;font-weight:600}.pswt.x .pswi{font-size:22px}
+@media (max-width:480px){.pswitch{grid-template-columns:1fr 1fr;gap:8px}.pswt{gap:8px;padding:10px 12px;border-radius:14px}.pswi{font-size:22px}.pswl b{font-size:15.5px}.pswl small{font-size:12px}.pswt.x{grid-column:1/-1;padding:8px 12px}.pswt.x .pswl b{font-size:14px}}
+.card .pill.pwrap{white-space:normal}
+.pnote>span{display:block}.pnote>span+span{margin-top:6px}
+/* side menu groups */
+#nav .navpin{display:flex;flex-direction:column;gap:2px;padding-bottom:8px;margin-bottom:6px;border-bottom:1px solid var(--line)}
+#nav details.navg{margin:2px 0;border-radius:12px}
+#nav details.navg>summary{list-style:none;cursor:pointer;display:flex;align-items:center;gap:8px;padding:8px 10px;border-radius:12px;font-weight:800;font-size:14.5px;color:var(--ink);user-select:none}
+#nav details.navg>summary::-webkit-details-marker{display:none}
+#nav details.navg>summary::after{content:"‹";margin-inline-start:auto;font-size:18px;opacity:.6;transition:transform .2s}
+#nav details.navg[open]>summary::after{transform:rotate(-90deg)}
+#nav details.navg>summary:hover{background:var(--brand-soft)}
+#nav details.navg[open]{background:color-mix(in srgb,var(--brand-soft) 45%,transparent);padding-bottom:4px}
+#nav details.navg>a{padding-inline-start:22px}
+#nav .navbottom{margin-top:8px;padding-top:8px;border-top:1px solid var(--line)}
+.htgroup{margin:16px 0 8px;font-size:16px;font-weight:800;color:var(--muted)}
+@media (prefers-reduced-motion:reduce){#nav details.navg>summary::after{transition:none}}
 
 </style>
 <link rel="manifest" href="manifest.webmanifest">
@@ -3222,6 +3298,37 @@ sped: {
   sources: {t: 'חוזר 0287 · חוזר 0483 – מוסדות מכילים · ערכת הטפסים שלך', go: '#/circ/c02'}
 },
 
+quest: {
+  tagline: 'כל השאלונים שבחומרים שלך – לפי תחום, גיל ומי ממלא – עם הציינון ונקודות החתך כפי שהם כתובים בקובץ.',
+  core: {icon: '📋', title: 'מודדים – ורואים את השינוי', text: 'אותו שאלון בהתחלה, באמצע ובסוף; שאלון הוא לא אבחנה', go: T('q-guide', 'dg-when')},
+  pillars: [
+    {icon: '🧭', title: 'המדריך', track: 'q-guide', points: [{t: 'איך בוחרים שאלון', go: T('q-guide', 'dg-choose')}, {t: 'הסכמה וסודיות', go: T('q-guide', 'ethics')}, {t: 'ציינון ופירוש', go: T('q-guide', 'dg-score')}]},
+    {icon: '🔤', title: 'הקטלוג א–⁠ת', track: 'q-all', points: [{t: 'חיפוש וסינון', go: T('q-all', 'cat')}, {t: 'מה לא נמצא בחומרים', go: T('q-all', 'missing')}]},
+    {icon: '😟', title: 'חרדה', track: 'q-anx', points: [{t: 'SCARED לילד ולהורה', go: T('q-anx', 'kids')}, {t: 'חרדה חברתית', go: T('q-anx', 'soc')}]},
+    {icon: '🌧️', title: 'מצב רוח ואובדנות', track: 'q-mood', points: [{t: 'CDI ו-CES-DC', go: T('q-mood', 'kids')}, {t: 'הערכת סיכון', go: T('q-mood', 'risk')}]},
+    {icon: '🔁', title: 'OCD וטראומה', track: 'q-ocd', points: [{t: 'CY-BOCS ו-OCI-CV', go: T('q-ocd', 'kids')}, {t: 'CPSS-5 ו-UCLA', go: T('q-trauma', 'kids')}]},
+    {icon: '💬', title: 'משוב בכל מפגש', track: 'q-process', points: [{t: 'ORS ו-SRS לילדים', go: T('q-process', 'kids')}, {t: 'רישום בתיק התלמיד', go: T('q-guide', 'record')}]}
+  ],
+  flow: [
+    {icon: '❓', t: 'מה השאלה שלי', go: T('q-guide', 'dg-choose')},
+    {icon: '✅', t: 'הסכמת הורים', go: T('q-guide', 'ethics')},
+    {icon: '🏁', t: 'מדידת בסיס', go: T('q-guide', 'dg-when')},
+    {icon: '📐', t: 'ציינון לפי הקובץ', go: T('q-guide', 'dg-score')},
+    {icon: '💬', t: 'משוב לילד ולהורים', go: T('q-guide', 'feedback')},
+    {icon: '📊', t: 'רישום בתיק ומדידה חוזרת', go: T('q-guide', 'record')}
+  ],
+  keys: [
+    {n: '150', t: 'שאלונים וטפסים בקטלוג', go: T('q-all', 'cat')},
+    {n: '13', t: 'תחומים, מסלול לכל תחום', go: T('q-all', 'dg-areas')},
+    {n: '25', t: 'ב-SCARED – ״עשוי להצביע״ על הפרעת חרדה', go: T('q-anx', 'kids')},
+    {n: '3', t: 'מדידות: בסיס, אמצע וסוף', go: T('q-guide', 'dg-when')}
+  ],
+  do: [{t: 'אותו שאלון ואותו נוסח בכל המדידות', go: T('q-guide', 'dg-choose')}, {t: 'מציינים לפי המפתח שבקובץ – ורושמים איזה', go: T('q-guide', 'interp')}, {t: 'תוכנית מוכנה לציון גבוה', go: T('q-guide', 'ethics')}],
+  dont: [{t: 'לא מאבחנים לפי שאלון', go: T('q-guide', 'ethics')}, {t: 'לא מחכים לשאלון כשיש סיכון', go: '#/circ/c11/c11-student-hints-suicide'}, {t: 'לא משתמשים בתוצאות לצורכי משמעת', go: T('q-guide', 'dg-split')}],
+  partners: [{t: 'הילד', go: T('q-guide', 'who')}, {t: 'ההורים', go: T('q-guide', 'feedback')}, {t: 'המחנך', go: T('q-guide', 'who')}, {t: 'הפסיכולוג', go: T('q-guide', 'ethics')}],
+  sources: {t: 'הספרייה – שאלונים לטיפול · כלי אבחון מאריאל · אוגדן משרד הבריאות · חוזרים 0482 ו-0473', go: T('q-all', 'cat')}
+},
+
 develop: {
   tagline: 'התפתחות הילד מהגן ועד כיתה ו׳ – מה צפוי בכל גיל, מה שונות רגילה ומתי מפנים.',
   core: {icon: '🌳', title: 'הילד השלם – בקצב שלו', text: 'הטווח התקין רחב; בודקים עוצמה, תדירות, משך ופגיעה בתפקוד', go: T('dev-guide', 'what')},
@@ -3312,6 +3419,35 @@ cbtclass: {
   dont: [{t: 'לא משתמשים בכלי טיפולי כעונש', go: T('cbtc-guide', 'separate')}, {t: 'לא מבררים ״מי אשם״ מול הכיתה', go: T('cbtc-guide', 'separate')}, {t: 'לא משפילים ולא צועקים', go: T('cbtc-guide', 'separate')}],
   partners: [{t: 'היועץ', go: T('cbtc-guide', 'roles')}, {t: 'המחנך', go: T('cbtc-teacher', 'why')}, {t: 'ההורים', go: T('cbtc-guide', 'lowint')}, {t: 'המנהל', go: T('cbtc-guide', 'start')}],
   sources: {t: 'יששכר עשת – CBT מערכתי בעצימות נמוכה · חוזרים 0351 ו-0470', go: T('cbtc-guide', 'links')}
+},
+
+ariel: {
+  tagline: 'ארבע חוברות עבודה למטופל של אריאל חן – פאניקה, דיכאון, חרדה חברתית ו-OCD – מותאמות לילדי היסודי ולהוריהם.',
+  core: {icon: '🐯', title: '״נמר מנייר״', text: 'מפחיד – אבל לא מסוכן. ההימנעות וההרגעה הן שמחזיקות את הבעיה', go: T('ac-guide', 'dg-common')},
+  pillars: [
+    {icon: '📘', title: 'המדריך', track: 'ac-guide', points: [{t: 'מה משותף לכל החוברות', go: T('ac-guide', 'dg-common')}, {t: 'התאמה לפי גיל ולהורים', go: T('ac-guide', 'kids')}, {t: 'מה לא לוקחים ליסודי', go: T('ac-guide', 'dont')}]},
+    {icon: '💓', title: 'פאניקה', track: 'ac-panic', points: [{t: 'אזעקת אמת ואזעקת שווא', go: T('ac-panic', 'dg-alarm')}, {t: 'מעגל הקסמים', go: T('ac-panic', 'dg-cycle')}, {t: 'תכנון חשיפה ומעקב', go: T('ac-panic', 'plan')}]},
+    {icon: '🌧️', title: 'דיכאון', track: 'ac-depression', points: [{t: 'מלכודת הדיכאון', go: T('ac-depression', 'dg-trap')}, {t: 'לפי מטרה ולא לפי מצב רוח', go: T('ac-depression', 'dg-goal')}, {t: 'יומן הנאה ושליטה', go: T('ac-depression', 'diary')}]},
+    {icon: '🙈', title: 'חרדה חברתית', track: 'ac-social', points: [{t: 'מעגל הקסמים', go: T('ac-social', 'dg-cycle')}, {t: 'מיקוד החוצה', go: T('ac-social', 'focus')}, {t: 'תשעת הכללים לחשיפה', go: T('ac-social', 'rules')}]},
+    {icon: '🔁', title: 'OCD', track: 'ac-ocd', points: [{t: 'המעגל', go: T('ac-ocd', 'dg-cycle')}, {t: 'OCD בלבוש דתי', go: T('ac-ocd', 'religious')}, {t: 'כללי הזהב למניעת טקסים', go: T('ac-ocd', 'golden')}]}
+  ],
+  flow: [
+    {icon: '🎯', t: 'בוחרים טופס אחד', go: T('ac-guide', 'how')},
+    {icon: '✂️', t: 'מתאימים לגיל', go: T('ac-guide', 'kids')},
+    {icon: '🧑‍🏫', t: 'מדגימים במפגש', go: T('ac-guide', 'how')},
+    {icon: '🏠', t: 'משימה קטנה לבית', go: T('ac-guide', 'how')},
+    {icon: '🔍', t: 'בודקים במפגש הבא', go: T('ac-guide', 'how')}
+  ],
+  keys: [
+    {n: '4', t: 'חוברות: פאניקה, דיכאון, חרדה חברתית, OCD', go: T('ac-guide', 'dg-books')},
+    {n: '59', t: 'טפסים בסך הכול – כל טופס נפתח בעמוד שלו', go: T('ac-guide', 'files')},
+    {n: '0–⁠10', t: 'מדחום לילדים במקום יחידות מצוקה 0–⁠100', go: T('ac-guide', 'map')},
+    {n: '9', t: 'כללים לחשיפה', go: T('ac-social', 'rules')}
+  ],
+  do: [{t: 'מציגים כל טופס במפגש לפני שנותנים לבית', go: T('ac-guide', 'how')}, {t: 'עובדים דרך ההורים – טופסי הקרובים', go: T('ac-guide', 'kids')}, {t: 'בודקים סיכון לפני הכול', go: T('ac-depression', 'safety')}],
+  dont: [{t: 'לא תרגילים קיצוניים ולא ״זמן כאב״ לילדים', go: T('ac-guide', 'dont')}, {t: 'לא מרגיעים שוב ושוב ולא משתתפים בטקסים', go: T('ac-ocd', 'family')}, {t: 'לא ״פוטרים״ ממה שמפחיד בלי תוכנית', go: T('ac-guide', 'sides')}],
+  partners: [{t: 'הילד', go: T('ac-guide', 'kids')}, {t: 'ההורים', go: T('ac-social', 'family')}, {t: 'המחנך', go: T('ac-panic', 'family')}, {t: 'היועץ', go: T('ac-guide', 'how')}, {t: 'רב שמכיר OCD', go: T('ac-ocd', 'religious')}, {t: 'רופא ופסיכולוג', go: T('ac-guide', 'refer')}],
+  sources: {t: 'אריאל חן, סדרת ״צעד צעד״ – ארבע חוברות העבודה למטופל', go: T('ac-guide', 'files')}
 },
 
 aklim: {
@@ -4618,7 +4754,7 @@ function ui(){
 }
 
 /* ================= routing & shell ================= */
-const NAV = [['home','🏠','בית'],['diary','📅','יומן'],['ask','💬','שאל שאלה'],['problems','🧭','מנווט בעיות'],['students','🧒','תלמידים'],['workflow','🗺️','סדר עבודה'],['crole','🎯','תפקיד היועץ'],['roles','👥','מי פונה למי'],['circ','📜','חוזרי מנכ״ל'],['aklim','⚖️','אקלים ומדרג התגובות'],['tools','🧰','כלים לילדים'],['tracks','🧭','טיפול מובנה'],['distress','🚨','סימני מצוקה'],['talk','🗣️','ראיון ושיח רגשי'],['sel','💞','למידה רגשית-חברתית'],['mafteach','🧩','כישורי חיים ומפתח הל״ב'],['sped','🧩','חינוך מיוחד והכלה'],['tzalach','🛟','צל״ח – צוות חירום'],['develop','🌳','התפתחות הילד'],['cbtclass','🏫','יישום CBT בכיתה'],['groups','👥','הנחיית קבוצות'],['programs','🏗️','תוכניות התערבות'],['transitions','🚪','מעברים'],['newteachers','🌱','מורים חדשים'],['parents','🤝','הורים'],['reports','🎓','תעודות'],['games','🎲','משחקים טיפוליים'],['videos','🎬','סרטונים'],['library','📚','ספרייה'],['settings','⚙️','הגדרות']];
+const NAV = [['home','🏠','בית'],['diary','📅','יומן'],['ask','💬','שאל שאלה'],['problems','🧭','טיפול לפי בעיה'],['students','🧒','תלמידים'],['workflow','🗺️','סדר עבודה'],['crole','🎯','תפקיד היועץ'],['roles','👥','מי פונה למי'],['circ','📜','חוזרי מנכ״ל'],['aklim','⚖️','אקלים ומדרג התגובות'],['tools','🧰','כלים לילדים'],['quest','📋','שאלונים ומדדים'],['distress','🚨','סימני מצוקה'],['talk','🗣️','ראיון ושיח רגשי'],['sel','💞','למידה רגשית-חברתית'],['mafteach','🧩','כישורי חיים ומפתח הל״ב'],['sped','🧩','חינוך מיוחד והכלה'],['tzalach','🛟','צל״ח – צוות חירום'],['develop','🌳','התפתחות הילד'],['cbtclass','🏫','יישום CBT בכיתה'],['groups','👥','הנחיית קבוצות'],['programs','🏗️','תוכניות התערבות'],['transitions','🚪','מעברים'],['newteachers','🌱','מורים חדשים'],['parents','🤝','הורים'],['reports','🎓','תעודות'],['games','🎲','משחקים טיפוליים'],['videos','🎬','סרטונים'],['library','📚','ספרייה'],['settings','⚙️','הגדרות']];
 function route(){ const h = location.hash.replace(/^#\/?/, '').split('/').map(decodeURIComponent); return {r: h[0] || 'home', id: h[1], sub: h[2], x: h[3]}; }
 let timers = [];
 function clearTimers(){ timers.forEach(t => { clearTimeout(t); clearInterval(t); }); timers = []; }
@@ -4641,14 +4777,15 @@ function render(){
   document.body.classList.toggle('locked', isLocked());
   if (isLocked()) { const o = lockView(); $('#title').textContent = ''; $('#view').innerHTML = `<div class="page">${o.html}</div>`; document.title = 'האתר של נדב דוד – יועץ חינוכי ומטפל CBT'; return; }
   if (WEB && !ARTIFACT && !LITE && !PROBLEMS.length) { $('#title').textContent = ''; $('#view').innerHTML = `<div class="empty" style="padding-top:120px"><span class="big">⏳</span>${Cloud.status === 'error' ? esc(Cloud.err) + ' <br><br><button class="btn primary" data-act="cloud-retry">נסו שוב</button>' : 'טוען את התוכן מ-OneDrive…'}</div>`; return; }
-  const views = LITE ? {home: liteHome, problems, problem: problemView, tools, tool: toolView, settings: liteSettings, ask, workflow, roles: rolesView, circ: circView, circsrc: circSrcView, libsrc: libSrcView, circask: circAskView, find: findView, more: moreView, games: gamesView, game: gameView, tracks: tracksView, track: trackView, groups: groupsView, transitions: hubView, newteachers: hubView, programs: hubView, distress: hubView, talk: hubView, parents: hubView, reports: hubView, sel: hubView, mafteach: hubView, sped: hubView, tzalach: hubView, aklim: hubView,develop: hubView, cbtclass: hubView, crole: hubView, videos: videosView, diary: diaryView} : {home, problems, problem: problemView, students, student: studentView, tools, tool: toolView, library, settings, ask, workflow, roles: rolesView, circ: circView, circsrc: circSrcView, libsrc: libSrcView, circask: circAskView, find: findView, more: moreView, games: gamesView, game: gameView, tracks: tracksView, track: trackView, groups: groupsView, transitions: hubView, newteachers: hubView, programs: hubView, distress: hubView, talk: hubView, parents: hubView, reports: hubView, sel: hubView, mafteach: hubView, sped: hubView, tzalach: hubView, aklim: hubView,develop: hubView, cbtclass: hubView, crole: hubView, videos: videosView, diary: diaryView};
+  const views = LITE ? {home: liteHome, problems, problem: problemView, tools, tool: toolView, settings: liteSettings, ask, workflow, roles: rolesView, circ: circView, circsrc: circSrcView, libsrc: libSrcView, circask: circAskView, find: findView, more: moreView, games: gamesView, game: gameView, tracks: problems, track: trackView, groups: groupsView, transitions: hubView, newteachers: hubView, programs: hubView, distress: hubView, talk: hubView, parents: hubView, reports: hubView, sel: hubView, mafteach: hubView, sped: hubView, tzalach: hubView, aklim: hubView,develop: hubView, cbtclass: hubView, crole: hubView, quest: hubView, ariel: hubView, videos: videosView, diary: diaryView} : {home, problems, problem: problemView, students, student: studentView, tools, tool: toolView, library, settings, ask, workflow, roles: rolesView, circ: circView, circsrc: circSrcView, libsrc: libSrcView, circask: circAskView, find: findView, more: moreView, games: gamesView, game: gameView, tracks: problems, track: trackView, groups: groupsView, transitions: hubView, newteachers: hubView, programs: hubView, distress: hubView, talk: hubView, parents: hubView, reports: hubView, sel: hubView, mafteach: hubView, sped: hubView, tzalach: hubView, aklim: hubView,develop: hubView, cbtclass: hubView, crole: hubView, quest: hubView, ariel: hubView, videos: videosView, diary: diaryView};
   const fn = views[R.r] || home;
   const out = fn(R);
   $('#title').textContent = out.title;
   $('#view').innerHTML = `<div class="page">${out.html}</div>`;
   setTimeout(igEqualize, 60); setTimeout(igEqualize, 600);
-  const navKey = {problem:'problems', student:'students', tool:'tools', circsrc:'circ', libsrc:'library', circask:'circ'}[R.r] || R.r;
+  const navKey = (k => k === 'ariel' ? 'problems' : k)(R.r === 'track' ? (TRACK(R.id) ? HUBOF(TRACK(R.id))[0] : 'problems') : {problem:'problems', tracks:'problems', student:'students', tool:'tools', circsrc:'circ', libsrc:'library', circask:'circ'}[R.r] || R.r);   // #/ariel lives under 🧭 טיפול לפי בעיה
   document.querySelectorAll('[data-nav]').forEach(a => a.classList.toggle('on', a.dataset.nav === navKey));
+  document.querySelectorAll('#nav details.navg').forEach(d => { if (d.querySelector('a.on')) d.open = true; });
   document.title = out.title + ' · האתר של נדב דוד';
   try { kidifyEmojis($('#view')); } catch(e){}
   if (out.after) out.after();
@@ -4661,7 +4798,19 @@ function problemCard(p, i){
   return `<a class="card accent" href="#/problem/${p.id}" style="--h:${hueOf(p.area) }">
     <span class="emoji">${p.icon}</span><span class="name">${esc(p.name)}</span>
     <span class="sub">${esc(p.summary)}</span>
-    <span class="row"><span class="pill">${esc(p.area)}</span><span class="pill">${p.sessions.length} מפגשים</span></span></a>`;
+    <span class="row"><span class="pill">📖 מפה · ${p.sessions.length} מפגשים</span>${TRACK(p.id) ? `<span class="pill brand">🧭 טיפול מובנה (${TRACK(p.id).steps.length} שלבים)</span>` : ''}${probExtraTracks(p.id).map(x => `<span class="pill pwrap">${x.icon || '➕'} ועוד מסלול: ${esc(x.title)}</span>`).join('')}</span></a>`;
+}
+/* 🧭 טיפול לפי בעיה: a problem's map and its structured track are one place – the switch on top of both pages */
+const ADULT_TRACKS = ['teacher-consult', 'parent-consult', 'teacher-stress'];
+const HUB_FLAGS = ['group', 'transition', 'newteachers', 'program', 'distress', 'talk', 'parents', 'reports', 'workflow', 'sel', 'sped', 'mafteach', 'develop', 'tzalach', 'aklim', 'cbtclass', 'crole', 'quest', 'ariel'];
+const isHubTrack = t => HUB_FLAGS.some(k => t[k]);
+const probExtraTracks = pid => TRACKS().filter(x => x.id !== pid && x.problem === pid && !isHubTrack(x));
+const probOfTrack = t => P[t.id] ? t.id : t.problem && P[t.problem] && !isHubTrack(t) ? t.problem : null;
+function probSwitch(pid, on){
+  const t = TRACK(pid), extra = probExtraTracks(pid);
+  if (!P[pid] || (!t && !extra.length)) return '';
+  const tab = (href, k, ic, l, sub) => `<a class="pswt${k === on ? ' on' : ''}${k === 'map' || k === pid ? '' : ' x'}" href="${href}"${k === on ? ' aria-current="page"' : ''}><span class="pswi" aria-hidden="true">${ic}</span><span class="pswl"><b>${l}</b><small>${sub}</small></span></a>`;
+  return `<nav class="pswitch no-print" aria-label="המפה או הטיפול המובנה">${tab('#/problem/' + pid, 'map', '📖', 'המפה', 'סקירה, מפגשים וטכניקות')}${t ? tab('#/track/' + pid, pid, '🧭', 'הטיפול המובנה', t.steps.length + ' שלבים, שלב אחרי שלב') : ''}${extra.map(x => tab('#/track/' + x.id, x.id, x.icon || '🧭', esc(x.title), x.steps.length + ' שלבים')).join('')}</nav>`;
 }
 function studentCard(s){
   const next = s.plan.find(x => !x.done);
@@ -4681,11 +4830,27 @@ function mainFile(p){
   const rank = a => /\.pdf$/i.test(a.path) ? 0 : /\.docx?$/i.test(a.path) ? 1 : /\.pptx?$/i.test(a.path) ? 2 : 3;
   return at.length ? at.slice().sort((a, b) => rank(a) - rank(b))[0] : null;
 }
-function moreView(){
-  const items = NAV.filter(n => !(LITE && ['students', 'library'].includes(n[0]))).concat([['find', '🔍', 'חיפוש באתר']]);
-  return {title: 'כל האזורים', html: `<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:10px">${items.map(([k, i, l]) => `<a class="card" href="#/${k}" style="padding:14px;gap:6px;align-items:center;text-align:center"><span style="font-size:30px">${i}</span><span class="name" style="font-size:16px">${l}</span></a>`).join('')}</div>`};
-}
-function libItem(p){
+/* the side menu in 7 groups (approved by the user): pinned items on top, collapsible groups, settings at the bottom; any NAV item not listed falls into "עוד" */
+const NAV_PIN = ['home', 'diary', 'ask', 'find'];
+const NAV_GROUPS = [
+  ['🧒', 'הטיפול בתלמיד', ['problems', 'students', 'workflow', 'talk', 'quest', 'distress', 'develop']],
+  ['🧰', 'כלים לעבודה עם ילדים', ['tools', 'games']],
+  ['🏫', 'כיתה ובית ספר', ['aklim', 'cbtclass', 'sel', 'mafteach', 'programs', 'groups']],
+  ['🤝', 'הורים וצוות', ['parents', 'roles', 'reports', 'newteachers']],
+  ['🛟', 'מצבים ואוכלוסיות מיוחדים', ['tzalach', 'sped', 'transitions']],
+  ['🎯', 'התפקיד והנהלים', ['crole', 'circ']],
+  ['📚', 'ספרייה ומקורות', ['library', 'videos']]
+];
+const navItem = k => k === 'find' ? ['find', '🔍', 'חיפוש'] : NAV.find(n => n[0] === k);
+const navShown = n => n && !(LITE && ['students', 'library'].includes(n[0]));
+function navGroups(){ const used = new Set([...NAV_PIN, 'settings', ...NAV_GROUPS.flatMap(g => g[2])]); const rest = NAV.filter(n => !used.has(n[0]));
+  return NAV_GROUPS.map(([i, l, ks]) => [i, l, ks.map(navItem).filter(navShown)]).concat(rest.length ? [['➕', 'עוד', rest.filter(navShown)]] : []).filter(g => g[2].length); }
+function navHTML(){ const a = ([k, i, l]) => `<a href="#/${k}" data-nav="${k}"><span class="i">${i}</span>${l}</a>`;
+  return `<div class="navpin">${NAV_PIN.map(navItem).filter(navShown).map(a).join('')}</div>` + navGroups().map(([i, l, items], gi) => `<details class="navg" data-g="${gi}"><summary><span class="i">${i}</span>${esc(l)}</summary>${items.map(a).join('')}</details>`).join('') + (navItem('settings') ? `<div class="navbottom">${a(navItem('settings'))}</div>` : ''); }function moreView(){
+  const card = ([k, i, l]) => `<a class="card" href="#/${k}" style="padding:14px;gap:6px;align-items:center;text-align:center"><span style="font-size:30px">${i}</span><span class="name" style="font-size:16px">${l}</span></a>`;
+  const grid = items => `<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:10px">${items.map(card).join('')}</div>`;
+  return {title: 'כל האזורים', html: grid(NAV_PIN.map(navItem).filter(navShown)) + navGroups().map(([i, l, items]) => `<h2 class="sec">${i} ${esc(l)}</h2>${grid(items)}`).join('') + (navItem('settings') ? `<h2 class="sec">⚙️ הגדרות</h2>${grid([navItem('settings')])}` : '')};
+}function libItem(p){
   const vf = p.attachments.find(a => VIDEO_RX.test(a.path)), yl = (p.links || []).find(l => ytIdOf(l.url) || ytList(l.url));
   const vidAttr = vf ? `data-act="vplay" data-k="file" data-src="${esc(vf.path)}" data-title="${esc(vf.name)}"` : yl ? `data-act="vplay" data-k="yt" data-id="${esc(ytIdOf(yl.url))}" data-list="${esc(ytList(yl.url))}" data-start="${ytStart(yl.url)}" data-title="${esc(yl.text && !/^https?:/.test(yl.text) ? yl.text : p.title)}"` : '';
   const first = mainFile(p) || (!p.pdf && !vidAttr && p.attachments[0]);
@@ -4737,17 +4902,30 @@ function home(){
 }
 
 let areaFilter = 'הכל', probQuery = '';
+const ADULT_AREA = '👨‍🏫 מסלולים למבוגרים ולצוות';
 function problems(){
-  const ql = probQuery.toLowerCase();
-  const list = PROBLEMS.filter(p => (areaFilter === 'הכל' || p.area === areaFilter) &&
-    (!ql || (p.name + ' ' + p.summary + ' ' + (p.signs || []).join(' ')).toLowerCase().includes(ql)));
-  let h = `<div class="search" style="margin:4px 0 14px"><input id="probq" placeholder="חיפוש בעיה, סימן או מילת מפתח…" value="${esc(probQuery)}"><span class="ic">🔍</span></div>
-    <div class="chips">${['הכל', ...AREAS].map(a => `<button class="chip ${a === areaFilter ? 'on' : ''}" data-act="area" data-v="${esc(a)}">${esc(a)}</button>`).join('')}</div>`;
+  const ql = probQuery.toLowerCase().trim(), hit = s => !ql || s.toLowerCase().includes(ql);
+  const isAdult = p => ADULT_TRACKS.includes(p.id);
+  const list = PROBLEMS.filter(p => (areaFilter === 'הכל' || (areaFilter === ADULT_AREA ? isAdult(p) : p.area === areaFilter && !isAdult(p))) &&
+    hit(p.name + ' ' + p.summary + ' ' + (p.signs || []).join(' ') + ' ' + [TRACK(p.id), ...probExtraTracks(p.id)].filter(Boolean).map(t => t.title + ' ' + (t['for'] || '')).join(' ')));
+  // a structured track that has no problem map of its own (and belongs to no problem) sits with the adults' tracks
+  const lone = TRACKS().filter(t => !isHubTrack(t) && !probOfTrack(t) && (areaFilter === 'הכל' || areaFilter === ADULT_AREA) && hit(t.title + ' ' + (t['for'] || '')));
+  const nTr = PROBLEMS.filter(p => TRACK(p.id)).length;
+  let h = `<div class="banner hubhero" style="--h:${hubHue('problems')}"><span class="emoji">🧭</span><div><h1>טיפול לפי בעיה</h1>${PROBLEMS.length ? `<p>${PROBLEMS.length} בעיות · ${nTr} מסלולי טיפול מובנה · לכל בעיה מפה ומסלול במקום אחד</p>` : ''}</div></div>
+    ${gGuide('בחר בעיה – ותמצא בה את המפה ואת הטיפול המובנה, שלב אחרי שלב 🧭', 'רוגע', 3)}
+    <div class="note pnote" style="margin:4px 0 16px"><span>📖 <b>המפה</b> – סקירה, המשגה, הערכה, מהלך המפגשים, טכניקות, הורים וצוות, כלים וחומרים מהספרייה.</span><span>🧭 <b>הטיפול המובנה</b> – מסלול אינטראקטיבי: אבחון והערכה, הסבר פסיכו-חינוכי, פורמולציה (5P ומעגל משמר), מטרות, טכניקות, תוכנית פעולה, פרוטוקול מפגשים ומניעת הישנות. ${active() ? `הכול נשמר בתיק של <b>${esc(active().alias)}</b>.` : 'בחר תלמיד בראש המסך כדי שהמילוי יישמר בתיק שלו (בלי תלמיד – נשמר ב״כללי״).'}</span></div>
+    <div class="search" style="margin:4px 0 14px"><input id="probq" placeholder="חיפוש בעיה, סימן או מילת מפתח…" value="${esc(probQuery)}"><span class="ic">🔍</span></div>
+    <div class="chips">${['הכל', ...AREAS, ADULT_AREA].map(a => `<button class="chip ${a === areaFilter ? 'on' : ''}" data-act="area" data-v="${esc(a)}">${esc(a)}</button>`).join('')}</div>`;
   if (!PROBLEMS.length) h += `<div class="panel empty"><span class="big">⏳</span>תוכן מפות הטיפול עדיין לא נטען.</div>`;
-  const groups = AREAS.map(a => [a, list.filter(p => p.area === a)]).filter(g => g[1].length);
+  const groups = AREAS.map(a => [a, list.filter(p => p.area === a && !isAdult(p))]).filter(g => g[1].length);
   for (const [a, ps] of groups) h += `<h2 class="sec">${esc(a)} <small>${ps.length}</small></h2><div class="grid">${ps.map(problemCard).join('')}</div>`;
-  if (PROBLEMS.length && !list.length) h += `<div class="empty"><span class="big">🔎</span>לא נמצאה בעיה מתאימה</div>`;
-  return {title:'מנווט בעיות', html:h, after(){ const i = $('#probq'); i.addEventListener('input', () => { probQuery = i.value; const pos = i.selectionStart; render(); const j = $('#probq'); j.focus(); j.setSelectionRange(pos, pos); }); }};
+  const adults = list.filter(isAdult);
+  if (adults.length || lone.length) h += `<h2 class="sec">${ADULT_AREA} <small>${adults.length + lone.length}</small></h2><div class="grid">${adults.map(problemCard).join('')}${lone.map(t => `<a class="card accent hubc" href="#/track/${t.id}" style="--h:${t.hue ?? hueOf(t.title)}"><span class="emoji">${t.icon || '🧭'}</span><span class="name">${esc(t.title)}</span><span class="sub">${esc(t['for'] || '')}</span><span class="row"><span class="pill brand">🧭 טיפול מובנה (${t.steps.length} שלבים)</span></span></a>`).join('')}</div>`;
+  // 📘 the patient workbooks (tracks-ac.js, hub #/ariel) live under this page – one section, no NAV entry of its own
+  const ac = TRACKS().filter(t => t.ariel), acOn = ac.length && areaFilter === 'הכל' && hit('חוברות מטופלים אריאל חן פאניקה דיכאון חרדה חברתית OCD ' + ac.map(t => t.title).join(' '));
+  if (acOn) h += `<h2 class="sec">📘 ${esc(HUBS.ariel.title)} <small>${ac.length}</small></h2><a class="card accent hubc acwide" href="#/ariel" style="--h:${hubHue('ariel')}"><span class="emoji">📘</span><span class="name">${esc(HUBS.ariel.title)}</span><span class="sub">ארבע חוברות עבודה למטופל מסדרת ״צעד צעד״ – מסלול אינטראקטיבי לכל חוברת, עם התאמה לילדים ולהורים, וכל טופס נפתח בעמוד שלו בקובץ</span><span class="row">${ac.filter(t => t.id !== HUBS.ariel.guide).map(t => `<span class="pill pwrap">${t.icon || '📘'} ${esc(t.title.replace(/^חוברת מטופלים:\s*/, '').split(' – ')[0])}</span>`).join('')}</span></a>`;
+  if (PROBLEMS.length && !list.length && !lone.length && !acOn) h += `<div class="empty"><span class="big">🔎</span>לא נמצאה בעיה מתאימה</div>`;
+  return {title:'טיפול לפי בעיה', html:h, after(){ const i = $('#probq'); i.addEventListener('input', () => { probQuery = i.value; const pos = i.selectionStart; render(); const j = $('#probq'); j.focus(); j.setSelectionRange(pos, pos); }); }};
 }
 
 function sessionHTML(s, i, extra = ''){
@@ -4787,9 +4965,9 @@ function problemView(R){
   else if (tab === 'tools') body = `<div class="grid">${(p.tools || []).filter(t => TOOL[t]).map(t => toolCard(TOOL[t])).join('') || '<p class="muted">—</p>'}</div>`;
   else if (tab === 'library') body = lib.length ? `<p class="muted">${lib.length} פריטים, הרלוונטיים ביותר קודם.${lib.length > 60 ? ' מוצגים 60 הראשונים.' : ''}</p><div class="list">${lib.slice(0, 60).map(libItem).join('')}</div>` : `<div class="empty">${LIBDATA.length ? 'לא נמצאו חומרים מתאימים בספרייה.' : '📚 חומרי הספרייה לנושא הזה זמינים במחשב, בקיצור הדרך ״ספריית לימודי CBT״.'}</div>`;
   else body = (tab === 'overview' && window.CYCLES && CYCLES[p.id] ? `<div class="panel"><h3>🔄 המעגל שמשמר את הבעיה – ואיך שוברים אותו</h3>${cycleHTML(CYCLES[p.id])}</div>` : '') + (tab === 'overview' && (p.diagrams || []).length ? `<div class="panel"><h3>🎨 בתמונה אחת</h3>${p.diagrams.map(g => diagramHTML(g, {head: 1})).join('')}</div>` : '') + (sec[tab] || sec.overview) + (tab === 'overview' ? sec.sources : '');
-  const h = `<a class="back no-print" href="#/problems">→ כל הבעיות</a>
+  const h = `<a class="back no-print" href="#/problems">→ טיפול לפי בעיה</a>${probSwitch(p.id, 'map')}
     <div class="banner" style="--h:${hueOf(p.area)}"><span class="emoji">${p.icon}</span><div><div style="opacity:.85;font-size:14px">${esc(p.area)} · כיתות א–ו</div><h1>${esc(p.name)}</h1></div>
-    <div class="actions no-print">${TRACK(p.id) ? `<a class="btn primary" href="#/track/${p.id}">🧭 טיפול מובנה</a>` : ''}${TRACKS().filter(x => x.id !== p.id && (x.problem === p.id || (x.related || []).includes(p.id))).map(x => `<a class="btn primary" href="#/track/${x.id}">${x.icon || '🧭'} ${esc(x.title)}</a>`).join('')}${GAME(p.id) ? `<a class="btn primary" href="#/game/${p.id}">🎲 המשחק</a>` : ''}${['social-rejection', 'social-skills'].includes(p.id) ? '<a class="btn primary" href="#/tool/sociometry">🕸️ מיפוי חברתי של הכיתה</a>' : ''}<button class="btn" data-act="planfor" data-id="${p.id}">📋 תוכנית לתלמיד</button><button class="btn" data-act="printproblem" data-id="${p.id}">🖨️ הדפסה</button></div></div>
+    <div class="actions no-print">${TRACKS().filter(x => x.id !== p.id && !probExtraTracks(p.id).includes(x) && (x.problem === p.id || (x.related || []).includes(p.id))).map(x => `<a class="btn primary" href="#/track/${x.id}">${x.icon || '🧭'} ${esc(x.title)}</a>`).join('')}${GAME(p.id) ? `<a class="btn primary" href="#/game/${p.id}">🎲 המשחק</a>` : ''}${['social-rejection', 'social-skills'].includes(p.id) ? '<a class="btn primary" href="#/tool/sociometry">🕸️ מיפוי חברתי של הכיתה</a>' : ''}<button class="btn" data-act="planfor" data-id="${p.id}">📋 תוכנית לתלמיד</button><button class="btn" data-act="printproblem" data-id="${p.id}">🖨️ הדפסה</button></div></div>
     <nav class="tabs">${TABS.map(([k, l]) => `<a href="#/problem/${p.id}/${k}" class="${k === tab ? 'on' : ''}">${l}</a>`).join('')}</nav>${body}`;
   return {title:p.name, html:h, after(){ if (tab === 'print') setTimeout(() => { window.print(); history.back(); }, 300); }};
 }
@@ -6604,7 +6782,7 @@ function planForm(s, i){
 }
 function measureForm(s){
   modal('ציון שאלון / מדד', `
-    <label class="f">שם השאלון או המדד<input name="name" list="mlist" required placeholder="בחירה או הקלדה"><datalist id="mlist">${MEASURES.map(m => `<option value="${esc(m)}">`).join('')}${[...new Set(s.measures.map(m => m.name))].map(m => `<option value="${esc(m)}">`).join('')}</datalist></label>
+    <label class="f">שם השאלון או המדד<input name="name" list="mlist" required placeholder="בחירה או הקלדה"><datalist id="mlist">${MEASURES.map(m => `<option value="${esc(m)}">`).join('')}${(window.QUEST || []).filter(q => q.en && !MEASURES.some(m => m.startsWith(q.en.split(' ')[0]))).map(q => `<option value="${esc(q.en.split(' ')[0] + ' – ' + q.he)}">`).join('')}${[...new Set(s.measures.map(m => m.name))].map(m => `<option value="${esc(m)}">`).join('')}</datalist></label>
     <div class="row2"><label class="f">ציון<input type="number" step="any" name="score" required></label><label class="f">תאריך<input type="date" name="date" value="${today()}"></label></div>`, o => {
       s.measures.push({id:uid(), name:o.name.trim(), score:+o.score, date:o.date}); save(); render();
     });
@@ -6634,7 +6812,7 @@ document.addEventListener('click', async e => {
     case 'libpdf': { openDoc(d.title, d.path, +d.p || 0); break; }
     case 'circpdf': { const f = circFile(d.c), pg = +d.p || 0; if (!f) break; if (WEB) Cloud.openFileAt(f, pg); else viewer(circMeta(d.c).title, href(f) + (pg ? '#page=' + pg : ''), ftype(f)[0]); break; }
     case 'libopen': if (e.target.closest('[data-act="attopen"]')) return; if (WEB) Cloud.openFile(d.pdf); else viewer(d.title, href(d.pdf), 'pdf'); break;
-    case 'attopen': e.preventDefault(); e.stopPropagation(); openDoc(d.title, d.path); break;
+    case 'attopen': e.preventDefault(); e.stopPropagation(); openDoc(d.title, d.path, +d.page || 0); break;
     case 'cloud-login': Cloud.login(); break;
     case 'art-sync': await ArtSync.pull().catch(err => { ArtSync.status = 'error'; ArtSync.err = err.message || err.code; }); render(); toast('סונכרן'); break;
     case 'cloud-logout': if (await uiConfirm('להתנתק מחשבון המיקרוסופט במכשיר הזה?')) Cloud.logout(); break;
@@ -7067,9 +7245,9 @@ const trKey = id => (active() ? active().id : 'general') + ':' + id;
 const trData = id => { S.tracks = S.tracks || {}; return S.tracks[trKey(id)] = S.tracks[trKey(id)] || {}; };
 const FIVEP = [['predisposing', 'גורמים מקדימים', 'מה הכין את הקרקע? (מזג, רקע, היסטוריה)', '#e9d5ff'], ['precipitating', 'גורמים מזרזים', 'מה הדליק את הבעיה עכשיו?', '#fde68a'], ['presenting', 'הבעיה כפי שהיא מוצגת', 'מה רואים? מה מדאיג?', '#fecaca'], ['perpetuating', 'גורמים משמרים', 'מה מחזיק את הבעיה? (הימנעות, תגובות סביבה, מחשבות)', '#fbcfe8'], ['protective', 'גורמים מגינים', 'חוזקות, תמיכה, משאבים', '#bbf7d0']];
 const DAYS = ['ראשון', 'שני', 'שלישי', 'רביעי', 'חמישי', 'שישי'];
-const trLink = h => akSrcLinks(h).replace(/(?<![="'\/\w])#\/(track|game|problem|tool|groups|transitions|programs|newteachers|distress|talk|parents|reports|sped|sel|mafteach|develop|tzalach|aklim|cbtclass|crole|workflow|roles|videos|circ)((?:\/[\w-]+){0,2})/g, (m, r, p) => { const [id, sub] = p.split('/').slice(1); const x = id && r === 'track' ? TRACK(id) : id && r === 'game' ? GAME(id) : null;
+const trLink = h => akSrcLinks(h).replace(/(?<![="'\/\w])#\/(track|game|problem|tool|groups|transitions|programs|newteachers|distress|talk|parents|reports|sped|sel|mafteach|develop|tzalach|aklim|cbtclass|crole|quest|ariel|workflow|roles|videos|circ)((?:\/[\w-]+){0,2})/g, (m, r, p) => { const [id, sub] = p.split('/').slice(1); const x = id && r === 'track' ? TRACK(id) : id && r === 'game' ? GAME(id) : null;
   const cg = r === 'circ' && sub ? circGuide().find(g => g.id === sub) : null, cm = r === 'circ' && id && !cg ? (window.CIRC_META || []).find(c => c.id === id) : null;
-  const lab = x ? x.title : r === 'problem' && id && P[id] ? '🧭 ' + P[id].name : r === 'tool' && id && TOOL[id] ? TOOL[id].icon + ' ' + TOOL[id].name : cg ? '📜 ' + cg.title : cm ? '📜 ' + cm.title : r === 'distress' && !id ? '🚨 ' + HUBS.distress.title : (r === 'mafteach' || r === 'sel' || r === 'develop' || r === 'transitions') && !id ? HUBS[r].icon + ' ' + HUBS[r].title : (r === 'parents' || r === 'reports' || r === 'sped' || r === 'tzalach' || r === 'aklim' || r === 'cbtclass' || r === 'crole') && !id ? HUBS[r].icon + ' ' + HUBS[r].title : HUBS[r] && !id ? HUBS[r].icon + ' ' + HUBS[r].title : r === 'groups' && !id ? '👥 הנחיית קבוצות' : r === 'workflow' && !id ? '🗺️ סדר עבודה' : r === 'roles' && !id ? '👥 מי פונה למי' : null;
+  const lab = x ? x.title : r === 'problem' && id && P[id] ? '🧭 ' + P[id].name : r === 'tool' && id && TOOL[id] ? TOOL[id].icon + ' ' + TOOL[id].name : cg ? '📜 ' + cg.title : cm ? '📜 ' + cm.title : r === 'distress' && !id ? '🚨 ' + HUBS.distress.title : (r === 'mafteach' || r === 'sel' || r === 'develop' || r === 'transitions') && !id ? HUBS[r].icon + ' ' + HUBS[r].title : (r === 'parents' || r === 'reports' || r === 'sped' || r === 'tzalach' || r === 'aklim' || r === 'cbtclass' || r === 'crole' || r === 'quest') && !id ? HUBS[r].icon + ' ' + HUBS[r].title : HUBS[r] && !id ? HUBS[r].icon + ' ' + HUBS[r].title : r === 'groups' && !id ? '👥 הנחיית קבוצות' : r === 'workflow' && !id ? '🗺️ סדר עבודה' : r === 'roles' && !id ? '👥 מי פונה למי' : null;
   return `<a href="${m}" class="trlink">${lab ? esc(lab) : m}</a>`; }).replace(/(?<![="'\/\w])#\/file\/([\w-]+)/g, (m, k) => trFile(k) ? trFileBtn(k) : m);   // #/file/<key> → opens a file from window.TRFILES (tracks-sped.js)
 function trStepHTML(t, s, D){ const h0 = trStepHTML0(t, s, D) + (s.src ? `<p class="wfsrc">📚 ${trLink(esc(s.src))}</p>` : ''); return ['form', 'fivep', 'cycle', 'plan', 'viz'].includes(s.kind) ? h0 : trLink(h0); }
 function trStepHTML0(t, s, D){
@@ -7127,33 +7305,35 @@ const HUBS = {
   cbtclass: {flag: 'cbtclass', guide: 'cbtc-guide', title: 'יישום CBT בכיתה', icon: '🏫', say: 'כל הכיתה לומדת לחשוב, להרגיש ולפעול אחרת – בוא נביא את ה-CBT לכיתה 🏫', intro: '🏫 יישום CBT בכיתה (א׳–⁠ו׳): המדריך (למה CBT בכיתה כמניעה לכולם, משולש המחשבה-הרגש-ההתנהגות לילדים, פירמידת שלוש הרמות – כיתה, קבוצה ופרטני – ומה תפקיד היועץ ומה תפקיד המורה, השיחה המכבדת והמאתגרת, והפרדה בין הטיפולי למשמעתי), סדרת שיעורים מוכנה לפי שכבות גיל עם כלים ומשחקים מהאפליקציה, המורה כמאמן CBT (שפה משותפת, בנק משפטים, שבח שבונה מסוגלות, חרדה בכיתה בלי מלכודת ההימנעות, פרוטוקול להתפרצות כעס וכרטיסי עזר), ניהול התנהגות (ניתוח ABC, סדרי חיזוק, כלכלת אסימונים, שגרות והקו של חוזר 0470), תוכנית כיתתית לחרדת מבחנים, אקלים כיתתי ופעילויות קבוצתיות, ומעגל ההתייעצות עם המורה עם טפסים. לפי ״CBT מערכתי בעצימות נמוכה לחינוכיים״ של יששכר עשת ושאר חומרי הספרייה; מה שאינו מהחומרים מסומן ״ידע מקצועי כללי״.', extra: [['#/track/teacher-consult', '🧭', 'הדרכת מורה בניהול כיתה'], ['#/track/class-climate', '🌈', 'אקלים כיתתי'], ['#/sel', '💞', 'למידה רגשית-חברתית'], ['#/mafteach', '🔑', 'כישורי חיים ומפתח הל״ב'], ['#/programs', '🏗️', 'תוכניות התערבות'], ['#/tool/sociometry', '🕸️', 'שאלון סוציומטרי'], ['#/circ/c04', '📜', 'חוזר 0470 – אקלים חינוכי מיטבי']]},
   crole: {flag: 'crole', guide: 'role-guide', title: 'תפקיד היועץ החינוכי', icon: '🎯', say: 'היועץ הוא הלב הרגשי של בית הספר – בוא נראה את כל התפקיד במבט אחד 🎯', intro: '🎯 תפקיד היועץ החינוכי: המדריך (ההגדרה לפי שפ״י וההסכם הקיבוצי, שמונה מטרות הייעוץ, ארבע מיומנויות היסוד, מעגלי העבודה ותהליך העבודה, מודל היהלום, מה חוזרי המנכ״ל מטילים על היועץ, הפרדה בין הטיפולי למשמעתי, איך מסבירים לתלמידים מה עושה היועץ ומפת האפליקציה לפי תחומי התפקיד), המודלים של התפקיד (הכוון, טיפולי, מניעתי לפי Caplan, מערכתי, מייעץ, מתאם ומנהל מקרה, מבוסס נתונים ומודלים בינלאומיים – עם השוואות ומה מתאים ליסודי לבנים), חלוקת עבודה וזמן (אופק חדש, דוח מבקר המדינה, מה כן ומה לא בתפקיד והגבולות מול כל שותף), אתיקה (הקוד האתי, סודיות וחריגיה, קשרים כפולים, חובת דיווח, תיעוד וכרטיסי דילמה), השנה של היועץ (חודשי השנה העברית, איתור בארבעה ממדים, מטרות עם ת.ב.ל.י.ן, תוכנית עבודה, ועדה מלווה ואוגדן סוף שנה), העבודה עם המנהל והצוות, והיועץ עצמו (זהות מקצועית, מסלול ההתפתחות, סופרוויז׳ן ושמירה מפני שחיקה). לכל פריט מצוין מקור; מה שאינו מהחומרים מסומן ״ידע מקצועי כללי״.', extra: [['#/workflow', '🗺️', 'סדר עבודה – מהפניה ועד סיום'], ['#/roles', '👥', 'מי פונה למי'], ['#/track/ak-counselor', '⚖️', 'תפקיד היועץ לפי חוזר האקלים'], ['#/circ/c04/c04-role-counselor-psychologist', '📜', 'תפקיד היועץ בחוזר 0470'], ['#/circ/c09/c09-counselor-role', '📜', 'תפקיד היועץ בכישורי חיים (0351)'], ['#/circ/c13/c13-counselor-role-shefi', '📜', 'היועץ בשעת חירום'], ['#/circ/c05/c05-counselor-role-info', '📜', 'סמכויות היועץ בהעברת מידע'], ['#/track/teacher-stress', '🧯', 'דחק ושחיקה']]},
   aklim: {flag: 'aklim', guide: 'ak-guide', title: 'אקלים חינוכי – חוזר 0470 ומדרג התגובות', icon: '⚖️', say: 'גבולות ברורים לצד טיפול רגשי – בוא נמצא יחד את השלב המדויק במדרג ⚖️', intro: '⚖️ אקלים חינוכי – חוזר 0470 ומדרג התגובות: המדריך (עקרונות, סטנדרטים, חובות בית הספר, עץ התפקידים וזרימת הטיפול), מדרג התגובות המלא בסולם צבעוני (שגרה, חלקים א׳–ד׳, פגיעה ברשת ו׳–ח׳ ופגיעה בצוות) עם התבחינים לחומרה, ״מה עושים כש…״ לפי סוג אירוע עם רשימה וטבעת התקדמות, אמצעי משמעת והשעיה, תפקיד היועץ, טפסים, בניית אקלים, שאלון אקלים כיתתי אנונימי ומדריך למחנך. כל כלל מקושר למשפט בחוזר; הצד החינוכי-טיפולי והצד המשמעתי-מנהלי מוצגים זה לצד זה.', extra: [['#/circ/c04', '📜', 'חוזר 0470 – דף החוזר'], ['#/circ/c11', '📜', 'אובדנות (0473)'], ['#/circ/c07', '📜', 'הקשר עם ההורים (0482)'], ['#/circ/c08', '📜', 'חוק זכויות התלמיד'], ['#/track/prog-climate', '🏗️', 'תכנית התערבות לאקלים'], ['#/track/prog-bullying', '🛡️', 'מניעת בריונות'], ['#/tool/sociometry', '🕸️', 'מיפוי חברתי'], ['#/sel', '💞', 'למידה רגשית-חברתית']]},
-  tzalach: {flag: 'tzalach', guide: 'tz-guide', title: 'צל״ח – צוות לשעת חירום', icon: '🛟', say: 'היערכות מקדימה מצילה חיים – בוא נכין את הצוות יחד, צעד אחרי צעד 🛟', intro: '🛟 צל״ח – צוות לשעת חירום: המדריך (מה זה צל״ח, עץ התפקידים – המנהל, היועץ, המחנכים, הפסיכולוג, הרב, המזכיר ורכז הביטחון – מעגל השגרה והחירום, ארבעת השלבים, קמ״צ, גשר הרציפויות, גש״ר מאח״ד, מעש״ה ומעגלי הפגיעות), היערכות בשגרה עם רשימת מוכנות וטבעת התקדמות, ״מה עושים מחר בבוקר״ – השעות והיום הראשון, תרחישים (מוות של תלמיד, הורה או מורה, תאונה, אזעקות, אובדנות בקהילה, אלימות, אסון, מחלה קשה) עם מה אומרים לכל גיל והיבטים דתיים, הדרכת המחנכים לשיחה בכיתה, ומעקב אחרי האירוע – זיכרון, הצוות והפקת לקחים. לפי חוזרי 0449, 0472 ו-0473 ומסמכי שפ״י; הצד הטיפולי והצד הניהולי מופרדים, ולכל פריט מצוין המקור.', extra: [['#/circ/c13', '📜', 'נוהלי שעת חירום (0449)'], ['#/circ/c10', '📜', 'ליווי תלמידים במשבר מתמשך (0472)'], ['#/circ/c11', '📜', 'אובדנות – מניעה והתערבות (0473)'], ['#/track/prog-emergency', '🛡️', 'תוכנית התערבות: חוסן, חירום ומשבר'], ['#/track/dist-trauma', '🚨', 'זיהוי תגובות דחק וטראומה'], ['#/track/grief', '🕯️', 'מסלול טיפול: אבל ואובדן'], ['#/track/grp-resilience', '👥', 'קבוצת חוסן'], ['#/track/talk-hard', '🗣️', 'רגעים קשים בשיחה'], ['#/distress', '🚨', 'זיהוי סימני מצוקה']]}
+  tzalach: {flag: 'tzalach', guide: 'tz-guide', title: 'צל״ח – צוות לשעת חירום', icon: '🛟', say: 'היערכות מקדימה מצילה חיים – בוא נכין את הצוות יחד, צעד אחרי צעד 🛟', intro: '🛟 צל״ח – צוות לשעת חירום: המדריך (מה זה צל״ח, עץ התפקידים – המנהל, היועץ, המחנכים, הפסיכולוג, הרב, המזכיר ורכז הביטחון – מעגל השגרה והחירום, ארבעת השלבים, קמ״צ, גשר הרציפויות, גש״ר מאח״ד, מעש״ה ומעגלי הפגיעות), היערכות בשגרה עם רשימת מוכנות וטבעת התקדמות, ״מה עושים מחר בבוקר״ – השעות והיום הראשון, תרחישים (מוות של תלמיד, הורה או מורה, תאונה, אזעקות, אובדנות בקהילה, אלימות, אסון, מחלה קשה) עם מה אומרים לכל גיל והיבטים דתיים, הדרכת המחנכים לשיחה בכיתה, ומעקב אחרי האירוע – זיכרון, הצוות והפקת לקחים. לפי חוזרי 0449, 0472 ו-0473 ומסמכי שפ״י; הצד הטיפולי והצד הניהולי מופרדים, ולכל פריט מצוין המקור.', extra: [['#/circ/c13', '📜', 'נוהלי שעת חירום (0449)'], ['#/circ/c10', '📜', 'ליווי תלמידים במשבר מתמשך (0472)'], ['#/circ/c11', '📜', 'אובדנות – מניעה והתערבות (0473)'], ['#/track/prog-emergency', '🛡️', 'תוכנית התערבות: חוסן, חירום ומשבר'], ['#/track/dist-trauma', '🚨', 'זיהוי תגובות דחק וטראומה'], ['#/track/grief', '🕯️', 'מסלול טיפול: אבל ואובדן'], ['#/track/grp-resilience', '👥', 'קבוצת חוסן'], ['#/track/talk-hard', '🗣️', 'רגעים קשים בשיחה'], ['#/distress', '🚨', 'זיהוי סימני מצוקה']]},
+  quest: {flag: 'quest', guide: 'q-guide', title: 'שאלונים ומדדים', icon: '📋', say: 'מודדים בהתחלה, באמצע ובסוף – ורואים יחד את השינוי 📋', intro: '📋 שאלונים ומדדים: המדריך (מתי מודדים – בסיס, אמצע וסוף; איך בוחרים כלי לפי השאלה, הגיל ומי ממלא – הילד, ההורה או המורה; הסכמת הורים, סודיות, ״שאלון הוא לא אבחנה״ ומתי מפנים; ציינון ופירוש – ציון גולמי, נקודת חתך וטווח קליני; משוב לילד ולהורים; ורישום הציון בתיק התלמיד), מסלול לכל תחום – חרדה, מצב רוח ואובדנות, OCD, טראומה, קשב, התנהגות וכעס, חברה וערך עצמי, למידה וחרדת מבחנים, שינה, גוף וכאב, סוללות ואינטייק, טפסי הורים ומורים, ומשוב על הטיפול – ולכל שאלון כרטיס עם גילאים, ממלא, מספר פריטים והציינון ונקודות החתך כלשון הקובץ, עם כפתורי צפייה והורדה; וקטלוג א–⁠ת עם סינון לפי תחום, גיל וממלא. לכל פרט מצוין המקור, ומה שאינו בקבצים מסומן ״ראו בקובץ״ או ״ידע מקצועי כללי״.', extra: [['#/tools', '🧰', 'כלים לילדים'], ['#/distress', '🚨', 'זיהוי סימני מצוקה'], ['#/sped', '🧩', 'חינוך מיוחד והכלה'], ['#/circ/c11', '📜', 'אובדנות – חוזר 0473'], ['#/circ/c07/c07-emotional-support-parent-consent', '📜', 'הסכמת הורים למענה רגשי (0482)']]},
 };
+/* 📘 חוברות מטופלים – אריאל חן (tracks-ac.js): a hub under 🧭 טיפול לפי בעיה – no NAV entry; the page and its tracks lead back to #/problems */
+HUBS.ariel = {flag: 'ariel', guide: 'ac-guide', back: ['problems', 'טיפול לפי בעיה'], title: 'חוברות מטופלים – אריאל חן', icon: '📘', say: 'ארבע חוברות עבודה – ואנחנו מתאימים כל טופס לילד שמולנו 📘', intro: '📘 ארבע חוברות העבודה למטופל מסדרת ״צעד צעד – טיפול התנהגותי-קוגניטיבי״ של אריאל חן: פאניקה ואגורפוביה, דיכאון, חרדה חברתית ו-OCD. המדריך (מה בחוברות, מה משותף לכולן, איך משלבים טופס במפגש, התאמה לפי גיל, להורים ולמחנך, ומה לא לוקחים ליסודי), ומסלול אינטראקטיבי לכל חוברת: מבנה הטיפול מפגש אחרי מפגש, המודל הפסיכו-חינוכי בתרשימים, הטפסים המרכזיים כטפסים למילוי (בניסוח שלנו), משימות בית, להורים ומניעת הישנות. לכל פריט מצוינים הטופס והעמוד, וכל טופס נפתח בעמוד שלו בקובץ. החוברות נכתבו למבוגרים – ההתאמות לילדים מסומנות; הצד הטיפולי והצד המשמעתי-מנהלי מופרדים.', extra: [['#/problem/social-anxiety', '🙈', 'מפה: חרדה חברתית'], ['#/problem/low-mood', '🌧️', 'מפה: מצב רוח ירוד'], ['#/problem/ocd', '🔁', 'מפה: OCD'], ['#/problem/gad', '💭', 'מפה: דאגנות וחרדה'], ['#/quest', '📋', 'שאלונים ומדדים'], ['#/circ/c11', '📜', 'אובדנות – חוזר 0473'], ['#/circ/c07/c07-emotional-support-parent-consent', '📜', 'הסכמת הורים למענה רגשי (0482)']]};
 function hubView(R){
   const h = HUBS[R.r]; const all = TRACKS().filter(t => t[h.flag]), guide = h.guide && all.find(t => t.id === h.guide), list = all.filter(t => t !== guide);
   const H = hubHue(R.r), card = t => `<a class="card accent hubc" href="#/track/${t.id}" style="--h:${t.hue ?? H}"><span class="emoji">${t.icon || h.icon}</span><span class="name">${esc(t.title)}</span><span class="sub">${esc(t['for'] || '')} · ${t.steps.length} שלבים</span></a>`;
-  return {title: h.title, html: `${hubHero(R.r, h.icon, h.title, all.length)}${gGuide(h.say, 'שמחה', 6)}<div class="note" style="margin:4px 0 16px">${h.intro} ${active() ? `הכול נשמר בתיק של <b>${esc(active().alias)}</b>.` : ''}</div>${infog(R.r, all)}${hubMap([guide, ...list].filter(Boolean), H)}
+  return {title: h.title, html: `${h.back ? `<a class="back no-print" href="#/${h.back[0]}">→ ${esc(h.back[1])}</a>` : ''}${hubHero(R.r, h.icon, h.title, all.length)}${gGuide(h.say, 'שמחה', 6)}<div class="note" style="margin:4px 0 16px">${h.intro} ${active() ? `הכול נשמר בתיק של <b>${esc(active().alias)}</b>.` : ''}</div>${infog(R.r, all)}${hubMap([guide, ...list].filter(Boolean), H)}
     ${guide ? `<a class="card" href="#/track/${guide.id}" style="margin-bottom:16px;border:2px solid var(--brand)"><span class="emoji">${guide.icon}</span><span class="name">${esc(guide.title)}</span><span class="sub">${guide.steps.length} שלבים · מתחילים כאן</span></a>${h.areas ? '' : '<h2 class="sec">📚 לפי נושאים</h2>'}` : ''}
     ${h.areas && list.length ? h.areas.map(([k, i, l]) => { const inA = list.filter(t => t.distArea === k), ov = inA.find(t => t.distOverview), rest = inA.filter(t => t !== ov);
       return `<h2 class="sec">${i} ${esc(l)}</h2>${ov ? `<a class="card" href="#/track/${ov.id}" style="margin-bottom:10px;border:2px solid var(--brand)"><span class="emoji">${ov.icon || i}</span><span class="name">${esc(ov.title)}</span><span class="sub">${ov.steps.length} שלבים · סקירת התחום</span></a>` : ''}${rest.length ? `<div class="grid" style="margin-bottom:16px">${rest.map(card).join('')}</div>` : ''}`; }).join('')
     : list.length ? `<div class="grid">${list.map(card).join('')}</div>` : '<div class="empty">🛠️ התוכן של המדור הזה בהכנה ויעלה בקרוב.</div>'}
     ${h.extra.length ? `<h2 class="sec">🔗 עוד בנושא</h2><div class="actions">${h.extra.map(([u, i, l]) => `<a class="btn" href="${u}">${i} ${esc(l)}</a>`).join('')}</div>` : ''}`};
 }
-const HUBOF = t => t.workflow ? (active() ? ['student/' + active().id, 'סדר העבודה של ' + esc(active().alias)] : ['workflow', 'סדר עבודה']) : t.group ?['groups', 'הנחיית קבוצות'] : t.transition ? ['transitions', 'מעברים'] : t.newteachers ? ['newteachers', 'ליווי מורים חדשים'] : t.program ? ['programs', 'בניית תוכנית התערבות'] : t.distress ? ['distress', 'זיהוי סימני מצוקה'] : t.talk ? ['talk', 'ראיון ושיח רגשי'] : t.parents ? ['parents', 'הורים'] : t.reports ? ['reports', 'תעודות'] : t.sel ? ['sel', 'SEL – למידה רגשית-חברתית'] : t.mafteach ? ['mafteach', 'כישורי חיים ומפתח הל״ב'] : t.sped ? ['sped', 'חינוך מיוחד והכלה'] : t.develop ? ['develop', 'התפתחות הילד'] : t.tzalach ? ['tzalach', 'צל״ח – צוות לשעת חירום'] : t.aklim ? ['aklim', 'אקלים חינוכי – חוזר 0470'] : t.cbtclass ? ['cbtclass', 'יישום CBT בכיתה'] : t.crole ? ['crole', 'תפקיד היועץ החינוכי'] : ['tracks', 'כל המסלולים'];function tracksView(){  const list = TRACKS().filter(t => !t.group && !t.transition && !t.newteachers && !t.program && !t.distress && !t.talk && !t.parents && !t.reports && !t.workflow && !t.sel && !t.sped && !t.mafteach && !t.develop && !t.tzalach && !t.aklim && !t.cbtclass && !t.crole);
-  return {title: 'טיפול מובנה', html: `${hubHero('tracks', '🧭', 'טיפול מובנה', list.length)}${gGuide('בחר בעיה, ונעבור יחד שלב אחרי שלב – מהאבחון ועד סיום הטיפול 🧭', 'רוגע', 3)}
-    <div class="note" style="margin:4px 0 16px">🧭 לכל בעיה – מסלול טיפול מובנה ואינטראקטיבי: אבחון והערכה, הסבר פסיכו-חינוכי, פורמולציה (5P ומעגל משמר), מטרות, טכניקות, תוכנית פעולה ואקטיבציה, פרוטוקול מפגשים ומניעת הישנות. ${active() ? `הכול נשמר בתיק של <b>${esc(active().alias)}</b>.` : 'בחרו תלמיד בראש המסך כדי שהמילוי יישמר בתיק שלו (בלי תלמיד – נשמר ב״כללי״).'}</div>
-    ${list.length ? `<div class="grid">${list.map(t => `<a class="card accent hubc" href="#/track/${t.id}" style="--h:${t.hue ?? hueOf(t.title)}"><span class="emoji">${t.icon || '🧭'}</span><span class="name">${esc(t.title)}</span><span class="sub">${esc(t.for || '')} · ${t.steps.length} שלבים</span></a>`).join('')}</div>` : '<div class="empty">⏳ המסלולים נטענים…</div>'}`};
-}
+const HUBOF = t => t.workflow ? (active() ? ['student/' + active().id, 'סדר העבודה של ' + esc(active().alias)] : ['workflow', 'סדר עבודה']) : t.group ?['groups', 'הנחיית קבוצות'] : t.transition ? ['transitions', 'מעברים'] : t.newteachers ? ['newteachers', 'ליווי מורים חדשים'] : t.program ? ['programs', 'בניית תוכנית התערבות'] : t.distress ? ['distress', 'זיהוי סימני מצוקה'] : t.talk ? ['talk', 'ראיון ושיח רגשי'] : t.parents ? ['parents', 'הורים'] : t.reports ? ['reports', 'תעודות'] : t.sel ? ['sel', 'SEL – למידה רגשית-חברתית'] : t.mafteach ? ['mafteach', 'כישורי חיים ומפתח הל״ב'] : t.sped ? ['sped', 'חינוך מיוחד והכלה'] : t.develop ? ['develop', 'התפתחות הילד'] : t.tzalach ? ['tzalach', 'צל״ח – צוות לשעת חירום'] : t.aklim ? ['aklim', 'אקלים חינוכי – חוזר 0470'] : t.cbtclass ? ['cbtclass', 'יישום CBT בכיתה'] : t.crole ? ['crole', 'תפקיד היועץ החינוכי'] : t.quest ? ['quest', 'שאלונים ומדדים'] : t.ariel ? ['ariel', 'טיפול לפי בעיה › חוברות מטופלים – אריאל חן'] : ['problems', 'טיפול לפי בעיה'];
+// #/tracks (the old "טיפול מובנה" page) is now the merged "טיפול לפי בעיה" page – the route stays as an alias
+function tracksView(R){ return problems(R); }
 function trackView(R){
   if (R.x && R.x !== activeId && student(R.x)) setActive(R.x); // #/track/<id>/<step>/<studentId>: open bound to that student, so everything saves in his file
-  const t = TRACK(R.id); if (!t)return {title: 'טיפול מובנה', html: `<div class="empty">${TRACKS().length ? 'המסלול לא נמצא.' : '⏳ המסלולים נטענים…'} <a href="#/tracks">לכל המסלולים</a></div>`};
+  const t = TRACK(R.id); if (!t)return {title: 'טיפול מובנה', html: `<div class="empty">${TRACKS().length ? 'המסלול לא נמצא.' : '⏳ המסלולים נטענים…'} <a href="#/problems">לטיפול לפי בעיה</a></div>`};
+  const pid = probOfTrack(t), sw = pid ? probSwitch(pid, t.id) : '';
   const D = trData(t.id);
   if (R.sub === 'print') return {title: t.title, html: `<a class="back no-print" href="#/track/${t.id}">→ חזרה למסלול</a><h1>${esc(t.title)}</h1>${active() ? `<p>תלמיד: ${esc(active().alias)}</p>` : ''}${t.steps.map((s, i) => `<div class="panel trprint"><h3>${i + 1}. ${s.icon || ''} ${esc(s.title)}</h3>${trStepHTML(t, s, D)}</div>`).join('')}`, after(){ setTimeout(() => window.print(), 400); }};
   const i = Math.min(t.steps.length - 1, Math.max(0, R.sub ? +R.sub - 1 : 0)), s = t.steps[i];
   const done = t.steps.filter(x => trStepDone(x, D)).length;
-  return {title: t.title, html: `<a class="back no-print" href="#/${HUBOF(t)[0]}">→ ${HUBOF(t)[1]}</a>
+  return {title: t.title, html: `<a class="back no-print" href="#/${HUBOF(t)[0]}">→ ${HUBOF(t)[1]}</a>${sw}
     <div class="banner" style="--h:${t.hue ?? HUB_HUE[HUBOF(t)[0]] ?? hueOf(t.title)}"><span class="emoji">${t.icon || '🧭'}</span><div><div style="opacity:.85;font-size:14px">${esc(t['for'] || '')}${active() ? ' · ⭐ ' + esc(active().alias) : ''}</div><h1>${esc(t.title)}</h1></div>
-      <div class="actions no-print">${P[t.id] ? `<a class="btn sm" href="#/problem/${t.id}">🧭 מפת הטיפול</a>` : ''}${GAME(t.id) ? `<a class="btn sm" href="#/game/${t.id}">🎲 המשחק</a>` : ''}<a class="btn sm" href="#/track/${t.id}/print">🖨️ סיכום להדפסה</a></div></div>
+      <div class="actions no-print">${P[t.id] && !sw ? `<a class="btn sm" href="#/problem/${t.id}">📖 מפת הטיפול</a>` : ''}${GAME(t.id) ? `<a class="btn sm" href="#/game/${t.id}">🎲 המשחק</a>` : ''}<a class="btn sm" href="#/track/${t.id}/print">🖨️ סיכום להדפסה</a></div></div>
     ${t.intro && i === 0 ? `<p class="lead" style="text-align:start">${esc(t.intro)}</p>` : ''}
     <div class="trlayout"><nav class="trsteps no-print"><div class="gprog"><i style="width:${Math.round(100 * done / t.steps.length)}%"></i></div>${t.steps.map((x, j) => `<a href="#/track/${t.id}/${j + 1}" class="${j === i ? 'on' : ''} ${trStepDone(x, D) ? 'ok' : ''}" style="--kh:${(TR_KIND[x.kind] || TR_KIND.info)[2]}" title="${(TR_KIND[x.kind] || TR_KIND.info)[1]}"><span class="n">${trStepDone(x, D) ? '✓' : j + 1}</span>${x.icon || ''} ${esc(x.title)}</a>`).join('')}</nav>
       <section class="panel trmain"><h2 class="trhead" style="--kh:${(TR_KIND[s.kind] || TR_KIND.info)[2]}"><span>${s.icon || ''} ${esc(s.title)}</span><small class="trkind">${(TR_KIND[s.kind] || TR_KIND.info)[0]} ${(TR_KIND[s.kind] || TR_KIND.info)[1]} · שלב ${i + 1} מתוך ${t.steps.length}</small></h2>${trStepHTML(t, s, D)}
@@ -7288,15 +7468,15 @@ function diagramHTML(g, o = {}){
     ${g.note ? `<p class="dgnote">📌 ${esc(g.note)}</p>` : ''}${o.src !== false && g.src ? `<p class="wfsrc">📚 ${esc(g.src)}</p>` : ''}</figure>`;
 }
 /* hub color identity: one hue per hub – its hero band, its cards, its map and the headers of its tracks */
-const HUB_HUE = {transitions: 200, newteachers: 135, programs: 28, distress: 0, talk: 265, parents: 330, reports: 45, sel: 300, sped: 180, develop: 140, tzalach: 12, aklim: 60, cbtclass: 285, crole: 315, groups: 220, tracks: 160, workflow: 90, games: 20, videos: 350, tools: 190, circ: 40, library: 250, problems: 170, roles: 100, ask: 210, students: 55};
+const HUB_HUE = {transitions: 200, newteachers: 135, programs: 28, distress: 0, talk: 265, parents: 330, reports: 45, sel: 300, sped: 180, develop: 140, tzalach: 12, aklim: 60, cbtclass: 285, crole: 315, quest: 195, ariel: 212, groups: 220, tracks: 160, workflow: 90, games: 20, videos: 350, tools: 190, circ: 40, library: 250, problems: 170, roles: 100, ask: 210, students: 55};
 const hubHue = k => HUB_HUE[k] ?? hueOf(k);
 /* 🧭 מבט על – the hub's infographic (app/infographics.js) */
 const infog = (k, list) => { try { return window.infographicBlock ? window.infographicBlock(k, {hue: hubHue(k), tracks: TRACKS(), list: list || [], kid: kidMini('שמחה', 5, 'igkidsvg')}) : ''; } catch(e){ return ''; } };
 function hubHero(k, icon, title, n){ return `<div class="banner hubhero" style="--h:${hubHue(k)}"><span class="emoji">${icon}</span><div><h1>${esc(title)}</h1>${n ? `<p>${n} מסלולים · בוחרים מסלול ומתקדמים שלב אחרי שלב</p>` : ''}</div></div>`; }
 function hubMap(list, H){ if (list.length < 3 || list.length > 40) return '';
   return `<nav class="hubmap no-print" aria-label="מפת המדור" style="--h:${H}"><h2 class="sec">🗺️ מפת המדור</h2><ol>${list.map((t, i) => `<li style="--k:${i}"><a href="#/track/${t.id}"><span class="hmn">${i + 1}</span><span class="hmi" aria-hidden="true">${t.icon || '🧭'}</span><span class="hmt">${esc(t.title)}</span></a></li>`).join('')}</ol></nav>`; }
-function homeTiles(){ const items = NAV.filter(n => !['home', 'settings'].includes(n[0]) && !(LITE && ['students', 'library'].includes(n[0])));
-  return `<h2 class="sec">🧩 כל המדורים</h2><div class="hometiles">${items.map(([k, i, l]) => `<a class="htile" href="#/${k}" style="--h:${hubHue(k)}"><span class="hti" aria-hidden="true">${i}</span><span class="htl">${esc(l)}</span></a>`).join('')}</div>`; }
+function homeTiles(){ const tile = ([k, i, l]) => `<a class="htile" href="#/${k}" style="--h:${hubHue(k)}"><span class="hti" aria-hidden="true">${i}</span><span class="htl">${esc(l)}</span></a>`;
+  return `<h2 class="sec">🧩 כל המדורים</h2>` + navGroups().map(([i, l, items]) => `<h3 class="htgroup">${i} ${esc(l)}</h3><div class="hometiles">${items.map(tile).join('')}</div>`).join(''); }
 const TR_KIND = {info: ['ℹ️', 'הסבר', 210], form: ['📝', 'טופס', 45], checklist: ['✅', 'רשימת בדיקה', 140], scale: ['📊', 'סולם', 20], fivep: ['🌸', '5P', 320], cycle: ['🔄', 'מעגל', 270], plan: ['🗓️', 'תוכנית', 180], cards: ['🃏', 'כרטיסים', 300], sessions: ['📅', 'מפגשים', 100], diagram: ['🎨', 'תרשים', 250], psy: ['🧠', 'הסבר', 210], tabs: ['📑', 'לפי גיל ובעיה', 60], viz: ['📈', 'כלי חזותי', 160]};
 /* info steps made visual – the words stay exactly as written, only their shape changes:
    an arrow chain (א ← ב ← ג, 3–8 links) → a flow of colored chips (a circle when the paragraph speaks of a מעגל);
@@ -7351,7 +7531,7 @@ function trFileBtn(k, o = {}){ const f = trFile(k); if (!f) return '';
   const ic = /\.pdf$/i.test(f.p) ? '📕' : OFFICE_RX.test(f.p) ? '📘' : '📄', lab = esc(o.label || f.t);
   if (LITE || ARTIFACT) return `<span class="tfile off">${ic} ${lab}</span>`;
   const dl = WEB ? `<button type="button" class="tfdl" data-act="tfdl" data-path="${esc(f.p)}" title="הורדת הקובץ המקורי למחשב (לעריכה)">⬇ הורדה</button>` : `<a class="tfdl" href="${href(f.p)}" download title="הורדת הקובץ המקורי למחשב (לעריכה)">⬇ הורדה</a>`;
-  return `<span class="tfile"><button type="button" class="tfopen" data-act="attopen" data-path="${esc(f.p)}" data-title="${esc(f.t)}" title="צפייה בקובץ כאן, בלי להוריד">${ic} ${lab} <span class="tfv">👁 צפייה</span></button>${dl}</span>`; }
+  return `<span class="tfile"><button type="button" class="tfopen" data-act="attopen" data-path="${esc(f.p)}" data-title="${esc(f.t)}"${f.pg ? ` data-page="${+f.pg}"` : ''} title="${f.pg ? 'פותח את הקובץ בעמוד ' + (+f.pg) : 'צפייה בקובץ כאן, בלי להוריד'}">${ic} ${lab} <span class="tfv">👁 צפייה</span></button>${dl}</span>`; }   // TRFILES {pg: N} opens the PDF at page N (tracks-ac.js – a key per workbook form)
 const WV = {
   /* special-ed hub (tracks-sped.js): a colored process map with the form of every station, color-coded form cards, and cut-off bars for the reading tools */
   flow: {
@@ -7474,6 +7654,49 @@ const WV = {
     draw(t, s, D, d, o){ return `<div class="pbank">${s.domains.map((x, i) => `<section class="pbd" style="--c:${x.color}"><h4><span>${x.icon}</span> ${esc(x.label)}</h4><ul>${x.phrases.map(p => `<li>${esc(p)}</li>`).join('')}</ul>${x.avoid ? `<p class="pbav">🚫 ${esc(x.avoid)}</p>` : ''}${o.ro ? '' : `<label class="spck"><input type="checkbox" data-trc="${s.id}.d${i}" ${d['d' + i] ? 'checked' : ''}> השתמשתי</label>`}</section>`).join('')}</div>${s.note ? `<p class="muted wvhint">${esc(s.note)}</p>` : ''}`; }
   }
 };
+/* ================= questionnaires hub (tracks-q.js): a card per questionnaire (what, ages, informant, items, scoring and cut-offs as worded in the file, file buttons),
+   the A–Z catalogue with search + area/age/informant filters, and the way into the measures tab of the student's file.
+   data: window.QUEST = [{id, he, en, area, icon?, ages, band: ['k'|'t'|'a'], inf: ['child'|'parent'|'teacher'|'clin'|'adult'], items, time, what, score, cut, note, files: [TRFILES keys], src}] */
+const Q_INF = {child: ['🧒', 'הילד'], parent: ['👪', 'הורה'], teacher: ['🧑‍🏫', 'מורה'], clin: ['🩺', 'מטפל – ראיון'], adult: ['🧑', 'מבוגר על עצמו']};
+const Q_BAND = {k: 'ילדים (יסודי)', t: 'מתבגרים', a: 'מבוגרים והורים'};
+const qById = id => (window.QUEST || []).find(q => q.id === id);
+const qArea = k => (window.QUEST_AREAS || {})[k] || {he: k, icon: '📋', color: '#a78bfa', track: 'q-all'};
+const qWhere = q => { const t = TRACK(qArea(q.area).track); if (!t) return '#/track/q-all'; const j = t.steps.findIndex(s => (s.q || []).includes(q.id)); return `#/track/${t.id}${j >= 0 ? '/' + (j + 1) : ''}`; };
+const qInf = q => (q.inf || []).filter(k => Q_INF[k]).map(k => `<span class="qinf">${Q_INF[k][0]} ${Q_INF[k][1]}</span>`).join('');
+function qCard(q, d, sid, o){ const A = qArea(q.area), stu = LITE ? null : active();
+  return `<article class="qcard" id="q-${q.id}" style="--c:${A.color}"><header class="qch"><span class="qic" aria-hidden="true">${q.icon || A.icon}</span><div><h4>${esc(q.he)}</h4>${q.en ? `<span class="qen" dir="ltr">${esc(q.en)}</span>` : ''}</div></header>
+    <p class="qwhat">${esc(q.what)}</p>
+    <dl class="qdl"><dt>🎂 גילאים</dt><dd>${esc(q.ages)}</dd><dt>✍️ ממלא</dt><dd>${qInf(q)}</dd>${q.items ? `<dt>🔢 פריטים</dt><dd>${esc(q.items)}</dd>` : ''}${q.time ? `<dt>⏱️ זמן</dt><dd>${esc(q.time)}</dd>` : ''}</dl>
+    <div class="qsc"><h5>📐 ציינון ונקודות חתך – כלשון הקובץ</h5><p>${esc(q.score)}</p>${q.cut ? `<p class="qcut">${esc(q.cut)}</p>` : ''}</div>
+    ${q.note ? `<p class="spnote">⚠️ ${trLink(esc(q.note))}</p>` : ''}${(q.files || []).length ? `<div class="qfiles">${q.files.map(k => trFileBtn(k)).join('')}</div>` : ''}
+    <p class="qsrc">📚 ${trLink(esc(q.src))}</p>
+    ${o.ro ? '' : `<div class="qfoot">${stu ? `<a class="btn sm" href="#/student/${stu.id}/measures">📊 רישום ציון בתיק של ${esc(stu.alias)}</a>` : ''}<label class="spck"><input type="checkbox" data-trc="${sid}.${q.id}" ${d[q.id] ? 'checked' : ''}> השתמשתי בשאלון</label></div>`}</article>`; }
+function qcatApply(box){ const w = (box.querySelector('.qsearch').value || '').trim().toLowerCase().split(/\s+/).filter(Boolean), a = box.dataset.area || '', b = box.querySelector('.qband').value, i = box.querySelector('.qinfs').value; let n = 0;
+  box.querySelectorAll('.qmini').forEach(el => { const ok = w.every(x => el.dataset.s.includes(x)) && (!a || el.dataset.a === a) && (!b || el.dataset.b.split(' ').includes(b)) && (!i || el.dataset.i.split(' ').includes(i)); el.hidden = !ok; if (ok) n++; });
+  box.querySelector('.qcount').textContent = n + ' שאלונים'; box.querySelector('.qnone').hidden = n > 0; }
+['input', 'change'].forEach(ev => document.addEventListener(ev, e => { const box = e.target.closest && e.target.closest('.qcat'); if (box && e.target.closest('.qctl')) qcatApply(box); }));
+document.addEventListener('click', e => { const c = e.target.closest && e.target.closest('.qcat [data-qa]'); if (!c) return; const box = c.closest('.qcat'); box.dataset.area = c.dataset.qa; box.querySelectorAll('[data-qa]').forEach(x => { x.classList.toggle('on', x === c); x.setAttribute('aria-pressed', x === c); }); qcatApply(box); });
+Object.assign(WV, {
+  /* the questionnaires of one step, as cards */
+  qcards: {
+    draw(t, s, D, d, o){ return `<div class="qgrid">${(s.q || []).map(qById).filter(Boolean).map(q => qCard(q, d, s.id, o)).join('')}</div>${s.note ? `<p class="muted wvhint">${esc(s.note)}</p>` : ''}`; }
+  },
+  /* the A–Z catalogue: every questionnaire as a small colored card that leads to its card in the area track */
+  qcat: {
+    draw(t, s, D, d, o){ const Q = (window.QUEST || []).slice().sort((a, b) => (a.en || a.he).localeCompare(b.en || b.he, 'he')), A = window.QUEST_AREAS || {};
+      const mini = q => { const a = qArea(q.area); return `<a class="qmini" href="${qWhere(q)}" style="--c:${a.color}" data-a="${esc(q.area)}" data-b="${(q.band || []).join(' ')}" data-i="${(q.inf || []).join(' ')}" data-s="${esc([q.he, q.en, q.what, a.he, q.ages].join(' ').toLowerCase())}"><span class="qmh"><b ${q.en ? 'dir="ltr"' : ''}>${esc(q.en || q.he)}</b>${q.en ? `<small>${esc(q.he)}</small>` : ''}</span><span class="qmt"><span class="qpill">${a.icon} ${esc(a.he)}</span><span class="qpill">🎂 ${esc(q.ages)}</span></span><span class="qmi">${(q.inf || []).filter(k => Q_INF[k]).map(k => `<span title="${Q_INF[k][1]}">${Q_INF[k][0]} ${Q_INF[k][1]}</span>`).join('')}</span></a>`; };
+      return `<div class="qcat" data-area=""><div class="qctl"><input class="inp qsearch" type="search" placeholder="🔍 חיפוש שאלון" aria-label="חיפוש שאלון לפי שם, ראשי תיבות או נושא">
+        <div class="chips qareas" role="group" aria-label="סינון לפי תחום"><button type="button" class="chip on" data-qa="" aria-pressed="true">הכול</button>${Object.entries(A).map(([k, a]) => `<button type="button" class="chip" data-qa="${k}" aria-pressed="false" style="--c:${a.color}">${a.icon} ${esc(a.he)}</button>`).join('')}</div>
+        <div class="qsel"><label>🎂 גיל<select class="inp qband"><option value="">כל הגילאים</option>${Object.entries(Q_BAND).map(([k, l]) => `<option value="${k}">${l}</option>`).join('')}</select></label><label>✍️ ממלא<select class="inp qinfs"><option value="">כולם</option>${Object.entries(Q_INF).map(([k, [i, l]]) => `<option value="${k}">${i} ${l}</option>`).join('')}</select></label></div>
+        <p class="muted qcount" aria-live="polite">${Q.length} שאלונים</p></div><div class="qminis">${Q.map(mini).join('')}</div><p class="empty qnone" hidden>לא נמצא שאלון מתאים – מנקים את הסינון ומנסים שוב.</p></div>`; }
+  },
+  /* recording a score in the student's file (the measures tab) */
+  qrec: {
+    draw(t, s, D, d, o){ const stu = LITE ? null : active();
+      return `<ol class="qrec">${s.rows.map((x, i) => `<li style="--c:var(--dg${i % 8 + 1})"><span class="qrn" aria-hidden="true">${x.icon}</span><div><b>${esc(x.h)}</b><p>${trLink(esc(x.t))}</p></div></li>`).join('')}</ol>
+        <div class="actions qrecgo">${LITE ? '<p class="muted">תיק התלמיד זמין באפליקציה המלאה.</p>' : stu ? `<a class="btn primary" href="#/student/${stu.id}/measures">📊 ללשונית ״מדדים ושאלונים״ בתיק של ${esc(stu.alias)}</a>` : `<a class="btn primary" href="#/students">🧒 לרשימת התלמידים</a><span class="muted">בוחרים תלמיד בראש המסך – והכפתור כאן יוביל ישר ללשונית המדדים שלו.</span>`}</div>`; }
+  }
+});
 /* ================= aklim hub (tracks-aklim.js): graded-response ladder, event finder, severity criteria, suspension bars, class climate survey =================
    every rule carries a cite {s: 'section as shown', q: 'words from the circular', at?: 'section of the text chunk', cid?: 'c04'} → #/circsrc link that highlights the sentence;
    items: {t, m: 1 (חובה) | 0 (לשיקול דעת) | undefined, c: cite, k: 1 = general professional knowledge (not from the circular)} */
@@ -8051,7 +8274,7 @@ document.addEventListener('change', e => {
 });
 /* ================= boot ================= */
 { const t = ls.get('cbtapp.theme', null); if (t) document.documentElement.dataset.theme = t; }
-$('#nav').innerHTML = NAV.filter(n => !LITE || !['students','library'].includes(n[0])).map(([k, i, l]) => `<a href="#/${k}" data-nav="${k}"><span class="i">${i}</span>${l}</a>`).join('');
+$('#nav').innerHTML = navHTML();
 // phone bottom bar: the main five + "עוד", which opens every other area (the side menu is hidden on a phone)
 const TABBAR = LITE ? ['home', 'ask', 'circ', 'tools'] : ['home', 'ask', 'circ', 'library', 'tools'];
 $('#tabbar').innerHTML = TABBAR.map(k => NAV.find(n => n[0] === k)).map(([k, i, l]) => `<a href="#/${k}" data-nav="${k}"><span class="i">${i}</span>${l}</a>`).join('') + `<a href="#/more" data-nav="more"><span class="i">☰</span>עוד</a>`;
