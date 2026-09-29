@@ -1989,6 +1989,41 @@ body,body *{overflow-wrap:normal!important;word-break:normal!important;hyphens:m
 .qzext{display:flex;flex-wrap:wrap;gap:8px;margin:6px 0 12px}
 @media print{.qzlist li{break-inside:avoid}}
 
+/* ---------- 🎮 quiz step (kind 'quiz' – tracks-behave.js): case → principle, score, topic filter, mistakes review ---------- */
+.bq{--q:hsl(110 var(--sat) var(--lt));background:var(--panel);border:1px solid var(--line);border-radius:18px;padding:16px;box-shadow:var(--shadow)}
+.bqhead{display:flex;flex-direction:column;gap:4px;margin-bottom:12px}
+.bqhead b{font-size:18px}
+.bqrow{display:flex;flex-direction:column;gap:6px;margin:10px 0}
+.bqlab{font-weight:700;font-size:14px;color:var(--muted)}
+.bq .chips{display:flex;flex-wrap:wrap;gap:6px}
+.bq .chip.on{color:var(--brand-ink)}
+.bqgo{margin-top:8px;padding:12px 22px;font-size:17px}
+.bqbar{display:grid;grid-template-columns:auto 1fr auto;gap:12px;align-items:center;font-size:14px;margin-bottom:12px}
+.bqprog{height:10px;border-radius:99px;background:var(--bg2);overflow:hidden;border:1px solid var(--line)}
+.bqprog i{display:block;height:100%;background:var(--q);border-radius:99px;transition:width .35s}
+.bqcase{background:hsl(110 var(--soft-s) var(--soft-l));border:1px solid var(--line);border-inline-start:6px solid var(--q);border-radius:14px;padding:14px 16px;margin-bottom:12px}
+.bqcase p{margin:8px 0;font-size:17px;line-height:1.7}
+.bqask{display:block;font-size:15px}
+.bqopts{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+.bqopt{min-height:56px;padding:10px 14px;border-radius:14px;border:2px solid var(--line);background:var(--bg2);font-weight:600;font-size:15px;line-height:1.35;text-align:center;cursor:pointer;transition:transform .12s,border-color .12s}
+.bqopt:hover:not([disabled]){border-color:var(--q);transform:translateY(-1px)}
+.bqopt[disabled]{cursor:default}
+.bqopt.ok{border-color:var(--ok);background:color-mix(in srgb,var(--ok) 18%,var(--panel))}
+.bqopt.no{border-color:var(--danger);background:color-mix(in srgb,var(--danger) 16%,var(--panel))}
+.bqopt.dim{opacity:.55}
+.bqfb{margin:12px 0;padding:12px 14px;border-radius:14px;border:1px solid var(--line);border-inline-start:6px solid var(--ok);background:var(--bg2)}
+.bqfb.no{border-inline-start-color:var(--danger)}
+.bqfb p{margin:6px 0;line-height:1.6}
+.bqmore a{font-weight:700}
+.bqnext{margin-top:4px}
+.bqend{text-align:start}
+.bqscore{display:flex;align-items:baseline;gap:14px;justify-content:center;padding:14px;border-radius:16px;background:hsl(110 var(--soft-s) var(--soft-l))}
+.bqscore b{font-size:40px}.bqscore span{font-size:22px;color:var(--muted)}
+.bqmsg{text-align:center;font-weight:700}
+.bqmiss li{margin-bottom:10px;padding:8px 10px;border:1px solid var(--line);border-radius:12px;background:var(--bg2)}
+.bqmiss p{margin:4px 0}
+@media (max-width:640px){.bqopts{grid-template-columns:1fr}.bqbar{grid-template-columns:1fr auto}.bqprog{grid-column:1 / -1;order:3}}
+.bqprint ol li{margin-bottom:6px;break-inside:avoid}
 </style>
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="apple-touch-icon" href="icon-192.png">
@@ -3308,6 +3343,37 @@ sped: {
   sources: {t: 'חוזר 0287 · חוזר 0483 – מוסדות מכילים · ערכת הטפסים שלך', go: '#/circ/c02'}
 },
 
+autism: {
+  tagline: 'ילדים על הרצף – להבחין ולהפנות, להתאים את הכיתה, ולעבוד רגשית בדרך מוחשית וחזותית.',
+  core: {icon: '🧩', title: 'התנהגות היא תקשורת', text: 'קודם מבינים מה הילד לא מצליח לומר – עומס, שינוי או אי-הבנה – ואחר כך מגיבים', go: T('aut-class', 'iceberg')},
+  pillars: [
+    {icon: '🧭', title: 'המדריך', track: 'aut-guide', go: T('aut-guide', 'what'), points: [{t: 'שני התחומים', go: T('aut-guide', 'domains')}, {t: 'רמות התמיכה', go: T('aut-guide', 'levels')}, {t: 'מה מגיע יחד', go: T('aut-guide', 'comorbid')}]},
+    {icon: '👀', title: 'מה רואים', track: 'aut-signs', points: [{t: 'בכיתה, בהפסקה ובבית', go: T('aut-signs', 'social')}, {t: 'לפי גיל', go: T('aut-signs', 'ages')}, {t: 'רשימת תצפית', go: T('aut-signs', 'observe')}]},
+    {icon: '🩺', title: 'הפניה ואבחון', track: 'aut-refer', points: [{t: 'השיחה עם ההורים', go: T('aut-refer', 'parents')}, {t: 'מי מאבחן', go: T('aut-refer', 'who')}, {t: 'המסגרות', go: T('aut-refer', 'frames')}]},
+    {icon: '🏫', title: 'בכיתה', track: 'aut-class', points: [{t: 'מבנה ולוח חזותי', go: T('aut-class', 'structure')}, {t: 'חושים ופינת רוגע', go: T('aut-class', 'sensory')}, {t: 'מעגל ההצפה', go: T('aut-class', 'cycle')}]},
+    {icon: '🧠', title: 'CBT מותאם', track: 'aut-cbt', points: [{t: 'גלגל ההתאמות', go: T('aut-cbt', 'adapt')}, {t: 'ארגז הכלים', go: T('aut-cbt', 'toolbox')}, {t: 'שמונה מפגשים', go: T('aut-cbt', 'sessions')}]},
+    {icon: '🤲', title: 'ילד, הורים וצוות', track: 'aut-partners', points: [{t: 'להסביר מה זה הרצף', go: T('aut-partners', 'psy-know')}, {t: 'כרטיס ״מה עוזר לי״', go: T('aut-partners', 'card')}, {t: 'הציר השנתי', go: T('aut-partners', 'year')}]}
+  ],
+  flow: [
+    {icon: '👀', t: 'מבחינים', go: T('aut-signs', 'principle')},
+    {icon: '📝', t: 'מתעדים ומתאימים', go: T('aut-refer', 'before')},
+    {icon: '🤝', t: 'משתפים הורים', go: T('aut-refer', 'parents')},
+    {icon: '🩺', t: 'הערכה – רופא ופסיכולוג', go: T('aut-refer', 'who')},
+    {icon: '🏛️', t: 'צוות רב-מקצועי או ועדה', go: T('aut-refer', 'moe')},
+    {icon: '📋', t: 'תוכנית ומעקב', go: T('aut-partners', 'year')}
+  ],
+  keys: [
+    {n: '2', t: 'תחומים: תקשורת וקשר, דפוסים חזרתיים', go: T('aut-guide', 'domains')},
+    {n: '3', t: 'רמות תמיכה', go: T('aut-guide', 'levels')},
+    {n: '2', t: 'מאבחנים: רופא ופסיכולוג', go: T('aut-refer', 'who')},
+    {n: '8', t: 'מפגשי CBT מותאם לחרדה', go: T('aut-cbt', 'sessions')}
+  ],
+  do: [{t: 'מודיעים מראש על כל שינוי', go: T('aut-class', 'structure')}, {t: 'הוראה אחת, במילים מדויקות', go: T('aut-class', 'language')}, {t: 'מתחילים מהחוזקות ומתחום העניין', go: T('aut-guide', 'strengths')}],
+  dont: [{t: 'היועץ לא מאבחן ולא אומר ״יש לו אוטיזם״', go: T('aut-guide', 'role')}, {t: 'לא מלמדים ולא מענישים בזמן הצפה', go: T('aut-class', 'during')}, {t: 'לא מערבבים טיפולי ומשמעתי', go: T('aut-class', 'split')}],
+  partners: [{t: 'ההורים', go: T('aut-partners', 'parents')}, {t: 'המחנך', go: T('aut-partners', 'staff')}, {t: 'היועץ', go: T('aut-guide', 'role')}, {t: 'פסיכולוג השפ״ח', go: T('aut-refer', 'before')}, {t: 'מרפא בעיסוק', go: T('aut-class', 'sensory')}, {t: 'רב בית הספר', go: T('aut-partners', 'staff')}],
+  sources: {t: 'אוזסיבדג׳יאן · אטווד וסקרפה · איווה · DSM-5 · חוזר משרד הבריאות 15/13 · חוזרים 0287 ו-0470 · NICE', go: T('aut-guide', 'sources')}
+},
+
 quest: {
   tagline: 'כל השאלונים שבחומרים שלך – לפי תחום, גיל ומי ממלא – עם הציינון ונקודות החתך כפי שהם כתובים בקובץ.',
   core: {icon: '📋', title: 'מודדים – ורואים את השינוי', text: 'אותו שאלון בהתחלה, באמצע ובסוף; שאלון הוא לא אבחנה', go: T('q-guide', 'dg-when')},
@@ -3429,6 +3495,37 @@ cbtclass: {
   dont: [{t: 'לא משתמשים בכלי טיפולי כעונש', go: T('cbtc-guide', 'separate')}, {t: 'לא מבררים ״מי אשם״ מול הכיתה', go: T('cbtc-guide', 'separate')}, {t: 'לא משפילים ולא צועקים', go: T('cbtc-guide', 'separate')}],
   partners: [{t: 'היועץ', go: T('cbtc-guide', 'roles')}, {t: 'המחנך', go: T('cbtc-teacher', 'why')}, {t: 'ההורים', go: T('cbtc-guide', 'lowint')}, {t: 'המנהל', go: T('cbtc-guide', 'start')}],
   sources: {t: 'יששכר עשת – CBT מערכתי בעצימות נמוכה · חוזרים 0351 ו-0470', go: T('cbtc-guide', 'links')}
+},
+
+behave: {
+  tagline: 'מלמדים התנהגות כמו שמלמדים קריאה – מבינים מה ההתנהגות משיגה, מחזקים את הרצוי ומפחיתים בסדר הנכון, לתלמיד אחד ולכל הכיתה.',
+  core: {icon: '🔗', title: 'שרשרת ABC', text: 'מה קרה לפני · מה הוא עשה · מה קרה אחרי – והתוצאה קובעת אם זה יחזור', go: T('bh-guide', 'abc')},
+  pillars: [
+    {icon: '📚', title: 'התאוריה', track: 'bh-theory', points: [{t: 'התניה קלאסית ואופרנטית', go: T('bh-theory', 'classical')}, {t: 'סדרי חיזוק', go: T('bh-theory', 'schedules')}, {t: 'הכחדה ופרץ ההכחדה', go: T('bh-theory', 'extinction')}]},
+    {icon: '📖', title: 'מילון ומשחק', track: 'bh-concepts', points: [{t: 'חיזוק ועונש – טבלת 2×2', go: T('bh-guide', 'quad')}, {t: 'מילון המושגים', go: T('bh-concepts')}, {t: 'משחק: מזהים את העיקרון', go: T('behave-game', 'play')}]},
+    {icon: '🧒', title: 'תוכנית פרטנית', track: 'bh-individual', points: [{t: 'הגדרה ומדידת בסיס', go: T('bh-individual', 'target')}, {t: 'ניתוח תפקודי – ארבע פונקציות', go: T('bh-individual', 'function')}, {t: 'דוח יומי לבית', go: T('bh-individual', 'drc')}]},
+    {icon: '🏫', title: 'עבודה עם כיתה', track: 'bh-class', points: [{t: 'כללים וטבלת ציפיות', go: T('bh-class', 'matrix')}, {t: 'משחק ההתנהגות הטובה', go: T('bh-class', 'gbg')}, {t: 'שלוש השכבות – PBIS', go: T('bh-class', 'pbis')}]},
+    {icon: '🏡', title: 'בבית', track: 'bh-home', points: [{t: 'ארבעה צעדים עם ההורים', go: T('bh-home', 'steps')}, {t: 'מלכודת הכפייה', go: T('bh-home', 'coercion')}, {t: 'לוח כוכבים', go: T('bh-home', 'chart')}]},
+    {icon: '🔧', title: 'כשזה לא עובד', track: 'bh-trouble', points: [{t: 'שמונה טעויות נפוצות', go: T('bh-trouble', 'mistakes')}, {t: 'למה זה הפסיק לעבוד', go: T('bh-trouble', 'why-stop')}, {t: '״זה שוחד?״', go: T('bh-trouble', 'myths')}]}
+  ],
+  flow: [
+    {icon: '🎯', t: 'מגדירים התנהגות אחת', go: T('bh-individual', 'target')},
+    {icon: '📏', t: 'מודדים קו בסיס', go: T('bh-individual', 'baseline')},
+    {icon: '🔍', t: 'מה ההתנהגות משיגה', go: T('bh-individual', 'function')},
+    {icon: '🔀', t: 'מלמדים חלופה', go: T('bh-individual', 'replacement')},
+    {icon: '🎁', t: 'מחזקים מיד ובעקביות', go: T('bh-individual', 'plan')},
+    {icon: '📉', t: 'בודקים ומפחיתים בהדרגה', go: T('bh-individual', 'fade')}
+  ],
+  keys: [
+    {n: '4', t: 'חיזוק ועונש, חיובי ושלילי', go: T('bh-guide', 'quad')},
+    {n: '4', t: 'פונקציות: תשומת לב, בריחה, מוחשי, תחושה', go: T('bh-individual', 'function')},
+    {n: '3', t: 'שכבות: כיתה, קבוצה, תלמיד', go: T('bh-class', 'pbis')},
+    {n: '100+', t: 'מקרים במשחק הזיהוי', go: T('behave-game', 'play')}
+  ],
+  do: [{t: 'מחזקים מיד, ספציפית והרבה', go: T('bh-class', 'praise')}, {t: 'קודם מבינים את הפונקציה', go: T('bh-individual', 'function')}, {t: 'מתכוננים לפרץ ההכחדה', go: T('bh-theory', 'extinction')}],
+  dont: [{t: 'חיזוק שלילי אינו עונש', go: T('bh-guide', 'neg')}, {t: 'לא משפילים ולא מענישים את כל הכיתה', go: T('bh-guide', 'ethics')}, {t: 'לא לוקחים את מה שהילד כבר הרוויח', go: T('bh-trouble', 'mistakes')}],
+  partners: [{t: 'הילד', go: T('bh-individual', 'scripts')}, {t: 'המחנך', go: T('bh-class', 'why')}, {t: 'המורים המקצועיים', go: T('bh-class', 'class-plan')}, {t: 'ההורים', go: T('bh-home', 'why')}, {t: 'היועץ', go: T('bh-guide', 'sides')}, {t: 'המנהל ורכז השכבה', go: T('bh-class', 'consequences')}],
+  sources: {t: 'רקע לגישה ההתנהגותית · ענבל בר · איתי הרמן · Cooper, Heron & Heward · PBIS · IES · חוזר 0470', go: T('bh-guide', 'sources')}
 },
 
 ariel: {
@@ -5048,7 +5145,7 @@ const Cloud = {
     await this.connect();
   },
   login(){ if (this.msal) this.msal.loginRedirect({scopes: this.scopes, redirectUri: location.origin + location.pathname}); else toast('חסרה הגדרת התחברות'); },
-  logout(){ ['cbtapp.folderId','cbtapp.content','cbtapp.lib',KEY,'cbtapp.asks','cbtapp.active'].forEach(k => { try { localStorage.removeItem(k); } catch(e){} }); if (this.msal) this.msal.logoutRedirect({account: this.account}); },
+  logout(){ ['cbtapp.folderId','cbtapp.folderId2','cbtapp.content','cbtapp.lib',KEY,'cbtapp.asks','cbtapp.active'].forEach(k => { try { localStorage.removeItem(k); } catch(e){} }); if (this.msal) this.msal.logoutRedirect({account: this.account}); },
   async getText(rel){
     const m = await this.g(this.itemPath(rel) + ':');
     if (m.status === 404) return null;
@@ -5074,14 +5171,19 @@ const Cloud = {
   },
   itemPath(rel){ return `/me/drive/items/${this.folderId}:/${rel.split('/').map(encodeURIComponent).join('/')}`; },
   async findFolder(){
-    const cached = ls.get('cbtapp.folderId', null);
+    // v2 cache key: the site moved out of "קלוד קוד", so a folder id remembered before the move must not be reused
+    const cached = ls.get('cbtapp.folderId2', null);
     if (cached) { const r = await this.g('/me/drive/items/' + cached + '?$select=id'); if (r.ok) return cached; }
     const name = this.cfg().folderName || 'אתר לימודי סיביטי';
-    const r = await this.g(`/me/drive/root/search(q='${encodeURIComponent(name)}')?$select=id,name,folder`);
+    const path = this.cfg().folderPath || 'שולחן העבודה/אתר לימודי סיביטי';
+    const byPath = await this.g('/me/drive/root:/' + path.split('/').map(encodeURIComponent).join('/') + '?$select=id,folder');
+    if (byPath.ok) { const p = await byPath.json(); if (p.folder) { ls.set('cbtapp.folderId2', p.id); return p.id; } }
+    const r = await this.g(`/me/drive/root/search(q='${encodeURIComponent(name)}')?$select=id,name,folder,parentReference`);
     const j = await r.json();
-    const f = (j.value || []).find(x => x.folder && x.name === name);
+    const all = (j.value || []).filter(x => x.folder && x.name === name);
+    const f = all.find(x => !/קלוד קוד/.test((x.parentReference && x.parentReference.path) || '')) || all[0];
     if (!f) throw new Error('לא מצאתי ב-OneDrive את התיקייה ״' + name + '״');
-    ls.set('cbtapp.folderId', f.id); return f.id;
+    ls.set('cbtapp.folderId2', f.id); return f.id;
   },
   async connect(){
     try {
@@ -5250,7 +5352,7 @@ function ui(){
 }
 
 /* ================= routing & shell ================= */
-const NAV = [['home','🏠','בית'],['diary','📅','יומן'],['ask','💬','שאל שאלה'],['problems','🧭','טיפול לפי בעיה'],['students','🧒','תלמידים'],['workflow','🗺️','סדר עבודה'],['crole','🎯','תפקיד היועץ'],['roles','👥','מי פונה למי'],['circ','📜','חוזרי מנכ״ל'],['aklim','⚖️','אקלים ומדרג התגובות'],['tools','🧰','כלים לילדים'],['quest','📋','שאלונים ומדדים'],['distress','🚨','סימני מצוקה'],['talk','🗣️','ראיון ושיח רגשי'],['sel','💞','למידה רגשית-חברתית'],['mafteach','🧩','כישורי חיים ומפתח הל״ב'],['sped','🧩','חינוך מיוחד והכלה'],['tzalach','🛟','צל״ח – צוות חירום'],['develop','🌳','התפתחות הילד'],['cbtclass','🏫','יישום CBT בכיתה'],['groups','👥','הנחיית קבוצות'],['programs','🏗️','תוכניות התערבות'],['transitions','🚪','מעברים'],['newteachers','🌱','מורים חדשים'],['parents','🤝','הורים'],['reports','🎓','תעודות'],['games','🎲','משחקים טיפוליים'],['videos','🎬','סרטונים'],['library','📚','ספרייה'],['settings','⚙️','הגדרות']];
+const NAV = [['home','🏠','בית'],['diary','📅','יומן'],['ask','💬','שאל שאלה'],['problems','🧭','טיפול לפי בעיה'],['students','🧒','תלמידים'],['workflow','🗺️','סדר עבודה'],['crole','🎯','תפקיד היועץ'],['roles','👥','מי פונה למי'],['circ','📜','חוזרי מנכ״ל'],['aklim','⚖️','אקלים ומדרג התגובות'],['tools','🧰','כלים לילדים'],['quest','📋','שאלונים ומדדים'],['distress','🚨','סימני מצוקה'],['talk','🗣️','ראיון ושיח רגשי'],['sel','💞','למידה רגשית-חברתית'],['mafteach','🧩','כישורי חיים ומפתח הל״ב'],['sped','🧩','חינוך מיוחד והכלה'],['autism','🧩','אוטיזם – ילדים על הרצף'],['tzalach','🛟','צל״ח – צוות חירום'],['develop','🌳','התפתחות הילד'],['cbtclass','🏫','יישום CBT בכיתה'],['behave','🏅','עיצוב התנהגות'],['groups','👥','הנחיית קבוצות'],['programs','🏗️','תוכניות התערבות'],['transitions','🚪','מעברים'],['newteachers','🌱','מורים חדשים'],['parents','🤝','הורים'],['reports','🎓','תעודות'],['games','🎲','משחקים טיפוליים'],['videos','🎬','סרטונים'],['library','📚','ספרייה'],['settings','⚙️','הגדרות']];
 function route(){ const h = location.hash.replace(/^#\/?/, '').split('/').map(decodeURIComponent); return {r: h[0] || 'home', id: h[1], sub: h[2], x: h[3]}; }
 let timers = [];
 function clearTimers(){ timers.forEach(t => { clearTimeout(t); clearInterval(t); }); timers = []; }
@@ -5273,7 +5375,7 @@ function render(){
   document.body.classList.toggle('locked', isLocked());
   if (isLocked()) { const o = lockView(); $('#title').textContent = ''; $('#view').innerHTML = `<div class="page">${o.html}</div>`; document.title = 'האתר של נדב דוד – יועץ חינוכי ומטפל CBT'; return; }
   if (WEB && !ARTIFACT && !LITE && !PROBLEMS.length) { $('#title').textContent = ''; $('#view').innerHTML = `<div class="empty" style="padding-top:120px"><span class="big">⏳</span>${Cloud.status === 'error' ? esc(Cloud.err) + ' <br><br><button class="btn primary" data-act="cloud-retry">נסו שוב</button>' : 'טוען את התוכן מ-OneDrive…'}</div>`; return; }
-  const views = LITE ? {home: liteHome, problems, problem: problemView, tools, tool: toolView, settings: liteSettings, ask, workflow, roles: rolesView, circ: circView, circsrc: circSrcView, libsrc: libSrcView, circask: circAskView, find: findView, more: moreView, games: gamesView, game: gameView, tracks: problems, track: trackView, groups: groupsView, transitions: hubView, newteachers: hubView, programs: hubView, distress: hubView, talk: hubView, parents: hubView, reports: hubView, sel: hubView, mafteach: hubView, sped: hubView, tzalach: hubView, aklim: hubView,develop: hubView, cbtclass: hubView, crole: hubView, quest: hubView, ariel: hubView, videos: videosView, diary: diaryView, sitemap: sitemapView} : {home, problems, problem: problemView, students, student: studentView, tools, tool: toolView, library, settings, ask, workflow, roles: rolesView, circ: circView, circsrc: circSrcView, libsrc: libSrcView, circask: circAskView, find: findView, more: moreView, games: gamesView, game: gameView, tracks: problems, track: trackView, groups: groupsView, transitions: hubView, newteachers: hubView, programs: hubView, distress: hubView, talk: hubView, parents: hubView, reports: hubView, sel: hubView, mafteach: hubView, sped: hubView, tzalach: hubView, aklim: hubView,develop: hubView, cbtclass: hubView, crole: hubView, quest: hubView, ariel: hubView, videos: videosView, diary: diaryView, sitemap: sitemapView};
+  const views = LITE ? {home: liteHome, problems, problem: problemView, tools, tool: toolView, settings: liteSettings, ask, workflow, roles: rolesView, circ: circView, circsrc: circSrcView, libsrc: libSrcView, circask: circAskView, find: findView, more: moreView, games: gamesView, game: gameView, tracks: problems, track: trackView, groups: groupsView, transitions: hubView, newteachers: hubView, programs: hubView, distress: hubView, talk: hubView, parents: hubView, reports: hubView, sel: hubView, mafteach: hubView, sped: hubView, autism: hubView, tzalach: hubView, aklim: hubView,develop: hubView, cbtclass: hubView, behave: hubView, crole: hubView, quest: hubView, ariel: hubView, videos: videosView, diary: diaryView, sitemap: sitemapView} : {home, problems, problem: problemView, students, student: studentView, tools, tool: toolView, library, settings, ask, workflow, roles: rolesView, circ: circView, circsrc: circSrcView, libsrc: libSrcView, circask: circAskView, find: findView, more: moreView, games: gamesView, game: gameView, tracks: problems, track: trackView, groups: groupsView, transitions: hubView, newteachers: hubView, programs: hubView, distress: hubView, talk: hubView, parents: hubView, reports: hubView, sel: hubView, mafteach: hubView, sped: hubView, autism: hubView, tzalach: hubView, aklim: hubView,develop: hubView, cbtclass: hubView, behave: hubView, crole: hubView, quest: hubView, ariel: hubView, videos: videosView, diary: diaryView, sitemap: sitemapView};
   const fn = views[R.r] || home;
   const out = fn(R);
   $('#title').textContent = out.title;
@@ -5298,7 +5400,7 @@ function problemCard(p, i){
 }
 /* 🧭 טיפול לפי בעיה: a problem's map and its structured track are one place – the switch on top of both pages */
 const ADULT_TRACKS = ['teacher-consult', 'parent-consult', 'teacher-stress'];
-const HUB_FLAGS = ['group', 'transition', 'newteachers', 'program', 'distress', 'talk', 'parents', 'reports', 'workflow', 'sel', 'sped', 'mafteach', 'develop', 'tzalach', 'aklim', 'cbtclass', 'crole', 'quest', 'ariel'];
+const HUB_FLAGS = ['group', 'transition', 'newteachers', 'program', 'distress', 'talk', 'parents', 'reports', 'workflow', 'sel', 'sped', 'autism', 'mafteach', 'develop', 'tzalach', 'aklim', 'cbtclass', 'crole', 'quest', 'ariel', 'behave'];
 const isHubTrack = t => HUB_FLAGS.some(k => t[k]);
 const probExtraTracks = pid => TRACKS().filter(x => x.id !== pid && x.problem === pid && !isHubTrack(x));
 const probOfTrack = t => P[t.id] ? t.id : t.problem && P[t.problem] && !isHubTrack(t) ? t.problem : null;
@@ -5329,11 +5431,12 @@ function mainFile(p){
 /* the side menu in 7 groups (approved by the user): pinned items on top, collapsible groups, settings at the bottom; any NAV item not listed falls into "עוד" */
 const NAV_PIN = ['home', 'diary', 'ask', 'find', 'sitemap'];
 const NAV_GROUPS = [
-  ['🧒', 'הטיפול בתלמיד', ['problems', 'students', 'workflow', 'talk', 'quest', 'distress', 'develop', 'tools', 'games']],
-  ['🏫', 'כיתה ובית ספר', ['aklim', 'cbtclass', 'sel', 'mafteach', 'programs', 'groups']],
+  ['🧒', 'הטיפול בתלמיד', ['problems', 'students', 'workflow', 'talk', 'quest', 'distress', 'behave', 'develop', 'tools', 'games']],
+  ['🏫', 'כיתה ובית ספר', ['cbtclass', 'behave', 'sel', 'mafteach', 'programs', 'groups', 'transitions']],
+  ['🚨', 'מצבי חירום ואקלים מיטבי', ['tzalach', 'aklim']],
+  ['🧩', 'אוכלוסיות מיוחדות', ['sped', 'autism']],
   ['🏡', 'הורים', ['parents', 'reports']],
   ['👥', 'צוות', ['roles', 'newteachers', 'reports']],
-  ['🛟', 'מצבים ואוכלוסיות מיוחדים', ['tzalach', 'sped', 'transitions']],
   ['🎯', 'התפקיד והנהלים', ['crole', 'circ']],
   ['📚', 'ספרייה ומקורות', ['library', 'videos']]
 ];
@@ -7747,7 +7850,7 @@ const trKey = id => (active() ? active().id : 'general') + ':' + id;
 const trData = id => { S.tracks = S.tracks || {}; return S.tracks[trKey(id)] = S.tracks[trKey(id)] || {}; };
 const FIVEP = [['predisposing', 'גורמים מקדימים', 'מה הכין את הקרקע? (מזג, רקע, היסטוריה)', '#e9d5ff'], ['precipitating', 'גורמים מזרזים', 'מה הדליק את הבעיה עכשיו?', '#fde68a'], ['presenting', 'הבעיה כפי שהיא מוצגת', 'מה רואים? מה מדאיג?', '#fecaca'], ['perpetuating', 'גורמים משמרים', 'מה מחזיק את הבעיה? (הימנעות, תגובות סביבה, מחשבות)', '#fbcfe8'], ['protective', 'גורמים מגינים', 'חוזקות, תמיכה, משאבים', '#bbf7d0']];
 const DAYS = ['ראשון', 'שני', 'שלישי', 'רביעי', 'חמישי', 'שישי'];
-const trLink = h => akSrcLinks(h).replace(/(?<![="'\/\w])#\/(track|game|problem|tool|groups|transitions|programs|newteachers|distress|talk|parents|reports|sped|sel|mafteach|develop|tzalach|aklim|cbtclass|crole|quest|ariel|workflow|roles|videos|circ)((?:\/[\w-]+){0,2})/g, (m, r, p) => { const [id, sub] = p.split('/').slice(1); const x = id && r === 'track' ? TRACK(id) : id && r === 'game' ? GAME(id) : null;
+const trLink = h => akSrcLinks(h).replace(/(?<![="'\/\w])#\/(track|game|problem|tool|groups|transitions|programs|newteachers|distress|talk|parents|reports|sped|autism|sel|mafteach|develop|tzalach|aklim|cbtclass|behave|crole|quest|ariel|workflow|roles|videos|circ)((?:\/[\w-]+){0,2})/g, (m, r, p) => { const [id, sub] = p.split('/').slice(1); const x = id && r === 'track' ? TRACK(id) : id && r === 'game' ? GAME(id) : null;
   const cg = r === 'circ' && sub ? circGuide().find(g => g.id === sub) : null, cm = r === 'circ' && id && !cg ? (window.CIRC_META || []).find(c => c.id === id) : null;
   const lab = x ? x.title : r === 'problem' && id && P[id] ? '🧭 ' + P[id].name : r === 'tool' && id && TOOL[id] ? TOOL[id].icon + ' ' + TOOL[id].name : cg ? '📜 ' + cg.title : cm ? '📜 ' + cm.title : r === 'distress' && !id ? '🚨 ' + HUBS.distress.title : (r === 'mafteach' || r === 'sel' || r === 'develop' || r === 'transitions') && !id ? HUBS[r].icon + ' ' + HUBS[r].title : (r === 'parents' || r === 'reports' || r === 'sped' || r === 'tzalach' || r === 'aklim' || r === 'cbtclass' || r === 'crole' || r === 'quest') && !id ? HUBS[r].icon + ' ' + HUBS[r].title : HUBS[r] && !id ? HUBS[r].icon + ' ' + HUBS[r].title : r === 'groups' && !id ? '👥 הנחיית קבוצות' : r === 'workflow' && !id ? '🗺️ סדר עבודה' : r === 'roles' && !id ? '👥 מי פונה למי' : null;
   return `<a href="${m}" class="trlink">${lab ? esc(lab) : m}</a>`; }).replace(/(?<![="'\/\w])#\/file\/([\w-]+)/g, (m, k) => trFile(k) ? trFileBtn(k) : m);   // #/file/<key> → opens a file from window.TRFILES (tracks-sped.js)
@@ -7759,6 +7862,7 @@ function trStepHTML0(t, s, D){
   const inp = (f, ph, long) => long ? `<textarea class="inp" data-tr="${s.id}.${f}" placeholder="${esc(ph || '')}">${v(f)}</textarea>` : `<input class="inp" data-tr="${s.id}.${f}" value="${v(f)}" placeholder="${esc(ph || '')}">`;
   const intro = s.intro ? `<p class="lead" style="text-align:start">${esc(s.intro)}</p>` : '';
   if (s.kind === 'info') return trInfoHTML(s);
+  if (s.kind === 'quiz') return bqHTML(t, s);
   if (s.kind === 'form') return intro + `<div class="form">${s.fields.map(f => `<label class="f">${esc(f.label)}${inp(f.id, f.ph, f.long)}</label>`).join('')}</div>`;
   if (s.kind === 'checklist') { const d = D[s.id] || {}, nOn = s.items.filter(it => d[it.id]).length; return intro + `<div class="trchkw"><div class="trringw ${nOn === s.items.length ? 'full' : ''}">${trRing(nOn, s.items.length)}</div><div class="trchecks">${s.items.map(it => `<label class="trcheck ${d[it.id] ? 'on' : ''}"><input type="checkbox" data-trc="${s.id}.${it.id}" ${d[it.id] ? 'checked' : ''}> ${esc(it.t)}</label>`).join('')}</div><p class="muted">סומנו <span class="trchkc">${nOn}</span> מתוך ${s.items.length}</p></div>`; }
   if (s.kind === 'scale') { const d = D[s.id] || {}, mx = s.max ?? 10, mn = s.min ?? 0, vals = s.items.map(it => d[it.id] ?? null).filter(x => x != null), avg = vals.length ? (vals.reduce((a, b) => a + +b, 0) / vals.length).toFixed(1) : '—';
@@ -7781,6 +7885,49 @@ function trStepHTML0(t, s, D){
   return '';
 }
 function trStepDone(s, D){ const d = D[s.id]; if (!d) return false; return Object.values(d).some(x => x && (typeof x !== 'object' || Object.keys(x).length)); }
+/* ================= 🎮 kind 'quiz' – a case, and which principle it shows (tracks-behave.js: behave-game)
+   s.concepts {key: {t, topic, def, go, conf:[confusable keys]}} · s.topics [[key, label, icon]] · s.cases [{c, q, why, d?: the tempting distractor, dwhy?, ask?}]
+   s.guide = the track whose step (concept.go = its step id) explains each concept. Score, topic filter, round length and the mistakes list live in memory only – nothing is saved. ================= */
+const BQ = {};
+const bqSt = (t, s) => BQ[t.id + ':' + s.id] || (BQ[t.id + ':' + s.id] = {ph: 'start', topic: 'all', len: 10, log: []});
+const bqGo = (s, k) => { const c = s.concepts[k], g = c && TRACK(s.guide); if (!g) return ''; const i = g.steps.findIndex(x => x.id === c.go); return '#/track/' + g.id + (i >= 0 ? '/' + (i + 1) : ''); };
+const bqPool = (s, topic) => s.cases.map((x, i) => i).filter(i => topic === 'all' || (s.concepts[s.cases[i].c] || {}).topic === topic);
+function bqOpts(s, x){ const C = s.concepts; let o = [x.c]; if (x.d && C[x.d]) o.push(x.d);
+  o = o.concat(shuffle((C[x.c].conf || []).filter(k => C[k] && !o.includes(k)))).slice(0, 4);
+  if (o.length < 4) o = o.concat(shuffle(Object.keys(C).filter(k => C[k].topic === C[x.c].topic && !o.includes(k)))).slice(0, 4);
+  return shuffle(o); }
+function bqBody(t, s){ const st = bqSt(t, s), C = s.concepts, T = s.topics || [], tl = k => (T.find(z => z[0] === k) || [0, ''])[1];
+  if (st.ph === 'start') return `<div class="bqhead"><b>🎮 ${s.cases.length} מקרים · ${Object.keys(C).length} מושגים</b><span class="muted">בוחרים נושא ואורך סבב – ומתחילים. הניקוד והטעויות נשמרים רק עד שיוצאים מהעמוד.</span></div>
+    <div class="bqrow"><span class="bqlab">נושא</span><div class="chips">${[['all', 'כל הנושאים', '🌐'], ...T].map(([k, l, i]) => `<button type="button" class="chip${st.topic === k ? ' on' : ''}" data-bq="topic" data-v="${k}">${i} ${esc(l)} (${bqPool(s, k).length})</button>`).join('')}</div></div>
+    <div class="bqrow"><span class="bqlab">אורך הסבב</span><div class="chips">${[10, 20, 0].map(v => `<button type="button" class="chip${st.len === v ? ' on' : ''}" data-bq="len" data-v="${v}">${v ? v + ' מקרים' : 'כל המקרים בנושא'}</button>`).join('')}</div></div>
+    <button type="button" class="btn primary bqgo" data-bq="start">▶ מתחילים</button>`;
+  if (st.ph === 'play') { const x = s.cases[st.order[st.i]], N = st.order.length, c = C[x.c], p = st.pick;
+    const opt = k => `<button type="button" class="bqopt${p == null ? '' : k === x.c ? ' ok' : k === p ? ' no' : ' dim'}" data-bq="pick" data-v="${k}"${p != null ? ' disabled' : ''}>${p != null && k === x.c ? '✔ ' : p === k ? '✖ ' : ''}${esc(C[k].t)}</button>`;
+    let fb = ''; if (p != null) { const ok = p === x.c, d = x.d && C[x.d], go = bqGo(s, x.c);
+      fb = `<div class="bqfb ${ok ? 'ok' : 'no'}" role="status"><b>${ok ? '✔ נכון!' : '✖ לא בדיוק.'} התשובה: ${esc(c.t)}</b><p>${esc(x.why)}</p>${!ok && p !== x.d ? `<p>🔎 מה שבחרת – <b>${esc(C[p].t)}</b> – ${esc(C[p].def)}</p>` : ''}${d && x.dwhy ? `<p>💡 למה לא ${esc(d.t)}? ${esc(x.dwhy)}</p>` : ''}${go ? `<p class="bqmore">📖 להסבר המלא: ${go}</p>` : ''}</div>
+        <button type="button" class="btn primary bqnext" data-bq="next">${st.i + 1 < N ? 'למקרה הבא ←' : 'לסיכום הסבב ←'}</button>`; }
+    return `<div class="bqbar"><span>מקרה ${st.i + 1} מתוך ${N}</span><span class="bqprog" aria-hidden="true"><i style="width:${Math.round(100 * (st.i + (p != null ? 1 : 0)) / N)}%"></i></span><span>ניקוד: <b>${st.score}</b></span></div>
+      <div class="bqcase"><span class="pill">${esc(tl(c.topic))}</span><p>${esc(x.q)}</p><b class="bqask">${esc(x.ask || 'איזה עיקרון התנהגותי מתואר כאן?')}</b></div><div class="bqopts">${st.opts.map(opt).join('')}</div>${fb}`; }
+  const N = st.order.length, pc = N ? Math.round(100 * st.score / N) : 0, miss = st.log.filter(z => !z.ok);
+  return `<div class="bqend"><div class="bqscore"><b>${st.score} / ${N}</b><span>${pc}%</span></div><p class="bqmsg">${pc >= 85 ? '🏅 מצוין – המושגים ברורים לך.' : pc >= 60 ? '👍 טוב מאוד. שווה לעבור על הטעויות שלמטה.' : '📖 כדאי לחזור למילון המושגים – ואז לנסות שוב.'}</p>
+    ${miss.length ? `<h4>🔁 הטעויות שלי בסבב – ${miss.length}</h4><ol class="bqmiss">${miss.map(z => { const x = s.cases[z.i], go = bqGo(s, x.c); return `<li><p>${esc(x.q)}</p><p>✖ בחרתי: ${esc(C[z.p].t)} · ✔ התשובה: <b>${esc(C[x.c].t)}</b></p><p class="muted">${esc(x.why)}</p>${go ? `<p class="bqmore">📖 ${go}</p>` : ''}</li>`; }).join('')}</ol>` : '<p>✨ בלי אף טעות בסבב הזה.</p>'}
+    <div class="actions">${miss.length ? '<button type="button" class="btn primary" data-bq="retry">🔁 לתרגל שוב רק את הטעויות</button>' : ''}<button type="button" class="btn" data-bq="again">🎲 סבב חדש באותן ההגדרות</button><button type="button" class="btn" data-bq="home">⚙️ לבחור נושא ואורך</button></div></div>`;
+}
+function bqHTML(t, s){ const C = s.concepts;
+  return `<div class="bq no-print" data-bqt="${t.id}" data-bqs="${s.id}">${bqBody(t, s)}</div><div class="print-only bqprint"><h4>📋 כל המקרים והתשובות</h4><ol>${s.cases.map(x => `<li>${esc(x.q)} <b>← ${esc(C[x.c].t)}</b></li>`).join('')}</ol></div>`; }
+document.addEventListener('click', e => { const b = e.target.closest('[data-bq]'), w = b && b.closest('.bq'); if (!w) return;
+  const t = TRACK(w.dataset.bqt), s = t && t.steps.find(x => x.id === w.dataset.bqs); if (!s) return;
+  const st = bqSt(t, s), a = b.dataset.bq, v = b.dataset.v;
+  const begin = o => { st.order = o; st.i = 0; st.score = 0; st.log = []; st.pick = null; st.ph = o.length ? 'play' : 'start'; if (o.length) st.opts = bqOpts(s, s.cases[o[0]]); };
+  if (a === 'topic') st.topic = v;
+  if (a === 'len') st.len = +v;
+  if (a === 'start' || a === 'again') { const p = shuffle(bqPool(s, st.topic)); begin(st.len ? p.slice(0, st.len) : p); }
+  if (a === 'retry') begin(shuffle(st.log.filter(z => !z.ok).map(z => z.i)));
+  if (a === 'home') st.ph = 'start';
+  if (a === 'pick' && st.pick == null) { const i = st.order[st.i], ok = v === s.cases[i].c; st.pick = v; if (ok) st.score++; st.log.push({i, p: v, ok}); }
+  if (a === 'next') { st.i++; st.pick = null; if (st.i >= st.order.length) st.ph = 'end'; else st.opts = bqOpts(s, s.cases[st.order[st.i]]); }
+  w.innerHTML = trLink(bqBody(t, s));
+  if (a !== 'pick' && a !== 'topic' && a !== 'len') { const r = w.getBoundingClientRect(); if (r.top < 0 || r.top > innerHeight * .6) w.scrollIntoView({block: 'start', behavior: 'smooth'}); } });
 function groupsView(){
   const all = TRACKS().filter(t => t.group), guide = all.find(t => t.id === 'grp-guide'), list = all.filter(t => t.id !== 'grp-guide' && !t.deep), deep = all.filter(t => t.deep);
   return {title: 'הנחיית קבוצות', html: `${hubHero('groups', '👥', 'הנחיית קבוצות', all.length)}${gGuide('בקבוצה לומדים אחד מהשני – בוא נבנה קבוצה טובה! 👥', 'שמחה', 6)}${infog('groups', all)}
@@ -7793,25 +7940,28 @@ function groupsView(){
 /* sections built from tracks: transitions, new teachers, intervention programs (and groups above) */
 const HUBS = {
   transitions: {flag: 'transition', title: 'מעברים', icon: '🚪', say: 'מעבר הוא הזדמנות לצמוח – בוא נתכונן אליו יחד! 🚪', intro: '🚪 ליווי מעברים: מהגן לכיתה א׳, מכיתה ו׳ לחטיבה ומכיתה ח׳ לתיכון או לישיבה. בכל מעבר: המשמעות ההתפתחותית, לוח זמנים שנתי (לפני, בזמן ואחרי), איתור ילדים שצריכים ליווי, הדרכת הורים ומחנכים, פעילויות לילדים, העברת מידע בין מסגרות לפי חוזר 0370 ומעקב.', extra: [['#/game/transition-k1', '🎲', 'משחק: הצעד הגדול לכיתה א׳'], ['#/track/grp-transition', '👥', 'קבוצה: מעבר לחטיבה'], ['#/track/prog-transitions', '🏗️', 'תוכנית התערבות בית-ספרית למעברים']]},
-  newteachers: {flag: 'newteachers', title: 'ליווי מורים חדשים', icon: '🌱', say: 'שנה ראשונה בהוראה – לא לבד! 🌱', intro: '🌱 ליווי מורים חדשים: מסע השנה הראשונה (צרכים, תוכנית שנתית, מה חובה לדעת, ניהול כיתה, הורים, תצפיות ורווחה אישית) וערכת עבודה למורה החונך.', extra: [['#/track/teacher-consult', '🧑‍🏫', 'מסלול הדרכת מורה'], ['#/track/teacher-stress', '🧯', 'מסלול דחק ושחיקה']]},
+  newteachers: {flag: 'newteachers', title: 'ליווי מורים חדשים', icon: '🌱', say: 'שנה ראשונה בהוראה – לא לבד! 🌱', intro: '🌱 ליווי מורים חדשים: מסע השנה הראשונה (צרכים, תוכנית שנתית, מה חובה לדעת, ניהול כיתה, הורים, תצפיות ורווחה אישית) וערכת עבודה למורה החונך.', extra: [['#/track/teacher-consult', '🧑‍🏫', 'מסלול הדרכת מורה'], ['#/track/teacher-stress', '🧯', 'מסלול דחק ושחיקה'], ['#/track/bh-class', '🏫', 'עיצוב התנהגות בכיתה – כללים, שבח ושגרות']]},
   programs: {flag: 'program', guide: 'prog-guide', title: 'בניית תוכנית התערבות', icon: '🏗️', say: 'תוכנית טובה מתחילה במיפוי – בוא נבנה אותה שלב אחרי שלב 🏗️', intro: '🏗️ בניית תוכנית התערבות ומניעה בית-ספרית: המדריך המלא (מיפוי צרכים, רמות התערבות, מטרות, מודל לוגי, רכיבים, שותפים, תוכנית שנתית, הטמעה והערכה) ותוכניות התערבות מוכנות לפי נושאים – כל אחת עם מיפוי, שלוש רמות התערבות, לוח שנתי, מערכי שיעור, צוות, הורים ומדדים.', extra: []},
   talk: {flag: 'talk', guide: 'talk-guide', title: 'ראיון ושיח רגשי עם תלמידים', icon: '🗣️', say: 'שיחה טובה מתחילה בהקשבה – בוא נתרגל יחד 💬', intro: '💬 ראיון ושיח רגשי עם תלמידים: עקרונות השיחה הרגשית עם ילד (מקום, קצב, שיקוף ותיקוף, שם לרגש, שתיקה, הבדלים בין הגילים ומה לא עושים), הראיון הראשון עם תלמיד ועם ההורים והמחנך, מאגר שאלות טובות לפי סוג, שיחה רגשית שלב אחרי שלב עם דוגמאות, רגעים קשים (שתיקה, בכי, כעס, חשיפת פגיעה וחובת הדיווח, שיחה אחרי אירוע משמעת) ותרגול ליועץ ולצוות. כל פריט מבוסס על מקור מהספרייה. הצד המשמעתי והצד הטיפולי מופרדים.', extra: [['#/circ/c11/c11-first-conversation', '📜', 'שיחה ראשונה עם תלמיד בסיכון (0473)'], ['#/circ/c04/c04-legal-reporting-duty', '📜', 'חובת דיווח (0470)'], ['#/tool/thermometer', '🌡️', 'מדחום רגשות'], ['#/track/teacher-consult', '🧑‍🏫', 'מסלול הדרכת מורה']]},
-  parents: {flag: 'parents', guide: 'par-guide', title: 'הורים – אסיפות, שיחות והנהגת הורים', icon: '🤝', say: 'הבית ובית הספר – שותפים לאותו ילד. בוא נתכונן למפגש 🤝', intro: '🤝 הורים: אסיפת הורים כללית (מטרות, חלוקת תפקידים בין המחנך ליועץ, רשימת הכנה, סדר יום, פעילויות פתיחה, שאלות קשות ומעקב) ואסיפת הורים פרטנית (הכנה, מבנה השיחה, בשורה קשה, הורה כועס או מתגונן, תוכנית משותפת ותיעוד), הדרכת מחנכים לקראת האסיפות, והנהגת הורים (ועד הכיתה והנציגות הבית-ספרית: בחירות, תפקידים, גבולות, ישיבות, מחלוקות ועבודה משותפת עם המנהל והיועץ – לפי חוזר 0423) – לפי חוזר 0482 ו״המסע אל התעודה 2״. הצד הטיפולי והצד המשמעתי מופרדים.', extra: [['#/circ/c07', '📜', 'הקשר עם ההורים (0482)'], ['#/circ/c06', '📜', 'הורים פרודים או גרושים (0436)'], ['#/track/parent-consult', '🧭', 'מסלול הדרכת הורים'], ['#/track/rep-guide', '🎓', 'תעודות']]},
+  parents: {flag: 'parents', guide: 'par-guide', title: 'הורים – אסיפות, שיחות והנהגת הורים', icon: '🤝', say: 'הבית ובית הספר – שותפים לאותו ילד. בוא נתכונן למפגש 🤝', intro: '🤝 הורים: אסיפת הורים כללית (מטרות, חלוקת תפקידים בין המחנך ליועץ, רשימת הכנה, סדר יום, פעילויות פתיחה, שאלות קשות ומעקב) ואסיפת הורים פרטנית (הכנה, מבנה השיחה, בשורה קשה, הורה כועס או מתגונן, תוכנית משותפת ותיעוד), הדרכת מחנכים לקראת האסיפות, והנהגת הורים (ועד הכיתה והנציגות הבית-ספרית: בחירות, תפקידים, גבולות, ישיבות, מחלוקות ועבודה משותפת עם המנהל והיועץ – לפי חוזר 0423) – לפי חוזר 0482 ו״המסע אל התעודה 2״. הצד הטיפולי והצד המשמעתי מופרדים.', extra: [['#/circ/c07', '📜', 'הקשר עם ההורים (0482)'], ['#/circ/c06', '📜', 'הורים פרודים או גרושים (0436)'], ['#/track/parent-consult', '🧭', 'מסלול הדרכת הורים'], ['#/track/rep-guide', '🎓', 'תעודות'], ['#/track/bh-home', '🏡', 'עיצוב התנהגות בבית – הדרכת הורים']]},
   reports: {flag: 'reports', guide: 'rep-guide', title: 'תעודות – מחצית וסוף שנה', icon: '🎓', say: 'תעודה טובה מדברת אל הילד – ומקדמת אותו 🎓', intro: '🎓 תעודות: התפקיד של התעודה ושל ההערכה המילולית וחלקו של היועץ, תעודת מחצית (משוב מעצב, מטרה אחת, קשר לשיחה עם ההורים), תעודת סוף שנה (סיכום ומסר לשנה הבאה, מקרים רגישים), השוואה בין השתיים, בנק ניסוחים חיוביים, מה לא לכתוב ורשימה לבדיקת הנוסח – לפי ״המסע אל התעודה 2״ ו״מתעודה לתהודה״. ציון ההתנהגות (צד משמעתי) נפרד מההערכה המילולית.', extra: [['#/circ/c04/c04-report-card-behavior', '📜', 'התנהגות בתעודה (0470)'], ['#/circ/c06/c06-report-card-divorced', '📜', 'תעודה להורה גרוש (0436)'], ['#/track/par-individual', '🤝', 'אסיפת הורים פרטנית']]},
   distress: {flag: 'distress', guide: 'dist-guide', title: 'הפרעות רגשיות והתנהגותיות – זיהוי סימני מצוקה', icon: '🚨', say: 'ילדים לא תמיד מספרים על מצוקה – הם מראים אותה. בוא נלמד לזהות 🔎', intro: '🚨 זיהוי סימני מצוקה אצל תלמידי א׳–ו׳: המדריך המלא (מה שונה מההתנהגות הרגילה של הילד, רשימת סינון, מדד חומרה, מתי זו עבודה של היועץ, מתי משתפים הורים, מתי מפנים ומתי מפעילים נוהל חירום לפי חוזרי המנכ״ל), ואחריו ארבעה תחומים – בכל אחד סקירה ומסלולי זיהוי קצרים לפי בעיה. בכל מקום הצד הטיפולי והצד המשמעתי מופרדים.', extra: [['#/circ/c11', '📜', 'חוזר אובדנות ילדים ובני נוער (0473)'], ['#/circ/c04', '📜', 'חוזר אקלים חינוכי מיטבי (0470)'], ['#/track/low-mood', '🧭', 'מסלול טיפול: מצב רוח ירוד']],
     areas: [['emo', '💛', 'זיהוי בעיות רגשיות'], ['mental', '🧠', 'זיהוי בעיות נפשיות'], ['behav', '🌋', 'זיהוי בעיות התנהגות'], ['social', '🤝', 'זיהוי בעיות חברתיות']]},
   sel: {flag: 'sel', guide: 'sel-guide', title: 'SEL – למידה רגשית-חברתית', icon: '💞', say: 'רגש, חבר, החלטה – לומדים את זה כמו כל מקצוע. בוא נבנה את זה יחד 💞', intro: '💞 למידה רגשית-חברתית בבית ספר יסודי לבנים (א׳–ו׳): המדריך (מה זה SEL, חמש המיומנויות והקשר לכישורי חיים ולמפתח הל״ב, תפקיד היועץ לפי החוזר, מבנה שיעור, רשימת בדיקה לאקלים וטופס תכנון), מסלול לכל מיומנות – מודעות עצמית, ניהול עצמי, מודעות חברתית, בין-אישי וקבלת החלטות – עם מטרות לפי גיל ומערכים מוכנים מתוך החומרים, תוכנית שנתית לפי חודשי השנה העברית, הדרכת מחנכים ושיתוף הורים. לכל פריט מצוין המקור, והצד הטיפולי נשמר נפרד מהמשמעתי.', extra: [['#/mafteach', '💗', 'מדור מפתח הל״ב'], ['#/circ/c09', '📜', 'חוזר כישורי חיים (0351)'], ['#/track/prog-social', '🏗️', 'תוכנית התערבות: SEL'], ['#/track/class-climate', '🧭', 'מסלול טיפול: אקלים כיתתי'], ['#/tool/sociometry', '🕸️', 'שאלון סוציומטרי – מיפוי חברתי'], ['#/distress', '🚨', 'זיהוי סימני מצוקה']]},
   mafteach: {flag: 'mafteach', guide: 'ks-guide', title: 'כישורי חיים ומפתח הל״ב', icon: '🔑', say: 'שיעור טוב מתחיל במעגל – חוויה, שיתוף, המשגה ויישום. בוא נתכונן יחד! 🧩', intro: '🧩🔑 שתי השעות החברתיות-רגשיות של השבוע: כישורי חיים (תוכנית ״הכ״חות שבדרך״ של שפ״י לחמ״ד ולחברה החרדית, גרסת בנים – כל השיעורים לפי שכבה, בסדר של אתר שפ״י, וכל מצגת נפתחת בלחיצה) ומפתח הל״ב לשעת החינוך (הערך של כל תקופה, ארבעת המעגלים, לפי תקופה ולפי שכבה). מתחילים במדריך ״איך מעבירים שיעור כישורי חיים״.', extra: [['#/sel', '💞', 'מדור SEL – למידה רגשית-חברתית'], ['#/circ/c09', '📜', 'חוזר כישורי חיים (0351)']], areas: [['ks', '🧩', 'כישורי חיים (חמ״ד)'], ['mh', '🔑', 'מפתח הל״ב']]},
-  sped: {flag: 'sped', guide: 'sped-guide', title: 'חינוך מיוחד והכלה', icon: '🧩', say: 'כל ילד לומד אחרת – בוא נמצא יחד את הדרך שלו 🧩', intro: '🧩 חינוך מיוחד והכלה: מפת התהליך המלאה (איתור ← תמיכה בבית הספר ← צוות רב-מקצועי ← ועדת זכאות ואפיון ← חידוש זכאות ← תח״י/תל״א) עם הטופס של כל שלב, ערכת כל הטפסים שלך (נפתחים בלחיצה), הכנה לוועדה, חידוש זכאות וקיצור יום, כלי הערכת הקריאה והאוריינות לכיתות א׳–ג׳ עם נקודות החתך, הכלה בכיתה ומחוננים – לפי חוזר 0287 והחומרים שלך. הצד הטיפולי והצד המנהלי מופרדים, ולכל פריט מצוין המקור.', extra: [['#/circ/c02', '📜', 'חוזר ועדות חינוך מיוחד (0287)'], ['#/circ/c16', '📜', 'מוסדות חינוך מכילים (0483)'], ['#/circ/c02/c02-iep-personal-program', '📜', 'תוכנית אישית – תח״י (0287)'],['#/track/prog-guide', '🏗️', 'בניית תוכנית התערבות'], ['#/track/sped-zaa-q', '📝', 'שאלון המורה לוועדת זכאות ואפיון (ד׳–⁠ו׳)']]},
+  sped: {flag: 'sped', guide: 'sped-guide', title: 'חינוך מיוחד והכלה', icon: '🧩', say: 'כל ילד לומד אחרת – בוא נמצא יחד את הדרך שלו 🧩', intro: '🧩 חינוך מיוחד והכלה: מפת התהליך המלאה (איתור ← תמיכה בבית הספר ← צוות רב-מקצועי ← ועדת זכאות ואפיון ← חידוש זכאות ← תח״י/תל״א) עם הטופס של כל שלב, ערכת כל הטפסים שלך (נפתחים בלחיצה), הכנה לוועדה, חידוש זכאות וקיצור יום, כלי הערכת הקריאה והאוריינות לכיתות א׳–ג׳ עם נקודות החתך, הכלה בכיתה ומחוננים – לפי חוזר 0287 והחומרים שלך. הצד הטיפולי והצד המנהלי מופרדים, ולכל פריט מצוין המקור.', extra: [['#/circ/c02', '📜', 'חוזר ועדות חינוך מיוחד (0287)'], ['#/circ/c16', '📜', 'מוסדות חינוך מכילים (0483)'], ['#/circ/c02/c02-iep-personal-program', '📜', 'תוכנית אישית – תח״י (0287)'],['#/track/prog-guide', '🏗️', 'בניית תוכנית התערבות'], ['#/track/sped-zaa-q', '📝', 'שאלון המורה לוועדת זכאות ואפיון (ד׳–⁠ו׳)'], ['#/track/bh-individual', '🧒', 'תוכנית התנהגותית פרטנית'], ['#/autism', '🧩', 'אוטיזם – ילדים על הרצף']]},
+  autism: {flag: 'autism', guide: 'aut-guide', title: 'אוטיזם – ילדים על הרצף', icon: '🧩', say: 'כל ילד רואה את העולם בדרך שלו – בוא נלמד לראות גם דרך העיניים שלו 🧩', intro: '🧩 אוטיזם – ילדים על הרצף: המדריך (מה זה הרצף בשפה פשוטה, שני התחומים המרכזיים, שלוש רמות התמיכה, מה מגיע יחד – קשב, חרדה, שפה ומצב רוח – סגנון החשיבה, החוזקות, מיתוסים, ותפקיד היועץ: להבחין, לתעד, להתייעץ ולהפנות – לא לאבחן); מה רואים בכיתה, בהפסקה, בתפילה ובבית, בכיתות א׳–ב׳ ובכיתות ג׳–ו׳, עם רשימת תצפית למחנך; מההבחנה להפניה – השיחה עם ההורים, מי מאבחן לפי חוזר משרד הבריאות 15/13, שאלון CAST והמסלול בחוזר 0287; התאמות בכיתה – מבנה ולוח חזותי, שפה ברורה, חושים ופינת רוגע, תמיכה חברתית, הקרחון, התקף זעם מול הצפה ומעגל ההצפה; CBT מותאם ועבודה רגשית; ועבודה עם הילד, ההורים והצוות. הצד הטיפולי-חינוכי והצד המשמעתי-מנהלי מופרדים, ולכל פריט מצוין המקור.', extra: [['#/sped', '🧩', 'חינוך מיוחד והכלה'], ['#/track/sped-committee', '🏛️', 'הכנה לוועדה'], ['#/track/social-skills', '🤝', 'מיומנויות חברתיות'], ['#/track/q-adhd', '📋', 'שאלון CAST ושאלוני קשב'], ['#/circ/c04/c04d-sped-principles', '📜', 'חוזר 0470 – תלמידים עם זכאות לחינוך מיוחד'], ['#/develop', '🌳', 'התפתחות הילד']]},
   develop: {flag: 'develop', guide: 'dev-guide', title: 'התפתחות הילד', icon: '🌳', say: 'כל ילד גדל בקצב שלו – בוא נבין מה צפוי בגיל הזה ומתי כדאי לבדוק 🌳', intro: '🌳 התפתחות הילד מהגן ועד כיתה ו׳: המדריך (שבעת תחומי ההתפתחות, טבע וסביבה, ציר הזמן, טווח תקין מול דגל אדום ואיך היועץ משתמש במבט התפתחותי), מסלול לכל שכבת גיל – גן ובשלות לכיתה א׳, א׳–ב׳, ג׳–ד׳, ה׳–ו׳ וראשית ההתבגרות – עם מה צפוי בכל תחום, דאגות נפוצות (תקין או לבדוק), דגלים אדומים, שיחה עם הילד והנחיות להורים ולמחנכים; תיאוריות (פיאז׳ה, אריקסון, התקשרות וניופלד, ויגוצקי, קולברג, ברונפנברנר, מושג המוות), העמקה לפי תחומים, מתי מפנים ולמי, והדרכת הורים לפי גיל. לכל פריט מצוין המקור, ומה שאינו מהחומרים מסומן ״ידע מקצועי כללי״.', extra: [['#/transitions', '🚪', 'מעברים'], ['#/sped', '🧩', 'חינוך מיוחד והכלה'], ['#/distress', '🚨', 'זיהוי סימני מצוקה'], ['#/sel', '💞', 'למידה רגשית-חברתית'], ['#/parents', '🤝', 'הורים']]},
-  cbtclass: {flag: 'cbtclass', guide: 'cbtc-guide', title: 'יישום CBT בכיתה', icon: '🏫', say: 'כל הכיתה לומדת לחשוב, להרגיש ולפעול אחרת – בוא נביא את ה-CBT לכיתה 🏫', intro: '🏫 יישום CBT בכיתה (א׳–⁠ו׳): המדריך (למה CBT בכיתה כמניעה לכולם, משולש המחשבה-הרגש-ההתנהגות לילדים, פירמידת שלוש הרמות – כיתה, קבוצה ופרטני – ומה תפקיד היועץ ומה תפקיד המורה, השיחה המכבדת והמאתגרת, והפרדה בין הטיפולי למשמעתי), סדרת שיעורים מוכנה לפי שכבות גיל עם כלים ומשחקים מהאפליקציה, המורה כמאמן CBT (שפה משותפת, בנק משפטים, שבח שבונה מסוגלות, חרדה בכיתה בלי מלכודת ההימנעות, פרוטוקול להתפרצות כעס וכרטיסי עזר), ניהול התנהגות (ניתוח ABC, סדרי חיזוק, כלכלת אסימונים, שגרות והקו של חוזר 0470), תוכנית כיתתית לחרדת מבחנים, אקלים כיתתי ופעילויות קבוצתיות, ומעגל ההתייעצות עם המורה עם טפסים. לפי ״CBT מערכתי בעצימות נמוכה לחינוכיים״ של יששכר עשת ושאר חומרי הספרייה; מה שאינו מהחומרים מסומן ״ידע מקצועי כללי״.', extra: [['#/track/teacher-consult', '🧭', 'הדרכת מורה בניהול כיתה'], ['#/track/class-climate', '🌈', 'אקלים כיתתי'], ['#/sel', '💞', 'למידה רגשית-חברתית'], ['#/mafteach', '🔑', 'כישורי חיים ומפתח הל״ב'], ['#/programs', '🏗️', 'תוכניות התערבות'], ['#/tool/sociometry', '🕸️', 'שאלון סוציומטרי'], ['#/circ/c04', '📜', 'חוזר 0470 – אקלים חינוכי מיטבי']]},
+  cbtclass: {flag: 'cbtclass', guide: 'cbtc-guide', title: 'יישום CBT בכיתה', icon: '🏫', say: 'כל הכיתה לומדת לחשוב, להרגיש ולפעול אחרת – בוא נביא את ה-CBT לכיתה 🏫', intro: '🏫 יישום CBT בכיתה (א׳–⁠ו׳): המדריך (למה CBT בכיתה כמניעה לכולם, משולש המחשבה-הרגש-ההתנהגות לילדים, פירמידת שלוש הרמות – כיתה, קבוצה ופרטני – ומה תפקיד היועץ ומה תפקיד המורה, השיחה המכבדת והמאתגרת, והפרדה בין הטיפולי למשמעתי), סדרת שיעורים מוכנה לפי שכבות גיל עם כלים ומשחקים מהאפליקציה, המורה כמאמן CBT (שפה משותפת, בנק משפטים, שבח שבונה מסוגלות, חרדה בכיתה בלי מלכודת ההימנעות, פרוטוקול להתפרצות כעס וכרטיסי עזר), ניהול התנהגות (ניתוח ABC, סדרי חיזוק, כלכלת אסימונים, שגרות והקו של חוזר 0470), תוכנית כיתתית לחרדת מבחנים, אקלים כיתתי ופעילויות קבוצתיות, ומעגל ההתייעצות עם המורה עם טפסים. לפי ״CBT מערכתי בעצימות נמוכה לחינוכיים״ של יששכר עשת ושאר חומרי הספרייה; מה שאינו מהחומרים מסומן ״ידע מקצועי כללי״.', extra: [['#/track/teacher-consult', '🧭', 'הדרכת מורה בניהול כיתה'], ['#/track/class-climate', '🌈', 'אקלים כיתתי'], ['#/sel', '💞', 'למידה רגשית-חברתית'], ['#/mafteach', '🔑', 'כישורי חיים ומפתח הל״ב'], ['#/programs', '🏗️', 'תוכניות התערבות'], ['#/tool/sociometry', '🕸️', 'שאלון סוציומטרי'], ['#/circ/c04', '📜', 'חוזר 0470 – אקלים חינוכי מיטבי'], ['#/behave', '🏅', 'עיצוב התנהגות – התאוריה, התלמיד והכיתה']]},
   crole: {flag: 'crole', guide: 'role-guide', title: 'תפקיד היועץ החינוכי', icon: '🎯', say: 'היועץ הוא הלב הרגשי של בית הספר – בוא נראה את כל התפקיד במבט אחד 🎯', intro: '🎯 תפקיד היועץ החינוכי: המדריך (ההגדרה לפי שפ״י וההסכם הקיבוצי, שמונה מטרות הייעוץ, ארבע מיומנויות היסוד, מעגלי העבודה ותהליך העבודה, מודל היהלום, מה חוזרי המנכ״ל מטילים על היועץ, הפרדה בין הטיפולי למשמעתי, איך מסבירים לתלמידים מה עושה היועץ ומפת האפליקציה לפי תחומי התפקיד), המודלים של התפקיד (הכוון, טיפולי, מניעתי לפי Caplan, מערכתי, מייעץ, מתאם ומנהל מקרה, מבוסס נתונים ומודלים בינלאומיים – עם השוואות ומה מתאים ליסודי לבנים), חלוקת עבודה וזמן (אופק חדש, דוח מבקר המדינה, מה כן ומה לא בתפקיד והגבולות מול כל שותף), אתיקה (הקוד האתי, סודיות וחריגיה, קשרים כפולים, חובת דיווח, תיעוד וכרטיסי דילמה), השנה של היועץ (חודשי השנה העברית, איתור בארבעה ממדים, מטרות עם ת.ב.ל.י.ן, תוכנית עבודה, ועדה מלווה ואוגדן סוף שנה), העבודה עם המנהל והצוות, והיועץ עצמו (זהות מקצועית, מסלול ההתפתחות, סופרוויז׳ן ושמירה מפני שחיקה). לכל פריט מצוין מקור; מה שאינו מהחומרים מסומן ״ידע מקצועי כללי״.', extra: [['#/workflow', '🗺️', 'סדר עבודה – מהפניה ועד סיום'], ['#/roles', '👥', 'מי פונה למי'], ['#/track/ak-counselor', '⚖️', 'תפקיד היועץ לפי חוזר האקלים'], ['#/circ/c04/c04-role-counselor-psychologist', '📜', 'תפקיד היועץ בחוזר 0470'], ['#/circ/c09/c09-counselor-role', '📜', 'תפקיד היועץ בכישורי חיים (0351)'], ['#/circ/c13/c13-counselor-role-shefi', '📜', 'היועץ בשעת חירום'], ['#/circ/c05/c05-counselor-role-info', '📜', 'סמכויות היועץ בהעברת מידע'], ['#/track/teacher-stress', '🧯', 'דחק ושחיקה']]},
-  aklim: {flag: 'aklim', guide: 'ak-guide', title: 'אקלים חינוכי – חוזר 0470 ומדרג התגובות', icon: '⚖️', say: 'גבולות ברורים לצד טיפול רגשי – בוא נמצא יחד את השלב המדויק במדרג ⚖️', intro: '⚖️ אקלים חינוכי – חוזר 0470 ומדרג התגובות: המדריך (עקרונות, סטנדרטים, חובות בית הספר, עץ התפקידים וזרימת הטיפול), מדרג התגובות המלא בסולם צבעוני (שגרה, חלקים א׳–ד׳, פגיעה ברשת ו׳–ח׳ ופגיעה בצוות) עם התבחינים לחומרה, ״מה עושים כש…״ לפי סוג אירוע עם רשימה וטבעת התקדמות, אמצעי משמעת והשעיה, תפקיד היועץ, טפסים, בניית אקלים, שאלון אקלים כיתתי אנונימי ומדריך למחנך. כל כלל מקושר למשפט בחוזר; הצד החינוכי-טיפולי והצד המשמעתי-מנהלי מוצגים זה לצד זה.', extra: [['#/circ/c04', '📜', 'חוזר 0470 – דף החוזר'], ['#/circ/c11', '📜', 'אובדנות (0473)'], ['#/circ/c07', '📜', 'הקשר עם ההורים (0482)'], ['#/circ/c08', '📜', 'חוק זכויות התלמיד'], ['#/track/prog-climate', '🏗️', 'תכנית התערבות לאקלים'], ['#/track/prog-bullying', '🛡️', 'מניעת בריונות'], ['#/tool/sociometry', '🕸️', 'מיפוי חברתי'], ['#/sel', '💞', 'למידה רגשית-חברתית']]},
+  aklim: {flag: 'aklim', guide: 'ak-guide', title: 'אקלים חינוכי – חוזר 0470 ומדרג התגובות', icon: '⚖️', say: 'גבולות ברורים לצד טיפול רגשי – בוא נמצא יחד את השלב המדויק במדרג ⚖️', intro: '⚖️ אקלים חינוכי – חוזר 0470 ומדרג התגובות: המדריך (עקרונות, סטנדרטים, חובות בית הספר, עץ התפקידים וזרימת הטיפול), מדרג התגובות המלא בסולם צבעוני (שגרה, חלקים א׳–ד׳, פגיעה ברשת ו׳–ח׳ ופגיעה בצוות) עם התבחינים לחומרה, ״מה עושים כש…״ לפי סוג אירוע עם רשימה וטבעת התקדמות, אמצעי משמעת והשעיה, תפקיד היועץ, טפסים, בניית אקלים, שאלון אקלים כיתתי אנונימי ומדריך למחנך. כל כלל מקושר למשפט בחוזר; הצד החינוכי-טיפולי והצד המשמעתי-מנהלי מוצגים זה לצד זה.', extra: [['#/circ/c04', '📜', 'חוזר 0470 – דף החוזר'], ['#/circ/c11', '📜', 'אובדנות (0473)'], ['#/circ/c07', '📜', 'הקשר עם ההורים (0482)'], ['#/circ/c08', '📜', 'חוק זכויות התלמיד'], ['#/track/prog-climate', '🏗️', 'תכנית התערבות לאקלים'], ['#/track/prog-bullying', '🛡️', 'מניעת בריונות'], ['#/tool/sociometry', '🕸️', 'מיפוי חברתי'], ['#/sel', '💞', 'למידה רגשית-חברתית'], ['#/behave', '🏅', 'עיצוב התנהגות – פרטני וכיתתי']]},
   tzalach: {flag: 'tzalach', guide: 'tz-guide', title: 'צל״ח – צוות לשעת חירום', icon: '🛟', say: 'היערכות מקדימה מצילה חיים – בוא נכין את הצוות יחד, צעד אחרי צעד 🛟', intro: '🛟 צל״ח – צוות לשעת חירום: המדריך (מה זה צל״ח, עץ התפקידים – המנהל, היועץ, המחנכים, הפסיכולוג, הרב, המזכיר ורכז הביטחון – מעגל השגרה והחירום, ארבעת השלבים, קמ״צ, גשר הרציפויות, גש״ר מאח״ד, מעש״ה ומעגלי הפגיעות), היערכות בשגרה עם רשימת מוכנות וטבעת התקדמות, ״מה עושים מחר בבוקר״ – השעות והיום הראשון, תרחישים (מוות של תלמיד, הורה או מורה, תאונה, אזעקות, אובדנות בקהילה, אלימות, אסון, מחלה קשה) עם מה אומרים לכל גיל והיבטים דתיים, הדרכת המחנכים לשיחה בכיתה, ומעקב אחרי האירוע – זיכרון, הצוות והפקת לקחים. לפי חוזרי 0449, 0472 ו-0473 ומסמכי שפ״י; הצד הטיפולי והצד הניהולי מופרדים, ולכל פריט מצוין המקור.', extra: [['#/circ/c13', '📜', 'נוהלי שעת חירום (0449)'], ['#/circ/c10', '📜', 'ליווי תלמידים במשבר מתמשך (0472)'], ['#/circ/c11', '📜', 'אובדנות – מניעה והתערבות (0473)'], ['#/track/prog-emergency', '🛡️', 'תוכנית התערבות: חוסן, חירום ומשבר'], ['#/track/dist-trauma', '🚨', 'זיהוי תגובות דחק וטראומה'], ['#/track/grief', '🕯️', 'מסלול טיפול: אבל ואובדן'], ['#/track/grp-resilience', '👥', 'קבוצת חוסן'], ['#/track/talk-hard', '🗣️', 'רגעים קשים בשיחה'], ['#/distress', '🚨', 'זיהוי סימני מצוקה']]},
   quest: {flag: 'quest', guide: 'q-guide', title: 'שאלונים ומדדים', icon: '📋', say: 'מודדים בהתחלה, באמצע ובסוף – ורואים יחד את השינוי 📋', intro: '📋 שאלונים ומדדים: המדריך (מתי מודדים – בסיס, אמצע וסוף; איך בוחרים כלי לפי השאלה, הגיל ומי ממלא – הילד, ההורה או המורה; הסכמת הורים, סודיות, ״שאלון הוא לא אבחנה״ ומתי מפנים; ציינון ופירוש – ציון גולמי, נקודת חתך וטווח קליני; משוב לילד ולהורים; ורישום הציון בתיק התלמיד), מסלול לכל תחום – חרדה, מצב רוח ואובדנות, OCD, טראומה, קשב, התנהגות וכעס, חברה וערך עצמי, למידה וחרדת מבחנים, שינה, גוף וכאב, סוללות ואינטייק, טפסי הורים ומורים, ומשוב על הטיפול – ולכל שאלון כרטיס עם גילאים, ממלא, מספר פריטים והציינון ונקודות החתך כלשון הקובץ, עם כפתורי צפייה והורדה; וקטלוג א–⁠ת עם סינון לפי תחום, גיל וממלא. לכל פרט מצוין המקור, ומה שאינו בקבצים מסומן ״ראו בקובץ״ או ״ידע מקצועי כללי״.', extra: [['#/tools', '🧰', 'כלים לילדים'], ['#/distress', '🚨', 'זיהוי סימני מצוקה'], ['#/sped', '🧩', 'חינוך מיוחד והכלה'], ['#/circ/c11', '📜', 'אובדנות – חוזר 0473'], ['#/circ/c07/c07-emotional-support-parent-consent', '📜', 'הסכמת הורים למענה רגשי (0482)']]},
 };
 /* 📘 חוברות מטופלים – אריאל חן (tracks-ac.js): a hub under 🧭 טיפול לפי בעיה – no NAV entry; the page and its tracks lead back to #/problems */
 HUBS.ariel = {flag: 'ariel', guide: 'ac-guide', back: ['problems', 'טיפול לפי בעיה'], title: 'חוברות מטופלים – אריאל חן', icon: '📘', say: 'ארבע חוברות עבודה – ואנחנו מתאימים כל טופס לילד שמולנו 📘', intro: '📘 ארבע חוברות העבודה למטופל מסדרת ״צעד צעד – טיפול התנהגותי-קוגניטיבי״ של אריאל חן: פאניקה ואגורפוביה, דיכאון, חרדה חברתית ו-OCD. המדריך (מה בחוברות, מה משותף לכולן, איך משלבים טופס במפגש, התאמה לפי גיל, להורים ולמחנך, ומה לא לוקחים ליסודי), ומסלול אינטראקטיבי לכל חוברת: מבנה הטיפול מפגש אחרי מפגש, המודל הפסיכו-חינוכי בתרשימים, הטפסים המרכזיים כטפסים למילוי (בניסוח שלנו), משימות בית, להורים ומניעת הישנות. לכל פריט מצוינים הטופס והעמוד, וכל טופס נפתח בעמוד שלו בקובץ. החוברות נכתבו למבוגרים – ההתאמות לילדים מסומנות; הצד הטיפולי והצד המשמעתי-מנהלי מופרדים.', extra: [['#/problem/social-anxiety', '🙈', 'מפה: חרדה חברתית'], ['#/problem/low-mood', '🌧️', 'מפה: מצב רוח ירוד'], ['#/problem/ocd', '🔁', 'מפה: OCD'], ['#/problem/gad', '💭', 'מפה: דאגנות וחרדה'], ['#/quest', '📋', 'שאלונים ומדדים'], ['#/circ/c11', '📜', 'אובדנות – חוזר 0473'], ['#/circ/c07/c07-emotional-support-parent-consent', '📜', 'הסכמת הורים למענה רגשי (0482)']]};
+/* 🏅 עיצוב התנהגות (tracks-behave.js): a hub of its own, listed under both 🧒 הטיפול בתלמיד and 🏫 כיתה ובית ספר – theory first, then the individual plan and the class */
+HUBS.behave = {flag: 'behave', guide: 'bh-guide', title: 'עיצוב התנהגות – פרטני וכיתתי', icon: '🏅', say: 'מלמדים התנהגות כמו שמלמדים קריאה – צעד קטן, חיזוק, ועוד צעד 🏅', intro: '🏅 עיצוב התנהגות: קודם התאוריה והמושגים – התניה קלאסית ואופרנטית, ABC, חיזוק ועונש (חיובי ושלילי), סוגי מחזקים ועקרון פרימאק, סדרי חיזוק, עיצוב בקירובים, שרשור, הנחיה ודעיכה, הכחדה ופרץ ההכחדה, הכללה ושימור, למידה מצפייה (בנדורה), הקשר ל-CBT והגבולות האתיים; מילון מושגים ומשחק זיהוי עם עשרות מקרים. אחר כך הרמה הפרטנית – הגדרה אופרטיבית, מדידת בסיס וטופס ABC, ניתוח תפקודי (ארבע הפונקציות), התנהגות חלופית, תוכנית התנהגותית אישית, חוזה, לוח נקודות ודוח יומי בית-ספר ובית, דעיכה ותסריטים לילד, להורים ולמורה; והרמה הכיתתית – כללים ושגרות, שבח ספציפי ויחס חיובי, תלויות קבוצתיות, משחק ההתנהגות הטובה, כלכלת אסימונים כיתתית, מודל שלוש השכבות (PBIS), התעלמות מתוכננת, הכוונה מוקדמת ותגובות מדורגות בתיאום עם מדרג התגובות של חוזר 0470. בסוף – עיצוב התנהגות בבית וטעויות נפוצות. הצד החינוכי-טיפולי והצד המשמעתי-מנהלי מוצגים בנפרד, ולכל פריט מצוין המקור.', extra: [['#/track/cbtc-behavior', '📋', 'ניהול התנהגות בכיתה ברוח CBT'], ['#/track/ak-ladder', '🪜', 'מדרג התגובות – חוזר 0470'], ['#/track/ak-discipline', '⏸️', 'אמצעי משמעת – מה מותר ומה אסור'], ['#/circ/c04', '📜', 'חוזר 0470 – אקלים חינוכי מיטבי'], ['#/track/adhd-org', '🧭', 'מסלול טיפול: קשב וארגון'], ['#/track/anger', '🌋', 'מסלול טיפול: כעס וויסות'], ['#/track/dist-odd', '🚨', 'זיהוי: התנהגות מתריסה (ODD)'], ['#/track/q-behav', '📋', 'שאלוני התנהגות וכעס'], ['#/tool/rewards', '⭐', 'טבלת מדבקות']]};
 function hubView(R){
   const h = HUBS[R.r]; const all = TRACKS().filter(t => t[h.flag]), guide = h.guide && all.find(t => t.id === h.guide), list = all.filter(t => t !== guide);
   const H = hubHue(R.r), card = t => `<a class="card accent hubc" href="#/track/${t.id}" style="--h:${t.hue ?? H}"><span class="emoji">${t.icon || h.icon}</span><span class="name">${esc(t.title)}</span><span class="sub">${esc(t['for'] || '')} · ${t.steps.length} שלבים</span></a>`;
@@ -7822,7 +7972,7 @@ function hubView(R){
     : list.length ? `<div class="grid">${list.map(card).join('')}</div>` : '<div class="empty">🛠️ התוכן של המדור הזה בהכנה ויעלה בקרוב.</div>'}
     ${h.extra.length ? `<h2 class="sec">🔗 עוד בנושא</h2><div class="actions">${h.extra.map(([u, i, l]) => `<a class="btn" href="${u}">${i} ${esc(l)}</a>`).join('')}</div>` : ''}`};
 }
-const HUBOF = t => t.workflow ? (active() ? ['student/' + active().id, 'סדר העבודה של ' + esc(active().alias)] : ['workflow', 'סדר עבודה']) : t.group ?['groups', 'הנחיית קבוצות'] : t.transition ? ['transitions', 'מעברים'] : t.newteachers ? ['newteachers', 'ליווי מורים חדשים'] : t.program ? ['programs', 'בניית תוכנית התערבות'] : t.distress ? ['distress', 'זיהוי סימני מצוקה'] : t.talk ? ['talk', 'ראיון ושיח רגשי'] : t.parents ? ['parents', 'הורים'] : t.reports ? ['reports', 'תעודות'] : t.sel ? ['sel', 'SEL – למידה רגשית-חברתית'] : t.mafteach ? ['mafteach', 'כישורי חיים ומפתח הל״ב'] : t.sped ? ['sped', 'חינוך מיוחד והכלה'] : t.develop ? ['develop', 'התפתחות הילד'] : t.tzalach ? ['tzalach', 'צל״ח – צוות לשעת חירום'] : t.aklim ? ['aklim', 'אקלים חינוכי – חוזר 0470'] : t.cbtclass ? ['cbtclass', 'יישום CBT בכיתה'] : t.crole ? ['crole', 'תפקיד היועץ החינוכי'] : t.quest ? ['quest', 'שאלונים ומדדים'] : t.ariel ? ['ariel', 'טיפול לפי בעיה › חוברות מטופלים – אריאל חן'] : ['problems', 'טיפול לפי בעיה'];
+const HUBOF = t => t.workflow ? (active() ? ['student/' + active().id, 'סדר העבודה של ' + esc(active().alias)] : ['workflow', 'סדר עבודה']) : t.group ?['groups', 'הנחיית קבוצות'] : t.transition ? ['transitions', 'מעברים'] : t.newteachers ? ['newteachers', 'ליווי מורים חדשים'] : t.program ? ['programs', 'בניית תוכנית התערבות'] : t.distress ? ['distress', 'זיהוי סימני מצוקה'] : t.talk ? ['talk', 'ראיון ושיח רגשי'] : t.parents ? ['parents', 'הורים'] : t.reports ? ['reports', 'תעודות'] : t.sel ? ['sel', 'SEL – למידה רגשית-חברתית'] : t.mafteach ? ['mafteach', 'כישורי חיים ומפתח הל״ב'] : t.sped ? ['sped', 'חינוך מיוחד והכלה'] : t.autism ? ['autism', 'אוטיזם – ילדים על הרצף'] : t.develop ? ['develop', 'התפתחות הילד'] : t.tzalach ? ['tzalach', 'צל״ח – צוות לשעת חירום'] : t.aklim ? ['aklim', 'אקלים חינוכי – חוזר 0470'] : t.cbtclass ? ['cbtclass', 'יישום CBT בכיתה'] : t.behave ? ['behave', 'עיצוב התנהגות'] :t.crole ? ['crole', 'תפקיד היועץ החינוכי'] : t.quest ? ['quest', 'שאלונים ומדדים'] : t.ariel ? ['ariel', 'טיפול לפי בעיה › חוברות מטופלים – אריאל חן'] : ['problems', 'טיפול לפי בעיה'];
 // #/tracks (the old "טיפול מובנה" page) is now the merged "טיפול לפי בעיה" page – the route stays as an alias
 function tracksView(R){ return problems(R); }
 function trackView(R){
@@ -7970,7 +8120,7 @@ function diagramHTML(g, o = {}){
     ${g.note ? `<p class="dgnote">📌 ${esc(g.note)}</p>` : ''}${o.src !== false && g.src ? `<p class="wfsrc">📚 ${esc(g.src)}</p>` : ''}</figure>`;
 }
 /* hub color identity: one hue per hub – its hero band, its cards, its map and the headers of its tracks */
-const HUB_HUE = {transitions: 200, newteachers: 135, programs: 28, distress: 0, talk: 265, parents: 330, reports: 45, sel: 300, sped: 180, develop: 140, tzalach: 12, aklim: 60, cbtclass: 285, crole: 315, quest: 195, ariel: 212, groups: 220, tracks: 160, workflow: 90, games: 20, videos: 350, tools: 190, circ: 40, library: 250, problems: 170, roles: 100, ask: 210, students: 55};
+const HUB_HUE = {transitions: 200, newteachers: 135, programs: 28, distress: 0, talk: 265, parents: 330, reports: 45, sel: 300, sped: 180, autism: 240, develop: 140, tzalach: 12, aklim: 60, cbtclass: 285, behave: 110,crole: 315, quest: 195, ariel: 212, groups: 220, tracks: 160, workflow: 90, games: 20, videos: 350, tools: 190, circ: 40, library: 250, problems: 170, roles: 100, ask: 210, students: 55};
 const hubHue = k => HUB_HUE[k] ?? hueOf(k);
 /* 🧭 מבט על – the hub's infographic (app/infographics.js) */
 const infog = (k, list) => { try { return window.infographicBlock ? window.infographicBlock(k, {hue: hubHue(k), tracks: TRACKS(), list: list || [], kid: kidMini('שמחה', 5, 'igkidsvg')}) : ''; } catch(e){ return ''; } };
@@ -7979,7 +8129,7 @@ function hubMap(list, H){ if (list.length < 3 || list.length > 40) return '';
   return `<nav class="hubmap no-print" aria-label="מפת המדור" style="--h:${H}"><h2 class="sec">🗺️ מפת המדור</h2><ol>${list.map((t, i) => `<li style="--k:${i}"><a href="#/track/${t.id}"><span class="hmn">${i + 1}</span><span class="hmi" aria-hidden="true">${t.icon || '🧭'}</span><span class="hmt">${esc(t.title)}</span></a></li>`).join('')}</ol></nav>`; }
 function homeTiles(){ const tile = ([k, i, l]) => `<a class="htile" href="#/${k}" style="--h:${hubHue(k)}"><span class="hti" aria-hidden="true">${i}</span><span class="htl">${esc(l)}</span></a>`;
   return `<h2 class="sec">🧩 כל המדורים <a class="smlink" href="#/sitemap">🗺️ מפת האתר</a></h2>` + navGroups().map(([i, l, items]) => `<h3 class="htgroup">${i} ${esc(l)}</h3><div class="hometiles">${items.map(tile).join('')}</div>`).join(''); }
-const TR_KIND = {info: ['ℹ️', 'הסבר', 210], form: ['📝', 'טופס', 45], checklist: ['✅', 'רשימת בדיקה', 140], scale: ['📊', 'סולם', 20], fivep: ['🌸', '5P', 320], cycle: ['🔄', 'מעגל', 270], plan: ['🗓️', 'תוכנית', 180], cards: ['🃏', 'כרטיסים', 300], sessions: ['📅', 'מפגשים', 100], diagram: ['🎨', 'תרשים', 250], psy: ['🧠', 'הסבר', 210], tabs: ['📑', 'לפי גיל ובעיה', 60], viz: ['📈', 'כלי חזותי', 160]};
+const TR_KIND = {info: ['ℹ️', 'הסבר', 210], form: ['📝', 'טופס', 45], checklist: ['✅', 'רשימת בדיקה', 140], scale: ['📊', 'סולם', 20], fivep: ['🌸', '5P', 320], cycle: ['🔄', 'מעגל', 270], plan: ['🗓️', 'תוכנית', 180], cards: ['🃏', 'כרטיסים', 300], sessions: ['📅', 'מפגשים', 100], diagram: ['🎨', 'תרשים', 250], psy: ['🧠', 'הסבר', 210], tabs: ['📑', 'לפי גיל ובעיה', 60], viz: ['📈', 'כלי חזותי', 160], quiz: ['🎮', 'משחק זיהוי', 110]};
 /* info steps made visual – the words stay exactly as written, only their shape changes:
    an arrow chain (א ← ב ← ג, 3–8 links) → a flow of colored chips (a circle when the paragraph speaks of a מעגל);
    an inline run "1. … 2. … 3. …" or points that all start with a number → numbered colored cards;
@@ -9189,5 +9339,6 @@ if (WEB && !ARTIFACT && 'serviceWorker' in navigator && location.protocol === 'h
 })();
 
 </script>
+<script src="voice-tutor.js"></script>
 </body>
 </html>
