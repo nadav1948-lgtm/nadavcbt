@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="theme-color" content="#0f0d1a">
-<title>CBT בבית הספר</title>
+<title>האתר של נדב דוד – יועץ חינוכי</title>
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='24' fill='%235b3fe0'/><text x='50' y='68' font-size='56' text-anchor='middle'>🧠</text></svg>">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;500;600;700;800;900&family=Rubik:wght@500;600;700;800;900&display=swap" rel="stylesheet">
@@ -1890,6 +1890,19 @@ body,body *{overflow-wrap:normal!important;word-break:normal!important;hyphens:m
   .dysrc{font-size:8.5pt;color:#333}
   .dybanner{padding:10px 14px}
 }
+/* site header: "האתר של נדב דוד – יועץ חינוכי" with the logo */
+.sitehead{display:flex;align-items:center;gap:14px;text-decoration:none;color:var(--ink);margin:0 0 12px;padding:10px 18px;border-radius:22px;background:linear-gradient(120deg,color-mix(in srgb,#4f46e5 16%,var(--panel)),color-mix(in srgb,#7c3aed 10%,var(--panel)) 60%,color-mix(in srgb,#f59e0b 10%,var(--panel)));border:1px solid color-mix(in srgb,#f59e0b 35%,var(--line));box-shadow:0 8px 24px -14px rgba(79,70,229,.55)}
+.sitehead .ndlogo{width:52px;height:52px;flex:none;filter:drop-shadow(0 4px 10px rgba(124,58,237,.35))}
+.sitehead .shtxt{display:flex;flex-direction:column;line-height:1.15}
+.sitehead .shtxt b{font-family:Rubik,Heebo,sans-serif;font-size:24px;font-weight:900;letter-spacing:-.01em;background:linear-gradient(90deg,var(--ink),color-mix(in srgb,#7c3aed 70%,var(--ink)));-webkit-background-clip:text;background-clip:text;color:transparent}
+.sitehead .shtxt>span{font-size:15px;font-weight:700;color:#d97706;letter-spacing:.02em}
+.sitehead:hover .ndlogo{transform:rotate(-6deg) scale(1.04);transition:transform .25s}
+.ndbrand .ndlogo{width:40px;height:40px;flex:none}
+.ndbrand{align-items:center;gap:10px}
+@media (max-width:640px){.sitehead{padding:8px 12px;gap:10px;margin-bottom:8px}.sitehead .ndlogo{width:40px;height:40px}.sitehead .shtxt b{font-size:19px}.sitehead .shtxt>span{font-size:13px}}
+@media print{.sitehead{display:none}}
+@media (prefers-reduced-motion:reduce){.sitehead:hover .ndlogo{transform:none}}
+
 </style>
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="apple-touch-icon" href="icon-192.png">
@@ -1899,13 +1912,14 @@ body,body *{overflow-wrap:normal!important;word-break:normal!important;hyphens:m
 <body>
 <div class="shell">
   <aside class="side">
-    <a class="brand" href="#/home"><span class="mark">🧠</span><span>CBT בבית הספר<small>ארגז הכלים של היועץ</small></span></a>
+    <a class="brand ndbrand" href="#/home"><svg class="ndlogo" viewBox="0 0 64 64" aria-hidden="true"><defs><linearGradient id="ndG" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#4f46e5"/><stop offset=".55" stop-color="#7c3aed"/><stop offset="1" stop-color="#a21caf"/></linearGradient><linearGradient id="ndGold" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#fde68a"/><stop offset=".5" stop-color="#f59e0b"/><stop offset="1" stop-color="#fbbf24"/></linearGradient></defs><circle cx="32" cy="32" r="30" fill="url(#ndG)"/><circle cx="32" cy="32" r="30" fill="none" stroke="url(#ndGold)" stroke-width="2.6"/><circle cx="32" cy="32" r="25.5" fill="none" stroke="#fff" stroke-opacity=".18" stroke-width="1"/><text x="32" y="40" text-anchor="middle" font-family="Rubik,Heebo,Arial,sans-serif" font-weight="800" font-size="22" fill="#fff" direction="rtl">נ״ד</text><path d="M32 13 C27 13 24.5 16.5 25 20 C29 20.5 32 18 32 13 Z M32 13 C37 13 39.5 16.5 39 20 C35 20.5 32 18 32 13 Z" fill="url(#ndGold)"/><path d="M32 13 L32 21" stroke="url(#ndGold)" stroke-width="1.6" stroke-linecap="round"/></svg><span>נדב דוד<small>יועץ חינוכי · ארגז הכלים</small></span></a>
     <nav class="nav" id="nav"></nav>
     <div class="foot">
       <button class="sync" data-act="syncbtn"></button>
     </div>
   </aside>
   <main class="main">
+    <a class="sitehead no-print" href="#/home"><svg class="ndlogo" viewBox="0 0 64 64" aria-hidden="true"><defs><linearGradient id="ndG2" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#4f46e5"/><stop offset=".55" stop-color="#7c3aed"/><stop offset="1" stop-color="#a21caf"/></linearGradient><linearGradient id="ndG2old" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#fde68a"/><stop offset=".5" stop-color="#f59e0b"/><stop offset="1" stop-color="#fbbf24"/></linearGradient></defs><circle cx="32" cy="32" r="30" fill="url(#ndG2)"/><circle cx="32" cy="32" r="30" fill="none" stroke="url(#ndG2old)" stroke-width="2.6"/><circle cx="32" cy="32" r="25.5" fill="none" stroke="#fff" stroke-opacity=".18" stroke-width="1"/><text x="32" y="40" text-anchor="middle" font-family="Rubik,Heebo,Arial,sans-serif" font-weight="800" font-size="22" fill="#fff" direction="rtl">נ״ד</text><path d="M32 13 C27 13 24.5 16.5 25 20 C29 20.5 32 18 32 13 Z M32 13 C37 13 39.5 16.5 39 20 C35 20.5 32 18 32 13 Z" fill="url(#ndG2old)"/><path d="M32 13 L32 21" stroke="url(#ndG2old)" stroke-width="1.6" stroke-linecap="round"/></svg><span class="shtxt"><b>האתר של נדב דוד</b><span>יועץ חינוכי</span></span></a>
     <div class="topbar">
       <div class="title" id="title"></div>
       <label class="who" title="התלמיד שאיתו עובדים עכשיו">⭐<select id="who"></select></label>
@@ -4625,7 +4639,7 @@ function render(){
   clearTimers();
   const R = route();
   document.body.classList.toggle('locked', isLocked());
-  if (isLocked()) { const o = lockView(); $('#title').textContent = ''; $('#view').innerHTML = `<div class="page">${o.html}</div>`; document.title = 'CBT בבית הספר'; return; }
+  if (isLocked()) { const o = lockView(); $('#title').textContent = ''; $('#view').innerHTML = `<div class="page">${o.html}</div>`; document.title = 'האתר של נדב דוד – יועץ חינוכי'; return; }
   if (WEB && !ARTIFACT && !LITE && !PROBLEMS.length) { $('#title').textContent = ''; $('#view').innerHTML = `<div class="empty" style="padding-top:120px"><span class="big">⏳</span>${Cloud.status === 'error' ? esc(Cloud.err) + ' <br><br><button class="btn primary" data-act="cloud-retry">נסו שוב</button>' : 'טוען את התוכן מ-OneDrive…'}</div>`; return; }
   const views = LITE ? {home: liteHome, problems, problem: problemView, tools, tool: toolView, settings: liteSettings, ask, workflow, roles: rolesView, circ: circView, circsrc: circSrcView, libsrc: libSrcView, circask: circAskView, find: findView, more: moreView, games: gamesView, game: gameView, tracks: tracksView, track: trackView, groups: groupsView, transitions: hubView, newteachers: hubView, programs: hubView, distress: hubView, talk: hubView, parents: hubView, reports: hubView, sel: hubView, mafteach: hubView, sped: hubView, tzalach: hubView, aklim: hubView,develop: hubView, cbtclass: hubView, crole: hubView, videos: videosView, diary: diaryView} : {home, problems, problem: problemView, students, student: studentView, tools, tool: toolView, library, settings, ask, workflow, roles: rolesView, circ: circView, circsrc: circSrcView, libsrc: libSrcView, circask: circAskView, find: findView, more: moreView, games: gamesView, game: gameView, tracks: tracksView, track: trackView, groups: groupsView, transitions: hubView, newteachers: hubView, programs: hubView, distress: hubView, talk: hubView, parents: hubView, reports: hubView, sel: hubView, mafteach: hubView, sped: hubView, tzalach: hubView, aklim: hubView,develop: hubView, cbtclass: hubView, crole: hubView, videos: videosView, diary: diaryView};
   const fn = views[R.r] || home;
@@ -4635,7 +4649,7 @@ function render(){
   setTimeout(igEqualize, 60); setTimeout(igEqualize, 600);
   const navKey = {problem:'problems', student:'students', tool:'tools', circsrc:'circ', libsrc:'library', circask:'circ'}[R.r] || R.r;
   document.querySelectorAll('[data-nav]').forEach(a => a.classList.toggle('on', a.dataset.nav === navKey));
-  document.title = out.title + ' · CBT בבית הספר';
+  document.title = out.title + ' · האתר של נדב דוד';
   try { kidifyEmojis($('#view')); } catch(e){}
   if (out.after) out.after();
   ui();
