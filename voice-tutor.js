@@ -109,7 +109,7 @@
     <div class="vt-api" style="color:var(--accent,#ffda2a);font-weight:600">✅ מצב חינמי: המורה עונה ומדריך מתוך החומרים שבאתר, בלי AI ובלי עלות. לשיחה חופשית מלאה – פתחו את האפליקציה בתוך Claude.</div>
     <details class="vt-api"><summary style="cursor:pointer;color:var(--muted,#9a9a9a);font-size:13px">מתקדם – חיבור Claude בתשלום (לא חובה)</summary>
     <label style="margin-top:8px">מפתח Claude API
-      <input id="vt-key" type="password" autocomplete="off" placeholder="sk-ant-...">
+      <input id="vt-key" type="text" autocomplete="off" spellcheck="false" placeholder="sk-ant-...">
       <small>רק אם רוצים שיחה חופשית גם מחוץ ל-Claude. בתשלום לפי שימוש. בלי מפתח – הכול נשאר חינמי.</small></label>
     <label style="margin-top:8px">מודל
       <select id="vt-model">

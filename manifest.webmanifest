@@ -3,7 +3,7 @@
   "short_name": "CBT",
   "description": "ארגז הכלים של היועץ – מפות טיפול, תיקי תלמידים וכלים לילדים",
   "lang": "he", "dir": "rtl",
-  "start_url": "./", "scope": "./",
+  "start_url": "./index.html", "scope": "./",
   "display": "standalone",
   "background_color": "#0d0d0d", "theme_color": "#0d0d0d",
   "icons": [
