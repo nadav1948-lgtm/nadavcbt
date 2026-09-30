@@ -5775,7 +5775,7 @@ function render(){
   $('#title').textContent = out.title;
   $('#view').innerHTML = `<div class="page">${out.html}</div>`;
   setTimeout(igEqualize, 60); setTimeout(igEqualize, 600);
-  const navKey = (k => k === 'ariel' ? 'problems' : k)(R.r === 'track' ? (TRACK(R.id) ? HUBOF(TRACK(R.id))[0] : 'problems') : {problem:'problems', tracks:'problems', student:'students', tool:'tools', circsrc:'circ', libsrc:'library', circask:'circ', askc:'ask', cbtmaps:'cbt', app:(allApps()[R.id] || {}).hub || 'cbt', movie:(MOVIES().find(m => m.id === R.id) || {}).hub || 'videos', pdterms:'pd'}[R.r] || R.r);   // #/ariel lives under 🧭 טיפול לפי בעיה
+  const navKey = (k => k === 'ariel' ? 'problems' : k)(R.r === 'track' ? (TRACK(R.id) ? HUBOF(TRACK(R.id))[0] : 'problems') : {problem:'problems', tracks:'problems', student:'students', tool:'tools', circsrc:'circ', libsrc:'library', circask:'circ', askc:'ask', cbtmaps:'cbt', app:(NAV.some(n => n[0] === 'app/' + R.id) ? 'app/' + R.id : (allApps()[R.id] || {}).hub || 'cbt'), movie:(MOVIES().find(m => m.id === R.id) || {}).hub || 'videos', pdterms:'pd'}[R.r] || R.r);   // #/ariel lives under 🧭 טיפול לפי בעיה
   document.querySelectorAll('[data-nav]').forEach(a => a.classList.toggle('on', a.dataset.nav === navKey));
   document.querySelectorAll('#nav details.navg').forEach(d => { if (d.querySelector('a.on')) d.open = true; });
   document.title = out.title + ' · האתר של נדב דוד';
