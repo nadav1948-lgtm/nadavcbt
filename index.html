@@ -2078,6 +2078,73 @@ body,body *{overflow-wrap:normal!important;word-break:normal!important;hyphens:m
 .dgcx{font-size:2.4px;fill:var(--muted);text-anchor:middle}
 .dgcy{font-size:2.4px;fill:var(--muted);text-anchor:start}
 @media (prefers-reduced-motion:reduce){.dgscene,.dgcl{animation:none;stroke-dashoffset:0}}
+.savedbadge{position:fixed;bottom:18px;inset-inline-start:50%;transform:translate(50%,20px);z-index:95;background:var(--panel);color:var(--ink);border:1px solid var(--line);border-radius:999px;padding:8px 16px;font-size:14px;font-weight:700;box-shadow:var(--shadow-hi);opacity:0;pointer-events:none;transition:opacity .25s,transform .25s}
+.savedbadge.on{opacity:1;transform:translate(50%,0)}
+.savedbadge.bad{border-color:var(--danger);color:var(--danger)}
+/* per-age implementation of a track step */
+.trages{margin:18px 0 6px;padding:14px;border-radius:18px;background:linear-gradient(135deg,color-mix(in srgb,var(--brand) 8%,var(--panel)),var(--panel));border:1px solid var(--line)}
+.trages h4{margin:0 0 10px;font-size:16px}
+.trages-g{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.trage{border-radius:14px;padding:12px 14px;background:hsl(var(--h) 45% 50% / .12);border-top:4px solid hsl(var(--h) 60% 55%)}
+.trage b{display:block;margin-bottom:6px;font-size:15px}
+.trage ul{margin:0;padding-inline-start:18px;display:grid;gap:5px;font-size:14px;line-height:1.55}
+@media (max-width:760px){.trages-g{grid-template-columns:1fr}}
+@media print{.trages{break-inside:avoid}}
+
+/* ---- 🎬 animated guide movie (movieView) ---- */
+.mvcard{border:2px solid var(--brand);background:linear-gradient(135deg,hsl(var(--h) 60% 30% / .35),transparent)}
+.mvwrap{max-width:980px;margin:0 auto 8px;container-type:inline-size}
+.mvwrap:fullscreen{max-width:none;background:#000;display:flex;flex-direction:column;justify-content:center;padding:12px}
+.mvstage{position:relative;aspect-ratio:16/9;border-radius:18px;overflow:hidden;font-size:1.9cqw;direction:ltr;cursor:pointer;box-shadow:0 18px 50px rgba(0,0,0,.35),inset 0 0 0 1px rgba(255,255,255,.08);user-select:none}
+.mvwrap:fullscreen .mvstage{max-height:calc(100vh - 150px);margin:0 auto;width:min(100%,calc((100vh - 150px)*16/9))}
+.mvbg{position:absolute;inset:0;background:radial-gradient(circle at 25% 20%,hsl(var(--h) 75% 62% / .55),transparent 55%),radial-gradient(circle at 80% 85%,hsl(calc(var(--h) + 50) 70% 55% / .45),transparent 55%),linear-gradient(160deg,hsl(var(--h) 45% 20%),hsl(calc(var(--h) + 30) 40% 12%));animation:mvbg 16s ease-in-out infinite alternate}
+.mvbg::after{content:'';position:absolute;inset:0;background:repeating-linear-gradient(90deg,rgba(255,255,255,.025) 0 2px,transparent 2px 60px)}
+@keyframes mvbg{to{filter:hue-rotate(18deg) brightness(1.08)}}
+.mvtitle{position:absolute;top:3%;right:3%;direction:rtl;background:rgba(0,0,0,.4);backdrop-filter:blur(6px);color:#fff;font-weight:800;font-size:1.05em;padding:.3em .9em;border-radius:999px;border:1px solid rgba(255,255,255,.2);animation:mvslide .6s both;z-index:3}
+.mva{position:absolute;transform:translate(-50%,-50%);visibility:hidden;z-index:2;direction:rtl;text-align:center}
+.mva.on{visibility:visible}
+.mvin{display:flex;flex-direction:column;align-items:center;gap:.15em}
+.mva.on .mvin{animation-delay:var(--d);animation-fill-mode:both}
+.mva.on .mv-pop{animation:mvpop .6s cubic-bezier(.3,1.6,.5,1) both}
+.mva.on .mv-slide{animation:mvslide .7s cubic-bezier(.2,.9,.3,1.2) both}
+.mva.on .mv-grow{animation:mvgrow .9s cubic-bezier(.3,1.5,.5,1) both}
+.mva.on .mv-float{animation:mvpop .6s both,mvfloat 3.2s ease-in-out .6s infinite}
+.mva.on .mv-pulse{animation:mvpop .6s both,mvpulse 1.6s ease-in-out .6s infinite}
+.mva.on .mv-bounce{animation:mvpop .5s both,mvbounce 1.4s ease-in-out .5s infinite}
+.mva.on .mv-shake{animation:mvpop .5s both,mvshake 1.8s ease-in-out .5s infinite}
+.mva.on .mv-spin .mve{animation:mvspin 6s linear infinite}
+.mvstage.paused .mvbg{animation-play-state:paused}
+.mve{font-size:calc(var(--s) * 1em);line-height:1.1;filter:drop-shadow(0 .12em .18em rgba(0,0,0,.45))}
+.mvtag{font-size:.72em;font-weight:700;color:#fff;background:rgba(0,0,0,.45);padding:.1em .6em;border-radius:999px;white-space:nowrap}
+.mvbub{position:relative;font-size:.8em;font-weight:700;color:#1b1b2f;background:#fff;padding:.35em .8em;border-radius:1em;white-space:nowrap;box-shadow:0 .2em .6em rgba(0,0,0,.3);margin-bottom:.35em}
+.mvbub:not(.solo)::after{content:'';position:absolute;bottom:-.45em;left:50%;margin-left:-.4em;border:.45em solid transparent;border-bottom:0;border-top-color:#fff}
+.mvbox{display:inline-block;font-size:calc(var(--s) * 1em);font-weight:800;color:#fff;background:linear-gradient(135deg,rgba(255,255,255,.2),rgba(255,255,255,.07));border:1px solid rgba(255,255,255,.3);backdrop-filter:blur(4px);padding:.35em .9em;border-radius:.6em;white-space:nowrap;box-shadow:0 .3em 1em rgba(0,0,0,.25)}
+.mva.now .mve{filter:drop-shadow(0 0 .3em rgba(255,235,150,.9)) drop-shadow(0 .12em .18em rgba(0,0,0,.45))}
+.mva.now .mvbox{border-color:rgba(255,235,150,.9);box-shadow:0 0 1.2em rgba(255,220,120,.45)}
+@keyframes mvpop{from{opacity:0;transform:scale(.3)}to{opacity:1;transform:none}}
+@keyframes mvslide{from{opacity:0;transform:translateY(1.2em)}to{opacity:1;transform:none}}
+@keyframes mvgrow{from{opacity:0;transform:scale(.1) translateY(1em)}to{opacity:1;transform:none}}
+@keyframes mvfloat{50%{transform:translateY(-.25em)}}
+@keyframes mvpulse{50%{transform:scale(1.12)}}
+@keyframes mvbounce{0%,100%{transform:none}40%{transform:translateY(-.3em)}60%{transform:translateY(.05em)}}
+@keyframes mvshake{0%,60%,100%{transform:none}65%{transform:rotate(-8deg)}75%{transform:rotate(8deg)}85%{transform:rotate(-5deg)}}
+@keyframes mvspin{to{transform:rotate(360deg)}}
+.mvcap{min-height:3.2em;margin-top:10px;direction:rtl;text-align:center;color:var(--ink);font-weight:700;font-size:max(16px,2.1cqw);line-height:1.5;padding:.45em 1em;border-radius:14px;background:var(--panel);border:1px solid var(--line);display:flex;align-items:center;justify-content:center}
+.mvwrap:fullscreen .mvcap{color:#fff;background:#111;border-color:#333}
+.mvprog{position:absolute;left:0;right:0;bottom:0;height:.35em;background:rgba(255,255,255,.15);z-index:4}
+.mvprog i{display:block;height:100%;margin-inline-start:auto;background:linear-gradient(90deg,var(--accent),var(--brand));transition:width .6s ease}
+.mvbig{position:absolute;inset:0;margin:auto;width:4.4em;height:4.4em;border-radius:50%;border:0;font-size:1.6em;color:#fff;background:rgba(0,0,0,.5);backdrop-filter:blur(4px);box-shadow:0 0 0 .25em rgba(255,255,255,.25);cursor:pointer;z-index:5;transition:transform .2s}
+.mvbig:hover{transform:scale(1.08)}
+.mvstage:not(.paused) .mvbig{display:none}
+.mvend{position:absolute;inset:0;z-index:6;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:.8em;background:rgba(0,0,0,.6);color:#fff;font-size:1.6em;font-weight:800;direction:rtl}
+.mvend[hidden]{display:none}
+.mvend .btn{font-size:14px}
+.mvctl{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin:12px 0 8px}
+.mvctl select.btn{padding-inline:10px}
+.mvch{justify-content:center}
+.mvch .chip.on{background:var(--brand);color:#fff;border-color:var(--brand)}
+@media (max-width:600px){.mvstage{border-radius:12px;font-size:2.3cqw}.mvctl .btn{padding:8px 10px;font-size:13px}}
+@media (prefers-reduced-motion:reduce){.mva.on .mvin,.mva.on .mve,.mvbg{animation:none!important}}
 
 </style>
 <link rel="manifest" href="manifest.webmanifest">
@@ -5387,10 +5454,60 @@ function uiConfirm(msg){
 
 const ARTIFACT = !!(window.claude && typeof window.claude.use === 'function');
 const LITE = !!window.CBT_LITE;
-const LiteSync = {status: 'lite', last: 0, init(){ ui(); }, schedule(){}, pull(){ return Promise.resolve(); }};
+/* the claude.ai artifact (LITE): browser storage inside claude.ai is not reliable between visits, so every track form and every
+   application is also kept in the viewer's private artifact db (data/users/<id>), one document per entry {k, j: JSON, u: time} –
+   the newer side wins per entry. Without a db (not declared, signed out) it stays browser-only, as before. */
+const LiteSync = {status: 'lite', last: 0, err: '', db: null, uid: null, sent: {}, timer: null, busy: false, stamps: ls.get('cbtapp.lite.stamps', {}),
+  local(){ const o = {}; Object.entries(S.tracks || {}).forEach(([k, v]) => o['t|' + k] = v);
+    try { Object.keys(localStorage).filter(k => k.startsWith('cbtapp.app.')).forEach(k => o['a|' + k.slice(11)] = ls.get(k, {})); } catch(e){}
+    return o; },
+  apply(key, v){ const i = key.indexOf('|'), t = key.slice(0, i), k = key.slice(i + 1); if (t === 't') { S.tracks = S.tracks || {}; S.tracks[k] = v; } else ls.set('cbtapp.app.' + k, v); },
+  docId: key => 'l_' + key.replace(/[^\w-]/g, c => '_' + c.charCodeAt(0).toString(16)),
+  col(){ return this.db.collection('data/users/' + this.uid); },
+  async init(){
+    try {
+      if (!(window.claude && typeof window.claude.use === 'function')) return ui();
+      const [db, user] = await Promise.all([claude.use('db'), claude.use('user')]);
+      const uid = user ? await user.id() : null;
+      if (!db || !uid) return ui();
+      this.db = db; this.uid = uid; await this.pull();
+    } catch(e){ this.status = 'error'; this.err = (e && (e.message || e.code)) || String(e); }
+    ui(); render();
+  },
+  async pull(){
+    if (!this.db) return;
+    const snap = await this.col().get(); let changed = false;
+    for (const d of snap.docs) { if (!d.id.startsWith('l_')) continue; const x = d.data() || {}; if (!x.k || typeof x.j !== 'string') continue;
+      const lu = this.stamps[x.k] || 0;
+      if ((x.u || 0) > lu) { try { this.apply(x.k, JSON.parse(x.j)); this.stamps[x.k] = x.u; this.sent[x.k] = x.j; changed = true; } catch(e){} }
+      else if ((x.u || 0) === lu) this.sent[x.k] = x.j; }
+    if (changed) { ls.set(KEY, S); ls.set('cbtapp.lite.stamps', this.stamps); }
+    await this.push(true);
+    this.status = 'ok'; this.last = Date.now();
+    return changed;
+  },
+  async push(quiet){
+    if (!this.db || this.busy) return; this.busy = true; let n = 0;
+    try {
+      const now = Date.now();
+      for (const [k, v] of Object.entries(this.local())) { const j = JSON.stringify(v); if (this.sent[k] === j) continue;
+        const u = this.sent[k] === undefined && this.stamps[k] ? this.stamps[k] : now;
+        await this.col().doc(this.docId(k)).set({k, j, u}); this.stamps[k] = u; this.sent[k] = j; n++; }
+      ls.set('cbtapp.lite.stamps', this.stamps); this.status = 'ok'; this.last = Date.now(); this.err = '';
+      if (n && !quiet) savedBadge();
+    } catch(e){ this.status = 'error'; this.err = e && e.code === 'quota_exceeded' ? 'נגמר המקום לשמירה' : ((e && (e.message || e.code)) || String(e)); savedBadge(true); }
+    this.busy = false;
+  },
+  schedule(){ if (!this.db) return; clearTimeout(this.timer); this.timer = setTimeout(() => this.push(), 1200); }
+};
+function savedBadge(bad){
+  let b = document.getElementById('savedBadge'); if (!b) { b = document.createElement('div'); b.id = 'savedBadge'; b.className = 'savedbadge no-print'; document.body.appendChild(b); }
+  b.textContent = bad ? '⚠️ השמירה בענן נכשלה – הנתונים נשמרו רק בדפדפן' : '☁️ נשמר בחשבון Claude שלך';
+  b.classList.toggle('bad', !!bad); b.classList.add('on'); clearTimeout(b._t); b._t = setTimeout(() => b.classList.remove('on'), bad ? 5000 : 1800);
+}
 const SYNC = LITE ? LiteSync : ARTIFACT ? ArtSync : WEB ? Cloud : Sync;
 
-window.addEventListener('focus', () => { if (SYNC.status === 'ok') SYNC.pull().then(ui).catch(() => {}); });
+window.addEventListener('focus', () => { if (SYNC.status === 'ok') SYNC.pull().then(ch => { ui(); if (ch === true && LITE) render(); }).catch(() => {}); });
 document.addEventListener('visibilitychange', () => { if (!document.hidden && SYNC.status === 'ok') SYNC.pull().then(ui).catch(() => {}); });
 function syncLabel(){
   return ({ok:['ok','מסונכרן עם OneDrive' + (SYNC.last ? ' · ' + new Date(SYNC.last).toLocaleTimeString('he-IL',{hour:'2-digit',minute:'2-digit'}) : '')], signedout:['warn','התחברו עם מיקרוסופט לסנכרון'], connecting:['warn','מתחבר ל-OneDrive…'], noconfig:['err','חסרה הגדרת התחברות'],
@@ -5430,13 +5547,13 @@ function render(){
   document.body.classList.toggle('locked', isLocked());
   if (isLocked()) { const o = lockView(); $('#title').textContent = ''; $('#view').innerHTML = `<div class="page">${o.html}</div>`; document.title = 'האתר של נדב דוד – יועץ חינוכי ומטפל CBT'; return; }
   if (WEB && !ARTIFACT && !LITE && !PROBLEMS.length) { $('#title').textContent = ''; $('#view').innerHTML = `<div class="empty" style="padding-top:120px"><span class="big">⏳</span>${Cloud.status === 'error' ? esc(Cloud.err) + ' <br><br><button class="btn primary" data-act="cloud-retry">נסו שוב</button>' : 'טוען את התוכן מ-OneDrive…'}</div>`; return; }
-  const views = LITE ? {home: liteHome, problems, problem: problemView, tools, tool: toolView, settings: liteSettings, ask, askc: R => ask(R, true), workflow, roles: rolesView, circ: circView, circsrc: circSrcView, libsrc: libSrcView, circask: circAskView, find: findView, more: moreView, games: gamesView, game: gameView, tracks: problems, track: trackView, groups: groupsView, transitions: hubView, newteachers: hubView, programs: hubView, distress: hubView, talk: hubView, parents: hubView, reports: hubView, sel: hubView, mafteach: hubView, sped: hubView, autism: hubView, tzalach: hubView, aklim: hubView,develop: hubView, cbtclass: hubView, behave: hubView, cbt: hubView, cbtmaps: cbtMapsView, app: appView, crole: hubView, quest: hubView, ariel: hubView, videos: videosView, diary: diaryView, sitemap: sitemapView} : {home, problems, problem: problemView, students, student: studentView, tools, tool: toolView, library, settings, ask, askc: R => ask(R, true), workflow, roles: rolesView, circ: circView, circsrc: circSrcView, libsrc: libSrcView, circask: circAskView, find: findView, more: moreView, games: gamesView, game: gameView, tracks: problems, track: trackView, groups: groupsView, transitions: hubView, newteachers: hubView, programs: hubView, distress: hubView, talk: hubView, parents: hubView, reports: hubView, sel: hubView, mafteach: hubView, sped: hubView, autism: hubView, tzalach: hubView, aklim: hubView,develop: hubView, cbtclass: hubView, behave: hubView, cbt: hubView, cbtmaps: cbtMapsView, app: appView, crole: hubView, quest: hubView, ariel: hubView, videos: videosView, diary: diaryView, sitemap: sitemapView};
+  const views = LITE ? {home: liteHome, problems, problem: problemView, tools, tool: toolView, settings: liteSettings, ask, askc: R => ask(R, true), workflow, roles: rolesView, circ: circView, circsrc: circSrcView, libsrc: libSrcView, circask: circAskView, find: findView, more: moreView, games: gamesView, game: gameView, tracks: problems, track: trackView, groups: groupsView, transitions: hubView, newteachers: hubView, programs: hubView, distress: hubView, talk: hubView, parents: hubView, reports: hubView, sel: hubView, mafteach: hubView, sped: hubView, autism: hubView, tzalach: hubView, aklim: hubView,develop: hubView, cbtclass: hubView, behave: hubView, cbt: hubView, cbtmaps: cbtMapsView, app: appView, movie: movieView, crole: hubView, quest: hubView, ariel: hubView, videos: videosView, diary: diaryView, sitemap: sitemapView} : {home, problems, problem: problemView, students, student: studentView, tools, tool: toolView, library, settings, ask, askc: R => ask(R, true), workflow, roles: rolesView, circ: circView, circsrc: circSrcView, libsrc: libSrcView, circask: circAskView, find: findView, more: moreView, games: gamesView, game: gameView, tracks: problems, track: trackView, groups: groupsView, transitions: hubView, newteachers: hubView, programs: hubView, distress: hubView, talk: hubView, parents: hubView, reports: hubView, sel: hubView, mafteach: hubView, sped: hubView, autism: hubView, tzalach: hubView, aklim: hubView,develop: hubView, cbtclass: hubView, behave: hubView, cbt: hubView, cbtmaps: cbtMapsView, app: appView, movie: movieView, crole: hubView, quest: hubView, ariel: hubView, videos: videosView, diary: diaryView, sitemap: sitemapView};
   const fn = views[R.r] || home;
   const out = fn(R);
   $('#title').textContent = out.title;
   $('#view').innerHTML = `<div class="page">${out.html}</div>`;
   setTimeout(igEqualize, 60); setTimeout(igEqualize, 600);
-  const navKey = (k => k === 'ariel' ? 'problems' : k)(R.r === 'track' ? (TRACK(R.id) ? HUBOF(TRACK(R.id))[0] : 'problems') : {problem:'problems', tracks:'problems', student:'students', tool:'tools', circsrc:'circ', libsrc:'library', circask:'circ', askc:'ask', cbtmaps:'cbt', app:(allApps()[R.id] || {}).hub || 'cbt'}[R.r] || R.r);   // #/ariel lives under 🧭 טיפול לפי בעיה
+  const navKey = (k => k === 'ariel' ? 'problems' : k)(R.r === 'track' ? (TRACK(R.id) ? HUBOF(TRACK(R.id))[0] : 'problems') : {problem:'problems', tracks:'problems', student:'students', tool:'tools', circsrc:'circ', libsrc:'library', circask:'circ', askc:'ask', cbtmaps:'cbt', app:(allApps()[R.id] || {}).hub || 'cbt', movie:(MOVIES().find(m => m.id === R.id) || {}).hub || 'videos'}[R.r] || R.r);   // #/ariel lives under 🧭 טיפול לפי בעיה
   document.querySelectorAll('[data-nav]').forEach(a => a.classList.toggle('on', a.dataset.nav === navKey));
   document.querySelectorAll('#nav details.navg').forEach(d => { if (d.querySelector('a.on')) d.open = true; });
   document.title = out.title + ' · האתר של נדב דוד';
@@ -6481,6 +6598,7 @@ function liteHome(){
 function liteSettings(){
   return {title:'אודות', html:`<div class="panel"><h3>ℹ️ על הגרסה הזו</h3><p style="margin:0">${PROBLEMS.length} מפות טיפול · ${TOOLS.length} כלים לילדים · עוזר לשאלות · סדר עבודה.</p>
     <p style="margin:10px 0 0">בגרסה הזו אין תיקי תלמידים ולא נשמר שום מידע על תלמידים. את התיקים מנהלים באפליקציה שבמחשב.</p></div>
+    <div class="panel"><h3>☁️ שמירת מצב</h3><p style="margin:0">${LiteSync.db ? `הטפסים במסלולים והיישומים האינטראקטיביים נשמרים אוטומטית בחשבון Claude שלך, באזור פרטי שרק אתה רואה – וחוזרים כשפותחים שוב, גם ממכשיר אחר.${LiteSync.last ? ` נשמר לאחרונה: ${new Date(LiteSync.last).toLocaleTimeString('he-IL', {hour: '2-digit', minute: '2-digit'})}.` : ''}` : LiteSync.status === 'error' ? `⚠️ השמירה בענן נכשלה: ${esc(LiteSync.err)}. הנתונים נשמרים בינתיים רק בדפדפן.` : 'השמירה בענן לא זמינה כאן (למשל כשלא מחוברים ל-Claude). הנתונים נשמרים רק בדפדפן הזה.'}</p>${LiteSync.db ? '<div class="actions" style="margin-top:10px"><button class="btn sm" data-act="lite-sync">🔄 סנכרון עכשיו</button></div>' : ''}</div>
     <div class="panel"><h3>📱 שימוש בטלפון</h3><p style="margin:0">פותחים את הקישור באפליקציית Claude או בדפדפן. כדי שיהיה קיצור: בתפריט ⋮ של הדפדפן בוחרים ״הוספה למסך הבית״.</p></div>
     <div class="panel"><h3>📚 הספרייה</h3><p style="margin:0">קובצי הספרייה נמצאים במחשב, בקיצור הדרך ״ספריית לימודי CBT״.</p></div>
     <div class="panel"><p class="muted" style="margin:0;font-size:14px">מפות הטיפול הן כלי עזר מקצועי, ואינן מחליפות שיקול דעת קליני, הדרכה והפניה לגורם מתאים.</p></div>`};
@@ -7529,6 +7647,7 @@ document.addEventListener('click', async e => {
     case 'libopen': if (e.target.closest('[data-act="attopen"]')) return; if (WEB) Cloud.openFile(d.pdf); else viewer(d.title, href(d.pdf), 'pdf'); break;
     case 'attopen': e.preventDefault(); e.stopPropagation(); openDoc(d.title, d.path, +d.page || 0); break;
     case 'cloud-login': Cloud.login(); break;
+    case 'lite-sync': await LiteSync.pull().catch(err => { LiteSync.status = 'error'; LiteSync.err = err.message || err.code; }); render(); toast('סונכרן'); break;
     case 'art-sync': await ArtSync.pull().catch(err => { ArtSync.status = 'error'; ArtSync.err = err.message || err.code; }); render(); toast('סונכרן'); break;
     case 'cloud-logout': if (await uiConfirm('להתנתק מחשבון המיקרוסופט במכשיר הזה?')) Cloud.logout(); break;
     case 'cloud-sync': await Cloud.pull().catch(err => { Cloud.status = 'error'; Cloud.err = err.message; }); render(); toast('סונכרן'); break;
@@ -7961,11 +8080,14 @@ const trKey = id => (active() ? active().id : 'general') + ':' + id;
 const trData = id => { S.tracks = S.tracks || {}; return S.tracks[trKey(id)] = S.tracks[trKey(id)] || {}; };
 const FIVEP = [['predisposing', 'גורמים מקדימים', 'מה הכין את הקרקע? (מזג, רקע, היסטוריה)', '#e9d5ff'], ['precipitating', 'גורמים מזרזים', 'מה הדליק את הבעיה עכשיו?', '#fde68a'], ['presenting', 'הבעיה כפי שהיא מוצגת', 'מה רואים? מה מדאיג?', '#fecaca'], ['perpetuating', 'גורמים משמרים', 'מה מחזיק את הבעיה? (הימנעות, תגובות סביבה, מחשבות)', '#fbcfe8'], ['protective', 'גורמים מגינים', 'חוזקות, תמיכה, משאבים', '#bbf7d0']];
 const DAYS = ['ראשון', 'שני', 'שלישי', 'רביעי', 'חמישי', 'שישי'];
-const trLink = h => akSrcLinks(h).replace(/(?<![="'\/\w])#\/(track|game|problem|tool|groups|transitions|programs|newteachers|distress|talk|parents|reports|sped|autism|sel|mafteach|develop|tzalach|aklim|cbtclass|behave|cbt|cbtmaps|app|crole|quest|ariel|workflow|roles|videos|circ)((?:\/[\w-]+){0,2})/g, (m, r, p) => { const [id, sub] = p.split('/').slice(1); const x = id && r === 'track' ? TRACK(id) : id && r === 'game' ? GAME(id) : null;
+const trLink = h => akSrcLinks(h).replace(/(?<![="'\/\w])#\/(track|game|problem|tool|groups|transitions|programs|newteachers|distress|talk|parents|reports|sped|autism|sel|mafteach|develop|tzalach|aklim|cbtclass|behave|cbt|cbtmaps|app|movie|crole|quest|ariel|workflow|roles|videos|circ)((?:\/[\w-]+){0,2})/g, (m, r, p) => { const [id, sub] = p.split('/').slice(1); const x = id && r === 'track' ? TRACK(id) : id && r === 'game' ? GAME(id) : null;
   const cg = r === 'circ' && sub ? circGuide().find(g => g.id === sub) : null, cm = r === 'circ' && id && !cg ? (window.CIRC_META || []).find(c => c.id === id) : null;
   const lab = x ? x.title : r === 'problem' && id && P[id] ? '🧭 ' + P[id].name : r === 'tool' && id && TOOL[id] ? TOOL[id].icon + ' ' + TOOL[id].name : cg ? '📜 ' + cg.title : cm ? '📜 ' + cm.title : r === 'distress' && !id ? '🚨 ' + HUBS.distress.title : (r === 'mafteach' || r === 'sel' || r === 'develop' || r === 'transitions') && !id ? HUBS[r].icon + ' ' + HUBS[r].title : (r === 'parents' || r === 'reports' || r === 'sped' || r === 'tzalach' || r === 'aklim' || r === 'cbtclass' || r === 'crole' || r === 'quest') && !id ? HUBS[r].icon + ' ' + HUBS[r].title : HUBS[r] && !id ? HUBS[r].icon + ' ' + HUBS[r].title : r === 'groups' && !id ? '👥 הנחיית קבוצות' : r === 'workflow' && !id ? '🗺️ סדר עבודה' : r === 'roles' && !id ? '👥 מי פונה למי' : null;
   return `<a href="${m}" class="trlink">${lab ? esc(lab) : m}</a>`; }).replace(/(?<![="'\/\w])#\/file\/([\w-]+)/g, (m, k) => trFile(k) ? trFileBtn(k) : m);   // #/file/<key> → opens a file from window.TRFILES (tracks-sped.js)
-function trStepHTML(t, s, D){ const h0 = trStepHTML0(t, s, D) + (s.src ? `<p class="wfsrc">📚 ${trLink(esc(s.src))}</p>` : ''); return ['form', 'fivep', 'cycle', 'plan', 'viz'].includes(s.kind) ? h0 : trLink(h0); }
+/* a step may carry ages:{a, b, c} (arrays of tips for grades א׳–ב׳, ג׳–ד׳, ה׳–ו׳) – shown as three colored columns under the step */
+const TR_AGES = [['a', 'כיתות א׳–ב׳', '🧸', 150], ['b', 'כיתות ג׳–ד׳', '🎒', 200], ['c', 'כיתות ה׳–ו׳', '🧭', 280]];
+const trAgesHTML = s => s.ages ? `<div class="trages"><h4>🎯 איך מיישמים את השלב לפי גיל</h4><div class="trages-g">${TR_AGES.filter(([k]) => s.ages[k]).map(([k, l, i, h]) => `<div class="trage" style="--h:${h}"><b>${i} ${l}</b><ul>${[].concat(s.ages[k]).map(x => `<li>${esc(x)}</li>`).join('')}</ul></div>`).join('')}</div></div>` : '';
+function trStepHTML(t, s, D){ const h0 = trStepHTML0(t, s, D) + trAgesHTML(s) + (s.src ? `<p class="wfsrc">📚 ${trLink(esc(s.src))}</p>` : ''); return ['form', 'fivep', 'cycle', 'plan', 'viz'].includes(s.kind) ? h0 : trLink(h0); }
 function trStepHTML0(t, s, D){
   if (['psy', 'tabs', 'viz'].includes(s.kind)) return wfStepHTML(t, s, D);
   if (s.kind === 'diagram') return (s.intro ? `<p class="lead" style="text-align:start">${esc(s.intro)}</p>` : '') + diagramHTML(s, {intro: false, src: false}) + (s.diagrams || []).map(g => diagramHTML(g, {head: 1})).join('');
@@ -8096,12 +8218,12 @@ function appView(R){
   const d = appGet(R.id), H = HUBS[A.hub] || {};
   const html = `<a class="back no-print" href="#/${A.hub}">→ ${esc(H.title || '')}</a>
     <div class="banner" style="--h:${hubHue(A.hub)}"><span class="emoji">${A.icon}</span><div><h1>${esc(A.title)}</h1><p>${esc(A.sub || '')}</p></div></div>
-    <div class="note no-print" style="margin-bottom:14px">${A.intro} <span class="muted">🔒 הנתונים נשמרים רק בדפדפן הזה ולא נשלחים לשום מקום. כותבים כינוי, לא שם מלא.</span></div>
+    <div class="note no-print" style="margin-bottom:14px">${A.intro} <span class="muted">🔒 הנתונים נשמרים רק בדפדפן הזה${ARTIFACT || AI.available() ? '. הם נשלחים ל-Claude (בחשבון שלך) רק אם לוחצים ״העמקה עם Claude״' : ' ולא נשלחים לשום מקום'}. כותבים כינוי, לא שם מלא.</span></div>
     <div class="no-print">${A.sections.map(s => `<div class="panel"><h3>${s.title}</h3><div class="form">${s.fields.map(f => appFieldHTML(f, d[f.id])).join('')}</div></div>`).join('')}
-    <div class="actions" style="margin:14px 0 20px"><button class="btn primary" data-appbuild="1">🧩 בנה פורמולציה ומתווה טיפול</button><button class="btn" data-act="print">🖨️ הדפסה</button><button class="btn ghost" data-appclear="1">🗑️ ניקוי הטופס</button></div></div>
-    <div id="appOut"></div>`;
+    <div class="actions" style="margin:14px 0 20px"><button class="btn primary" data-appbuild="1">🧩 בנה פורמולציה ומתווה טיפול</button>${ARTIFACT || AI.available() ? `<button class="btn" data-appai="1" title="נספר במכסת המנוי" style="border-color:var(--brand-text)">🤖 העמקה עם Claude</button>` : ''}<button class="btn" data-act="print">🖨️ הדפסה</button><button class="btn ghost" data-appclear="1">🗑️ ניקוי הטופס</button></div></div>
+    <div id="appOut"></div><div id="appAI"></div>`;
   return {title: A.title, html, after(){
-    const save = () => ls.set(appKey(R.id), d);
+    const save = () => { ls.set(appKey(R.id), d); SYNC.schedule(); };
     const build = scroll => { const o = $('#appOut'); o.innerHTML = A.build(d); if (scroll) o.scrollIntoView({behavior: 'smooth', block: 'start'}); };
     document.querySelectorAll('[data-app]').forEach(el => el.addEventListener('input', () => { d[el.dataset.app] = el.dataset.num ? +el.value : el.value; const b = document.querySelector(`[data-appv="${el.dataset.app}"]`); if (b) b.textContent = el.value; save(); }));
     document.querySelectorAll('[data-appchip]').forEach(el => el.addEventListener('click', () => { const k = el.dataset.appchip, v = el.dataset.v;
@@ -8109,13 +8231,147 @@ function appView(R){
       else { d[k] = d[k] === v ? '' : v; el.parentNode.querySelectorAll('.chip').forEach(c => c.classList.toggle('on', c === el && d[k] === v)); }
       save(); }));
     $('[data-appbuild]').onclick = () => build(true);
+    const ai = $('[data-appai]'); if (ai) ai.onclick = () => { if (!$('#appOut .panel')) build(false); appDeepen(A, d); };
     $('[data-appclear]').onclick = () => { if (confirm('לנקות את כל הנתונים בטופס?')) { ls.set(appKey(R.id), {}); render(); } };
     if (Object.keys(d).some(k => d[k] !== '' && !(Array.isArray(d[k]) && !d[k].length))) build(false);
   }};
 }
+/* 🤖 deepen an application's result with Claude (artifact / API only, on a click – it spends the plan's usage).
+   Claude gets the filled fields, the automatic rule-based result and the matching maps, and answers from them with sources;
+   general professional knowledge is allowed only in the separate, marked "external" list. */
+let appCtl = null;
+async function appDeepen(A, d){
+  const box = $('#appAI'); if (!box) return;
+  if (!AI.available()) { box.innerHTML = `<div class="note warn">🤖 Claude לא זמין כאן${AI.err && AI_ERR[AI.err] ? ': ' + esc(AI_ERR[AI.err]) : ' – ההעמקה פועלת בגרסת האפליקציה בתוך Claude.'}</div>`; return; }
+  if (appCtl) appCtl.abort(); appCtl = new AbortController();
+  const fields = A.sections.flatMap(s => s.fields).map(f => { const v = d[f.id], t = Array.isArray(v) ? v.join(', ') : (v ?? ''); return String(t).trim() ? `- ${f.label}: ${t}` : ''; }).filter(Boolean).join('\n');
+  const out = (($('#appOut') || {}).innerText || '').replace(/\n{2,}/g, '\n').slice(0, 9000);
+  const ids = [...new Set([...document.querySelectorAll('#appOut a[href^="#/problem/"]')].map(a => a.getAttribute('href').split('/')[2]).filter(x => P[x]))].slice(0, 2);
+  const material = JSON.stringify({maps: ids.map(i => compactMap(P[i]))});
+  const prompt = `אתה מדריך בכיר בטיפול קוגניטיבי-התנהגותי ובייעוץ חינוכי בבית ספר יסודי בישראל. היועץ מילא נתונים בכלי ״${A.title}״ וקיבל ניתוח אוטומטי לפי כללים. תפקידך להעמיק: לחדד את ההמשגה, לומר מה הניתוח האוטומטי פספס או טעה בו, ולבנות תוכנית מתועדפת ומנומקת.
+כללים:
+• בסס את formulation ו-plan על הנתונים שמולאו ועל החומר המצורף (מפות טיפול). לכל פריט שדה src: אם הוא נשען על מפה – ״מפת טיפול: <שם המפה> › <החלק>״; אם הוא הסקה מהנתונים שמולאו – ״מהנתונים שמולאו״.
+• ידע מקצועי שאינו בחומר מותר רק ברשימה הנפרדת external, עם מקור מקצועי מוכר (מחבר, שם, שנה) – ואם אינך בטוח שהמקור קיים, כתוב ״מקור כללי – לבדיקה״. אל תמציא נהלים, סעיפי חוזרים או מספרים.
+• אל תאבחן. נסח השערות. אם יש סימן סיכון – פתח בו.
+• עברית פשוטה, מקצועית ומעשית, בלי פנייה בלשון ״אתה״.
+
+הנתונים שמולאו:
+${fields || '(לא מולאו)'}
+
+הניתוח האוטומטי שהתקבל:
+${out || '(אין)'}
+
+החומר (JSON):
+${material}
+
+השב אך ורק ב-JSON אחד:
+{"headline": "משפט אחד – השורה התחתונה", "formulation": [{"d": "פסקה של המשגה מחודדת (2–4 משפטים)", "src": ""}], "missed": ["מה הניתוח האוטומטי פספס או מה כדאי לתקן בו"], "plan": [{"t": "כותרת השלב", "why": "רציונל", "how": ["צעד מעשי"], "src": ""}], "questions": ["שאלה לבירור בהמשך"], "external": [{"t": "", "d": "", "src": ""}], "cautions": "סיכון / זהירות, או מחרוזת ריקה"}`;
+  box.innerHTML = `<div class="panel" style="border-inline-start:5px solid var(--brand)"><h3>🤖 Claude מעמיק…</h3><p class="muted" style="margin:0">קורא את הנתונים, את הניתוח ואת המפות. זה לוקח עד דקה-שתיים.</p><div class="actions" style="margin-top:10px"><button class="btn sm" data-appaistop="1">⏹ עצירה</button></div></div>`;
+  $('[data-appaistop]').onclick = () => appCtl && appCtl.abort();
+  box.scrollIntoView({behavior: 'smooth', block: 'start'});
+  try {
+    const R = await AI.ask(prompt, {tier: 'complex', signal: appCtl.signal});
+    if (!R || typeof R !== 'object') throw {code: 'invalid_json'};
+    const arr = x => Array.isArray(x) ? x.filter(Boolean) : [];
+    let h = `<h2 class="sec">🤖 העמקה מ-Claude <small>נספר במכסת המנוי</small></h2>`;
+    if (R.cautions) h += `<div class="note danger" style="margin-bottom:12px">⚠️ ${esc(R.cautions)}</div>`;
+    if (R.headline) h += appPanel('🎯 השורה התחתונה', `<p style="margin:0;font-size:16px;font-weight:700">${esc(R.headline)}</p>`);
+    if (arr(R.formulation).length) h += appPanel('🧠 המשגה מחודדת', arr(R.formulation).map(s => `<p style="margin:0 0 10px;line-height:1.75">${esc(s.d || '')} ${aiSrcHTML(s)}</p>`).join(''));
+    if (arr(R.missed).length) h += appPanel('🔎 מה הניתוח האוטומטי פספס', `<div class="apcards">${arr(R.missed).map(x => `<div class="apcard info"><p>${esc(x)}</p></div>`).join('')}</div>`);
+    if (arr(R.plan).length) h += appPanel('🗺️ תוכנית מתועדפת', appPlanHTML(arr(R.plan).map(s => ({t: esc(s.t || ''), why: s.why || '', how: arr(s.how), extra: s.src ? aiSrcHTML(s) : ''}))), 'border-inline-start:5px solid var(--brand)');
+    if (arr(R.questions).length) h += appPanel('❓ שאלות לבירור בהמשך', ul(arr(R.questions)));
+    if (arr(R.external).filter(s => s.d || s.t).length) h += appPanel('🌐 תוספת מקצועית – לא מהחומרים שלך', `<p class="note warn" style="margin:0 0 10px;font-size:14px">מבוסס על הידע הכללי של Claude, לא על החומרים שבאתר. המקורות לא נבדקו מול האינטרנט – כדאי לוודא.</p><ol style="margin:0;padding-inline-start:22px;display:grid;gap:8px">${arr(R.external).map(s => `<li><b>${esc(s.t || '')}:</b> ${esc(s.d || '')}${s.src ? `<div style="font-size:13px">📚 ${esc(s.src)}</div>` : ''}</li>`).join('')}</ol>`, 'border:2px dashed var(--accent)');
+    box.innerHTML = h + `<p class="muted" style="font-size:13px">נכתב על ידי Claude מתוך הנתונים שמולאו, הניתוח האוטומטי ומפות הטיפול${arr(R.external).length ? ' – חוץ מהחלק המסומן 🌐' : ''}. כלי עזר – שיקול הדעת המקצועי נשאר שלך.</p>`;
+  } catch(e){
+    if (e && e.code === 'cancelled') { box.innerHTML = ''; return; }
+    const code = (e && e.code) || 'upstream_error';
+    if (['not_granted', 'sampling_disabled', 'not_declared', 'capability_disabled', 'capability_removed'].includes(code)) AI.disable(code);
+    box.innerHTML = `<div class="note warn">🤖 ${esc(AI_ERR[code] || AI_ERR.upstream_error)}</div>`;
+  }
+}
 function hubAppsHTML(k){
   const list = Object.entries(allApps()).filter(([, a]) => a.hub === k); if (!list.length) return '';
   return `<h2 class="sec">🧩 יישום אינטראקטיבי <small>ממלאים נתונים – ומקבלים פורמולציה ומתווה טיפול</small></h2><div class="grid" style="margin-bottom:16px">${list.map(([id, a]) => `<a class="card accent" href="#/app/${id}" style="--h:${hubHue(k)};border:2px solid var(--brand)"><span class="emoji">${a.icon}</span><span class="name">${esc(a.title)}</span><span class="sub">${esc(a.sub || '')}</span></a>`).join('')}</div>`;
+}
+
+/* ---- 🎬 animated guide movies (tracks-zmovie.js, window.MOVIES): emoji actors appear line by line while the browser narrates in Hebrew, with captions ---- */
+const MOVIES = () => window.MOVIES || [];
+const movieFor = tid => MOVIES().find(m => m.track === tid);
+function hubMoviesHTML(k){
+  const list = MOVIES().filter(m => m.hub === k); if (!list.length) return '';
+  return `<h2 class="sec">🎬 סרטון הדרכה <small>סצנות מונפשות עם קריינות בעברית</small></h2><div class="grid" style="margin-bottom:16px">${list.map(m => `<a class="card accent mvcard" href="#/movie/${m.id}" style="--h:${hubHue(k)}"><span class="emoji">▶️</span><span class="name">${esc(m.title)}</span><span class="sub">${esc(m.sub || '')}</span></a>`).join('')}</div>`;
+}
+const MV = {m: null, sc: 0, ln: 0, playing: false, muted: false, rate: 1, timer: 0, token: 0};
+const mvStop = () => { MV.playing = false; MV.token++; clearTimeout(MV.timer); try { speechSynthesis.cancel(); } catch (e) {} };
+const mvVoice = () => { try { return speechSynthesis.getVoices().find(v => /^(he|iw)/i.test(v.lang)); } catch (e) { return null; } };
+const mvActor = a => `<div class="mva${a.box ? ' isbox' : ''}" data-at="${a.at || 0}" style="${a.ltr ? 'direction:ltr;' : ''}left:${a.x}%;top:${a.y}%;--s:${a.s || 1};--d:${a.d || 0}s"><div class="mvin mv-${a.a || 'pop'}">${a.box ? `<span class="mvbox">${esc(a.box)}</span>` : a.bubble ? `<span class="mvbub solo">${esc(a.bubble)}</span>` : `${a.say ? `<span class="mvbub">${esc(a.say)}</span>` : ''}<span class="mve">${a.e}</span>${a.tag ? `<span class="mvtag">${esc(a.tag)}</span>` : ''}`}</div></div>`;
+function mvSceneHTML(S){
+  const C = S.circle, kids = C ? Array.from({length: C.n}, (_, j) => { const an = Math.PI * 2 * (j + .5) / C.n + Math.PI / 2; return {e: j % 3 === 1 ? '🧒' : '👦', x: C.cx + C.rx * Math.cos(an), y: C.cy + C.ry * Math.sin(an), s: 2, a: 'pop', at: C.at, d: j * .08}; }) : [];
+  return `<div class="mvbg" style="--h:${S.hue}"></div><div class="mvtitle">${S.icon} ${esc(S.t)}</div>${[...kids, ...S.actors].map(mvActor).join('')}`;
+}
+function mvPaint(){
+  const m = MV.m, S = m.scenes[MV.sc], st = $('#mvstage'); if (!st) return;
+  if (st.dataset.sc !== String(MV.sc)) { st.dataset.sc = MV.sc; $('#mvscene').innerHTML = mvSceneHTML(S); }
+  st.querySelectorAll('.mva').forEach(el => { el.classList.toggle('on', +el.dataset.at <= MV.ln); el.classList.toggle('now', +el.dataset.at === MV.ln); });
+  $('#mvcap').textContent = MV.ln >= 0 ? S.lines[MV.ln] : '';
+  const total = m.scenes.reduce((a, x) => a + x.lines.length, 0), before = m.scenes.slice(0, MV.sc).reduce((a, x) => a + x.lines.length, 0);
+  $('#mvbar').style.width = Math.round(100 * (before + Math.max(0, MV.ln + 1)) / total) + '%';
+  $('#mvplay').textContent = MV.playing ? '⏸ השהיה' : '▶ הפעלה';
+  $('#mvmute').textContent = MV.muted ? '🔇 בלי קול' : '🔊 קריינות';
+  st.classList.toggle('paused', !MV.playing);
+  document.querySelectorAll('[data-mvgo]').forEach(b => b.classList.toggle('on', +b.dataset.mvgo === MV.sc));
+}
+function mvRun(){
+  const tok = ++MV.token; clearTimeout(MV.timer); mvPaint();
+  if (!MV.playing || MV.ln < 0) return;
+  const line = MV.m.scenes[MV.sc].lines[MV.ln], est = (1300 + line.length * 72) / MV.rate;
+  let done = false;
+  const fin = () => { if (done || tok !== MV.token) return; done = true; MV.timer = setTimeout(() => { if (tok === MV.token && MV.playing) mvStep(); }, 500); };
+  if (!MV.muted && 'speechSynthesis' in window) {
+    try { speechSynthesis.cancel(); const u = new SpeechSynthesisUtterance(line); u.lang = 'he-IL'; const v = mvVoice(); if (v) u.voice = v; u.rate = MV.rate;
+      u.onend = fin; u.onerror = fin; speechSynthesis.speak(u); setTimeout(fin, est * 2.5 + 3000); return; } catch (e) {}   // watchdog: some browsers never fire onend
+  }
+  setTimeout(fin, est);
+}
+function mvStep(){
+  const S = MV.m.scenes[MV.sc];
+  if (MV.ln < S.lines.length - 1) MV.ln++;
+  else if (MV.sc < MV.m.scenes.length - 1) { MV.sc++; MV.ln = 0; }
+  else { mvStop(); mvPaint(); $('#mvend').hidden = false; return; }
+  mvRun();
+}
+const mvGo = sc => { MV.sc = Math.max(0, Math.min(MV.m.scenes.length - 1, sc)); MV.ln = 0; $('#mvend').hidden = true; mvRun(); };
+window.addEventListener('hashchange', () => { if (!/^#\/movie\//.test(location.hash)) mvStop(); });
+function movieView(R){
+  const m = MOVIES().find(x => x.id === R.id); if (!m) return {title: 'סרטון', html: `<div class="empty">${MOVIES().length ? 'הסרטון לא נמצא.' : '⏳ נטען…'} <a href="#/videos">לסרטונים</a></div>`};
+  const H = HUBS[m.hub] || {}, tts = 'speechSynthesis' in window;
+  const html = `<a class="back no-print" href="#/${m.hub}">→ ${esc(H.title || '')}</a>
+    <div class="banner" style="--h:${hubHue(m.hub)}"><span class="emoji">${m.icon}</span><div><h1>${esc(m.title)}</h1><p>${esc(m.sub || '')}</p></div>${m.track ? `<div class="actions no-print"><a class="btn sm" href="#/track/${m.track}">📖 המדריך המלא</a></div>` : ''}</div>
+    <div class="mvwrap"><div class="mvstage paused" id="mvstage" data-sc=""><div id="mvscene"></div>
+      <button class="mvbig" id="mvbig" aria-label="הפעלה">▶</button>
+      <div class="mvend" id="mvend" hidden><div>🎉 סוף הסרטון</div><div class="actions" style="justify-content:center"><button class="btn primary" data-mvgo="0" data-mvre="1">↻ מההתחלה</button>${m.track ? `<a class="btn" href="#/track/${m.track}">📖 למדריך המלא</a>` : ''}</div></div>
+      <div class="mvprog"><i id="mvbar"></i></div></div><div class="mvcap" id="mvcap" aria-live="polite"></div>
+      <div class="mvctl no-print"><button class="btn" id="mvprev" title="הסצנה הקודמת">→ הקודם</button><button class="btn primary" id="mvplay">▶ הפעלה</button><button class="btn" id="mvnext" title="הסצנה הבאה">הבא ←</button>
+        <button class="btn" id="mvmute">🔊 קריינות</button><select id="mvrate" class="btn" aria-label="מהירות">${[[0.85, 'איטי'], [1, 'רגיל'], [1.2, 'מהיר']].map(([r, l]) => `<option value="${r}"${r === MV.rate ? ' selected' : ''}>${l}</option>`).join('')}</select><button class="btn" id="mvfull" title="מסך מלא">⛶ מסך מלא</button></div>
+      ${tts ? '' : '<div class="note" style="margin-top:8px">🔇 הדפדפן הזה לא תומך בהקראה – הסרטון ירוץ עם כתוביות בלבד.</div>'}
+      <div class="chips mvch no-print">${m.scenes.map((S, i) => `<button class="chip" data-mvgo="${i}">${S.icon} ${esc(S.t)}</button>`).join('')}</div></div>
+    <details class="panel" style="margin-top:14px"><summary><b>📜 תמליל מלא</b> <span class="muted">– לקריאה או להדפסה</span></summary>${m.scenes.map((S, i) => `<h3>${i + 1}. ${S.icon} ${esc(S.t)}</h3><p>${S.lines.map(esc).join(' ')}</p>`).join('')}</details>
+    <div class="note" style="margin-top:10px">📚 ${trLink(esc(m.src || ''))}</div>`;
+  return {title: m.title, html, after(){
+    mvStop(); if (MV.m !== m) { MV.m = m; MV.sc = 0; MV.ln = -1; } else if (MV.ln < 0) MV.ln = -1;
+    const play = () => { if (MV.ln < 0) MV.ln = 0; $('#mvend').hidden = true; MV.playing = true; mvRun(); };
+    const toggle = () => { if (MV.playing) { mvStop(); mvPaint(); } else play(); };
+    $('#mvplay').onclick = toggle; $('#mvbig').onclick = play;
+    $('#mvstage').addEventListener('click', e => { if (e.target.closest('button,a')) return; toggle(); });
+    $('#mvprev').onclick = () => { MV.playing = true; mvGo(MV.ln > 0 ? MV.sc : MV.sc - 1); };
+    $('#mvnext').onclick = () => { MV.playing = true; mvGo(MV.sc + 1); };
+    document.querySelectorAll('[data-mvgo]').forEach(b => b.onclick = () => { MV.playing = true; mvGo(+b.dataset.mvgo); });
+    $('#mvmute').onclick = () => { MV.muted = !MV.muted; if (MV.muted) try { speechSynthesis.cancel(); } catch (e) {} mvRun(); };
+    $('#mvrate').onchange = e => { MV.rate = +e.target.value; mvRun(); };
+    $('#mvfull').onclick = () => { const w = $('.mvwrap'); try { document.fullscreenElement ? document.exitFullscreen() : (w.requestFullscreen || w.webkitRequestFullscreen).call(w); } catch (e) {} };
+    try { speechSynthesis.getVoices(); } catch (e) {}
+    mvPaint();
+  }};
 }
 
 /* ---- the analysis rules (shared by the CBT applications) ---- */
@@ -8335,7 +8591,7 @@ function hubView(R){
   const h = HUBS[R.r]; const all = TRACKS().filter(t => t[h.flag]), guide = h.guide && all.find(t => t.id === h.guide), list = all.filter(t => t !== guide);
   const H = hubHue(R.r), card = t => `<a class="card accent hubc" href="#/track/${t.id}" style="--h:${t.hue ?? H}"><span class="emoji">${t.icon || h.icon}</span><span class="name">${esc(t.title)}</span><span class="sub">${esc(t['for'] || '')} · ${t.steps.length} שלבים</span></a>`;
   return {title: h.title, html: `${h.back ? `<a class="back no-print" href="#/${h.back[0]}">→ ${esc(h.back[1])}</a>` : ''}${hubHero(R.r, h.icon, h.title, all.length)}${gGuide(h.say, 'שמחה', 6)}<div class="note" style="margin:4px 0 16px">${h.intro} ${active() ? `הכול נשמר בתיק של <b>${esc(active().alias)}</b>.` : ''}</div>${infog(R.r, all)}${hubMap([guide, ...list].filter(Boolean), H)}
-    ${hubAppsHTML(R.r)}${guide ? `<a class="card" href="#/track/${guide.id}" style="margin-bottom:16px;border:2px solid var(--brand)"><span class="emoji">${guide.icon}</span><span class="name">${esc(guide.title)}</span><span class="sub">${guide.steps.length} שלבים · מתחילים כאן</span></a>${h.areas ? '' : '<h2 class="sec">📚 לפי נושאים</h2>'}` : ''}
+    ${hubMoviesHTML(R.r)}${hubAppsHTML(R.r)}${guide ? `<a class="card" href="#/track/${guide.id}" style="margin-bottom:16px;border:2px solid var(--brand)"><span class="emoji">${guide.icon}</span><span class="name">${esc(guide.title)}</span><span class="sub">${guide.steps.length} שלבים · מתחילים כאן</span></a>${h.areas ? '' : '<h2 class="sec">📚 לפי נושאים</h2>'}` : ''}
     ${h.areas && list.length ? h.areas.map(([k, i, l]) => { const inA = list.filter(t => t.distArea === k), ov = inA.find(t => t.distOverview), rest = inA.filter(t => t !== ov);
       return `<h2 class="sec">${i} ${esc(l)}</h2>${ov ? `<a class="card" href="#/track/${ov.id}" style="margin-bottom:10px;border:2px solid var(--brand)"><span class="emoji">${ov.icon || i}</span><span class="name">${esc(ov.title)}</span><span class="sub">${ov.steps.length} שלבים · סקירת התחום</span></a>` : ''}${rest.length ? `<div class="grid" style="margin-bottom:16px">${rest.map(card).join('')}</div>` : ''}`; }).join('')
     : list.length ? `<div class="grid">${list.map(card).join('')}</div>` : '<div class="empty">🛠️ התוכן של המדור הזה בהכנה ויעלה בקרוב.</div>'}
@@ -8354,7 +8610,7 @@ function trackView(R){
   const done = t.steps.filter(x => trStepDone(x, D)).length;
   return {title: t.title, html: `<a class="back no-print" href="#/${HUBOF(t)[0]}">→ ${HUBOF(t)[1]}</a>${sw}
     <div class="banner" style="--h:${t.hue ?? HUB_HUE[HUBOF(t)[0]] ?? hueOf(t.title)}"><span class="emoji">${t.icon || '🧭'}</span><div><div style="opacity:.85;font-size:14px">${esc(t['for'] || '')}${active() ? ' · ⭐ ' + esc(active().alias) : ''}</div><h1>${esc(t.title)}</h1></div>
-      <div class="actions no-print">${P[t.id] && !sw ? `<a class="btn sm" href="#/problem/${t.id}">📖 מפת הטיפול</a>` : ''}${GAME(t.id) ? `<a class="btn sm" href="#/game/${t.id}">🎲 המשחק</a>` : ''}<a class="btn sm" href="#/track/${t.id}/print">🖨️ סיכום להדפסה</a></div></div>
+      <div class="actions no-print">${P[t.id] && !sw ? `<a class="btn sm" href="#/problem/${t.id}">📖 מפת הטיפול</a>` : ''}${GAME(t.id) ? `<a class="btn sm" href="#/game/${t.id}">🎲 המשחק</a>` : ''}${movieFor(t.id) ? `<a class="btn sm" href="#/movie/${movieFor(t.id).id}">🎬 צפו בסרטון</a>` : ""}<a class="btn sm" href="#/track/${t.id}/print">🖨️ סיכום להדפסה</a></div></div>
     ${t.intro && i === 0 ? `<p class="lead" style="text-align:start">${esc(t.intro)}</p>` : ''}
     <div class="trlayout"><nav class="trsteps no-print"><div class="gprog"><i style="width:${Math.round(100 * done / t.steps.length)}%"></i></div>${t.steps.map((x, j) => `<a href="#/track/${t.id}/${j + 1}" class="${j === i ? 'on' : ''} ${trStepDone(x, D) ? 'ok' : ''}" style="--kh:${(TR_KIND[x.kind] || TR_KIND.info)[2]}" title="${(TR_KIND[x.kind] || TR_KIND.info)[1]}"><span class="n">${trStepDone(x, D) ? '✓' : j + 1}</span>${x.icon || ''} ${esc(x.title)}</a>`).join('')}</nav>
       <section class="panel trmain"><h2 class="trhead" style="--kh:${(TR_KIND[s.kind] || TR_KIND.info)[2]}"><span>${s.icon || ''} ${esc(s.title)}</span><small class="trkind">${(TR_KIND[s.kind] || TR_KIND.info)[0]} ${(TR_KIND[s.kind] || TR_KIND.info)[1]} · שלב ${i + 1} מתוך ${t.steps.length}</small></h2>${trStepHTML(t, s, D)}
