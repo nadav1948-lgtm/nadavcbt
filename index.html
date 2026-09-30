@@ -8370,13 +8370,29 @@ function hubMoviesHTML(k){
 
 /* ---- text: captions drop links, the voice also gets the grade letters and abbreviations spelled out ---- */
 const MV_LET = {'א': 'אָלֶף', 'ב': 'בֵּית', 'ג': 'גִּימֶל', 'ד': 'דָּלֶת', 'ה': 'הֵא', 'ו': 'וָו'};
-const mvCap = s => String(s || '').replace(/\s*\(?[^()\s]*#\/[\w\/-]+\)?/g, '').replace(/\s+/g, ' ').trim();
-const mvSpeak = s => mvCap(s).replace(/\p{Extended_Pictographic}|️|‍/gu, '')
-  .replace(/([א-ו])[׳']\s*[–-]\s*([א-ו])[׳']/g, (_, a, b) => `${MV_LET[a]} עד ${MV_LET[b]}`).replace(/(כית(?:ה|ות) )([א-ו])[׳']/g, (_, k, a) => k + MV_LET[a])
-  .replace(/\bCBT\b/g, 'סִי בִּי טִי').replace(/\bSEL\b/g, 'סֶל').replace(/[״"]/g, '').replace(/\s[–—]\s/g, ', ').replace(/\s*\/\s*/g, ' או ').replace(/\s+/g, ' ').trim();
+// narration and captions skip the (source) notes and links – the sources stay on the step page
+const mvCap = s => String(s || '').replace(/\s*\([^()]*\)/g, '').replace(/\s*[^\s]*#\/[\w\/-]+/g, '').replace(/([?!.])[.:]+/g, '$1').replace(/:\s*$/, '.').replace(/\s+([,.?!:])/g, '$1').replace(/\s+/g, ' ').trim();
+// abbreviations the voice would spell out or garble, read as words
+const MV_ABBR = [['שפ״י', 'שֶׁפִּי'], ['חמ״ד', 'חֶמֶד'], ['חז״ל', 'חֲזַ״ל'], ['מנכ״ל', 'מַנְכָּ״ל'], ['ע״י', 'עַל יְדֵי'], ['ביה״ס', 'בֵּית הַסֵּפֶר'], ['בי״ס', 'בֵּית סֵפֶר'], ['ת״ת', 'תַּלְמוּד תּוֹרָה'], ['אפר״ת', 'אֶפְרָ״ת'],
+  ['הכ״חות', 'הַכֹּחוֹת'], ['וכו׳', 'וְכוּלֵי'], ['לדוג׳', 'לְדוּגְמָה'], ['תשפ״ה', 'תַּשְׁפַּ״ה'], ['תשפ״ו', 'תַּשְׁפַּ״ו'], ['תשפ״ז', 'תַּשְׁפַּ״ז'], ['תל״א', 'תָּלָ״א'], ['מתי״א', 'מַתְיָ״א'], ['שח״ק', 'שַׂחַ״ק'],
+  ['ADHD', 'אֵי דִי אֵייץ׳ דִי'], ['OCD', 'אוֹ סִי דִי'], ['ERP', 'אִי אָר פִּי'], ['CASEL', 'קָאסֶל'], ['CBT', 'סִי בִּי טִי'], ['SEL', 'סֶל']];
+/* שׂ or שׁ: the voice cannot tell them apart in plain text, so every word whose ש is a sin gets the sin dot (שׂ).
+   Written here with the dot; lookup is by the plain form, after dropping up to three prefix letters (ו, ה, ב, כ, ל, מ, ש). */
+const MV_SIN = {}; `שׂיחה שׂיחות שׂיחת שׂיחתו שׂיחתם שׂיח שׂוחח שׂוחחו לשׂוחח משׂוחח משׂוחחים שׂמחה שׂמחות שׂמחת שׂמח שׂמחים לשׂמוח שׂמחתי משׂמח משׂמחים
+  משׂחק משׂחקים משׂחקי משׂחקה משׂחקית לשׂחק שׂיחק שׂיחקו שׂחקן שׂחקנים משׂחקי עשׂר עשׂרה עשׂרים עשׂרות עשׂירי עשׂה עשׂו עשׂתה עושׂה עושׂים עושׂות לעשׂות נעשׂה נעשׂית נעשׂים
+  עשׂייה עשׂיה מעשׂה מעשׂים מעשׂי מעשׂית מעשׂיים עשׂינו עשׂיתי תעשׂה תעשׂו אעשׂה יעשׂה יעשׂו נעשׂה עשׂיר עושׂר לשׂים שׂים שׂימו שׂמתי שׂמנו שׂימה משׂימה משׂימות משׂימת משׂימתו
+  נושׂא נושׂאים נושׂאי נושׂאת לשׂאת נשׂא ישׂראל ישׂראלי ישׂראלית שׂפה שׂפות שׂפת שׂפתיים שׂכל שׂכלי שׂכלית השׂכלה מושׂכל שׂונא שׂונאים שׂנאה שׂמאל שׂכר שׂיא שׂיאים תשׂומת
+  מושׂג מושׂגים מושׂגי להשׂיג השׂיג השׂיגו השׂגה השׂגת הישׂג הישׂגים הישׂגי שׂביעות שׂדה בשׂר המשׂגה המשׂגות משׂגה שׂרטוט שׂרטוטים שׂחייה שׂחקנית שׂימת שׂמחתו`.split(/\s+/).forEach(w => { if (w) MV_SIN[w.replace(/ׂ/g, '')] = w; });
+const mvSin = s => s.replace(/(?<![ְ-ׇא-ת])[א-ת]+(?![ְ-ׇא-ת])/g, w => { if (!w.includes('ש') || /^ו?ה?משיח$/.test(w)) return w;   // משיח is a shin
+  for (let p = 0; p <= 3 && p < w.length - 1; p++) { if (p && !'והבכלמש'.includes(w[p - 1])) break; const r = MV_SIN[w.slice(p)]; if (r) return w.slice(0, p) + r; }
+  return w; }).replace(/(^|[^א-ת])(ו?ל?|ו?ה?)(שם|שמים|שמו|שמה|שמתי|שמנו) (לב)/g, (_, a, p, w, l) => a + p + w.replace('ש', 'שׂ') + ' ' + l);   // שׂם לב, שׂמים לב
+const mvSpeak = s => { s = mvCap(s).replace(/\p{Extended_Pictographic}|️|‍/gu, ''); MV_ABBR.forEach(([a, b]) => { s = s.split(a).join(b); });
+  return mvSin(s.replace(/([א-ו])[׳']\s*[–-]\s*([א-ו])[׳']/g, (_, a, b) => `${MV_LET[a]} עד ${MV_LET[b]}`).replace(/(כית(?:ה|ות) )([א-ו])[׳']/g, (_, k, a) => k + MV_LET[a])
+    .replace(/(^|[\s״"(])ה׳(?=[\s,.!?״"]|$)/g, '$1הַשֵּׁם')   // the Name in a verse (grades were spelled out above)
+    .replace(/[״"]/g, '').replace(/\s*[←→⬅➡]\s*/g, ', ').replace(/([?!.])[.:]+/g, '$1').replace(/\s[–—]\s/g, ', ').replace(/\s*\/\s*/g, ' או ').replace(/\s+/g, ' ').trim()); };
 const mvTxt = l => Array.isArray(l) ? l[0] : l;                       // a line is text, or [caption, spoken form with niqqud]
-const mvSay = l => Array.isArray(l) ? l[1] : mvSpeak(l);
-const mvSplit = (s, max = 230) => { s = mvCap(s); if (s.length <= max) return s ? [s] : []; const out = []; let cur = ''; s.split(/(?<=[.!?;:])\s+/).forEach(x => { if (cur && (cur + ' ' + x).length > max) { out.push(cur); cur = x; } else cur = cur ? cur + ' ' + x : x; }); if (cur) out.push(cur); return out; };
+const mvSay = l => Array.isArray(l) ? mvSin(l[1]) : mvSpeak(l);
+const mvSplit = (s, max = 230) => { s = mvCap(s); if (s.length <= max) return s ? [s] : []; const out = []; let cur = ''; s.split(/(?<=[.!?;])\s+/).forEach(x => { if (cur && (cur + ' ' + x).length > max) { out.push(cur); cur = x; } else cur = cur ? cur + ' ' + x : x; }); if (cur) out.push(cur); return out; };
 
 /* ---- drawn backdrops (1600×900, the stage is 16:9) ---- */
 const MV_SKY = `<linearGradient id="mvSky" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#7cc8f7"/><stop offset="1" stop-color="#d8f0ff"/></linearGradient>`;
