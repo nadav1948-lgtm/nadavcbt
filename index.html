@@ -8845,7 +8845,7 @@ function pdLetterHTML(m){
   c.querySelectorAll('th,h3,h4').forEach(x => x.textContent = x.textContent.replace(/\p{Extended_Pictographic}️?\s*/gu, '').trim());   // a formal letter: headings without emoji
   const today = new Date().toLocaleDateString('he-IL');
   return `<div class="pdletter" contenteditable="true" spellcheck="false">
-    <div class="lt-top"><div><b>בס״ד</b><br>בית הספר: ____________________</div><div>תאריך: ${today}</div></div>
+    <div class="lt-top"><div><b>בס״ד</b></div><div>${today}</div></div>
     <div class="lt-conf">חסוי – לשימוש הצוות הבינמקצועי בלבד</div>
     <p>לכבוד<br>חברי הצוות הבינמקצועי</p>
     <h1>הנדון: סיכום אבחון פסיכודידקטי לקראת דיון צוות – התלמיד: ______________ , כיתה: ______</h1>
