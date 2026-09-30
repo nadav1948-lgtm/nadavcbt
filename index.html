@@ -8310,8 +8310,10 @@ function hubMoviesHTML(k){
 }
 const MV = {m: null, sc: 0, ln: 0, playing: false, muted: false, rate: 1, timer: 0, token: 0};
 const mvStop = () => { MV.playing = false; MV.token++; clearTimeout(MV.timer); try { speechSynthesis.cancel(); } catch (e) {} };
-// the most natural Hebrew voice available: Edge's online "Natural" voices (Avri, Hila), then Google, then any Hebrew voice
-const mvVoice = () => { try { const v = speechSynthesis.getVoices().filter(x => /^(he|iw)/i.test(x.lang)); return v.find(x => /natural|online/i.test(x.name)) || v.find(x => /google/i.test(x.name)) || v[0]; } catch (e) { return null; } };
+// narration is always a male voice: Edge's natural Avri, then Windows' Asaf, then any Hebrew voice not known to be female; if only a female voice exists, its pitch is lowered
+const MV_MALE = /avri|asaf|\bmale/i, MV_FEMALE = /hila|google|carmit|female/i;
+const mvVoice = () => { try { const v = speechSynthesis.getVoices().filter(x => /^(he|iw)/i.test(x.lang)); return v.find(x => /avri/i.test(x.name)) || v.find(x => MV_MALE.test(x.name)) || v.find(x => !MV_FEMALE.test(x.name)) || v[0]; } catch (e) { return null; } };
+const mvPitch = v => v && MV_FEMALE.test(v.name) && !MV_MALE.test(v.name) ? .7 : 1;
 const mvTxt = l => Array.isArray(l) ? l[0] : l;   // a line is text, or [caption, spoken form with niqqud where the voice mispronounces]
 const mvActor = a => `<div class="mva${a.box ? ' isbox' : ''}" data-at="${a.at || 0}" style="${a.ltr ? 'direction:ltr;' : ''}left:${a.x}%;top:${a.y}%;--s:${a.s || 1};--d:${a.d || 0}s"><div class="mvin mv-${a.a || 'pop'}">${a.box ? `<span class="mvbox">${esc(a.box)}</span>` : a.bubble ? `<span class="mvbub solo">${esc(a.bubble)}</span>` : `${a.say ? `<span class="mvbub">${esc(a.say)}</span>` : ''}<span class="mve">${a.e}</span>${a.tag ? `<span class="mvtag">${esc(a.tag)}</span>` : ''}`}</div></div>`;
 function mvSceneHTML(S){
@@ -8337,7 +8339,7 @@ function mvRun(){
   let done = false;
   const fin = () => { if (done || tok !== MV.token) return; done = true; MV.timer = setTimeout(() => { if (tok === MV.token && MV.playing) mvStep(); }, 500); };
   if (!MV.muted && 'speechSynthesis' in window) {
-    try { speechSynthesis.cancel(); const u = new SpeechSynthesisUtterance(line); u.lang = 'he-IL'; const v = mvVoice(); if (v) u.voice = v; u.rate = MV.rate;
+    try { speechSynthesis.cancel(); const u = new SpeechSynthesisUtterance(line); u.lang = 'he-IL'; const v = mvVoice(); if (v) u.voice = v; u.pitch = mvPitch(v); u.rate = MV.rate;
       u.onend = fin; u.onerror = fin; speechSynthesis.speak(u); setTimeout(fin, est * 2.5 + 3000); return; } catch (e) {}   // watchdog: some browsers never fire onend
   }
   setTimeout(fin, est);
