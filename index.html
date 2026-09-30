@@ -2341,6 +2341,15 @@ body.chatwin{margin:0;background:var(--bg);overflow:hidden}
 .chatp.inwin .chath{cursor:default}
 .chatp.inwin::after{display:none}
 @media (max-width:760px){.chpopbtn{display:none}}
+.chpopbtn{flex:none;border:1px solid rgba(255,255,255,.4);background:rgba(255,255,255,.2);color:#fff;border-radius:10px;padding:5px 10px;font:inherit;font-size:13px;font-weight:700;cursor:pointer;white-space:nowrap}
+.chpopbtn:hover{background:rgba(255,255,255,.32)}
+.chatmsg{position:relative}
+.chatacts{position:absolute;top:-10px;inset-inline-end:6px;display:none;gap:2px;background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:1px 3px;box-shadow:var(--shadow)}
+.chatmsg:hover .chatacts,.chatmsg:focus-within .chatacts{display:flex}
+.chatacts button{border:0;background:none;cursor:pointer;font-size:13px;padding:2px 4px;border-radius:6px}
+.chatacts button:hover{background:var(--bg2)}
+.chatmsg.hello .chatacts{display:none!important}
+@media (hover:none){.chatacts{display:flex;position:static;float:inline-start;margin:-4px 0 4px 6px;box-shadow:none;background:transparent;border:0}}
 
 </style>
 <link rel="manifest" href="manifest.webmanifest">
@@ -9159,7 +9168,13 @@ const chatMd = t => { let h = esc(String(t || '')).replace(/\r/g, '');
     if (L.every(l => /^\s*([•\-*]|\d+[.)])\s+/.test(l))) return `<ul>${L.map(l => `<li>${l.replace(/^\s*([•\-*]|\d+[.)])\s+/, '')}</li>`).join('')}</ul>`;
     if (/^#{1,4}\s/.test(p)) return `<h4>${p.replace(/^#{1,4}\s/, '')}</h4>`;
     return `<p>${L.join('<br>')}</p>`; }).join(''); };
-const chatMsgHTML = m => `<div class="chatmsg ${m.role === 'user' ? 'me' : 'bot'}">${m.role === 'user' ? esc(m.content) : chatMd(m.content)}${m.links && m.links.length ? `<div class="chatlinks">${m.links.map(l => `<a class="chip" href="${l.route}">${esc(l.title)}</a>`).join('')}</div>` : ''}</div>`;
+/* copy one message – works in the page and in the separate window (the clipboard of the window the panel is in) */
+function chatCopy(text, btn){
+  const doc = btn.ownerDocument, win = doc.defaultView, ok = () => { btn.textContent = '✅'; setTimeout(() => btn.textContent = '📋', 1400); };
+  const fallback = () => { const t = doc.createElement('textarea'); t.value = text; t.style.cssText = 'position:fixed;opacity:0'; doc.body.appendChild(t); t.select(); try { doc.execCommand('copy'); ok(); } catch (e) { btn.textContent = '⚠️'; } t.remove(); };
+  try { win.navigator.clipboard.writeText(text).then(ok, fallback); } catch (e) { fallback(); }
+}
+const chatMsgHTML = (m, i) => `<div class="chatmsg ${m.role === 'user' ? 'me' : 'bot'}"><span class="chatacts"><button type="button" data-chcopy="${i}" title="העתקת ההודעה">📋</button><button type="button" data-chdel="${i}" title="מחיקת ההודעה מהשרשור">🗑️</button></span>${m.role === 'user' ? esc(m.content) : chatMd(m.content)}${m.links && m.links.length ? `<div class="chatlinks">${m.links.map(l => `<a class="chip" href="${l.route}">${esc(l.title)}</a>`).join('')}</div>` : ''}</div>`;
 /* which way each mode answers: the user picks – free (the site's own engine) or Claude (counted in the plan's usage) */
 const chatRoute = m => AI.available() ? ls.get('cbt.chat.route.' + m, 'claude') : 'free';
 function chatPaint(){
@@ -9167,14 +9182,14 @@ function chatPaint(){
   p.dataset.mode = CH.mode; p.querySelector('.chath .ico').textContent = M.icon; p.querySelector('.chath b').textContent = M.title; p.querySelector('.chath small').textContent = M.sub + (chatRoute(CH.mode) === 'free' ? ' · 🆓 מסלול חינמי' : ' · 🤖 עם Claude');
   p.querySelectorAll('[data-chatroute]').forEach(b => { b.classList.toggle('on', b.dataset.chatroute === chatRoute(CH.mode)); if (b.dataset.chatroute === 'claude') { b.disabled = !AI.available(); b.title = AI.available() ? 'תשובה מלאה מ-Claude – נספרת במכסת המנוי' : 'זמין רק בקישור של Claude'; } });
   p.querySelectorAll('[data-chatmode]').forEach(b => b.classList.toggle('on', b.dataset.chatmode === CH.mode));
-  chq('#chatlog').innerHTML = `<div class="chatmsg bot hello">${chatMd(M.hello)}${chatRoute(CH.mode) === 'claude' ? '' : `<p class="muted" style="font-size:13px">🆓 במסלול החינמי אני עונה מהמנוע המהיר של האתר – תשובה קצרה עם קישורים, בלי מכסה. ${AI.available() ? 'לשיחה מלאה – בוחרים למעלה ״🤖 עם Claude״.' : 'לשיחה מלאה – פותחים את האתר בקישור של Claude.'}</p>`}</div>${H.map(chatMsgHTML).join('')}${H.length ? '' : `<div class="chatchips">${M.chips.map(c => `<button class="chip" data-chatq="${esc(c)}">${esc(c)}</button>`).join('')}</div>`}`;
+  chq('#chatlog').innerHTML = `<div class="chatmsg bot hello">${chatMd(M.hello)}${chatRoute(CH.mode) === 'claude' ? '' : `<p class="muted" style="font-size:13px">🆓 במסלול החינמי אני עונה מהמנוע המהיר של האתר – תשובה קצרה עם קישורים, בלי מכסה. ${AI.available() ? 'לשיחה מלאה – בוחרים למעלה ״🤖 עם Claude״.' : 'לשיחה מלאה – פותחים את האתר בקישור של Claude.'}</p>`}</div>${H.map((m, i) => chatMsgHTML(m, i)).join('')}${H.length ? '' : `<div class="chatchips">${M.chips.map(c => `<button class="chip" data-chatq="${esc(c)}">${esc(c)}</button>`).join('')}</div>`}`;
   chq('#chatlog').scrollTop = 1e9;
 
 }
 function chatOpen(mode){ CHLOG.add('open', mode + ' ai=' + AI.status);
   if (!chP()) {
     const p = CH.p = document.createElement('div'); p.id = 'chatp'; p.className = 'chatp'; p.hidden = true;
-    p.innerHTML = `<div class="chath"><span class="ico"></span><div class="grow"><b></b><small></small></div><button class="iconbtn chpopbtn" id="chatpop" title="חלון נפרד – אפשר להעביר אותו למסך אחר">⧉</button><button class="iconbtn" id="chatnew" title="שיחה חדשה">🗑️</button><button class="iconbtn" id="chatmin" title="מזעור">➖</button></div>
+    p.innerHTML = `<div class="chath"><span class="ico"></span><div class="grow"><b></b><small></small></div><button class="chpopbtn" id="chatpop" title="פותח את השיחה בחלון נפרד – אותו אפשר לגרור למסך השני">⧉ למסך אחר</button><button class="iconbtn" id="chatnew" title="שיחה חדשה">🗑️</button><button class="iconbtn" id="chatmin" title="מזעור">➖</button></div>
       <div class="chatmodes"><button class="chip" data-chatmode="assist">💬 העוזר של האתר</button><button class="chip" data-chatmode="therapist">🧑‍⚕️ מטפל וירטואלי</button></div>
       <div class="chatroute"><span>מסלול:</span><button class="chip" data-chatroute="free">🆓 חינמי – מהאתר</button><button class="chip" data-chatroute="claude">🤖 עם Claude – נספר במכסה</button></div>
       <div class="chatvoice" id="chatvoice" hidden></div><div class="chatlog" id="chatlog" aria-live="polite"></div>
@@ -9189,6 +9204,8 @@ function chatOpen(mode){ CHLOG.add('open', mode + ' ai=' + AI.status);
     chq('#chatnew').onclick = () => { if (CH.busy && CH.ctl) CH.ctl.abort(); chatHush(); chatHist(CH.mode).length = 0; chatSave(CH.mode); chatPaint(); };
     if (chq('#chatmic')) chq('#chatmic').onclick = chatListen;
     p.addEventListener('click', e => { const m = e.target.closest('[data-chatmode]'); if (m) { CH.mode = m.dataset.chatmode; chatPaint(); return; }
+      const cp = e.target.closest('[data-chcopy]'); if (cp) { const m = chatHist(CH.mode)[+cp.dataset.chcopy]; if (m) chatCopy(String(m.content).replace(/\[([^\]]+)\]\((#\/[^)]+)\)/g, '$1').replace(/\*\*/g, ''), cp); return; }
+      const dl = e.target.closest('[data-chdel]'); if (dl) { if (CH.busy) return; chatHist(CH.mode).splice(+dl.dataset.chdel, 1); chatSave(CH.mode); chatPaint(); return; }   // a deleted message also leaves the context Claude sees
       const rt = e.target.closest('[data-chatroute]'); if (rt && !rt.disabled) { ls.set('cbt.chat.route.' + CH.mode, rt.dataset.chatroute); chatPaint(); return; }
       const q = e.target.closest('[data-chatq]'); if (q) { chatSend(q.dataset.chatq); return; }
       const a = e.target.closest('a[href^="#/"]'); if (a && CH.win) { e.preventDefault(); location.hash = a.getAttribute('href'); try { window.focus(); } catch (_) {} return; }   // in the separate window: open the page in the site
@@ -9217,13 +9234,14 @@ function chatFloat(p){
 }
 /* ⧉ the chat in its own browser window – so it can go to a second monitor. The panel element itself moves into the new window
    (its listeners and the conversation keep running here); closing that window brings it back to the page. */
-function chatPop(){
+function chatPop(){ CHLOG.add('pop', 'click');
   const p = chP(); if (!p || CH.win) return;
-  const w = window.open('', 'cbtchat', 'popup,width=460,height=740');
+  const w = window.open('', 'cbtchat', 'popup,width=460,height=740'); CHLOG.add('pop', w ? 'opened' : 'blocked');
   if (!w) { const n = chq('#chatlog'); if (n) { n.insertAdjacentHTML('beforeend', '<div class="chatmsg bot">⚠️ הדפדפן חסם פתיחת חלון נפרד. צריך לאשר ״חלונות קופצים״ לאתר הזה (סמל בשורת הכתובת) ולנסות שוב.</div>'); n.scrollTop = 1e9; } return; }
   const d = w.document; d.open(); d.write('<!doctype html><html lang="he" dir="rtl"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>העוזר – האתר של נדב</title></head><body class="chatwin"></body></html>'); d.close();
   document.querySelectorAll('style, link[rel="stylesheet"]').forEach(s => d.head.appendChild(d.importNode(s, true)));
   [...document.documentElement.attributes].forEach(a => { if (a.name !== 'dir') d.documentElement.setAttribute(a.name, a.value); });
+  CHLOG.add('pop', 'moved');
   CH.win = w; p.classList.add('inwin'); p.style.cssText = ''; d.body.appendChild(d.adoptNode(p)); p.hidden = false;
   const f = $('#chatfab'); if (f) { f.hidden = false; f.innerHTML = '⧉'; f.title = 'השיחה פתוחה בחלון נפרד – לחיצה מחזירה אותה לכאן'; f.onclick = () => chatUnpop(true); }
   document.body.classList.remove('chatopen'); chq('#chatpop').title = 'החזרת השיחה לתוך האתר';
