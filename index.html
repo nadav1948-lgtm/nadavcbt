@@ -9147,12 +9147,12 @@ function chatPaint(){
   p.querySelectorAll('[data-chatmode]').forEach(b => b.classList.toggle('on', b.dataset.chatmode === CH.mode));
   $('#chatlog').innerHTML = `<div class="chatmsg bot hello">${chatMd(M.hello)}${AI.available() ? '' : `<p class="muted" style="font-size:13px">ℹ️ כאן אין חיבור ל-Claude, ולכן אני עונה מהמנוע המהיר של האתר עם קישורים. לשיחה מלאה – פותחים את האתר בקישור של Claude.</p>`}</div>${H.map(chatMsgHTML).join('')}${H.length ? '' : `<div class="chatchips">${M.chips.map(c => `<button class="chip" data-chatq="${esc(c)}">${esc(c)}</button>`).join('')}</div>`}`;
   $('#chatlog').scrollTop = 1e9;
-  $('#chatspk').classList.toggle('on', CH.speak);
+
 }
 function chatOpen(mode){ CHLOG.add('open', mode + ' ai=' + AI.status);
   if (!$('#chatp')) {
     const p = document.createElement('div'); p.id = 'chatp'; p.className = 'chatp'; p.hidden = true;
-    p.innerHTML = `<div class="chath"><span class="ico"></span><div class="grow"><b></b><small></small></div><button class="iconbtn" id="chatspk" title="הקראת התשובות בקול">🔊</button><button class="iconbtn" id="chatnew" title="שיחה חדשה">🗑️</button><button class="iconbtn" id="chatmin" title="מזעור">➖</button></div>
+    p.innerHTML = `<div class="chath"><span class="ico"></span><div class="grow"><b></b><small></small></div><button class="iconbtn" id="chatnew" title="שיחה חדשה">🗑️</button><button class="iconbtn" id="chatmin" title="מזעור">➖</button></div>
       <div class="chatmodes"><button class="chip" data-chatmode="assist">💬 העוזר של האתר</button><button class="chip" data-chatmode="therapist">🧑‍⚕️ מטפל וירטואלי</button></div>
       <div class="chatvoice" id="chatvoice" hidden></div><div class="chatlog" id="chatlog" aria-live="polite"></div>
       <form class="chatin" id="chatform"><textarea id="chatq" rows="1" placeholder="כתבו כאן…"></textarea><button class="btn primary" id="chatsend" type="submit">שליחה</button></form>`;
@@ -9163,7 +9163,6 @@ function chatOpen(mode){ CHLOG.add('open', mode + ' ai=' + AI.status);
     $('#chatq').addEventListener('input', e => { e.target.style.height = 'auto'; e.target.style.height = Math.min(160, e.target.scrollHeight) + 'px'; chatDictInput(); });
     $('#chatmin').onclick = () => chatMin(true);
     $('#chatnew').onclick = () => { if (CH.busy && CH.ctl) CH.ctl.abort(); chatHush(); chatHist(CH.mode).length = 0; chatSave(CH.mode); chatPaint(); };
-    $('#chatspk').onclick = () => { CH.speak = !CH.speak; if (!CH.speak) try { speechSynthesis.cancel(); } catch (e) {} chatPaint(); };
     if ($('#chatmic')) $('#chatmic').onclick = chatListen;
     p.addEventListener('click', e => { const m = e.target.closest('[data-chatmode]'); if (m) { CH.mode = m.dataset.chatmode; chatPaint(); return; }
       const q = e.target.closest('[data-chatq]'); if (q) { chatSend(q.dataset.chatq); return; }
