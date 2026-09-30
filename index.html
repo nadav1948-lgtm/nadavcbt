@@ -5665,8 +5665,9 @@ const LITE = !!window.CBT_LITE;
 const LiteSync = {status: 'lite', last: 0, err: '', db: null, uid: null, sent: {}, timer: null, busy: false, stamps: ls.get('cbtapp.lite.stamps', {}),
   local(){ const o = {}; Object.entries(S.tracks || {}).forEach(([k, v]) => o['t|' + k] = v);
     try { Object.keys(localStorage).filter(k => k.startsWith('cbtapp.app.')).forEach(k => o['a|' + k.slice(11)] = ls.get(k, {})); } catch(e){}
+    ['assist', 'therapist'].forEach(m => { const h = ls.get('cbt.chat.' + m, null); if (h) o['c|' + m] = h.map(x => ({...x, content: String(x.content || '').slice(0, 6000)})); });   // the two chat conversations follow the user between phone and computer
     return o; },
-  apply(key, v){ const i = key.indexOf('|'), t = key.slice(0, i), k = key.slice(i + 1); if (t === 't') { S.tracks = S.tracks || {}; S.tracks[k] = v; } else ls.set('cbtapp.app.' + k, v); },
+  apply(key, v){ const i = key.indexOf('|'), t = key.slice(0, i), k = key.slice(i + 1); if (t === 't') { S.tracks = S.tracks || {}; S.tracks[k] = v; } else if (t === 'c') { if (typeof chatSynced === 'function') chatSynced(k, v); else ls.set('cbt.chat.' + k, v); } else ls.set('cbtapp.app.' + k, v); },
   docId: key => 'l_' + key.replace(/[^\w-]/g, c => '_' + c.charCodeAt(0).toString(16)),
   col(){ return this.db.collection('data/users/' + this.uid); },
   async init(){
@@ -9098,7 +9099,8 @@ const chP = () => CH.p || null, chq = sel => CH.p ? CH.p.querySelector(sel) : nu
 const CH = {mode: 'assist', busy: false, ctl: null, speak: false, rec: null, hist: {}};
 const chatKey = m => 'cbt.chat.' + m;
 const chatHist = m => CH.hist[m] || (CH.hist[m] = ls.get(chatKey(m), []));
-const chatSave = m => { const h = chatHist(m); if (h.length > 40) h.splice(0, h.length - 40); ls.set(chatKey(m), h); };   // in place: chatSend keeps a reference to this array
+const chatSave = m => { const h = chatHist(m); if (h.length > 40) h.splice(0, h.length - 40); ls.set(chatKey(m), h); try { SYNC.schedule(); } catch (e) {} };   // in place: chatSend keeps a reference to this array
+function chatSynced(m, v){ const h = chatHist(m); if (CH.busy && CH.mode === m) return; h.length = 0; (v || []).forEach(x => h.push(x)); ls.set(chatKey(m), h); if (CH.p && !CH.p.hidden && CH.mode === m) chatPaint(); }   // a newer conversation arrived from another device
 const chatMobile = () => matchMedia('(max-width: 760px)').matches;
 const chatMic = () => !/github.io$/.test(location.hostname) && ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window);   // no microphone on the public GitHub site
 
