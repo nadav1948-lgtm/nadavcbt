@@ -2151,6 +2151,60 @@ body,body *{overflow-wrap:normal!important;word-break:normal!important;hyphens:m
 .mvhome small{display:block;opacity:.9;font-size:14px}
 .mvhplay{flex:none;width:56px;height:56px;border-radius:50%;display:grid;place-items:center;font-size:24px;background:rgba(255,255,255,.25);box-shadow:0 0 0 6px rgba(255,255,255,.15);animation:mvpulse 1.8s ease-in-out infinite}
 
+/* ---- 🎬 movie engine v2: drawn sets, characters, board, camera ---- */
+#mvscene{position:absolute;inset:0;overflow:hidden}
+#mvscene.cin{animation:mviris .85s cubic-bezier(.6,0,.3,1) both}
+@keyframes mviris{from{clip-path:circle(0% at 50% 50%)}to{clip-path:circle(80% at 50% 50%)}}
+.mvcam{position:absolute;inset:0;animation:mvkb 26s ease-in-out both}
+.mvcam.z1{transform-origin:35% 45%}.mvcam.z2{transform-origin:65% 55%}
+@keyframes mvkb{from{transform:scale(1)}to{transform:scale(1.07)}}
+.mvbgsvg{position:absolute;inset:0;width:100%;height:100%;display:block}
+.mvfg{z-index:3;pointer-events:none}
+.mvtitle{z-index:6}
+.mva.ischar{z-index:2}.mva.isbub{z-index:5}.mva.isbox{z-index:4}
+.mvfig{width:calc(var(--s) * 2.05em);line-height:0;animation:mvbreath 3.6s ease-in-out infinite}
+.mvfig svg{width:100%;height:auto;display:block;filter:drop-shadow(0 .25em .35em rgba(0,0,0,.28))}
+.mvfig.flip svg{transform:scaleX(-1)}
+.mvfig.emopop{animation:k-pop .5s ease}
+.mva.talk .mvfig{animation:mvnod 1.3s ease-in-out infinite}
+.mva.talk .mth{animation:mvtalk .17s ease-in-out infinite alternate}
+.mth{transform-box:fill-box;transform-origin:center}
+.mvblink{transform-box:fill-box;transform-origin:center;animation:k-blink 4.6s infinite}
+@keyframes mvtalk{to{transform:scaleY(2.6) scaleX(.85)}}
+@keyframes mvnod{0%,100%{transform:none}30%{transform:translateY(-1.5%) rotate(-1.5deg)}70%{transform:translateY(.5%) rotate(1deg)}}
+@keyframes mvbreath{0%,100%{transform:none}50%{transform:translateY(-.8%) scale(1.008)}}
+.mva.on .mv-walk{animation:mvwalk 1s cubic-bezier(.3,.7,.4,1) both}
+@keyframes mvwalk{0%{opacity:0;transform:translateX(-45%) translateY(0)}25%{transform:translateX(-30%) translateY(-4%)}50%{opacity:1;transform:translateX(-15%) translateY(0)}75%{transform:translateX(-5%) translateY(-3%)}100%{opacity:1;transform:none}}
+.mva.ischar .mvtag{font-size:.8em;margin-top:.2em}
+.mva.isbub .mvbub{font-size:1em;padding:.45em 1em;border:2px solid #1f2937}
+.mva.isbub .mvbub::after{content:'';position:absolute;bottom:-.6em;left:50%;margin-left:-.5em;border:.55em solid transparent;border-bottom:0;border-top-color:#1f2937}
+.mvcloud{animation:mvdrift 40s ease-in-out infinite alternate}
+@keyframes mvdrift{from{transform:translateX(-50px)}to{transform:translateX(70px)}}
+.mvrays{transform-box:fill-box;transform-origin:center;animation:k-spin 40s linear infinite}
+.mvtree{transform-box:fill-box;transform-origin:50% 100%;animation:k-wind 6s ease-in-out infinite}
+.mvflag{transform-box:fill-box;transform-origin:0 50%;animation:mvflag 1.1s ease-in-out infinite alternate}
+@keyframes mvflag{to{transform:scaleX(.8) skewY(4deg)}}
+.mvflame{transform-box:fill-box;transform-origin:50% 100%;animation:mvflame .45s ease-in-out infinite alternate}
+@keyframes mvflame{to{transform:scaleY(1.18) scaleX(.9)}}
+.mvhand{transform-box:fill-box;transform-origin:0 50%;animation:k-spin 14s linear infinite}
+.mvspark{animation:mvspark 3.4s ease-in-out infinite}
+@keyframes mvspark{0%,100%{opacity:.15;transform:translateY(0)}50%{opacity:.7;transform:translateY(-14px)}}
+.mvboard{position:absolute;left:32.2%;width:35.6%;top:11.4%;height:37.2%;z-index:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:.35em;padding:0 1.2em;text-align:center;direction:rtl}
+.mvboard.chalk{color:#f8fafc;text-shadow:0 0 .12em rgba(255,255,255,.55);font-family:Rubik,Heebo,sans-serif}
+.mvboard.marker{color:#1e3a8a;font-family:Rubik,Heebo,sans-serif}
+.mvboard.sign{left:28%;width:44%;top:7%;height:auto;padding:.5em 1em;background:rgba(255,255,255,.92);color:#1f2937;border-radius:.6em;border:3px solid #b45309;box-shadow:0 .4em 1em rgba(0,0,0,.25)}
+.mvbl{font-size:1.25em;font-weight:800;line-height:1.3;opacity:0}
+.mvbl.big{font-size:1.75em}
+.mvbl.on{opacity:1;animation:mvwrite 1.4s steps(18) both}
+@keyframes mvwrite{from{clip-path:inset(0 0 0 100%)}to{clip-path:inset(0 0 0 0)}}
+.mvstepbtn{display:flex;align-items:center;gap:14px;margin:0 0 16px;padding:12px 16px;border-radius:16px;text-decoration:none;color:#fff;background:linear-gradient(120deg,#6d28d9,#db2777 60%,#f59e0b);box-shadow:0 8px 24px rgba(109,40,217,.3);transition:transform .2s}
+.mvstepbtn:hover{transform:translateY(-2px)}
+.mvstepbtn b{display:block;font-size:16px}.mvstepbtn small{display:block;opacity:.9;font-size:13px}
+.mvstepbtn .mvhplay{width:44px;height:44px;font-size:18px}
+@media (prefers-reduced-motion:reduce){.mvcam,.mvfig,#mvscene.cin,.mvcloud,.mvtree,.mvrays{animation:none!important}}
+.mvbox{background:rgba(255,255,255,.94);color:#1f2937;border:2px solid rgba(0,0,0,.12);backdrop-filter:none}
+.mva.now .mvbox{border-color:#f59e0b;box-shadow:0 0 0 .2em rgba(245,158,11,.35),0 .3em 1em rgba(0,0,0,.25)}
+
 </style>
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="apple-touch-icon" href="icon-192.png">
@@ -5665,7 +5719,7 @@ function home(){
     <div class="actions"><button class="btn" data-act="newstudent">＋ תלמיד חדש</button><a class="btn" href="#/problems">🧭 בחירת בעיה</a><a class="btn" href="#/workflow">🗺️ סדר עבודה</a><a class="btn" href="#/tools">🧰 כלים לילדים</a></div></section>`;
   if (SYNC.status === 'signedout') h += `<div class="note warn no-print">☁️ כדי לראות את התלמידים ואת הספרייה מכל מכשיר – <button class="btn primary sm" data-act="cloud-login">התחברות עם חשבון מיקרוסופט</button></div>`;
   else if (SYNC.status !== 'ok' && SYNC.status !== 'connecting') h += `<div class="note warn no-print">💾 הנתונים נשמרים כרגע רק במכשיר הזה. <a href="#/settings">להגדרת סנכרון עם OneDrive</a></div>`;
-  h += dyTodayStrip() + homeMoviesStrip();
+  h += dyTodayStrip();
   h += `<div class="three" style="margin-top:16px"><div class="stat"><b>${act.length}</b><span>תלמידים בטיפול</span></div><div class="stat"><b>${sessMonth}</b><span>מפגשים החודש</span></div><div class="stat"><b>${PROBLEMS.length}</b><span>מפות טיפול</span></div></div>`;
   h += homeTiles();
   if (a) h += `<h2 class="sec">⭐ בעבודה עכשיו</h2><div class="grid wide">${studentCard(a)}</div>`;
@@ -6593,7 +6647,7 @@ function liteHome(){
     <p>מפות טיפול CBT לבעיות נפוצות בבית הספר היסודי, עוזר לשאלות, סדר עבודה וכלים אינטראקטיביים לילדים.</p>
     <form id="homeask" style="display:flex;gap:8px;margin-top:18px;max-width:720px"><input class="inp" id="homeq" placeholder="💬 שאלו שאלה… למשל: ילד שבוכה כל בוקר בשער" style="flex:1;height:48px;border:0;font-size:16px"><button class="btn primary" type="submit" title="מסלול חינמי">💬 תשובה</button>${claudeTrack() ? `<button class="btn" type="submit" data-claude="1" title="מסלול Claude – נספר במכסת המנוי" style="background:rgba(255,255,255,.16);border-color:rgba(255,255,255,.3);color:#fff">🤖 Claude</button>` : ""}</form>
     <div class="actions"><a class="btn" href="#/problems">🧭 בחירת בעיה</a><a class="btn" href="#/workflow">🗺️ סדר עבודה</a><a class="btn" href="#/tools">🧰 כלים לילדים</a></div></section>`;
-  h += dyTodayStrip() + homeMoviesStrip();
+  h += dyTodayStrip();
   h += `<div class="three"><div class="stat"><b>${PROBLEMS.length}</b><span>מפות טיפול</span></div><div class="stat"><b>${sessions}</b><span>מפגשים מפורטים</span></div><div class="stat"><b>${TOOLS.length}</b><span>כלים לילדים</span></div></div>`;
   h += `<h2 class="sec">🧭 מפות טיפול <small>לפי תחום</small></h2><div class="grid">${PROBLEMS.slice(0, 8).map(problemCard).join('')}</div>
     <div style="margin-top:12px"><a class="btn" href="#/problems">לכל ${PROBLEMS.length} הבעיות ←</a></div>`;
@@ -8299,45 +8353,189 @@ function hubAppsHTML(k){
   return `<h2 class="sec">🧩 יישום אינטראקטיבי <small>ממלאים נתונים – ומקבלים פורמולציה ומתווה טיפול</small></h2><div class="grid" style="margin-bottom:16px">${list.map(([id, a]) => `<a class="card accent" href="#/app/${id}" style="--h:${hubHue(k)};border:2px solid var(--brand)"><span class="emoji">${a.icon}</span><span class="name">${esc(a.title)}</span><span class="sub">${esc(a.sub || '')}</span></a>`).join('')}</div>`;
 }
 
-/* ---- 🎬 animated guide movies (tracks-zmovie.js, window.MOVIES): emoji actors appear line by line while the browser narrates in Hebrew, with captions ---- */
+/* ---- 🎬 animated explainer movies ----
+   Two sources: hand-written movies (tracks-zmovie.js, window.MOVIES) and a movie generated from every guide track (mvFromTrack):
+   per step a title card, the teacher explaining at the board item by item, and an acted example (window.MOVIE_EX, tracks-zmx-*.js, or the step's own `ex`).
+   A scene = drawn backdrop (MV_BG) + actors that enter line by line (drawn characters, emoji, cards, speech bubbles) + chalk text on the board;
+   the browser narrates each line with a male Hebrew voice while the speaker's mouth moves; captions sit under the stage. */
 const MOVIES = () => window.MOVIES || [];
 const movieFor = tid => MOVIES().find(m => m.track === tid);
-// a big "new movie" strip on the home page, so the movies are easy to find
-const homeMoviesStrip = () => MOVIES().map(m => `<a class="mvhome" href="#/movie/${m.id}"><span class="mvhplay">▶</span><span><b>🎬 ${esc(m.title)}</b><small>${esc(m.sub || '')} · לחצו לצפייה</small></span></a>`).join('');
+const MV_KINDS = ['info', 'diagram', 'tabs', 'cards'];
+const mvGuide = t => t && /-guide$/.test(t.id) && t.steps.some(s => MV_KINDS.includes(s.kind));
 function hubMoviesHTML(k){
-  const list = MOVIES().filter(m => m.hub === k); if (!list.length) return '';
-  return `<h2 class="sec">🎬 סרטון הדרכה <small>סצנות מונפשות עם קריינות בעברית</small></h2><div class="grid" style="margin-bottom:16px">${list.map(m => `<a class="card accent mvcard" href="#/movie/${m.id}" style="--h:${hubHue(k)}"><span class="emoji">▶️</span><span class="name">${esc(m.title)}</span><span class="sub">${esc(m.sub || '')}</span></a>`).join('')}</div>`;
+  const g = HUBS[k] && HUBS[k].guide && TRACK(HUBS[k].guide), list = [...MOVIES().filter(m => m.hub === k).map(m => [m.id, m.title, m.sub]), ...(mvGuide(g) ? [[g.id, 'סרטון הסבר: ' + g.title.replace(/^המדריך:?s*/, ''), 'כל שלבי המדריך מונפשים – הסבר ודוגמה בכל שלב']] : [])];
+  if (!list.length) return '';
+  return `<h2 class="sec">🎬 סרטוני הדרכה <small>אנימציה עם קריינות בעברית ודוגמה בכל נושא</small></h2><div class="grid" style="margin-bottom:16px">${list.map(([id, t, sub]) => `<a class="card accent mvcard" href="#/movie/${id}" style="--h:${hubHue(k)}"><span class="emoji">▶️</span><span class="name">${esc(t)}</span><span class="sub">${esc(sub || '')}</span></a>`).join('')}</div>`;
 }
+
+/* ---- text: captions drop links, the voice also gets the grade letters and abbreviations spelled out ---- */
+const MV_LET = {'א': 'אָלֶף', 'ב': 'בֵּית', 'ג': 'גִּימֶל', 'ד': 'דָּלֶת', 'ה': 'הֵא', 'ו': 'וָו'};
+const mvCap = s => String(s || '').replace(/\s*\(?[^()\s]*#\/[\w\/-]+\)?/g, '').replace(/\s+/g, ' ').trim();
+const mvSpeak = s => mvCap(s).replace(/\p{Extended_Pictographic}|️|‍/gu, '')
+  .replace(/([א-ו])[׳']\s*[–-]\s*([א-ו])[׳']/g, (_, a, b) => `${MV_LET[a]} עד ${MV_LET[b]}`).replace(/(כית(?:ה|ות) )([א-ו])[׳']/g, (_, k, a) => k + MV_LET[a])
+  .replace(/\bCBT\b/g, 'סִי בִּי טִי').replace(/\bSEL\b/g, 'סֶל').replace(/[״"]/g, '').replace(/\s[–—]\s/g, ', ').replace(/\s*\/\s*/g, ' או ').replace(/\s+/g, ' ').trim();
+const mvTxt = l => Array.isArray(l) ? l[0] : l;                       // a line is text, or [caption, spoken form with niqqud]
+const mvSay = l => Array.isArray(l) ? l[1] : mvSpeak(l);
+const mvSplit = (s, max = 230) => { s = mvCap(s); if (s.length <= max) return s ? [s] : []; const out = []; let cur = ''; s.split(/(?<=[.!?;:])\s+/).forEach(x => { if (cur && (cur + ' ' + x).length > max) { out.push(cur); cur = x; } else cur = cur ? cur + ' ' + x : x; }); if (cur) out.push(cur); return out; };
+
+/* ---- drawn backdrops (1600×900, the stage is 16:9) ---- */
+const MV_SKY = `<linearGradient id="mvSky" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#7cc8f7"/><stop offset="1" stop-color="#d8f0ff"/></linearGradient>`;
+const mvCloud = (x, y, s, d) => `<g class="mvcloud" style="animation-duration:${d}s"><g transform="translate(${x} ${y}) scale(${s})" fill="#fff" opacity=".95"><ellipse cx="0" cy="0" rx="60" ry="26"/><ellipse cx="-40" cy="8" rx="38" ry="20"/><ellipse cx="42" cy="8" rx="42" ry="20"/><ellipse cx="6" cy="-18" rx="36" ry="24"/></g></g>`;
+const mvWindow = (x, y, w, h) => `<g><rect x="${x}" y="${y}" width="${w}" height="${h}" rx="10" fill="url(#mvSky)"/>${mvCloud(x + w * .35, y + h * .3, .7, 38)}${mvCloud(x + w * .75, y + h * .55, .5, 52)}<circle cx="${x + w * .8}" cy="${y + h * .22}" r="${h * .1}" fill="#ffd54a"/><path d="M${x + w / 2} ${y}V${y + h}M${x} ${y + h * .5}H${x + w}" stroke="#fff" stroke-width="12"/><rect x="${x}" y="${y}" width="${w}" height="${h}" rx="10" fill="none" stroke="#fff" stroke-width="16"/><rect x="${x - 14}" y="${y + h + 4}" width="${w + 28}" height="16" rx="6" fill="#e8d7b8"/></g>`;
+const mvBooks = (x, y, n) => Array.from({length: n}, (_, i) => `<rect x="${x + i * 26}" y="${y - 70 - (i * 37 % 20)}" width="22" height="${70 + (i * 37 % 20)}" rx="3" fill="hsl(${(i * 67) % 360} 45% 45%)"/><rect x="${x + i * 26 + 4}" y="${y - 50 - (i * 37 % 20)}" width="14" height="6" fill="#f1d27a" opacity=".8"/>`).join('');
+const mvFloor = (c1, c2) => `<rect y="640" width="1600" height="260" fill="${c1}"/><g stroke="${c2}" stroke-width="3" opacity=".45">${[700, 770, 845].map(y => `<path d="M0 ${y}H1600"/>`).join('')}${[160, 520, 880, 1240].map((x, i) => `<path d="M${x + (i % 2) * 180} 640V700M${x + 90} 700V770M${x + (i % 2 ? 0 : 200)} 770V845"/>`).join('')}</g><rect y="628" width="1600" height="16" fill="#00000022"/>`;
+const MV_BG = {
+  class: `<defs>${MV_SKY}<linearGradient id="mvWall" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#f7ead0"/><stop offset="1" stop-color="#eed9b2"/></linearGradient></defs>
+    <rect width="1600" height="900" fill="url(#mvWall)"/>${mvFloor('#b98a5e', '#8a5f3b')}${mvWindow(80, 120, 300, 250)}
+    <rect x="496" y="84" width="608" height="372" rx="14" fill="#8b5e3c"/><rect x="514" y="102" width="572" height="336" rx="8" fill="#2f5d4a"/><rect x="514" y="102" width="572" height="336" rx="8" fill="url(#mvChalk)" opacity=".5"/>
+    <defs><radialGradient id="mvChalk" cx=".3" cy=".3" r=".9"><stop offset="0" stop-color="#fff" stop-opacity=".12"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></radialGradient></defs>
+    <rect x="520" y="452" width="560" height="14" rx="4" fill="#a77a52"/><rect x="560" y="444" width="30" height="9" rx="3" fill="#fff"/><rect x="600" y="444" width="22" height="9" rx="3" fill="#fbbf24"/>
+    <g transform="translate(1310 150)"><circle r="50" fill="#fff" stroke="#7c5a3a" stroke-width="9"/><path d="M0 0V-32" stroke="#333" stroke-width="7" stroke-linecap="round"/><path class="mvhand" d="M0 0L24 0" stroke="#c0392b" stroke-width="5" stroke-linecap="round"/></g>
+    <rect x="1190" y="330" width="330" height="16" rx="4" fill="#8b5e3c"/>${mvBooks(1205, 330, 11)}
+    <g transform="translate(1240 400)"><rect width="250" height="150" rx="8" fill="#fff8e6" stroke="#e0c48f" stroke-width="5"/><text x="125" y="46" text-anchor="middle" font-size="30" font-weight="800" fill="#b45309">כללי השיח</text><path d="M40 78H210M40 106H190M40 132H170" stroke="#d6b77c" stroke-width="7" stroke-linecap="round"/></g>`,
+  desks: `<g><defs><linearGradient id="mvDesk" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#d9a066"/><stop offset="1" stop-color="#b37a45"/></linearGradient></defs>${[[40, 360], [470, 380], [930, 380], [1330, 330]].map(([x, w]) => `<rect x="${x}" y="788" width="${w}" height="30" rx="8" fill="url(#mvDesk)"/><rect x="${x}" y="812" width="${w}" height="90" fill="#9b6a3c"/><rect x="${x + 20}" y="776" width="${w * .35}" height="14" rx="3" fill="#fff" opacity=".85"/>`).join('')}</g>`,
+  yard: `<defs>${MV_SKY}<linearGradient id="mvGrass" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#8ed16f"/><stop offset="1" stop-color="#4f9a3f"/></linearGradient></defs>
+    <rect width="1600" height="900" fill="url(#mvSky)"/><g class="mvrays" transform="translate(1380 140)"><circle r="70" fill="#ffd54a"/>${Array.from({length: 12}, (_, i) => `<path d="M0 -95V-125" transform="rotate(${i * 30})" stroke="#ffd54a" stroke-width="10" stroke-linecap="round"/>`).join('')}</g>
+    ${mvCloud(300, 130, 1, 60)}${mvCloud(900, 90, .8, 75)}
+    <g transform="translate(560 250)"><rect width="520" height="330" fill="#f3d9b1"/><path d="M-30 0L260 -110L550 0Z" fill="#c0563b"/>${[0, 1, 2, 3].map(i => `<rect x="${40 + i * 120}" y="50" width="70" height="80" fill="#9fd3f2" stroke="#fff" stroke-width="6"/><rect x="${40 + i * 120}" y="180" width="70" height="80" fill="#9fd3f2" stroke="#fff" stroke-width="6"/>`).join('')}<rect x="225" y="240" width="70" height="90" fill="#8b5e3c"/><path d="M260 -110V-190" stroke="#666" stroke-width="5"/><path class="mvflag" d="M260 -190H330V-150H260Z" fill="#fff" stroke="#2563eb" stroke-width="4"/></g>
+    <path d="M0 560Q400 520 800 560T1600 550V900H0Z" fill="url(#mvGrass)"/><g stroke="#e8e0cf" stroke-width="10">${Array.from({length: 17}, (_, i) => `<path d="M${i * 100} 590V510"/>`).join('')}<path d="M0 530H1600M0 570H1600" stroke-width="8"/></g>
+    <g class="mvtree" transform="translate(220 600)"><rect x="-18" y="-170" width="36" height="180" rx="8" fill="#7a5230"/><circle cx="0" cy="-220" r="110" fill="#3f8f3a"/><circle cx="-70" cy="-170" r="70" fill="#4ea346"/><circle cx="75" cy="-175" r="72" fill="#48993f"/></g>
+    <circle cx="1250" cy="760" r="34" fill="#fff" stroke="#222" stroke-width="4"/><path d="M1250 726L1262 752L1238 752Z M1216 760H1284" stroke="#222" stroke-width="3" fill="#222"/>`,
+  office: `<defs>${MV_SKY}<linearGradient id="mvOff" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#dbeafe"/><stop offset="1" stop-color="#c7d8f0"/></linearGradient></defs>
+    <rect width="1600" height="900" fill="url(#mvOff)"/>${mvFloor('#a88f75', '#7d6650')}<ellipse cx="800" cy="800" rx="520" ry="70" fill="#e9b872" opacity=".55"/>
+    ${mvWindow(640, 110, 320, 260)}<path d="M620 100Q650 250 610 400H590V100Z M980 100Q950 250 990 400H1010V100Z" fill="#f4a3a8"/>
+    <rect x="90" y="200" width="300" height="16" rx="4" fill="#8b5e3c"/>${mvBooks(105, 200, 10)}<rect x="90" y="330" width="300" height="16" rx="4" fill="#8b5e3c"/>${mvBooks(110, 330, 9)}
+    <g transform="translate(1320 640)"><path d="M-50 0H50L38 -90H-38Z" fill="#c2703d"/><g class="mvtree">${[-60, -25, 10, 45].map((a, i) => `<ellipse cx="0" cy="-150" rx="26" ry="80" transform="rotate(${a} 0 -90)" fill="hsl(${120 + i * 8} 45% ${38 + i * 4}%)"/>`).join('')}</g></g>
+    <g transform="translate(1180 200)"><rect width="190" height="140" rx="6" fill="#fffdf5" stroke="#c9a15b" stroke-width="8"/><circle cx="95" cy="60" r="28" fill="#fbbf24"/><path d="M40 110H150" stroke="#9ca3af" stroke-width="6"/></g>`,
+  home: `<defs>${MV_SKY}<linearGradient id="mvHome" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fde7d4"/><stop offset="1" stop-color="#f6d3b3"/></linearGradient></defs>
+    <rect width="1600" height="900" fill="url(#mvHome)"/>${mvFloor('#c99a6b', '#9c7248')}${mvWindow(1150, 110, 320, 250)}
+    <rect x="80" y="120" width="400" height="16" rx="4" fill="#6b4226"/>${mvBooks(95, 120, 14)}<rect x="80" y="250" width="400" height="16" rx="4" fill="#6b4226"/>${mvBooks(95, 250, 14)}<rect x="80" y="380" width="400" height="16" rx="4" fill="#6b4226"/>${mvBooks(100, 380, 13)}
+    <g transform="translate(700 200)"><rect width="240" height="170" rx="6" fill="#fff" stroke="#b08968" stroke-width="10"/><path d="M20 150L90 70L150 130L190 95L225 150Z" fill="#7cb87a"/><circle cx="185" cy="50" r="20" fill="#fbbf24"/></g>
+    <g transform="translate(560 520)"><rect width="520" height="40" rx="10" fill="#8c5a3c"/><rect x="200" y="-60" width="16" height="60" fill="#f5f5f5"/><rect x="300" y="-60" width="16" height="60" fill="#f5f5f5"/><ellipse class="mvflame" cx="208" cy="-72" rx="9" ry="16" fill="#fbbf24"/><ellipse class="mvflame" cx="308" cy="-72" rx="9" ry="16" fill="#fbbf24"/></g>`,
+  hall: `<defs><linearGradient id="mvHall" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#e5eef5"/><stop offset="1" stop-color="#d3e0ea"/></linearGradient>${MV_SKY}</defs>
+    <rect width="1600" height="900" fill="url(#mvHall)"/>${mvFloor('#9aa7b1', '#77838c')}${mvWindow(90, 130, 280, 240)}
+    <rect x="496" y="84" width="608" height="372" rx="10" fill="#cbd5e1"/><rect x="510" y="98" width="580" height="344" rx="6" fill="#fdfdfd"/><rect x="530" y="448" width="540" height="12" rx="4" fill="#94a3b8"/><rect x="560" y="440" width="36" height="10" rx="3" fill="#2563eb"/><rect x="610" y="440" width="36" height="10" rx="3" fill="#dc2626"/>
+    <g transform="translate(1250 180)"><rect width="260" height="190" rx="6" fill="#fef3c7" stroke="#d6b35a" stroke-width="6"/>${[0, 1, 2].map(i => `<rect x="${20 + i * 80}" y="30" width="62" height="62" fill="hsl(${50 + i * 80} 80% 80%)" transform="rotate(${i * 4 - 4} ${50 + i * 80} 60)"/>`).join('')}<path d="M24 130H236M24 160H200" stroke="#caa65a" stroke-width="7"/></g>`,
+  hallfg: `<g><rect x="300" y="790" width="1000" height="34" rx="10" fill="#8b6b4a"/><rect x="300" y="820" width="1000" height="80" fill="#6f5238"/>${[420, 780, 1140].map(x => `<rect x="${x}" y="760" width="44" height="34" rx="6" fill="#fff"/><path d="M${x + 44} 770q18 4 0 18" stroke="#fff" stroke-width="6" fill="none"/>`).join('')}</g>`,
+  title: `<defs><radialGradient id="mvTit" cx=".5" cy=".4" r=".8"><stop offset="0" stop-color="hsl(var(--h) 55% 38%)"/><stop offset="1" stop-color="hsl(calc(var(--h) + 40) 50% 12%)"/></radialGradient></defs>
+    <rect width="1600" height="900" fill="url(#mvTit)"/>${Array.from({length: 14}, (_, i) => `<circle class="mvspark" style="animation-delay:${(i * .37).toFixed(2)}s" cx="${(i * 233) % 1600}" cy="${120 + (i * 151) % 700}" r="${4 + i % 4 * 3}" fill="#fff" opacity=".5"/>`).join('')}
+    <circle cx="800" cy="450" r="330" fill="none" stroke="#fff" stroke-opacity=".08" stroke-width="40"/><circle cx="800" cy="450" r="430" fill="none" stroke="#fff" stroke-opacity=".05" stroke-width="20"/>`
+};
+const MV_BOARDBG = {class: 'chalk', hall: 'marker'};
+
+/* ---- drawn adults (teacher, counselor, father, mother); the mouth (.mth) moves while the character speaks ---- */
+function mvAdult(who){
+  const W = {teacher: {shirt: '#fdfdfd', coat: '#1f2937', kip: '#111827', beard: '#4a3426', glass: 1},
+    counselor: {shirt: '#dbeafe', coat: '', kip: 'url(#mvKnit)', beard: '#6b4a2e', tie: '#2563eb'},
+    parent: {shirt: '#fdfdfd', coat: '#111827', hat: 1, beard: '#3a2a1e'},
+    mom: {shirt: '#9d7bd8', scarf: '#2dd4bf'}}[who] || {shirt: '#fff', kip: '#111'};
+  return `<svg class="mvadult" viewBox="0 0 200 236" aria-hidden="true"><defs><linearGradient id="mvKnit" x1="0" x2="1"><stop offset="0" stop-color="#2563eb"/><stop offset=".5" stop-color="#fbbf24"/><stop offset="1" stop-color="#2563eb"/></linearGradient><radialGradient id="mvFace" cx=".45" cy=".4" r=".7"><stop offset="0" stop-color="#ffe0c2"/><stop offset="1" stop-color="#eab38b"/></radialGradient></defs>
+    <path d="M14 236Q18 178 100 166Q182 178 186 236Z" fill="${W.shirt}" stroke="#00000022"/>${W.coat ? `<path d="M14 236Q18 180 84 168L100 236Z M186 236Q182 180 116 168L100 236Z" fill="${W.coat}"/>` : ''}${W.tie ? `<path d="M100 172L92 186L100 236L108 186Z" fill="${W.tie}"/>` : ''}
+    <rect x="86" y="138" width="28" height="34" rx="10" fill="#eab38b"/>
+    ${W.scarf ? `<path d="M44 96Q42 18 100 16Q158 18 156 96Q160 150 140 170L60 170Q40 150 44 96Z" fill="${W.scarf}"/>` : `<ellipse cx="52" cy="98" rx="9" ry="14" fill="#eab38b"/><ellipse cx="148" cy="98" rx="9" ry="14" fill="#eab38b"/>`}
+    <ellipse cx="100" cy="94" rx="${W.scarf ? 44 : 48}" ry="${W.scarf ? 50 : 56}" fill="url(#mvFace)"/>
+    ${W.scarf ? `<path d="M56 70Q100 22 144 70Q130 46 100 44Q70 46 56 70Z" fill="${W.scarf}" opacity=".9"/>` : `<path d="M52 84Q50 40 100 36Q150 40 148 84Q140 56 100 54Q60 56 52 84Z" fill="#3a2a1e"/>`}
+    ${W.beard ? `<path d="M52 100Q56 166 100 170Q144 166 148 100Q140 138 100 142Q60 138 52 100Z" fill="${W.beard}"/><path d="M80 124Q100 118 120 124" stroke="${W.beard}" stroke-width="8" fill="none"/>` : ''}
+    ${W.hat ? `<ellipse cx="100" cy="46" rx="74" ry="12" fill="#111"/><path d="M58 46Q58 4 100 2Q142 4 142 46Z" fill="#111"/><rect x="58" y="34" width="84" height="8" fill="#333"/>` : W.kip ? `<path d="M68 42Q100 22 132 42Q100 34 68 42Z" fill="${W.kip}" stroke="#00000033"/>` : ''}
+    <g class="mvblink"><ellipse cx="82" cy="92" rx="5.5" ry="6.5" fill="#2b2b2b"/><ellipse cx="118" cy="92" rx="5.5" ry="6.5" fill="#2b2b2b"/><circle cx="84" cy="90" r="1.8" fill="#fff"/><circle cx="120" cy="90" r="1.8" fill="#fff"/></g>
+    <path d="M72 78Q82 72 92 77M108 77Q118 72 128 78" stroke="#3a2a1e" stroke-width="4" fill="none" stroke-linecap="round"/>
+    ${W.glass ? `<g fill="none" stroke="#374151" stroke-width="3.5"><circle cx="82" cy="92" r="15"/><circle cx="118" cy="92" r="15"/><path d="M97 92H103"/></g>` : ''}
+    <path d="M97 100Q100 112 104 106" stroke="#c98b64" stroke-width="3" fill="none"/>
+    <ellipse class="mth" cx="100" cy="${W.beard ? 127 : 124}" rx="11" ry="4.5" fill="#8a2f2f"/>
+    ${W.scarf ? '' : ''}<ellipse cx="72" cy="112" rx="9" ry="5" fill="#f19c8a" opacity=".35"/><ellipse cx="128" cy="112" rx="9" ry="5" fill="#f19c8a" opacity=".35"/></svg>`;
+}
+const MV_PEOPLE = {'🧑‍🏫': 'teacher'}, MV_KIDS = ['👦', '🧒'];
+const mvFig = a => a.kid ? kidMini(a.kid, a.lvl ?? 6) : mvAdult(a.who);
+const mvActor = a => {
+  if (a.e && MV_PEOPLE[a.e]) a = {...a, who: MV_PEOPLE[a.e], e: null, s: (a.s || 3) * 1.15};
+  if (a.e && MV_KIDS.includes(a.e)) a = {...a, kid: 'רוגע', e: null};
+  const ch = a.who || a.kid, data = `data-at="${a.at || 0}"${a.off != null ? ` data-off="${a.off}"` : ''}${a.talk ? ` data-talk="${a.talk.join(',')}"` : ''}${a.emos ? ` data-emos='${JSON.stringify(a.emos)}' data-cur="${esc(a.kid)}"` : ''}`;
+  const inner = a.box ? `<span class="mvbox">${esc(a.box)}</span>` : a.bubble ? `<span class="mvbub solo">${esc(a.bubble)}</span>`
+    : ch ? `${a.say ? `<span class="mvbub">${esc(a.say)}</span>` : ''}<div class="mvfig${a.flip ? ' flip' : ''}">${mvFig(a)}</div>${a.name || a.tag ? `<span class="mvtag">${esc(a.name || a.tag)}</span>` : ''}`
+    : `${a.say ? `<span class="mvbub">${esc(a.say)}</span>` : ''}<span class="mve">${a.e}</span>${a.tag ? `<span class="mvtag">${esc(a.tag)}</span>` : ''}`;
+  return `<div class="mva${a.box ? ' isbox' : ''}${ch ? ' ischar' : ''}${a.bubble ? ' isbub' : ''}" ${data} style="${a.ltr ? 'direction:ltr;' : ''}left:${a.x}%;top:${a.y}%;--s:${a.s || 1};--d:${a.d || 0}s"><div class="mvin mv-${a.a || (ch ? 'walk' : 'pop')}">${inner}</div></div>`;
+};
+function mvSceneHTML(S, i){
+  const C = S.circle, kids = C ? Array.from({length: C.n}, (_, j) => { const an = Math.PI * 2 * (j + .5) / C.n + Math.PI / 2; return {kid: ['רוגע', 'שמחה', 'רוגע', 'דאגה'][j % 4], lvl: 5, x: C.cx + C.rx * Math.cos(an), y: C.cy + C.ry * Math.sin(an), s: 1.9, a: 'pop', at: C.at, d: j * .08}; }) : [];
+  const bg = S.bg || 'title', board = (S.board || []).length ? `<div class="mvboard ${MV_BOARDBG[bg] || 'sign'}">${S.board.map(b => `<div class="mvbl${b.big ? ' big' : ''}" data-at="${b.at || 0}">${esc(b.text)}</div>`).join('')}</div>` : '';
+  return `<div class="mvcam ${i % 2 ? 'z2' : 'z1'}"><svg class="mvbgsvg" viewBox="0 0 1600 900" preserveAspectRatio="xMidYMid slice" style="--h:${S.hue ?? 260}" aria-hidden="true">${MV_BG[bg] || MV_BG.title}</svg>${board}
+    ${[...kids, ...(S.actors || [])].map(mvActor).join('')}${S.desks || bg === 'hall' && S.table ? `<svg class="mvbgsvg mvfg" viewBox="0 0 1600 900" preserveAspectRatio="xMidYMid slice" aria-hidden="true">${bg === 'hall' ? MV_BG.hallfg : MV_BG.desks}</svg>` : ''}</div>
+    <div class="mvtitle">${S.icon || ''} ${esc(S.t || '')}</div>`;
+}
+
+/* ---- the generated movie of a guide track ---- */
+const MV_CACHE = {};
+function mvFromTrack(t){
+  if (MV_CACHE[t.id]) return MV_CACHE[t.id];
+  const H = HUBOF(t)[0], hue = t.hue ?? HUB_HUE[H] ?? 260, EX = window.MOVIE_EX || {}, scenes = [];
+  const teacher = (n, x = 15) => ({who: 'teacher', name: 'המחנך', x, y: 60, s: 4, at: 0, talk: Array.from({length: n}, (_, i) => i)});
+  const listeners = [{kid: 'רוגע', lvl: 5, x: 78, y: 78, s: 2.3, at: 0, a: 'pop', d: .3}, {kid: 'שמחה', lvl: 4, x: 91, y: 80, s: 2.2, at: 0, a: 'pop', d: .45}];
+  const explain = (s, icon, title, text, chap) => { const lines = mvSplit(text, 170).slice(0, 4); if (!lines.length) lines.push(mvCap(title));
+    scenes.push({t: s.title, icon: s.icon, hue, bg: 'class', desks: true, chap, lines, board: [{text: `${icon || ''} ${mvCap(title)}`.trim(), big: 1}], actors: [teacher(lines.length), ...listeners]}); };
+  t.steps.forEach((s, si) => {
+    if (!MV_KINDS.includes(s.kind)) return;
+    const first = scenes.length;
+    scenes.push({t: s.title, icon: s.icon, hue, bg: 'title', chap: si, lines: [`שלב ${si + 1}: ${mvCap(s.title)}`, ...mvSplit(s.intro || (s.text || [])[0] || '', 240).slice(0, 2)],
+      actors: [{e: s.icon || '🎬', x: 50, y: 34, s: 5.5, a: 'pop', at: 0}, {box: mvCap(s.title), x: 50, y: 66, s: 1.5, a: 'slide', at: 0}]});
+    const items = s.items || [], ex = [];
+    if (s.kind === 'diagram' && items.length) {
+      items.slice(0, 8).forEach(it => { explain(s, it.icon, it.t, `${mvCap(it.t)}. ${it.d || ''}`, si); if (it.ex) ex.push(it.ex); });
+      if (items.length > 8) explain(s, '➕', 'ועוד', 'ועוד: ' + items.slice(8).map(it => mvCap(it.t)).join(', ') + '.', si);
+    } else if (s.kind === 'tabs') (s.tabs || []).forEach(tb => explain(s, tb.icon, tb.label, `${mvCap(tb.label)}. ${tb.lead || ''} ${(tb.points || []).slice(0, 3).join('. ')}`, si));
+    else if (s.kind === 'cards') (s.cards || []).slice(0, 8).forEach(c => explain(s, '', c.title, `${mvCap(c.title)}. ${c.t || ''}`, si));
+    else if (s.kind === 'info') { const txt = [...(s.text || []).slice(s.intro ? 0 : 1), ...(s.points || []).slice(0, 5)].join(' '); if (txt.trim()) explain(s, s.icon, s.title, txt, si); }
+    const X = EX[t.id + '/' + s.id];
+    if (X && X.beats && X.beats.length) {
+      const cast = X.cast || [], pos = [[50], [30, 70], [20, 50, 80]][Math.min(cast.length, 3) - 1] || [50];
+      const actors = cast.slice(0, 3).map((c, ci) => { const kid = c.who === 'kid', emos = {};
+        X.beats.forEach((b, bi) => { if (b.emo && b.emo[ci] != null) emos[bi] = b.emo[ci]; });
+        return {...(kid ? {kid: c.emo || 'רוגע', lvl: 6, emos: Object.keys(emos).length ? emos : null} : {who: c.who}), name: c.name, x: pos[ci], y: kid ? 66 : 60, s: kid ? 3.2 : 4, at: 0, d: ci * .25, flip: pos[ci] > 55 && !kid,
+          talk: X.beats.map((b, bi) => b.by === ci ? bi : -1).filter(x => x >= 0)}; });
+      X.beats.forEach((b, bi) => { if (b.bubble && cast[b.by]) actors.push({bubble: b.bubble, x: pos[b.by], y: 30, a: 'pop', at: bi, off: bi + 1}); });
+      scenes.push({t: 'דוגמה', icon: '💡', hue, bg: X.bg || 'class', desks: (X.bg || 'class') === 'class' && cast.some(c => c.who === 'kid'), table: X.bg === 'hall', chap: si, ex: 1,
+        lines: X.beats.map(b => b.say), board: X.beats.map((b, bi) => b.board ? {text: b.board, at: bi} : null).filter(Boolean), actors});
+    } else if (ex.length || s.ex) {
+      const e = mvCap(ex[0] || s.ex);
+      scenes.push({t: 'דוגמה', icon: '💡', hue, bg: 'class', desks: true, chap: si, ex: 1, lines: ['לדוגמה: ' + e],
+        actors: [teacher(1, 22), {kid: 'רוגע', lvl: 6, name: 'אלי', x: 70, y: 70, s: 3.2, at: 0, d: .3}, {e: '💡', x: 50, y: 22, s: 3, a: 'pulse', at: 0}]});
+    }
+    if (scenes.length === first + 1 && !(s.intro || s.text)) scenes.pop();
+  });
+  return MV_CACHE[t.id] = {id: t.id, hub: H, track: t.id, gen: 1, icon: '🎬', title: 'סרטון הסבר: ' + t.title.replace(/^המדריך:?s*/, ''), sub: `${t.steps.filter(s => MV_KINDS.includes(s.kind)).length} נושאים · הסבר ודוגמה בכל נושא · קריינות בעברית`,
+    src: `נבנה מתוך המדריך ״${t.title}״ (#/track/${t.id}) – כל ההסברים לקוחים מהשלבים שלו; הדוגמאות מומחשות לצורך הלמידה.`, scenes};
+}
+
+/* ---- the player ---- */
 const MV = {m: null, sc: 0, ln: 0, playing: false, muted: false, rate: 1, timer: 0, token: 0};
 const mvStop = () => { MV.playing = false; MV.token++; clearTimeout(MV.timer); try { speechSynthesis.cancel(); } catch (e) {} };
 // narration is always a male voice: Edge's natural Avri, then Windows' Asaf, then any Hebrew voice not known to be female; if only a female voice exists, its pitch is lowered
 const MV_MALE = /avri|asaf|\bmale/i, MV_FEMALE = /hila|google|carmit|female/i;
 const mvVoice = () => { try { const v = speechSynthesis.getVoices().filter(x => /^(he|iw)/i.test(x.lang)); return v.find(x => /avri/i.test(x.name)) || v.find(x => MV_MALE.test(x.name)) || v.find(x => !MV_FEMALE.test(x.name)) || v[0]; } catch (e) { return null; } };
 const mvPitch = v => v && MV_FEMALE.test(v.name) && !MV_MALE.test(v.name) ? .7 : 1;
-const mvTxt = l => Array.isArray(l) ? l[0] : l;   // a line is text, or [caption, spoken form with niqqud where the voice mispronounces]
-const mvActor = a => `<div class="mva${a.box ? ' isbox' : ''}" data-at="${a.at || 0}" style="${a.ltr ? 'direction:ltr;' : ''}left:${a.x}%;top:${a.y}%;--s:${a.s || 1};--d:${a.d || 0}s"><div class="mvin mv-${a.a || 'pop'}">${a.box ? `<span class="mvbox">${esc(a.box)}</span>` : a.bubble ? `<span class="mvbub solo">${esc(a.bubble)}</span>` : `${a.say ? `<span class="mvbub">${esc(a.say)}</span>` : ''}<span class="mve">${a.e}</span>${a.tag ? `<span class="mvtag">${esc(a.tag)}</span>` : ''}`}</div></div>`;
-function mvSceneHTML(S){
-  const C = S.circle, kids = C ? Array.from({length: C.n}, (_, j) => { const an = Math.PI * 2 * (j + .5) / C.n + Math.PI / 2; return {e: j % 3 === 1 ? '🧒' : '👦', x: C.cx + C.rx * Math.cos(an), y: C.cy + C.ry * Math.sin(an), s: 2, a: 'pop', at: C.at, d: j * .08}; }) : [];
-  return `<div class="mvbg" style="--h:${S.hue}"></div><div class="mvtitle">${S.icon} ${esc(S.t)}</div>${[...kids, ...S.actors].map(mvActor).join('')}`;
-}
 function mvPaint(){
   const m = MV.m, S = m.scenes[MV.sc], st = $('#mvstage'); if (!st) return;
-  if (st.dataset.sc !== String(MV.sc)) { st.dataset.sc = MV.sc; $('#mvscene').innerHTML = mvSceneHTML(S); }
-  st.querySelectorAll('.mva').forEach(el => { el.classList.toggle('on', +el.dataset.at <= MV.ln); el.classList.toggle('now', +el.dataset.at === MV.ln); });
-  $('#mvcap').textContent = MV.ln >= 0 ? mvTxt(S.lines[MV.ln]) : '';
+  if (st.dataset.sc !== String(MV.sc)) { st.dataset.sc = MV.sc; const sc = $('#mvscene'); sc.innerHTML = mvSceneHTML(S, MV.sc); sc.classList.remove('cin'); void sc.offsetWidth; sc.classList.add('cin'); }
+  const ln = MV.ln, on = el => +el.dataset.at <= ln && (el.dataset.off == null || ln < +el.dataset.off);
+  st.querySelectorAll('.mva').forEach(el => { el.classList.toggle('on', on(el)); el.classList.toggle('now', +el.dataset.at === ln);
+    el.classList.toggle('talk', MV.playing && !!el.dataset.talk && el.dataset.talk.split(',').includes(String(ln)));
+    if (el.dataset.emos) { const E = JSON.parse(el.dataset.emos); let cur = el.dataset.cur0 || (el.dataset.cur0 = el.dataset.cur); Object.keys(E).map(Number).sort((a, b) => a - b).forEach(k => { if (k <= ln) cur = E[k]; });
+      if (cur !== el.dataset.cur) { el.dataset.cur = cur; const f = el.querySelector('.mvfig'); f.innerHTML = kidMini(cur, 6); f.classList.remove('emopop'); void f.offsetWidth; f.classList.add('emopop'); } } });
+  st.querySelectorAll('.mvbl').forEach(el => el.classList.toggle('on', +el.dataset.at <= ln));
+  $('#mvcap').textContent = ln >= 0 ? mvCap(mvTxt(S.lines[ln])) : '';
   const total = m.scenes.reduce((a, x) => a + x.lines.length, 0), before = m.scenes.slice(0, MV.sc).reduce((a, x) => a + x.lines.length, 0);
-  $('#mvbar').style.width = Math.round(100 * (before + Math.max(0, MV.ln + 1)) / total) + '%';
+  $('#mvbar').style.width = Math.round(100 * (before + Math.max(0, ln + 1)) / total) + '%';
   $('#mvplay').textContent = MV.playing ? '⏸ השהיה' : '▶ הפעלה';
   $('#mvmute').textContent = MV.muted ? '🔇 בלי קול' : '🔊 קריינות';
   st.classList.toggle('paused', !MV.playing);
-  document.querySelectorAll('[data-mvgo]').forEach(b => b.classList.toggle('on', +b.dataset.mvgo === MV.sc));
+  const ch = S.chap ?? MV.sc;
+  document.querySelectorAll('[data-mvgo]').forEach(b => b.classList.toggle('on', +b.dataset.ch === ch));
 }
 function mvRun(){
   const tok = ++MV.token; clearTimeout(MV.timer); mvPaint();
   if (!MV.playing || MV.ln < 0) return;
-  const L0 = MV.m.scenes[MV.sc].lines[MV.ln], line = Array.isArray(L0) ? L0[1] : L0, est = (1300 + line.length * 72) / MV.rate;
+  const line = mvSay(MV.m.scenes[MV.sc].lines[MV.ln]), est = (1300 + line.length * 72) / MV.rate;
   let done = false;
-  const fin = () => { if (done || tok !== MV.token) return; done = true; MV.timer = setTimeout(() => { if (tok === MV.token && MV.playing) mvStep(); }, 500); };
+  const fin = () => { if (done || tok !== MV.token) return; done = true; MV.timer = setTimeout(() => { if (tok === MV.token && MV.playing) mvStep(); }, 450); };
   if (!MV.muted && 'speechSynthesis' in window) {
     try { speechSynthesis.cancel(); const u = new SpeechSynthesisUtterance(line); u.lang = 'he-IL'; const v = mvVoice(); if (v) u.voice = v; u.pitch = mvPitch(v); u.rate = MV.rate;
       u.onend = fin; u.onerror = fin; speechSynthesis.speak(u); setTimeout(fin, est * 2.5 + 3000); return; } catch (e) {}   // watchdog: some browsers never fire onend
@@ -8354,22 +8552,26 @@ function mvStep(){
 const mvGo = sc => { MV.sc = Math.max(0, Math.min(MV.m.scenes.length - 1, sc)); MV.ln = 0; $('#mvend').hidden = true; mvRun(); };
 window.addEventListener('hashchange', () => { if (!/^#\/movie\//.test(location.hash)) mvStop(); });
 function movieView(R){
-  const m = MOVIES().find(x => x.id === R.id); if (!m) return {title: 'סרטון', html: `<div class="empty">${MOVIES().length ? 'הסרטון לא נמצא.' : '⏳ נטען…'} <a href="#/videos">לסרטונים</a></div>`};
+  const t = TRACK(R.id), m = MOVIES().find(x => x.id === R.id) || (mvGuide(t) ? mvFromTrack(t) : null);
+  if (!m) return {title: 'סרטון', html: `<div class="empty">${TRACKS().length ? 'הסרטון לא נמצא.' : '⏳ נטען…'} <a href="#/videos">לסרטונים</a></div>`};
   const H = HUBS[m.hub] || {}, tts = 'speechSynthesis' in window;
+  const chaps = []; m.scenes.forEach((S, i) => { const c = S.chap ?? i; if (!chaps.some(x => x[0] === c)) chaps.push([c, i, S]); });
+  const startSc = R.sub ? Math.max(0, m.scenes.findIndex(S => S.chap === +R.sub - 1)) : 0;
+  const hand = movieFor(m.track), other = m.gen ? hand : (m.track && mvGuide(TRACK(m.track)) ? {id: m.track, title: 'סרטון הסבר: ' + TRACK(m.track).title} : null);
   const html = `<a class="back no-print" href="#/${m.hub}">→ ${esc(H.title || '')}</a>
-    <div class="banner" style="--h:${hubHue(m.hub)}"><span class="emoji">${m.icon}</span><div><h1>${esc(m.title)}</h1><p>${esc(m.sub || '')}</p></div>${m.track ? `<div class="actions no-print"><a class="btn sm" href="#/track/${m.track}">📖 המדריך המלא</a></div>` : ''}</div>
+    <div class="banner" style="--h:${hubHue(m.hub)}"><span class="emoji">${m.icon}</span><div><h1>${esc(m.title)}</h1><p>${esc(m.sub || '')}</p></div><div class="actions no-print">${m.track ? `<a class="btn sm" href="#/track/${m.track}">📖 המדריך המלא</a>` : ''}${other && other.id !== m.id ? `<a class="btn sm" href="#/movie/${other.id}">🎬 ${esc(other.title)}</a>` : ''}</div></div>
     <div class="mvwrap"><div class="mvstage paused" id="mvstage" data-sc=""><div id="mvscene"></div>
       <button class="mvbig" id="mvbig" aria-label="הפעלה">▶</button>
-      <div class="mvend" id="mvend" hidden><div>🎉 סוף הסרטון</div><div class="actions" style="justify-content:center"><button class="btn primary" data-mvgo="0" data-mvre="1">↻ מההתחלה</button>${m.track ? `<a class="btn" href="#/track/${m.track}">📖 למדריך המלא</a>` : ''}</div></div>
+      <div class="mvend" id="mvend" hidden><div>🎉 סוף הסרטון</div><div class="actions" style="justify-content:center"><button class="btn primary" data-mvgo="0" data-ch="-1">↻ מההתחלה</button>${m.track ? `<a class="btn" href="#/track/${m.track}">📖 למדריך המלא</a>` : ''}</div></div>
       <div class="mvprog"><i id="mvbar"></i></div></div><div class="mvcap" id="mvcap" aria-live="polite"></div>
       <div class="mvctl no-print"><button class="btn" id="mvprev" title="הסצנה הקודמת">→ הקודם</button><button class="btn primary" id="mvplay">▶ הפעלה</button><button class="btn" id="mvnext" title="הסצנה הבאה">הבא ←</button>
         <button class="btn" id="mvmute">🔊 קריינות</button><select id="mvrate" class="btn" aria-label="מהירות">${[[0.85, 'איטי'], [1, 'רגיל'], [1.2, 'מהיר']].map(([r, l]) => `<option value="${r}"${r === MV.rate ? ' selected' : ''}>${l}</option>`).join('')}</select><button class="btn" id="mvfull" title="מסך מלא">⛶ מסך מלא</button></div>
       ${tts ? '' : '<div class="note" style="margin-top:8px">🔇 הדפדפן הזה לא תומך בהקראה – הסרטון ירוץ עם כתוביות בלבד.</div>'}
-      <div class="chips mvch no-print">${m.scenes.map((S, i) => `<button class="chip" data-mvgo="${i}">${S.icon} ${esc(S.t)}</button>`).join('')}</div></div>
-    <details class="panel" style="margin-top:14px"><summary><b>📜 תמליל מלא</b> <span class="muted">– לקריאה או להדפסה</span></summary>${m.scenes.map((S, i) => `<h3>${i + 1}. ${S.icon} ${esc(S.t)}</h3><p>${S.lines.map(l => esc(mvTxt(l))).join(' ')}</p>`).join('')}</details>
+      <div class="chips mvch no-print">${chaps.map(([c, i, S], n) => `<button class="chip" data-mvgo="${i}" data-ch="${c}">${S.icon || ''} ${m.gen ? `${n + 1}. ` : ''}${esc(mvCap(S.t))}</button>`).join('')}</div></div>
+    <details class="panel" style="margin-top:14px"><summary><b>📜 תמליל מלא</b> <span class="muted">– לקריאה או להדפסה</span></summary>${m.scenes.map((S, i) => `${S.chap == null || !i || m.scenes[i - 1].chap !== S.chap ? `<h3>${S.icon || ''} ${esc(mvCap(S.t))}</h3>` : S.ex ? '<h4>💡 דוגמה</h4>' : ''}<p>${S.lines.map(l => esc(mvCap(mvTxt(l)))).join(' ')}</p>`).join('')}</details>
     <div class="note" style="margin-top:10px">📚 ${trLink(esc(m.src || ''))}</div>`;
   return {title: m.title, html, after(){
-    mvStop(); if (MV.m !== m) { MV.m = m; MV.sc = 0; MV.ln = -1; } else if (MV.ln < 0) MV.ln = -1;
+    mvStop(); if (MV.m !== m || R.sub) { MV.m = m; MV.sc = startSc; MV.ln = -1; } else if (MV.ln < 0) MV.ln = -1;
     const play = () => { if (MV.ln < 0) MV.ln = 0; $('#mvend').hidden = true; MV.playing = true; mvRun(); };
     const toggle = () => { if (MV.playing) { mvStop(); mvPaint(); } else play(); };
     $('#mvplay').onclick = toggle; $('#mvbig').onclick = play;
@@ -8621,10 +8823,10 @@ function trackView(R){
   const done = t.steps.filter(x => trStepDone(x, D)).length;
   return {title: t.title, html: `<a class="back no-print" href="#/${HUBOF(t)[0]}">→ ${HUBOF(t)[1]}</a>${sw}
     <div class="banner" style="--h:${t.hue ?? HUB_HUE[HUBOF(t)[0]] ?? hueOf(t.title)}"><span class="emoji">${t.icon || '🧭'}</span><div><div style="opacity:.85;font-size:14px">${esc(t['for'] || '')}${active() ? ' · ⭐ ' + esc(active().alias) : ''}</div><h1>${esc(t.title)}</h1></div>
-      <div class="actions no-print">${P[t.id] && !sw ? `<a class="btn sm" href="#/problem/${t.id}">📖 מפת הטיפול</a>` : ''}${GAME(t.id) ? `<a class="btn sm" href="#/game/${t.id}">🎲 המשחק</a>` : ''}${movieFor(t.id) ? `<a class="btn sm" href="#/movie/${movieFor(t.id).id}">🎬 צפו בסרטון</a>` : ""}<a class="btn sm" href="#/track/${t.id}/print">🖨️ סיכום להדפסה</a></div></div>
+      <div class="actions no-print">${P[t.id] && !sw ? `<a class="btn sm" href="#/problem/${t.id}">📖 מפת הטיפול</a>` : ''}${GAME(t.id) ? `<a class="btn sm" href="#/game/${t.id}">🎲 המשחק</a>` : ''}${mvGuide(t) ? `<a class="btn sm" href="#/movie/${t.id}">🎬 סרטון הסבר</a>` : ""}${movieFor(t.id) ? `<a class="btn sm" href="#/movie/${movieFor(t.id).id}">🎬 שיעור לדוגמה</a>` : ""}<a class="btn sm" href="#/track/${t.id}/print">🖨️ סיכום להדפסה</a></div></div>
     ${t.intro && i === 0 ? `<p class="lead" style="text-align:start">${esc(t.intro)}</p>` : ''}
     <div class="trlayout"><nav class="trsteps no-print"><div class="gprog"><i style="width:${Math.round(100 * done / t.steps.length)}%"></i></div>${t.steps.map((x, j) => `<a href="#/track/${t.id}/${j + 1}" class="${j === i ? 'on' : ''} ${trStepDone(x, D) ? 'ok' : ''}" style="--kh:${(TR_KIND[x.kind] || TR_KIND.info)[2]}" title="${(TR_KIND[x.kind] || TR_KIND.info)[1]}"><span class="n">${trStepDone(x, D) ? '✓' : j + 1}</span>${x.icon || ''} ${esc(x.title)}</a>`).join('')}</nav>
-      <section class="panel trmain"><h2 class="trhead" style="--kh:${(TR_KIND[s.kind] || TR_KIND.info)[2]}"><span>${s.icon || ''} ${esc(s.title)}</span><small class="trkind">${(TR_KIND[s.kind] || TR_KIND.info)[0]} ${(TR_KIND[s.kind] || TR_KIND.info)[1]} · שלב ${i + 1} מתוך ${t.steps.length}</small></h2>${trStepHTML(t, s, D)}
+      <section class="panel trmain"><h2 class="trhead" style="--kh:${(TR_KIND[s.kind] || TR_KIND.info)[2]}"><span>${s.icon || ''} ${esc(s.title)}</span><small class="trkind">${(TR_KIND[s.kind] || TR_KIND.info)[0]} ${(TR_KIND[s.kind] || TR_KIND.info)[1]} · שלב ${i + 1} מתוך ${t.steps.length}</small></h2>${mvGuide(t) && MV_KINDS.includes(s.kind) ? `<a class="mvstepbtn no-print" href="#/movie/${t.id}/${i + 1}"><span class="mvhplay">▶</span><span><b>🎬 סרטון הסבר לשלב הזה</b><small>אנימציה עם קריינות – הסבר ודוגמה</small></span></a>` : ""}${trStepHTML(t, s, D)}
         <div class="actions" style="justify-content:space-between;margin-top:18px">${i > 0 ? `<a class="btn" href="#/track/${t.id}/${i}">→ הקודם</a>` : '<span></span>'}${i < t.steps.length - 1 ? `<a class="btn primary" href="#/track/${t.id}/${i + 2}">הבא ←</a>` : `<a class="btn primary" href="#/track/${t.id}/print">🖨️ סיכום המסלול</a>`}</div></section></div>`};
 }
 let trTimer = null;
