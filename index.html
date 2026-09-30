@@ -2205,6 +2205,28 @@ body,body *{overflow-wrap:normal!important;word-break:normal!important;hyphens:m
 .mvbox{background:rgba(255,255,255,.94);color:#1f2937;border:2px solid rgba(0,0,0,.12);backdrop-filter:none}
 .mva.now .mvbox{border-color:#f59e0b;box-shadow:0 0 0 .2em rgba(245,158,11,.35),0 .3em 1em rgba(0,0,0,.25)}
 
+/* ---- 🔎 psycho-didactic assessment: dictionary + summary ---- */
+.pdgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(300px,100%),1fr));gap:12px;margin-bottom:10px}
+.pdterm{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:14px 16px;box-shadow:var(--shadow)}
+.pdterm[hidden]{display:none}
+.pdterm p{margin:6px 0;line-height:1.65;font-size:14.5px}
+.pdth{display:flex;flex-wrap:wrap;align-items:baseline;gap:8px}
+.pdth b{font-size:17px}
+.pdth .pill{margin-inline-start:auto}
+.pdcls{background:var(--brand-soft);border-radius:10px;padding:6px 10px}
+.pdrange{font-weight:600}
+.pdsum p{line-height:1.8;font-size:15.5px}
+.pdq{display:block;margin:6px 0;padding:6px 10px;border-inline-start:3px solid var(--line);background:var(--bg2);border-radius:8px;font-size:14px;quotes:'״' '״'}
+.pdacc{font-size:14px;margin:6px 0}
+.pdtable{width:100%;border-collapse:collapse;font-size:14px}
+.pdtable th,.pdtable td{padding:8px;border-bottom:1px solid var(--line);text-align:start;vertical-align:top}
+.pdtable td:first-child{min-width:220px}
+.pdband{display:inline-block;padding:2px 10px;border-radius:999px;background:color-mix(in srgb,var(--c) 22%,transparent);color:var(--ink);border:1px solid var(--c);font-weight:700;white-space:nowrap}
+.pdbar{position:relative;height:8px;margin-top:6px;border-radius:99px;background:linear-gradient(90deg,#ef4444,#f97316,#f59e0b,#60a5fa 45%,#60a5fa 55%,#84cc16,#22c55e,#16a34a);direction:ltr;min-width:120px}
+.pdbar i{position:absolute;top:-4px;width:14px;height:14px;margin-left:-7px;border-radius:50%;border:2px solid #fff;box-shadow:0 1px 4px rgba(0,0,0,.4)}
+.pdcurve{display:flex;direction:ltr;margin:4px 0 12px;border-radius:12px;overflow:hidden;font-size:12px;font-weight:700;text-align:center}
+.pdcurve span{background:color-mix(in srgb,var(--c) 30%,var(--panel));padding:8px 2px;border-inline-end:1px solid var(--panel)}
+
 </style>
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="apple-touch-icon" href="icon-192.png">
@@ -5606,13 +5628,13 @@ function render(){
   document.body.classList.toggle('locked', isLocked());
   if (isLocked()) { const o = lockView(); $('#title').textContent = ''; $('#view').innerHTML = `<div class="page">${o.html}</div>`; document.title = 'האתר של נדב דוד – יועץ חינוכי ומטפל CBT'; return; }
   if (WEB && !ARTIFACT && !LITE && !PROBLEMS.length) { $('#title').textContent = ''; $('#view').innerHTML = `<div class="empty" style="padding-top:120px"><span class="big">⏳</span>${Cloud.status === 'error' ? esc(Cloud.err) + ' <br><br><button class="btn primary" data-act="cloud-retry">נסו שוב</button>' : 'טוען את התוכן מ-OneDrive…'}</div>`; return; }
-  const views = LITE ? {home: liteHome, problems, problem: problemView, tools, tool: toolView, settings: liteSettings, ask, askc: R => ask(R, true), workflow, roles: rolesView, circ: circView, circsrc: circSrcView, libsrc: libSrcView, circask: circAskView, find: findView, more: moreView, games: gamesView, game: gameView, tracks: problems, track: trackView, groups: groupsView, transitions: hubView, newteachers: hubView, programs: hubView, distress: hubView, talk: hubView, parents: hubView, reports: hubView, sel: hubView, mafteach: hubView, sped: hubView, autism: hubView, tzalach: hubView, aklim: hubView,develop: hubView, cbtclass: hubView, behave: hubView, cbt: hubView, cbtmaps: cbtMapsView, app: appView, movie: movieView, crole: hubView, quest: hubView, ariel: hubView, videos: videosView, diary: diaryView, sitemap: sitemapView} : {home, problems, problem: problemView, students, student: studentView, tools, tool: toolView, library, settings, ask, askc: R => ask(R, true), workflow, roles: rolesView, circ: circView, circsrc: circSrcView, libsrc: libSrcView, circask: circAskView, find: findView, more: moreView, games: gamesView, game: gameView, tracks: problems, track: trackView, groups: groupsView, transitions: hubView, newteachers: hubView, programs: hubView, distress: hubView, talk: hubView, parents: hubView, reports: hubView, sel: hubView, mafteach: hubView, sped: hubView, autism: hubView, tzalach: hubView, aklim: hubView,develop: hubView, cbtclass: hubView, behave: hubView, cbt: hubView, cbtmaps: cbtMapsView, app: appView, movie: movieView, crole: hubView, quest: hubView, ariel: hubView, videos: videosView, diary: diaryView, sitemap: sitemapView};
+  const views = LITE ? {home: liteHome, problems, problem: problemView, tools, tool: toolView, settings: liteSettings, ask, askc: R => ask(R, true), workflow, roles: rolesView, circ: circView, circsrc: circSrcView, libsrc: libSrcView, circask: circAskView, find: findView, more: moreView, games: gamesView, game: gameView, tracks: problems, track: trackView, groups: groupsView, transitions: hubView, newteachers: hubView, programs: hubView, distress: hubView, talk: hubView, parents: hubView, reports: hubView, sel: hubView, mafteach: hubView, sped: hubView, autism: hubView, tzalach: hubView, aklim: hubView,develop: hubView, cbtclass: hubView, behave: hubView, cbt: hubView, cbtmaps: cbtMapsView, app: appView, movie: movieView, pdterms: pdTermsView, crole: hubView, quest: hubView, ariel: hubView, videos: videosView, diary: diaryView, sitemap: sitemapView} : {home, problems, problem: problemView, students, student: studentView, tools, tool: toolView, library, settings, ask, askc: R => ask(R, true), workflow, roles: rolesView, circ: circView, circsrc: circSrcView, libsrc: libSrcView, circask: circAskView, find: findView, more: moreView, games: gamesView, game: gameView, tracks: problems, track: trackView, groups: groupsView, transitions: hubView, newteachers: hubView, programs: hubView, distress: hubView, talk: hubView, parents: hubView, reports: hubView, sel: hubView, mafteach: hubView, sped: hubView, autism: hubView, tzalach: hubView, aklim: hubView,develop: hubView, cbtclass: hubView, behave: hubView, cbt: hubView, cbtmaps: cbtMapsView, app: appView, movie: movieView, pdterms: pdTermsView, crole: hubView, quest: hubView, ariel: hubView, videos: videosView, diary: diaryView, sitemap: sitemapView};
   const fn = views[R.r] || home;
   const out = fn(R);
   $('#title').textContent = out.title;
   $('#view').innerHTML = `<div class="page">${out.html}</div>`;
   setTimeout(igEqualize, 60); setTimeout(igEqualize, 600);
-  const navKey = (k => k === 'ariel' ? 'problems' : k)(R.r === 'track' ? (TRACK(R.id) ? HUBOF(TRACK(R.id))[0] : 'problems') : {problem:'problems', tracks:'problems', student:'students', tool:'tools', circsrc:'circ', libsrc:'library', circask:'circ', askc:'ask', cbtmaps:'cbt', app:(allApps()[R.id] || {}).hub || 'cbt', movie:(MOVIES().find(m => m.id === R.id) || {}).hub || 'videos'}[R.r] || R.r);   // #/ariel lives under 🧭 טיפול לפי בעיה
+  const navKey = (k => k === 'ariel' ? 'problems' : k)(R.r === 'track' ? (TRACK(R.id) ? HUBOF(TRACK(R.id))[0] : 'problems') : {problem:'problems', tracks:'problems', student:'students', tool:'tools', circsrc:'circ', libsrc:'library', circask:'circ', askc:'ask', cbtmaps:'cbt', app:(allApps()[R.id] || {}).hub || 'cbt', movie:(MOVIES().find(m => m.id === R.id) || {}).hub || 'videos', pdterms:'sped'}[R.r] || R.r);   // #/ariel lives under 🧭 טיפול לפי בעיה
   document.querySelectorAll('[data-nav]').forEach(a => a.classList.toggle('on', a.dataset.nav === navKey));
   document.querySelectorAll('#nav details.navg').forEach(d => { if (d.querySelector('a.on')) d.open = true; });
   document.title = out.title + ' · האתר של נדב דוד';
@@ -8139,7 +8161,7 @@ const trKey = id => (active() ? active().id : 'general') + ':' + id;
 const trData = id => { S.tracks = S.tracks || {}; return S.tracks[trKey(id)] = S.tracks[trKey(id)] || {}; };
 const FIVEP = [['predisposing', 'גורמים מקדימים', 'מה הכין את הקרקע? (מזג, רקע, היסטוריה)', '#e9d5ff'], ['precipitating', 'גורמים מזרזים', 'מה הדליק את הבעיה עכשיו?', '#fde68a'], ['presenting', 'הבעיה כפי שהיא מוצגת', 'מה רואים? מה מדאיג?', '#fecaca'], ['perpetuating', 'גורמים משמרים', 'מה מחזיק את הבעיה? (הימנעות, תגובות סביבה, מחשבות)', '#fbcfe8'], ['protective', 'גורמים מגינים', 'חוזקות, תמיכה, משאבים', '#bbf7d0']];
 const DAYS = ['ראשון', 'שני', 'שלישי', 'רביעי', 'חמישי', 'שישי'];
-const trLink = h => akSrcLinks(h).replace(/(?<![="'\/\w])#\/(track|game|problem|tool|groups|transitions|programs|newteachers|distress|talk|parents|reports|sped|autism|sel|mafteach|develop|tzalach|aklim|cbtclass|behave|cbt|cbtmaps|app|movie|crole|quest|ariel|workflow|roles|videos|circ)((?:\/[\w-]+){0,2})/g, (m, r, p) => { const [id, sub] = p.split('/').slice(1); const x = id && r === 'track' ? TRACK(id) : id && r === 'game' ? GAME(id) : null;
+const trLink = h => akSrcLinks(h).replace(/(?<![="'\/\w])#\/(track|game|problem|tool|groups|transitions|programs|newteachers|distress|talk|parents|reports|sped|autism|sel|mafteach|develop|tzalach|aklim|cbtclass|behave|cbt|cbtmaps|app|movie|pdterms|crole|quest|ariel|workflow|roles|videos|circ)((?:\/[\w-]+){0,2})/g, (m, r, p) => { const [id, sub] = p.split('/').slice(1); const x = id && r === 'track' ? TRACK(id) : id && r === 'game' ? GAME(id) : null;
   const cg = r === 'circ' && sub ? circGuide().find(g => g.id === sub) : null, cm = r === 'circ' && id && !cg ? (window.CIRC_META || []).find(c => c.id === id) : null;
   const lab = x ? x.title : r === 'problem' && id && P[id] ? '🧭 ' + P[id].name : r === 'tool' && id && TOOL[id] ? TOOL[id].icon + ' ' + TOOL[id].name : cg ? '📜 ' + cg.title : cm ? '📜 ' + cm.title : r === 'distress' && !id ? '🚨 ' + HUBS.distress.title : (r === 'mafteach' || r === 'sel' || r === 'develop' || r === 'transitions') && !id ? HUBS[r].icon + ' ' + HUBS[r].title : (r === 'parents' || r === 'reports' || r === 'sped' || r === 'tzalach' || r === 'aklim' || r === 'cbtclass' || r === 'crole' || r === 'quest') && !id ? HUBS[r].icon + ' ' + HUBS[r].title : HUBS[r] && !id ? HUBS[r].icon + ' ' + HUBS[r].title : r === 'groups' && !id ? '👥 הנחיית קבוצות' : r === 'workflow' && !id ? '🗺️ סדר עבודה' : r === 'roles' && !id ? '👥 מי פונה למי' : null;
   return `<a href="${m}" class="trlink">${lab ? esc(lab) : m}</a>`; }).replace(/(?<![="'\/\w])#\/file\/([\w-]+)/g, (m, k) => trFile(k) ? trFileBtn(k) : m);   // #/file/<key> → opens a file from window.TRFILES (tracks-sped.js)
@@ -8241,7 +8263,7 @@ const HUBS = {
     areas: [['emo', '💛', 'זיהוי בעיות רגשיות'], ['mental', '🧠', 'זיהוי בעיות נפשיות'], ['behav', '🌋', 'זיהוי בעיות התנהגות'], ['social', '🤝', 'זיהוי בעיות חברתיות']]},
   sel: {flag: 'sel', guide: 'sel-guide', title: 'SEL – למידה רגשית-חברתית', icon: '💞', say: 'רגש, חבר, החלטה – לומדים את זה כמו כל מקצוע. בוא נבנה את זה יחד 💞', intro: '💞 למידה רגשית-חברתית בבית ספר יסודי לבנים (א׳–ו׳): המדריך (מה זה SEL, חמש המיומנויות והקשר לכישורי חיים ולמפתח הל״ב, תפקיד היועץ לפי החוזר, מבנה שיעור, רשימת בדיקה לאקלים וטופס תכנון), מסלול לכל מיומנות – מודעות עצמית, ניהול עצמי, מודעות חברתית, בין-אישי וקבלת החלטות – עם מטרות לפי גיל ומערכים מוכנים מתוך החומרים, תוכנית שנתית לפי חודשי השנה העברית, הדרכת מחנכים ושיתוף הורים. לכל פריט מצוין המקור, והצד הטיפולי נשמר נפרד מהמשמעתי.', extra: [['#/mafteach', '💗', 'מדור מפתח הל״ב'], ['#/circ/c09', '📜', 'חוזר כישורי חיים (0351)'], ['#/track/prog-social', '🏗️', 'תוכנית התערבות: SEL'], ['#/track/class-climate', '🧭', 'מסלול טיפול: אקלים כיתתי'], ['#/tool/sociometry', '🕸️', 'שאלון סוציומטרי – מיפוי חברתי'], ['#/distress', '🚨', 'זיהוי סימני מצוקה']]},
   mafteach: {flag: 'mafteach', guide: 'ks-guide', title: 'כישורי חיים ומפתח הל״ב', icon: '🔑', say: 'שיעור טוב מתחיל במעגל – חוויה, שיתוף, המשגה ויישום. בוא נתכונן יחד! 🧩', intro: '🧩🔑 שתי השעות החברתיות-רגשיות של השבוע: כישורי חיים (תוכנית ״הכ״חות שבדרך״ של שפ״י לחמ״ד ולחברה החרדית, גרסת בנים – כל השיעורים לפי שכבה, בסדר של אתר שפ״י, וכל מצגת נפתחת בלחיצה) ומפתח הל״ב לשעת החינוך (הערך של כל תקופה, ארבעת המעגלים, לפי תקופה ולפי שכבה). מתחילים במדריך ״איך מעבירים שיעור כישורי חיים״.', extra: [['#/sel', '💞', 'מדור SEL – למידה רגשית-חברתית'], ['#/circ/c09', '📜', 'חוזר כישורי חיים (0351)']], areas: [['ks', '🧩', 'כישורי חיים (חמ״ד)'], ['mh', '🔑', 'מפתח הל״ב']]},
-  sped: {flag: 'sped', guide: 'sped-guide', title: 'חינוך מיוחד והכלה', icon: '🧩', say: 'כל ילד לומד אחרת – בוא נמצא יחד את הדרך שלו 🧩', intro: '🧩 חינוך מיוחד והכלה: מפת התהליך המלאה (איתור ← תמיכה בבית הספר ← צוות רב-מקצועי ← ועדת זכאות ואפיון ← חידוש זכאות ← תח״י/תל״א) עם הטופס של כל שלב, ערכת כל הטפסים שלך (נפתחים בלחיצה), הכנה לוועדה, חידוש זכאות וקיצור יום, כלי הערכת הקריאה והאוריינות לכיתות א׳–ג׳ עם נקודות החתך, הכלה בכיתה ומחוננים – לפי חוזר 0287 והחומרים שלך. הצד הטיפולי והצד המנהלי מופרדים, ולכל פריט מצוין המקור.', extra: [['#/circ/c02', '📜', 'חוזר ועדות חינוך מיוחד (0287)'], ['#/circ/c16', '📜', 'מוסדות חינוך מכילים (0483)'], ['#/circ/c02/c02-iep-personal-program', '📜', 'תוכנית אישית – תח״י (0287)'],['#/track/prog-guide', '🏗️', 'בניית תוכנית התערבות'], ['#/track/sped-zaa-q', '📝', 'שאלון המורה לוועדת זכאות ואפיון (ד׳–⁠ו׳)'], ['#/track/bh-individual', '🧒', 'תוכנית התנהגותית פרטנית'], ['#/autism', '🧩', 'אוטיזם – ילדים על הרצף']]},
+  sped: {flag: 'sped', guide: 'sped-guide', title: 'חינוך מיוחד והכלה', icon: '🧩', say: 'כל ילד לומד אחרת – בוא נמצא יחד את הדרך שלו 🧩', intro: '🧩 חינוך מיוחד והכלה: מפת התהליך המלאה (איתור ← תמיכה בבית הספר ← צוות רב-מקצועי ← ועדת זכאות ואפיון ← חידוש זכאות ← תח״י/תל״א) עם הטופס של כל שלב, ערכת כל הטפסים שלך (נפתחים בלחיצה), הכנה לוועדה, חידוש זכאות וקיצור יום, כלי הערכת הקריאה והאוריינות לכיתות א׳–ג׳ עם נקודות החתך, הכלה בכיתה ומחוננים – לפי חוזר 0287 והחומרים שלך. הצד הטיפולי והצד המנהלי מופרדים, ולכל פריט מצוין המקור.', extra: [['#/pdterms', '📖', 'מילון מונחי אבחון פסיכודידקטי'], ['#/app/pd-read', '🧾', 'סיכום אבחון – שווה לכל נפש'], ['#/circ/c02', '📜', 'חוזר ועדות חינוך מיוחד (0287)'], ['#/circ/c16', '📜', 'מוסדות חינוך מכילים (0483)'], ['#/circ/c02/c02-iep-personal-program', '📜', 'תוכנית אישית – תח״י (0287)'],['#/track/prog-guide', '🏗️', 'בניית תוכנית התערבות'], ['#/track/sped-zaa-q', '📝', 'שאלון המורה לוועדת זכאות ואפיון (ד׳–⁠ו׳)'], ['#/track/bh-individual', '🧒', 'תוכנית התנהגותית פרטנית'], ['#/autism', '🧩', 'אוטיזם – ילדים על הרצף']]},
   autism: {flag: 'autism', guide: 'aut-guide', title: 'אוטיזם – ילדים על הרצף', icon: '🧩', say: 'כל ילד רואה את העולם בדרך שלו – בוא נלמד לראות גם דרך העיניים שלו 🧩', intro: '🧩 אוטיזם – ילדים על הרצף: המדריך (מה זה הרצף בשפה פשוטה, שני התחומים המרכזיים, שלוש רמות התמיכה, מה מגיע יחד – קשב, חרדה, שפה ומצב רוח – סגנון החשיבה, החוזקות, מיתוסים, ותפקיד היועץ: להבחין, לתעד, להתייעץ ולהפנות – לא לאבחן); מה רואים בכיתה, בהפסקה, בתפילה ובבית, בכיתות א׳–ב׳ ובכיתות ג׳–ו׳, עם רשימת תצפית למחנך; מההבחנה להפניה – השיחה עם ההורים, מי מאבחן לפי חוזר משרד הבריאות 15/13, שאלון CAST והמסלול בחוזר 0287; התאמות בכיתה – מבנה ולוח חזותי, שפה ברורה, חושים ופינת רוגע, תמיכה חברתית, הקרחון, התקף זעם מול הצפה ומעגל ההצפה; CBT מותאם ועבודה רגשית; ועבודה עם הילד, ההורים והצוות. הצד הטיפולי-חינוכי והצד המשמעתי-מנהלי מופרדים, ולכל פריט מצוין המקור.', extra: [['#/sped', '🧩', 'חינוך מיוחד והכלה'], ['#/track/sped-committee', '🏛️', 'הכנה לוועדה'], ['#/track/social-skills', '🤝', 'מיומנויות חברתיות'], ['#/track/q-adhd', '📋', 'שאלון CAST ושאלוני קשב'], ['#/circ/c04/c04d-sped-principles', '📜', 'חוזר 0470 – תלמידים עם זכאות לחינוך מיוחד'], ['#/develop', '🌳', 'התפתחות הילד']]},
   develop: {flag: 'develop', guide: 'dev-guide', title: 'התפתחות הילד', icon: '🌳', say: 'כל ילד גדל בקצב שלו – בוא נבין מה צפוי בגיל הזה ומתי כדאי לבדוק 🌳', intro: '🌳 התפתחות הילד מהגן ועד כיתה ו׳: המדריך (שבעת תחומי ההתפתחות, טבע וסביבה, ציר הזמן, טווח תקין מול דגל אדום ואיך היועץ משתמש במבט התפתחותי), מסלול לכל שכבת גיל – גן ובשלות לכיתה א׳, א׳–ב׳, ג׳–ד׳, ה׳–ו׳ וראשית ההתבגרות – עם מה צפוי בכל תחום, דאגות נפוצות (תקין או לבדוק), דגלים אדומים, שיחה עם הילד והנחיות להורים ולמחנכים; תיאוריות (פיאז׳ה, אריקסון, התקשרות וניופלד, ויגוצקי, קולברג, ברונפנברנר, מושג המוות), העמקה לפי תחומים, מתי מפנים ולמי, והדרכת הורים לפי גיל. לכל פריט מצוין המקור, ומה שאינו מהחומרים מסומן ״ידע מקצועי כללי״.', extra: [['#/transitions', '🚪', 'מעברים'], ['#/sped', '🧩', 'חינוך מיוחד והכלה'], ['#/distress', '🚨', 'זיהוי סימני מצוקה'], ['#/sel', '💞', 'למידה רגשית-חברתית'], ['#/parents', '🤝', 'הורים']]},
   cbtclass: {flag: 'cbtclass', guide: 'cbtc-guide', title: 'יישום CBT בכיתה', icon: '🏫', say: 'כל הכיתה לומדת לחשוב, להרגיש ולפעול אחרת – בוא נביא את ה-CBT לכיתה 🏫', intro: '🏫 יישום CBT בכיתה (א׳–⁠ו׳): המדריך (למה CBT בכיתה כמניעה לכולם, משולש המחשבה-הרגש-ההתנהגות לילדים, פירמידת שלוש הרמות – כיתה, קבוצה ופרטני – ומה תפקיד היועץ ומה תפקיד המורה, השיחה המכבדת והמאתגרת, והפרדה בין הטיפולי למשמעתי), סדרת שיעורים מוכנה לפי שכבות גיל עם כלים ומשחקים מהאפליקציה, המורה כמאמן CBT (שפה משותפת, בנק משפטים, שבח שבונה מסוגלות, חרדה בכיתה בלי מלכודת ההימנעות, פרוטוקול להתפרצות כעס וכרטיסי עזר), ניהול התנהגות (ניתוח ABC, סדרי חיזוק, כלכלת אסימונים, שגרות והקו של חוזר 0470), תוכנית כיתתית לחרדת מבחנים, אקלים כיתתי ופעילויות קבוצתיות, ומעגל ההתייעצות עם המורה עם טפסים. לפי ״CBT מערכתי בעצימות נמוכה לחינוכיים״ של יששכר עשת ושאר חומרי הספרייה; מה שאינו מהחומרים מסומן ״ידע מקצועי כללי״.', extra: [['#/track/teacher-consult', '🧭', 'הדרכת מורה בניהול כיתה'], ['#/track/class-climate', '🌈', 'אקלים כיתתי'], ['#/sel', '💞', 'למידה רגשית-חברתית'], ['#/mafteach', '🔑', 'כישורי חיים ומפתח הל״ב'], ['#/programs', '🏗️', 'תוכניות התערבות'], ['#/tool/sociometry', '🕸️', 'שאלון סוציומטרי'], ['#/circ/c04', '📜', 'חוזר 0470 – אקלים חינוכי מיטבי'], ['#/behave', '🏅', 'עיצוב התנהגות – התאוריה, התלמיד והכיתה']]},
@@ -8270,7 +8292,7 @@ function appFieldHTML(f, v){
   if (f.type === 'range') return `<label class="f">${esc(f.label)} <b data-appv="${f.id}">${val === '' ? '–' : esc(val)}</b><input type="range" min="${f.min ?? 0}" max="${f.max ?? 10}" value="${val === '' ? (f.min ?? 0) : esc(val)}" data-app="${f.id}" data-num="1"></label>`;
   if (f.type === 'chips') { const on = Array.isArray(val) ? val : (val ? [val] : []), opts = f.optsFn ? f.optsFn() : f.opts;
     return `<div class="f" style="font-size:13.5px;color:var(--muted)">${esc(f.label)}<div class="chips" style="margin:6px 0 0">${opts.map(o => `<button type="button" class="chip ${on.includes(o) ? 'on' : ''}" data-appchip="${f.id}" data-multi="${f.multi ? 1 : ''}" data-v="${esc(o)}">${esc(o)}</button>`).join('')}</div></div>`; }
-  return `<label class="f">${esc(f.label)}${f.long ? `<textarea class="inp ta" data-app="${f.id}" placeholder="${esc(f.ph || '')}">${esc(val)}</textarea>` : `<input class="inp" data-app="${f.id}" placeholder="${esc(f.ph || '')}" value="${esc(val)}">`}</label>`;
+  return `<label class="f">${esc(f.label)}${f.long ? `<textarea class="inp ta" data-app="${f.id}"${f.rows ? ` style="min-height:${f.rows * 1.6}em"` : ""} placeholder="${esc(f.ph || '')}">${esc(val)}</textarea>` : `<input class="inp" data-app="${f.id}" placeholder="${esc(f.ph || '')}" value="${esc(val)}">`}</label>`;
 }
 function appView(R){
   const A = allApps()[R.id]; if (!A) return {title: 'יישום', html: '<div class="empty">היישום לא נמצא. <a href="#/cbt">לשיטת טיפול CBT</a></div>'};
@@ -8279,7 +8301,7 @@ function appView(R){
     <div class="banner" style="--h:${hubHue(A.hub)}"><span class="emoji">${A.icon}</span><div><h1>${esc(A.title)}</h1><p>${esc(A.sub || '')}</p></div></div>
     <div class="note no-print" style="margin-bottom:14px">${A.intro} <span class="muted">🔒 הנתונים נשמרים רק בדפדפן הזה${ARTIFACT || AI.available() ? '. הם נשלחים ל-Claude (בחשבון שלך) רק אם לוחצים ״העמקה עם Claude״' : ' ולא נשלחים לשום מקום'}. כותבים כינוי, לא שם מלא.</span></div>
     <div class="no-print">${A.sections.map(s => `<div class="panel"><h3>${s.title}</h3><div class="form">${s.fields.map(f => appFieldHTML(f, d[f.id])).join('')}</div></div>`).join('')}
-    <div class="actions" style="margin:14px 0 20px"><button class="btn primary" data-appbuild="1">🧩 בנה פורמולציה ומתווה טיפול</button>${ARTIFACT || AI.available() ? `<button class="btn" data-appai="1" title="נספר במכסת המנוי" style="border-color:var(--brand-text)">🤖 העמקה עם Claude</button>` : ''}<button class="btn" data-act="print">🖨️ הדפסה</button><button class="btn ghost" data-appclear="1">🗑️ ניקוי הטופס</button></div></div>
+    <div class="actions" style="margin:14px 0 20px"><button class="btn primary" data-appbuild="1">${A.buildLabel || '🧩 בנה פורמולציה ומתווה טיפול'}</button>${ARTIFACT || AI.available() ? `<button class="btn" data-appai="1" title="נספר במכסת המנוי" style="border-color:var(--brand-text)">🤖 העמקה עם Claude</button>` : ''}<button class="btn" data-act="print">🖨️ הדפסה</button><button class="btn ghost" data-appclear="1">🗑️ ניקוי הטופס</button></div></div>
     <div id="appOut"></div><div id="appAI"></div>`;
   return {title: A.title, html, after(){
     const save = () => { ls.set(appKey(R.id), d); SYNC.schedule(); };
@@ -8300,6 +8322,7 @@ function appView(R){
    general professional knowledge is allowed only in the separate, marked "external" list. */
 let appCtl = null;
 async function appDeepen(A, d){
+  if (A.deepen) return A.deepen(d);   // an application with its own Claude summary (e.g. pd-read)
   const box = $('#appAI'); if (!box) return;
   if (!AI.available()) { box.innerHTML = `<div class="note warn">🤖 Claude לא זמין כאן${AI.err && AI_ERR[AI.err] ? ': ' + esc(AI_ERR[AI.err]) : ' – ההעמקה פועלת בגרסת האפליקציה בתוך Claude.'}</div>`; return; }
   if (appCtl) appCtl.abort(); appCtl = new AbortController();
@@ -8363,7 +8386,7 @@ const movieFor = tid => MOVIES().find(m => m.track === tid);
 const MV_KINDS = ['info', 'diagram', 'tabs', 'cards'];
 const mvGuide = t => t && /-guide$/.test(t.id) && t.steps.some(s => MV_KINDS.includes(s.kind));
 function hubMoviesHTML(k){
-  const g = HUBS[k] && HUBS[k].guide && TRACK(HUBS[k].guide), list = [...MOVIES().filter(m => m.hub === k).map(m => [m.id, m.title, m.sub]), ...(mvGuide(g) ? [[g.id, 'סרטון הסבר: ' + g.title.replace(/^המדריך:?s*/, ''), 'כל שלבי המדריך מונפשים – הסבר ודוגמה בכל שלב']] : [])];
+  const H = HUBS[k], gs = H ? TRACKS().filter(t => t[H.flag] && mvGuide(t)).sort((a, b) => (b.id === H.guide) - (a.id === H.guide)) : [], list = [...MOVIES().filter(m => m.hub === k).map(m => [m.id, m.title, m.sub]), ...gs.map(g => [g.id, 'סרטון הסבר: ' + g.title.replace(/^המדריך:?s*/, ''), 'כל שלבי המדריך מונפשים – הסבר ודוגמה בכל שלב'])];
   if (!list.length) return '';
   return `<h2 class="sec">🎬 סרטוני הדרכה <small>אנימציה עם קריינות בעברית ודוגמה בכל נושא</small></h2><div class="grid" style="margin-bottom:16px">${list.map(([id, t, sub]) => `<a class="card accent mvcard" href="#/movie/${id}" style="--h:${hubHue(k)}"><span class="emoji">▶️</span><span class="name">${esc(t)}</span><span class="sub">${esc(sub || '')}</span></a>`).join('')}</div>`;
 }
@@ -8374,18 +8397,30 @@ const MV_LET = {'א': 'אָלֶף', 'ב': 'בֵּית', 'ג': 'גִּימֶל', 
 const mvCap = s => String(s || '').replace(/\s*\([^()]*\)/g, '').replace(/\s*[^\s]*#\/[\w\/-]+/g, '').replace(/([?!.])[.:]+/g, '$1').replace(/:\s*$/, '.').replace(/\s+([,.?!:])/g, '$1').replace(/\s+/g, ' ').trim();
 // abbreviations the voice would spell out or garble, read as words
 const MV_ABBR = [['שפ״י', 'שֶׁפִּי'], ['חמ״ד', 'חֶמֶד'], ['חז״ל', 'חֲזַ״ל'], ['מנכ״ל', 'מַנְכָּ״ל'], ['ע״י', 'עַל יְדֵי'], ['ביה״ס', 'בֵּית הַסֵּפֶר'], ['בי״ס', 'בֵּית סֵפֶר'], ['ת״ת', 'תַּלְמוּד תּוֹרָה'], ['אפר״ת', 'אֶפְרָ״ת'],
-  ['הכ״חות', 'הַכֹּחוֹת'], ['וכו׳', 'וְכוּלֵי'], ['לדוג׳', 'לְדוּגְמָה'], ['תשפ״ה', 'תַּשְׁפַּ״ה'], ['תשפ״ו', 'תַּשְׁפַּ״ו'], ['תשפ״ז', 'תַּשְׁפַּ״ז'], ['תל״א', 'תָּלָ״א'], ['מתי״א', 'מַתְיָ״א'], ['שח״ק', 'שַׂחַ״ק'],
+  ['הכ״חות', 'הַכֹּחוֹת'], ['וכו׳', 'וְכוּלֵי'], ['לדוג׳', 'לְדוּגְמָה'], ['תשפ״ה', 'תַּשְׁפַּ״ה'], ['תשפ״ו', 'תַּשְׁפַּ״ו'], ['תשפ״ז', 'תַּשְׁפַּ״ז'], ['תל״א', 'תָּלָ״א'], ['מתי״א', 'מַתְיָ״א'], ['שח״ק', 'שַׂחַ״ק'], ['הל״ב', 'הַלֵּב'], ['שפ״ח', 'שֶׁפַח'], ['צל״ח', 'צָלָח'], ['תח״י', 'תוכנית חינוכית יחידנית'],
   ['ADHD', 'אֵי דִי אֵייץ׳ דִי'], ['OCD', 'אוֹ סִי דִי'], ['ERP', 'אִי אָר פִּי'], ['CASEL', 'קָאסֶל'], ['CBT', 'סִי בִּי טִי'], ['SEL', 'סֶל']];
-/* שׂ or שׁ: the voice cannot tell them apart in plain text, so every word whose ש is a sin gets the sin dot (שׂ).
-   Written here with the dot; lookup is by the plain form, after dropping up to three prefix letters (ו, ה, ב, כ, ל, מ, ש). */
-const MV_SIN = {}; `שׂיחה שׂיחות שׂיחת שׂיחתו שׂיחתם שׂיח שׂוחח שׂוחחו לשׂוחח משׂוחח משׂוחחים שׂמחה שׂמחות שׂמחת שׂמח שׂמחים לשׂמוח שׂמחתי משׂמח משׂמחים
-  משׂחק משׂחקים משׂחקי משׂחקה משׂחקית לשׂחק שׂיחק שׂיחקו שׂחקן שׂחקנים משׂחקי עשׂר עשׂרה עשׂרים עשׂרות עשׂירי עשׂה עשׂו עשׂתה עושׂה עושׂים עושׂות לעשׂות נעשׂה נעשׂית נעשׂים
-  עשׂייה עשׂיה מעשׂה מעשׂים מעשׂי מעשׂית מעשׂיים עשׂינו עשׂיתי תעשׂה תעשׂו אעשׂה יעשׂה יעשׂו נעשׂה עשׂיר עושׂר לשׂים שׂים שׂימו שׂמתי שׂמנו שׂימה משׂימה משׂימות משׂימת משׂימתו
-  נושׂא נושׂאים נושׂאי נושׂאת לשׂאת נשׂא ישׂראל ישׂראלי ישׂראלית שׂפה שׂפות שׂפת שׂפתיים שׂכל שׂכלי שׂכלית השׂכלה מושׂכל שׂונא שׂונאים שׂנאה שׂמאל שׂכר שׂיא שׂיאים תשׂומת
-  מושׂג מושׂגים מושׂגי להשׂיג השׂיג השׂיגו השׂגה השׂגת הישׂג הישׂגים הישׂגי שׂביעות שׂדה בשׂר המשׂגה המשׂגות משׂגה שׂרטוט שׂרטוטים שׂחייה שׂחקנית שׂימת שׂמחתו`.split(/\s+/).forEach(w => { if (w) MV_SIN[w.replace(/ׂ/g, '')] = w; });
-const mvSin = s => s.replace(/(?<![ְ-ׇא-ת])[א-ת]+(?![ְ-ׇא-ת])/g, w => { if (!w.includes('ש') || /^ו?ה?משיח$/.test(w)) return w;   // משיח is a shin
-  for (let p = 0; p <= 3 && p < w.length - 1; p++) { if (p && !'והבכלמש'.includes(w[p - 1])) break; const r = MV_SIN[w.slice(p)]; if (r) return w.slice(0, p) + r; }
-  return w; }).replace(/(^|[^א-ת])(ו?ל?|ו?ה?)(שם|שמים|שמו|שמה|שמתי|שמנו) (לב)/g, (_, a, p, w, l) => a + p + w.replace('ש', 'שׂ') + ' ' + l);   // שׂם לב, שׂמים לב
+/* שׂ or שׁ: the voice ignores the sin dot and reads every ש as "sh". So a word whose ש is a sin is handed to the voice
+   spelled the way it sounds – with ס and full niqqud (שיחה → סִיחָה); the caption on screen keeps the normal spelling.
+   Lookup is by the plain word, after dropping up to three prefix letters (ו, ה, ב, כ, ל, מ, ש). */
+const MV_SIN = {}; `שיחה=סִיחָה שיחות=סִיחוֹת שיחת=סִיחַת שיחתו=סִיחָתוֹ שיחתם=סִיחָתָם שיח=סִיחַ שוחח=סוֹחֵחַ שוחחו=סוֹחֲחוּ לשוחח=לְסוֹחֵחַ משוחח=מְסוֹחֵחַ משוחחים=מְסוֹחֲחִים
+  שמחה=סִמְחָה שמחות=סְמָחוֹת שמחת=סִמְחַת שמח=סָמֵחַ שמחים=סְמֵחִים לשמוח=לִסְמוֹחַ שמחתי=סָמַחְתִּי משמח=מְסַמֵּחַ משמחים=מְסַמְּחִים שמחתו=סִמְחָתוֹ
+  משחק=מִסְחָק משחקים=מִסְחָקִים משחקי=מִסְחֲקֵי משחקה=מִסְחָקָה לשחק=לְסַחֵק שיחק=סִיחֵק שיחקו=סִיחֲקוּ שחקן=סַחְקָן שחקנים=סַחְקָנִים שחקנית=סַחְקָנִית משחקת=מְסַחֶקֶת
+  עשר=עֶסֶר עשרה=עֲסָרָה עשרים=עֶסְרִים עשרות=עֲסָרוֹת עשירי=עֲסִירִי עשה=עָסָה עשו=עָסוּ עשתה=עָסְתָה עושה=עוֹסֶה עושים=עוֹסִים עושות=עוֹסוֹת לעשות=לַעֲסוֹת
+  נעשה=נַעֲסֶה נעשית=נַעֲסֵית נעשים=נַעֲסִים עשייה=עֲסִיָּיה עשיה=עֲסִיָּה מעשה=מַעֲסֶה מעשים=מַעֲסִים מעשי=מַעֲסִי מעשית=מַעֲסִית מעשיים=מַעֲסִיִּים עשינו=עָסִינוּ
+  עשיתי=עָסִיתִי תעשה=תַּעֲסֶה תעשו=תַּעֲסוּ אעשה=אֶעֱסֶה יעשה=יַעֲסֶה יעשו=יַעֲסוּ עשיר=עָסִיר עושר=עוֹסֶר
+  לשים=לָסִים שים=סִים שימו=סִימוּ שמתי=סַמְתִּי שמנו=סַמְנוּ שימה=סִימָה שימת=סִימַת משימה=מְסִימָה משימות=מְסִימוֹת משימת=מְסִימַת משימתו=מְסִימָתוֹ
+  נושא=נוֹסֵא נושאים=נוֹסְאִים נושאי=נוֹסְאֵי נושאת=נוֹסֵאת לשאת=לָסֵאת נשא=נָסָא ישראל=יִסְרָאֵל ישראלי=יִסְרְאֵלִי ישראלית=יִסְרְאֵלִית
+  שפה=סָפָה שפות=סָפוֹת שפת=סְפַת שפתיים=סְפָתַיִים שכל=סֵכֶל שכלי=סִכְלִי שכלית=סִכְלִית השכלה=הַסְכָּלָה מושכל=מוּסְכָּל
+  שונא=סוֹנֵא שונאים=סוֹנְאִים שנאה=סִנְאָה שמאל=סְמֹאל שכר=סָכָר שיא=סִיא שיאים=סִיאִים תשומת=תְּסוּמַת
+  מושג=מוּסָג מושגים=מוּסָגִים מושגי=מוּסְגֵי להשיג=לְהַסִּיג השיג=הִסִּיג השיגו=הִסִּיגוּ השגה=הַסָּגָה השגת=הַסָּגַת הישג=הֶסֵּג הישגים=הֶסֵּגִים הישגי=הֶסֵּגֵי
+  שביעות=סְבִיעוּת שדה=סָדֶה בשר=בָּסָר המשגה=הַמְסָגָה המשגות=הַמְסָגוֹת שרטוט=סִרְטוּט שרטוטים=סִרְטוּטִים שחייה=סְחִיָּיה
+  מתוסכל=מְתוּסְכָּל מעשיר=מַעֲסִיר העשרה=הַעֲסָרָה מבשר=מְבַסֵּר בשורה=בְּסוֹרָה שבע=שֶׁבַע`.split(/\s+/).forEach(p => { const [k, v] = p.split('='); if (k && v) MV_SIN[k] = v; });
+const MV_SIN_LEV = {'שם': 'סָם', 'שמים': 'סָמִים', 'שמו': 'סָמוּ', 'שמה': 'סָמָה', 'שמתי': 'סַמְתִּי', 'שמנו': 'סַמְנוּ', 'שימו': 'סִימוּ', 'לשים': 'לָסִים'};
+const mvSin = s => s.replace(/(^|[^א-תְ-ׇ])(ו?ל?|ו?ה?)(שם|שמים|שמו|שמה|שמתי|שמנו|שימו|לשים) (לב)(?![א-ת])/g, (_, a, p, w, l) => a + p + MV_SIN_LEV[w] + ' לֵב')   // שׂם לב, שׂמים לב
+  .replace(/(?<![ְ-ׇא-ת])[א-ת]+(?![ְ-ׇא-ת])/g, w => { if (!w.includes('ש') || /^ו?ה?משיח$/.test(w)) return w;   // משיח is a shin
+    for (let p = 0; p <= 3 && p < w.length - 1; p++) { if (p && !'והבכלמש'.includes(w[p - 1])) break; const r = MV_SIN[w.slice(p)]; if (r) return w.slice(0, p) + r; }
+    return w; })
+  .replace(/ש([ְ-ׇּ]*)ׂ([ְ-ׇּ]*)/g, 'ס$1$2');   // hand-vocalized שׂ (e.g. לָשִׂים) → ס as well
 const mvSpeak = s => { s = mvCap(s).replace(/\p{Extended_Pictographic}|️|‍/gu, ''); MV_ABBR.forEach(([a, b]) => { s = s.split(a).join(b); });
   return mvSin(s.replace(/([א-ו])[׳']\s*[–-]\s*([א-ו])[׳']/g, (_, a, b) => `${MV_LET[a]} עד ${MV_LET[b]}`).replace(/(כית(?:ה|ות) )([א-ו])[׳']/g, (_, k, a) => k + MV_LET[a])
     .replace(/(^|[\s״"(])ה׳(?=[\s,.!?״"]|$)/g, '$1הַשֵּׁם')   // the Name in a verse (grades were spelled out above)
@@ -8491,10 +8526,13 @@ function mvFromTrack(t){
   t.steps.forEach((s, si) => {
     if (!MV_KINDS.includes(s.kind)) return;
     const first = scenes.length;
-    scenes.push({t: s.title, icon: s.icon, hue, bg: 'title', chap: si, lines: [`שלב ${si + 1}: ${mvCap(s.title)}`, ...mvSplit(s.intro || (s.text || [])[0] || '', 240).slice(0, 2)],
+    const NAR = (window.MOVIE_NAR || {})[t.id + '/' + s.id];   // fluent narration written for the movie (tracks-zmn-*.js); the raw study notes are the fallback
+    scenes.push({t: s.title, icon: s.icon, hue, bg: 'title', chap: si, lines: [`שלב ${si + 1}: ${mvCap(s.title)}`, ...(NAR ? [].concat(NAR.intro || []) : mvSplit(s.intro || (s.text || [])[0] || '', 240).slice(0, 2))],
       actors: [{e: s.icon || '🎬', x: 50, y: 34, s: 5.5, a: 'pop', at: 0}, {box: mvCap(s.title), x: 50, y: 66, s: 1.5, a: 'slide', at: 0}]});
-    const items = s.items || [], ex = [];
-    if (s.kind === 'diagram' && items.length) {
+    const items = s.items || [], ex = items.filter(it => it.ex).map(it => it.ex);
+    if (NAR && NAR.parts && NAR.parts.length) NAR.parts.forEach(p => { const lines = [].concat(p.say || []).filter(Boolean);
+      if (lines.length) scenes.push({t: s.title, icon: s.icon, hue, bg: 'class', desks: true, chap: si, lines, board: [{text: `${p.icon || ''} ${p.board || ''}`.trim(), big: 1}], actors: [teacher(lines.length), ...listeners]}); });
+    else if (s.kind === 'diagram' && items.length) {
       items.slice(0, 8).forEach(it => { explain(s, it.icon, it.t, `${mvCap(it.t)}. ${it.d || ''}`, si); if (it.ex) ex.push(it.ex); });
       if (items.length > 8) explain(s, '➕', 'ועוד', 'ועוד: ' + items.slice(8).map(it => mvCap(it.t)).join(', ') + '.', si);
     } else if (s.kind === 'tabs') (s.tabs || []).forEach(tb => explain(s, tb.icon, tb.label, `${mvCap(tb.label)}. ${tb.lead || ''} ${(tb.points || []).slice(0, 3).join('. ')}`, si));
@@ -8602,6 +8640,181 @@ function movieView(R){
     mvPaint();
   }};
 }
+
+/* ---- 🔎 reading a psycho-didactic assessment: the terms dictionary (#/pdterms, tracks-sped-pdterms.js) and the summary tool (APPS['pd-read']) ----
+   The free summary is rule based: it anonymizes the text, pulls every score with its context and converts it to one scale
+   (standard score, percentile, verbal band), finds the dictionary terms, sorts difficulty / strength sentences by domain and lists
+   the diagnosis and the recommendations with an explanation. The Claude summary gets the anonymized text plus those findings. */
+const PD_DOMAINS = [['scores', '📊', 'ציונים וסטטיסטיקה'], ['cog', '🧠', 'יכולת קוגניטיבית'], ['lang', '💬', 'שפה'], ['phon', '🔤', 'מודעות פונולוגית'], ['read', '📖', 'קריאה'], ['write', '✍️', 'כתיבה'], ['math', '🔢', 'חשבון'], ['attn', '🎯', 'קשב ותפקודים ניהוליים'], ['mem', '🗂️', 'זיכרון ומהירות עיבוד'], ['motor', '🖐️', 'מוטוריקה ותפיסה'], ['emo', '💛', 'רגש והתנהגות'], ['dx', '🩺', 'אבחנות'], ['acc', '🛠️', 'התאמות והמלצות'], ['proc', '🗺️', 'תהליך, גורמים ומסגרות']];
+const PD_T = () => window.PD_TERMS || [], PD_D = () => window.PD_DOMAINS || PD_DOMAINS;
+const pdDomName = k => { const x = PD_D().find(d => d[0] === k); return x ? x[1] + ' ' + x[2] : k; };
+const pdNorm = s => String(s || '').replace(/[ְ-ׇ]/g, '').replace(/[״"׳']/g, '').toLowerCase();
+const pdForms = T => [T.t, ...(T.alt || [])].filter(Boolean).map(pdNorm).filter(f => f.length > 1);
+function pdTermsIn(text){
+  const N = ' ' + pdNorm(text).replace(/[^א-תa-z0-9]+/g, ' ') + ' ';
+  return PD_T().filter(T => pdForms(T).some(f => { const g = f.replace(/[^א-תa-z0-9]+/g, ' ').trim(); return g && new RegExp(`[ ]([והבכלמש]{0,2})${g.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}[ ]`).test(N); }));
+}
+function pdTermsView(R){
+  const q = decodeURIComponent(R.id || ''), D = PD_D(), T = PD_T();
+  if (!T.length) return {title: 'מילון מונחי אבחון', html: '<div class="empty">⏳ המילון נטען…</div>'};
+  const card = x => `<div class="pdterm" data-dom="${x.dom}" data-s="${esc(pdNorm([x.t, ...(x.alt || []), x.en || '', x.d].join(' ')))}"><div class="pdth"><b>${esc(x.t)}</b>${x.en ? `<span class="muted" dir="ltr">${esc(x.en)}</span>` : ''}<span class="pill">${esc(pdDomName(x.dom))}</span></div>
+    <p>${esc(x.d)}</p>${x.range ? `<p class="pdrange">📏 ${esc(x.range)}</p>` : ''}${x.cls ? `<p class="pdcls">🏫 ${esc(x.cls)}</p>` : ''}${x.ex ? `<p class="muted">💡 ${esc(x.ex)}</p>` : ''}</div>`;
+  return {title: 'מילון מונחי אבחון', html: `<a class="back no-print" href="#/sped">→ ${esc((HUBS.sped || {}).title || 'חינוך מיוחד')}</a>
+    <div class="banner" style="--h:265"><span class="emoji">📖</span><div><h1>מילון מונחים לקריאת אבחון פסיכודידקטי</h1><p>${T.length} מונחים – הסבר פשוט, מה זה אומר בכיתה ודוגמה</p></div><div class="actions no-print"><a class="btn sm" href="#/track/pd-guide">🔎 המדריך</a><a class="btn sm" href="#/app/pd-read">🧾 סיכום אבחון</a></div></div>
+    <div class="search no-print" style="margin-bottom:12px"><input id="pdq" placeholder="🔍 חיפוש מונח – למשל: גרפומוטורי, פונמה, אחוזון" value="${esc(q)}"></div>
+    <div class="chips no-print"><button class="chip on" data-pddom="">הכול</button>${D.map(([k, i, l]) => `<button class="chip" data-pddom="${k}">${i} ${esc(l)}</button>`).join('')}</div>
+    <div id="pdcount" class="muted" style="margin-bottom:8px"></div>
+    ${D.map(([k, i, l]) => { const xs = T.filter(x => x.dom === k); return xs.length ? `<section class="pdsec" data-sec="${k}"><h2 class="sec">${i} ${esc(l)} <small>${xs.length}</small></h2><div class="pdgrid">${xs.map(card).join('')}</div></section>` : ''; }).join('')}`,
+    after(){
+      let dom = '';
+      const apply = () => { const s = pdNorm($('#pdq').value.trim()); let n = 0;
+        document.querySelectorAll('.pdterm').forEach(el => { const ok = (!dom || el.dataset.dom === dom) && (!s || el.dataset.s.includes(s)); el.hidden = !ok; if (ok) n++; });
+        document.querySelectorAll('.pdsec').forEach(sec => sec.hidden = !sec.querySelector('.pdterm:not([hidden])'));
+        $('#pdcount').textContent = s || dom ? `נמצאו ${n} מונחים` : ''; };
+      $('#pdq').addEventListener('input', apply);
+      document.querySelectorAll('[data-pddom]').forEach(b => b.onclick = () => { dom = b.dataset.pddom; document.querySelectorAll('[data-pddom]').forEach(c => c.classList.toggle('on', c === b)); apply(); });
+      apply();
+    }};
+}
+
+/* ---- scores: every kind is converted to a standard score (mean 100, SD 15) ---- */
+const pdPhi = z => { const t = 1 / (1 + .2316419 * Math.abs(z)), d = .3989423 * Math.exp(-z * z / 2), p = d * t * (.3193815 + t * (-.3565638 + t * (1.781478 + t * (-1.821256 + t * 1.330274)))); return z > 0 ? 1 - p : p; };
+const pdZofP = p => { p = Math.min(.999, Math.max(.001, p)); let lo = -4, hi = 4; for (let i = 0; i < 50; i++) { const m = (lo + hi) / 2; if (pdPhi(m) < p) lo = m; else hi = m; } return (lo + hi) / 2; };
+const PD_BANDS = [[130, 'גבוה מאוד', '#16a34a'], [120, 'גבוה', '#22c55e'], [110, 'ממוצע גבוה', '#84cc16'], [90, 'ממוצע', '#60a5fa'], [80, 'ממוצע נמוך', '#f59e0b'], [70, 'גבולי', '#f97316'], [0, 'נמוך מאוד', '#ef4444']];
+const pdBand = ss => PD_BANDS.find(b => ss >= b[0]);
+const PD_KINDS = {
+  ss: {name: 'ציון תקן', re: /(ציון[\s-]*(?:ה)?תקן|ציון סטנדרטי|standard score|\bSS\b|מנת[\s-]*(?:ה)?משכל[^\d\n.;]{0,20}?|\bIQ\b|\bFSIQ\b|\bGAI\b|מדד[^\d\n.,;:]{2,40}?)\s*[:=]?\s*(?:של\s*)?(\d{2,3})(?!\d|\s*%|\s*אחוז)/gi, ok: v => v >= 40 && v <= 160, ss: v => v},
+  ssz: {name: 'ציון תקן (סטיות תקן)', re: /(ציון[\s-]*(?:ה)?תקן)\s*[:=]?\s*(?:של\s*)?(-?\d(?:\.\d{1,2})?)(?![\d.])/gi, ok: v => v >= -4 && v <= 4, ss: v => Math.round(100 + v * 15)},   // many Israeli didactic tests report the standard score as z (e.g. -1.5)
+  sc: {name: 'ציון משוקלל', re: /(ציון[\s-]*(?:ה)?(?:משוקלל|סולמי)|scaled score)\s*[:=]?\s*(?:של\s*)?(\d{1,2})(?!\d)/gi, ok: v => v >= 1 && v <= 19, ss: v => 100 + (v - 10) * 5},
+  pc: {name: 'אחוזון', re: /(אחוזון|percentile)\s*[:=]?\s*(?:של\s*)?(\d{1,2}(?:\.\d)?)(?!\d)/gi, ok: v => v > 0 && v < 100, ss: v => Math.round(100 + pdZofP(v / 100) * 15)},
+  pc2: {name: 'אחוזון', re: /(\d{1,2})\s*(?:%\s*)?(?:ב)?(אחוזון)/g, swap: 1, ok: v => v > 0 && v < 100, ss: v => Math.round(100 + pdZofP(v / 100) * 15)},
+  t: {name: 'ציון T', re: /(ציון[\s-]*T|T[\s-]*score)\s*[:=]?\s*(\d{2})(?!\d)/gi, ok: v => v >= 10 && v <= 90, ss: v => Math.round(100 + (v - 50) * 1.5)},
+  z: {name: 'ציון z', re: /(ציון[\s-]*z|z[\s-]*score|\bz\b)\s*[:=]?\s*(-?\d(?:\.\d{1,2})?)/gi, ok: v => v >= -4 && v <= 4, ss: v => Math.round(100 + v * 15)},
+  sd: {name: 'סטיות תקן', re: /(-?\d(?:\.\d{1,2})?)\s*(?:ס״ת|ס"ת|סטיות? תקן)\s*(מתחת|מעל)?/g, sd: 1, ok: v => Math.abs(v) <= 4, ss: v => Math.round(100 + v * 15)}
+};
+function pdScores(text){
+  const out = [], seen = new Set();
+  Object.entries(PD_KINDS).forEach(([k, K]) => { let m; K.re.lastIndex = 0;
+    while ((m = K.re.exec(text))) {
+      let v = parseFloat(K.swap ? m[1] : m[2] ?? m[1]); if (K.sd) { v = parseFloat(m[1]); if (m[2] === 'מתחת' && v > 0) v = -v; }
+      if (isNaN(v) || !K.ok(v)) continue;
+      const at = m.index, key = Math.round(at / 6); if (seen.has(key)) continue; seen.add(key);
+      const ls = text.lastIndexOf('\n', at), le = text.indexOf('\n', at + m[0].length), line = text.slice(ls + 1, le < 0 ? undefined : le).trim();
+      const ss = K.ss(v), b = pdBand(ss), pct = Math.round(pdPhi((ss - 100) / 15) * 100);
+      out.push({kind: K.name, raw: v, ss, pct: Math.max(1, Math.min(99, pct)), band: b[1], color: b[2], line: line.length > 170 ? line.slice(0, 170) + '…' : line, what: (k === 'ss' ? m[1] : '').trim(), at});
+    } });
+  return out.sort((a, b) => a.at - b.at);
+}
+const pdAnon = (text, name) => { let s = String(text || '');
+  (name || '').split(/[\s,]+/).filter(w => w.length > 1).forEach(w => { s = s.split(w).join('הילד'); });
+  return s.replace(/\b\d{9}\b/g, '[ת״ז]').replace(/\b0\d{1,2}[-\s]?\d{3}[-\s]?\d{4}\b/g, '[טלפון]').replace(/[\w.+-]+@[\w-]+\.[\w.]+/g, '[דוא״ל]').replace(/\b\d{1,2}[./]\d{1,2}[./]\d{2,4}\b/g, '[תאריך]'); };
+const PD_LOW = /(קוש[יה]|קשיים|חולש[הות]|ירוד|נמוכ|מתחת ל|לקות|שגיאות|איטי|אטי|מתקשה|פער|חסר|לא הצליח|לא שולט|בטווח הגבולי|ליקוי)/, PD_HIGH = /(חוזק[הות]|תקין|תקינה|טוב[הים]?\b|גבוה|מעל הממוצע|בטווח הממוצע|שולט|הצליח|יכולת טובה|מצוינ)/;
+const PD_REC = /(ממליצ|מומלץ|המלצ|יש ל|כדאי|התאמ|זכאי|הארכת|הקראה|הכתבה|הוראה מתקנת|טיפול ב|להפנות|הפני)/;
+const pdSentences = text => text.replace(/\r/g, '').split(/(?<=[.!?;])\s+|\n+/).map(s => s.trim()).filter(s => s.length > 12 && s.length < 400);
+function pdAnalyze(text){
+  const S = pdSentences(text), terms = pdTermsIn(text), scores = pdScores(text), byDom = {};
+  const domOf = s => { const ts = pdTermsIn(s).filter(t => !['scores', 'proc', 'acc'].includes(t.dom)); return ts.length ? ts[0].dom : 'other'; };
+  const low = [], high = [], recs = [], dx = [];
+  S.forEach(s => {
+    if (PD_REC.test(s)) { recs.push({s, acc: pdTermsIn(s).filter(t => t.dom === 'acc')}); return; }
+    if (/(אבחנה|מאובחן|אובחן|עונ(?:ה|ים|ות) על (?:ה)?קריטריונים|לקות למידה|דיסלקציה|דיסגרפיה|דיסקלקוליה|ADHD|הפרעת קשב)/.test(s)) dx.push(s);
+    const lo = PD_LOW.test(s), hi = PD_HIGH.test(s);
+    if (lo && !hi) low.push({s, dom: domOf(s)}); else if (hi && !lo) high.push({s, dom: domOf(s)});
+  });
+  [...low.map(x => [x.dom, -1]), ...high.map(x => [x.dom, 1]), ...scores.map(x => [domOf(x.line), x.ss >= 90 ? 1 : x.ss < 85 ? -1 : 0])].forEach(([k, v]) => { const o = byDom[k] = byDom[k] || {lo: 0, hi: 0}; if (v < 0) o.lo++; if (v > 0) o.hi++; });
+  return {S, terms, scores, low, high, recs, dx: [...new Set(dx)].slice(0, 6), byDom};
+}
+function pdBuild(d){
+  const raw = String(d.text || '').trim();
+  if (raw.length < 40) return '<div class="note warn">📋 מדביקים את טקסט האבחון (או את החלקים העיקריים שלו: ממצאים, סיכום והמלצות) – ולוחצים שוב.</div>';
+  const text = pdAnon(raw, d.name), A = pdAnalyze(text), dxT = A.terms.filter(t => t.dom === 'dx'), low = A.low, high = A.high;
+  const domsLow = Object.entries(A.byDom).filter(([k, o]) => k !== 'other' && o.lo > o.hi).map(([k]) => k), domsHigh = Object.entries(A.byDom).filter(([k, o]) => k !== 'other' && o.hi > o.lo).map(([k]) => k);
+  const bands = A.scores.reduce((o, s) => (o[s.band] = (o[s.band] || 0) + 1, o), {});
+  const quote = s => `<q class="pdq">${esc(s.length > 230 ? s.slice(0, 230) + '…' : s)}</q>`;
+  const src = '<span class="aisrc">📄 מהדוח</span>';
+  const plain = [
+    A.scores.length ? `בדוח נמצאו ${A.scores.length} ציונים. ${Object.entries(bands).sort((a, b) => b[1] - a[1]).map(([b, n]) => `${n} בטווח ״${b}״`).join(', ')}.` : 'לא זוהו בדוח ציונים מספריים מוכרים (ציון תקן, משוקלל, אחוזון) – הסיכום נשען על הניסוחים המילוליים.',
+    domsHigh.length ? `תחומים שבהם הדוח מתאר חוזקה או תפקוד תקין: ${domsHigh.map(pdDomName).join(', ')}.` : '',
+    domsLow.length ? `תחומים שבהם הדוח מתאר קושי: ${domsLow.map(pdDomName).join(', ')}.` : '',
+    A.dx.length ? `האבחנה כפי שהיא מנוסחת בדוח: ״${A.dx[0].length > 200 ? A.dx[0].slice(0, 200) + '…' : A.dx[0]}״ – פירוט בהמשך.` : dxT.length ? `מונחי אבחנה שמופיעים בדוח: ${dxT.map(t => t.t).join(', ')} – בדקו בסיכום הדוח אם זו אבחנה שנקבעה או רק אפשרות שנשללה.` : 'לא זוהתה בדוח אבחנה מפורשת.',
+    A.recs.length ? `בדוח ${A.recs.length} המלצות – הן מפורטות למטה עם הסבר לכל התאמה.` : ''
+  ].filter(Boolean);
+  const scoreRows = A.scores.map(s => `<tr><td>${esc(s.line)}</td><td><b>${s.raw}</b><br><small class="muted">${s.kind}</small></td><td>${s.ss}</td><td>${s.pct}</td><td><span class="pdband" style="--c:${s.color}">${s.band}</span><div class="pdbar"><i style="left:${Math.max(2, Math.min(98, (s.ss - 55) / 90 * 100))}%;background:${s.color}"></i></div></td></tr>`).join('');
+  const domList = (arr, cls) => { const g = {}; arr.forEach(x => (g[x.dom] = g[x.dom] || []).push(x.s)); return Object.entries(g).map(([k, ss]) => `<div class="apcard ${cls}"><h4>${k === 'other' ? '📌 כללי' : esc(pdDomName(k))}</h4>${ss.slice(0, 4).map(quote).join('')} ${src}</div>`).join(''); };
+  const mainTerms = A.terms.filter(t => !['scores', 'proc'].includes(t.dom)).slice(0, 24);
+  const classTips = A.terms.filter(t => domsLow.includes(t.dom) && t.cls).slice(0, 6);
+  const qs = ['אילו מהממצאים הם העיקריים, ואילו משניים?', 'האם הפערים בין המדדים מובהקים סטטיסטית?', 'מה מבין ההמלצות הכי דחוף ליישום בכיתה כבר עכשיו?', 'מתי מומלץ אבחון חוזר, ומה ייבדק בו?'];
+  if (!A.scores.some(s => s.kind === 'אחוזון')) qs.unshift('אפשר לקבל את הציונים גם כאחוזונים, כדי להסביר להורים ולמורים?');
+  if (/(קשב|ADHD|הפרעת קשב)/.test(text)) qs.push('האם הממצאים בתחום הקשב מצביעים על צורך בהפניה לרופא (נוירולוג או פסיכיאטר)?');
+  return `<div class="panel pdsum" style="border-inline-start:5px solid var(--brand)"><h3>🗣️ בשפה פשוטה – שווה לכל נפש</h3>${plain.map(p => `<p>${esc(p)}</p>`).join('')}<p class="muted" style="font-size:13px">🔒 הניתוח נעשה בדפדפן בלבד. שם, ת״ז, טלפון ותאריכים הוחלפו לפני הניתוח.</p></div>
+    ${A.scores.length ? appPanel('📊 הציונים – מתורגמים לסולם אחד', `<p class="muted" style="margin-top:0">כל ציון הומר לציון תקן (ממוצע 100) ולאחוזון משוער: אחוזון 25 = טוב יותר מ-25 מכל 100 ילדים בגילו. <a href="#/pdterms/אחוזון">מה זה אחוזון?</a></p>
+      <div class="pdcurve">${PD_BANDS.slice().reverse().map((b, i, a) => `<span style="--c:${b[2]};flex:${[2, 1, 1, 2, 1, 1, 2][i]}">${b[1]}</span>`).join('')}</div>
+      <div style="overflow-x:auto"><table class="pdtable"><thead><tr><th>מהדוח</th><th>הציון</th><th>ציון תקן</th><th>אחוזון</th><th>הטווח</th></tr></thead><tbody>${scoreRows}</tbody></table></div>`) : ''}
+    ${high.length ? appPanel('💪 חוזקות', `<div class="apcards">${domList(high, 'good')}</div>`) : ''}
+    ${low.length ? appPanel('🧩 תחומי קושי', `<div class="apcards">${domList(low, 'worse')}</div>`) : ''}
+    ${A.dx.length ? appPanel('🩺 האבחנה – כפי שמופיעה בדוח', A.dx.map(quote).join('') + `<p class="muted">${src} · ${dxT.map(t => `<a href="#/pdterms/${encodeURIComponent(t.t)}">${esc(t.t)}</a>`).join(' · ')}</p>`) : ''}
+    ${A.recs.length ? appPanel('🛠️ ההמלצות וההתאמות – ומה כל אחת אומרת', `<div class="apcards">${A.recs.slice(0, 14).map(r => `<div class="apcard info">${quote(r.s)} ${src}${r.acc.map(t => `<p class="pdacc">🛠️ <b>${esc(t.t)}</b> – ${esc(t.d)}${t.cls ? ' ' + esc(t.cls) : ''} <a href="#/pdterms/${encodeURIComponent(t.t)}">📖</a></p>`).join('')}</div>`).join('')}</div>`) : ''}
+    ${classTips.length ? appPanel('🏫 מה זה אומר בכיתה', `<div class="apcards">${classTips.map(t => `<div class="apcard mech"><h4>${esc(t.t)}</h4><p>${esc(t.cls)}</p><p class="aisrc">📖 מילון המונחים</p></div>`).join('')}</div>`) : ''}
+    ${mainTerms.length ? appPanel('📖 המונחים שבדוח – הסבר קצר', `<div class="pdgrid">${mainTerms.map(t => `<div class="pdterm"><div class="pdth"><b>${esc(t.t)}</b><span class="pill">${esc(pdDomName(t.dom))}</span></div><p>${esc(t.d)}</p><a class="muted" href="#/pdterms/${encodeURIComponent(t.t)}">למילון ←</a></div>`).join('')}</div>`) : ''}
+    ${appPanel('❓ שאלות לשאול את המאבחן/ת', ul(qs))}
+    <div class="note" style="margin-top:10px">📚 מקורות: הדוח שהוזן (כל ציטוט מסומן 📄) · <a href="#/pdterms">מילון המונחים</a> · <a href="#/track/pd-guide">המדריך ״איך קוראים אבחון פסיכודידקטי״</a>. זהו כלי עזר לקריאה – האבחנה וההמלצות הן של המאבחן/ת.</div>`;
+}
+async function pdDeepen(d){
+  const box = $('#appAI'); if (!box) return;
+  if (!AI.available()) { box.innerHTML = `<div class="note warn">🤖 Claude לא זמין כאן${AI.err && AI_ERR[AI.err] ? ': ' + esc(AI_ERR[AI.err]) : ' – הסיכום עם Claude פועל בגרסת האפליקציה בתוך Claude.'}</div>`; return; }
+  const text = pdAnon(String(d.text || ''), d.name).slice(0, 24000); if (text.trim().length < 40) { box.innerHTML = '<div class="note warn">📋 קודם מדביקים את טקסט האבחון.</div>'; return; }
+  if (appCtl) appCtl.abort(); appCtl = new AbortController();
+  const A = pdAnalyze(text), gl = A.terms.slice(0, 40).map(t => `${t.t}: ${t.d}`).join('\n'), sc = A.scores.map(s => `${s.line} → ${s.kind} ${s.raw} = ציון תקן ${s.ss}, אחוזון ~${s.pct}, ${s.band}`).join('\n');
+  const prompt = `אתה מאבחן דידקטי ופסיכולוג חינוכי בכיר בישראל, שמסביר דוחות אבחון פסיכודידקטי ליועצים, למורים ולהורים. לפניך דוח אבחון (אחרי הסרת פרטים מזהים), ציונים שחולצו ממנו אוטומטית ומילון המונחים של האתר.
+משימה: סיכום מקיף, מדויק ומובן לכל אדם – מה נבדק, מה נמצא, מה זה אומר, ומה עושים עם זה.
+כללים:
+• כל טענה נשענת על הדוח. בשדה src ציטוט קצר מהדוח בגרשיים (״…״) או ״מילון המונחים: <מונח>״. אל תמציא ציונים, מבחנים או אבחנות שאינם בדוח, ואל תקבע אבחנה חדשה.
+• הסבר כל מונח מקצועי במילים פשוטות. המר ציונים לאחוזון ולטווח מילולי.
+• ידע מקצועי שאינו בדוח – רק ברשימה הנפרדת external, עם מקור מקצועי מוכר; אם אינך בטוח שהמקור קיים כתוב ״מקור כללי – לבדיקה״.
+• עברית פשוטה, מדויקת ומכבדת; בלי פנייה בלשון ״אתה״.
+
+הדוח:
+${text}
+
+ציונים שחולצו:
+${sc || '(לא זוהו)'}
+
+מונחים מהמילון שנמצאו בדוח:
+${gl || '(אין)'}
+
+השב אך ורק ב-JSON אחד:
+{"headline": "משפט אחד – השורה התחתונה", "plain": ["3–5 פסקאות קצרות בשפה פשוטה להורה או למורה"], "tested": ["מה נבדק – תחום וכלי, במשפט"], "profile": [{"domain": "תחום", "level": "חוזקה|תקין|קושי קל|קושי משמעותי", "evidence": "מה בדוח מראה זאת", "meaning": "מה זה אומר בפועל", "src": "ציטוט"}], "dx": {"d": "האבחנה כפי שמופיעה בדוח, או ״לא נקבעה אבחנה״", "src": ""}, "recs": [{"t": "ההמלצה", "explain": "מה זה ולמה", "who": "מי מיישם", "src": ""}], "class": ["צעד מעשי למורה בכיתה"], "parents": ["איך להסביר להורים ולילד"], "questions": ["שאלה למאבחן/ת"], "cautions": "הסתייגות חשובה אם יש (אבחון ישן, ציונים חסרים, סתירות) – או ריק", "external": [{"d": "תוספת מקצועית", "src": "מקור"}]}`;
+  box.innerHTML = `<div class="panel" style="border-inline-start:5px solid var(--brand)"><h3>🤖 Claude מסכם את האבחון…</h3><p class="muted" style="margin:0">קורא את הדוח, את הציונים ואת המילון. זה לוקח עד דקה-שתיים.</p><div class="actions" style="margin-top:10px"><button class="btn sm" data-appaistop="1">⏹ עצירה</button></div></div>`;
+  $('[data-appaistop]').onclick = () => appCtl && appCtl.abort();
+  box.scrollIntoView({behavior: 'smooth', block: 'start'});
+  try {
+    const R = await AI.ask(prompt, {tier: 'complex', signal: appCtl.signal});
+    if (!R || typeof R !== 'object') throw {code: 'invalid_json'};
+    const arr = x => Array.isArray(x) ? x.filter(Boolean) : [], lv = {'חוזקה': 'good', 'תקין': 'good', 'קושי קל': 'info', 'קושי משמעותי': 'worse'};
+    let h = `<h2 class="sec">🤖 הסיכום של Claude <small>נספר במכסת המנוי</small></h2>`;
+    if (R.cautions) h += `<div class="note danger" style="margin-bottom:12px">⚠️ ${esc(R.cautions)}</div>`;
+    if (R.headline) h += appPanel('🎯 השורה התחתונה', `<p style="margin:0;font-size:16px;font-weight:700">${esc(R.headline)}</p>`);
+    if (arr(R.plain).length) h += appPanel('🗣️ בשפה פשוטה', arr(R.plain).map(p => `<p style="line-height:1.8">${esc(p)}</p>`).join(''), 'border-inline-start:5px solid var(--brand)');
+    if (arr(R.tested).length) h += appPanel('🧪 מה נבדק', ul(arr(R.tested)));
+    if (arr(R.profile).length) h += appPanel('📊 הפרופיל – תחום אחרי תחום', `<div class="apcards">${arr(R.profile).map(p => `<div class="apcard ${lv[p.level] || 'info'}"><h4>${esc(p.domain || '')} <span class="pill">${esc(p.level || '')}</span></h4><p>${esc(p.evidence || '')}</p><p><b>מה זה אומר:</b> ${esc(p.meaning || '')}</p>${aiSrcHTML(p)}</div>`).join('')}</div>`);
+    if (R.dx && (R.dx.d || typeof R.dx === 'string')) h += appPanel('🩺 האבחנה', `<p>${esc(R.dx.d || R.dx)}</p>${aiSrcHTML(R.dx)}`);
+    if (arr(R.recs).length) h += appPanel('🛠️ ההמלצות – מוסברות', `<div class="apcards">${arr(R.recs).map(r => `<div class="apcard mech"><h4>${esc(r.t || '')}</h4><p>${esc(r.explain || '')}</p>${r.who ? `<p class="muted">👤 ${esc(r.who)}</p>` : ''}${aiSrcHTML(r)}</div>`).join('')}</div>`);
+    if (arr(R.class).length) h += appPanel('🏫 מה עושים בכיתה', ul(arr(R.class)));
+    if (arr(R.parents).length) h += appPanel('👨‍👩‍👦 איך מסבירים להורים ולילד', ul(arr(R.parents)));
+    if (arr(R.questions).length) h += appPanel('❓ שאלות למאבחן/ת', ul(arr(R.questions)));
+    if (arr(R.external).filter(s => s.d).length) h += appPanel('🌐 תוספת מקצועית – לא מהדוח', `<p class="note warn" style="margin:0 0 10px;font-size:14px">מבוסס על הידע הכללי של Claude, לא על הדוח. כדאי לוודא את המקורות.</p><ol style="margin:0;padding-inline-start:22px">${arr(R.external).map(s => `<li>${esc(s.d)} ${aiSrcHTML(s)}</li>`).join('')}</ol>`);
+    box.innerHTML = h + `<p class="muted" style="font-size:13px">נכתב על ידי Claude מתוך הדוח (אחרי הסרת פרטים מזהים) ומילון המונחים. כלי עזר – האבחנה וההמלצות הן של המאבחן/ת.</p>`;
+  } catch(e){
+    if (e && e.code === 'cancelled') { box.innerHTML = ''; return; }
+    const code = (e && e.code) || 'upstream_error';
+    if (['not_granted', 'sampling_disabled', 'not_declared', 'capability_disabled', 'capability_removed'].includes(code)) AI.disable(code);
+    box.innerHTML = `<div class="note warn">🤖 ${esc(AI_ERR[code] || AI_ERR.upstream_error)}</div>`;
+  }
+}
+APPS['pd-read'] = {hub: 'sped', icon: '🧾', title: 'סיכום אבחון פסיכודידקטי – שווה לכל נפש', sub: 'מדביקים אבחון – ומקבלים ציונים מתורגמים, חוזקות וקשיים, הסבר להמלצות ומקורות', buildLabel: '🧾 סכם את האבחון',
+  intro: 'מדביקים את טקסט האבחון (אפשר להעתיק מקובץ PDF או Word). הכלי מתרגם כל ציון לאחוזון ולטווח מילולי, מסביר כל מונח, מסדר חוזקות וקשיים לפי תחום ומסביר כל המלצה – עם ציטוט מהדוח לכל טענה. כדי לשמור על פרטיות: כותבים את שם הילד בשדה הנפרד, והוא יוחלף ב״הילד״ – וגם ת״ז, טלפונים ותאריכים מוסרים לפני הניתוח.',
+  sections: [{title: '📋 האבחון', fields: [{id: 'name', label: 'שם הילד כפי שמופיע בדוח (לא נשמר בסיכום – מוחלף ב״הילד״)', ph: 'למשל: יוסי כהן'}, {id: 'text', label: 'טקסט האבחון', long: 1, rows: 16, ph: 'מדביקים כאן את הדוח – ממצאים, ציונים, סיכום והמלצות'}]}],
+  build: pdBuild, deepen: pdDeepen};
 
 /* ---- the analysis rules (shared by the CBT applications) ---- */
 const APP_EMO = {'פחד / חרדה': 'fear', 'דאגה': 'fear', 'בושה / מבוכה': 'shame', 'עצב': 'sad', 'ייאוש': 'sad', 'כעס': 'anger', 'תסכול': 'anger', 'אשמה': 'guilt', 'קנאה': 'anger', 'בדידות': 'sad'};
