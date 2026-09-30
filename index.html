@@ -6961,7 +6961,7 @@ async function aiAnswerRun(q){
     box.innerHTML = aiAnswerHTML(q, ans, maps, rolesQ || !!(c && c.safety) || !!(ans && ans.safety));
   } catch(e){
     if (e && e.code === 'cancelled') { box.innerHTML = ''; return; }
-    const code = (e && e.code) || 'upstream_error';
+    const code = (e && e.code) || 'upstream_error'; CHLOG.add('error', code + ' ' + ((e && e.message) || ''));
     if (['not_granted', 'sampling_disabled', 'not_declared', 'capability_disabled', 'capability_removed'].includes(code)) AI.disable(code);
     const msg = AI_ERR[code] || AI_ERR.upstream_error;
     box.innerHTML = `<div class="note warn" style="margin-bottom:12px">🤖 ${esc(msg)}${AI.available() ? ` <button class="btn sm" data-act="ai-retry">נסו שוב</button>` : ''}</div>` + (AI.available() ? '' : answerHTML(answer(q)));
@@ -7533,7 +7533,7 @@ async function aiCircOnlyRun(q){
     box.innerHTML = aiAnswerHTML(q, ans, [], false).replace('מתוך מפות הטיפול, המדריך וחוזרי המנכ״ל שבאפליקציה בלבד', 'מתוך חוזרי המנכ״ל בלבד');
   } catch(e){
     if (e && e.code === 'cancelled') { box.innerHTML = ''; return; }
-    const code = (e && e.code) || 'upstream_error';
+    const code = (e && e.code) || 'upstream_error'; CHLOG.add('error', code + ' ' + ((e && e.message) || ''));
     if (['not_granted', 'sampling_disabled', 'not_declared', 'capability_disabled', 'capability_removed'].includes(code)) AI.disable(code);
     box.innerHTML = `<div class="note warn" style="margin-bottom:12px">🤖 ${esc(AI_ERR[code] || AI_ERR.upstream_error)}</div>`;
   }
@@ -8466,7 +8466,7 @@ ${material}
     box.innerHTML = h + `<p class="muted" style="font-size:13px">נכתב על ידי Claude מתוך הנתונים שמולאו, הניתוח האוטומטי ומפות הטיפול${arr(R.external).length ? ' – חוץ מהחלק המסומן 🌐' : ''}. כלי עזר – שיקול הדעת המקצועי נשאר שלך.</p>`;
   } catch(e){
     if (e && e.code === 'cancelled') { box.innerHTML = ''; return; }
-    const code = (e && e.code) || 'upstream_error';
+    const code = (e && e.code) || 'upstream_error'; CHLOG.add('error', code + ' ' + ((e && e.message) || ''));
     if (['not_granted', 'sampling_disabled', 'not_declared', 'capability_disabled', 'capability_removed'].includes(code)) AI.disable(code);
     box.innerHTML = `<div class="note warn">🤖 ${esc(AI_ERR[code] || AI_ERR.upstream_error)}</div>`;
   }
@@ -9012,7 +9012,7 @@ ${gl || '(אין)'}
     box.innerHTML = h + `</div><p class="muted" style="font-size:13px">נכתב על ידי Claude מתוך הדוח (אחרי הסרת פרטים מזהים) ומילון המונחים. כלי עזר – האבחנה וההמלצות הן של המאבחן/ת.</p>`;
   } catch(e){
     if (e && e.code === 'cancelled') { box.innerHTML = ''; return; }
-    const code = (e && e.code) || 'upstream_error';
+    const code = (e && e.code) || 'upstream_error'; CHLOG.add('error', code + ' ' + ((e && e.message) || ''));
     if (['not_granted', 'sampling_disabled', 'not_declared', 'capability_disabled', 'capability_removed'].includes(code)) AI.disable(code);
     box.innerHTML = `<div class="note warn">🤖 ${esc(AI_ERR[code] || AI_ERR.upstream_error)}</div>`;
   }
@@ -9061,6 +9061,12 @@ const CHAT_RULES = {
 • סגנון: אתה גבר – מדבר בגוף ראשון בלשון זכר (״אני שומע ש…״, ״אני חושב ש…״, ״הייתי מציע…״). עברית נקייה, רהוטה וחלקה – שיחה קולחת, אנושית ומקצועית, בקצב של מטפל: פסקאות קצרות, בלי אנגלית ובלי ז׳רגון מיותר, ובלי להציף ברשימות.
 • שיחה אנושית: כשנדב קוטע אותך – עוצרים מיד, מתייחסים למה שאמר, ולא חוזרים על מה שכבר נאמר.`
 };
+/* diagnostics for the chat inside Claude: each stage is written to a shared db doc (diag/<session>) that only the owner of this private artifact can read */
+const CHLOG = {id: 's' + Date.now().toString(36), ev: [], t: 0, db: null,
+  add(k, v){ this.ev.push([Math.round(performance.now()), k, String(v == null ? '' : v).slice(0, 300)]); if (this.ev.length > 150) this.ev.shift(); clearTimeout(this.t); this.t = setTimeout(() => this.flush(), 1200); },
+  async flush(){ if (!ARTIFACT) return; try { const db = this.db || (this.db = await claude.use('db')); if (db) await db.doc('diag/' + this.id).set({at: new Date().toISOString(), ua: navigator.userAgent.slice(0, 160), w: innerWidth, ev: this.ev}); } catch (e) {} }};
+window.addEventListener('error', e => CHLOG.add('onerror', (e.message || '') + ' @' + (e.lineno || '')));
+window.addEventListener('unhandledrejection', e => CHLOG.add('rejection', (e.reason && (e.reason.message || e.reason.code)) || e.reason));
 const CH = {mode: 'assist', busy: false, ctl: null, speak: false, rec: null, hist: {}};
 const chatKey = m => 'cbt.chat.' + m;
 const chatHist = m => CH.hist[m] || (CH.hist[m] = ls.get(chatKey(m), []));
@@ -9143,13 +9149,13 @@ function chatPaint(){
   $('#chatlog').scrollTop = 1e9;
   $('#chatspk').classList.toggle('on', CH.speak);
 }
-function chatOpen(mode){
+function chatOpen(mode){ CHLOG.add('open', mode + ' ai=' + AI.status);
   if (!$('#chatp')) {
     const p = document.createElement('div'); p.id = 'chatp'; p.className = 'chatp'; p.hidden = true;
     p.innerHTML = `<div class="chath"><span class="ico"></span><div class="grow"><b></b><small></small></div><button class="iconbtn" id="chatspk" title="הקראת התשובות בקול">🔊</button><button class="iconbtn" id="chatnew" title="שיחה חדשה">🗑️</button><button class="iconbtn" id="chatmin" title="מזעור">➖</button></div>
       <div class="chatmodes"><button class="chip" data-chatmode="assist">💬 העוזר של האתר</button><button class="chip" data-chatmode="therapist">🧑‍⚕️ מטפל וירטואלי</button></div>
       <div class="chatvoice" id="chatvoice" hidden></div><div class="chatlog" id="chatlog" aria-live="polite"></div>
-      <form class="chatin" id="chatform"><textarea id="chatq" rows="1" placeholder="כתבו כאן…"></textarea>${"speechSynthesis" in window ? '<button type="button" class="iconbtn" id="chatmic" title="שיחה קולית">🎤</button>' : ''}<button class="btn primary" id="chatsend" type="submit">שליחה</button></form>`;
+      <form class="chatin" id="chatform"><textarea id="chatq" rows="1" placeholder="כתבו כאן…"></textarea><button class="btn primary" id="chatsend" type="submit">שליחה</button></form>`;
     document.body.appendChild(p);
     const fab = document.createElement('button'); fab.id = 'chatfab'; fab.className = 'chatfab'; fab.hidden = true; fab.innerHTML = '💬'; fab.title = 'חזרה לשיחה'; fab.onclick = () => chatMin(false); document.body.appendChild(fab);
     $('#chatform').onsubmit = e => { e.preventDefault(); chatSend($('#chatq').value); };
@@ -9177,7 +9183,7 @@ function chatHush(){ try { speechSynthesis.cancel(); } catch (e) {} CH.saying = 
    the page sends by itself when the dictation pauses, and any new words stop the voice at once. */
 const chatRealMic = () => chatMic() && !ARTIFACT;
 function chatBanner(html){ const v = $('#chatvoice'); if (!v) return; v.hidden = !html; if (html) v.innerHTML = html; }
-function chatListen(){
+function chatListen(){ CHLOG.add('mic', 'real=' + chatRealMic() + ' voice=' + CH.voice);
   const b = $('#chatmic');
   if (CH.voice) { CH.voice = false; chatHush(); clearTimeout(CH.dictT); if (CH.rec) try { CH.rec.stop(); } catch (e) {} b.classList.remove('on'); chatBanner(''); $('#chatq').placeholder = 'כתבו כאן…'; return; }
   CH.voice = true; b.classList.add('on');
@@ -9221,11 +9227,13 @@ function chatSay(t, force){
 async function chatSend(q, opt = {}){   // any unexpected failure is shown in the chat, never silently swallowed
   try { await chatSend0(q, opt); } catch (e) { console.error('chat', e); CH.busy = false; const s = $('#chatsend'); if (s) s.disabled = false; const H = chatHist(CH.mode); H.push({role: 'assistant', content: '⚠️ משהו השתבש בשליחה: ' + String((e && (e.message || e.code)) || e).slice(0, 160) + '. אפשר לנסות שוב.'}); chatSave(CH.mode); chatPaint(); }
 }
-async function chatSend0(q, opt = {}){
+async function chatSend0(q, opt = {}){ CHLOG.add('send', q.length + (opt.voice ? ' voice' : '') + ' ai=' + AI.status + ' busy=' + CH.busy);
   q = String(q || '').trim(); if (!q) return; if (CH.busy) { if (!opt.interrupted) return; if (CH.ctl) CH.ctl.abort(); await new Promise(r => setTimeout(r, 300)); }
   const mode = CH.mode, H = chatHist(mode); $('#chatq').value = ''; $('#chatq').style.height = 'auto';
   H.push({role: 'user', content: q}); chatSave(mode); chatPaint();
+  const t0 = performance.now();
   const hits = chatSearch(q, 6), log = $('#chatlog'), bub = document.createElement('div'); bub.className = 'chatmsg bot typing'; bub.innerHTML = '<span class="dots"><i></i><i></i><i></i></span>'; log.appendChild(bub); log.scrollTop = 1e9;
+  CHLOG.add('searched', Math.round(performance.now() - t0) + 'ms hits=' + hits.length);
   if (!AI.available()) {   // free: the on-device engine + the best places in the site
     let t = ''; try { t = window.CBT_LOCAL_ANSWER(q) || ''; } catch (e) {}
     const links = hits.slice(0, 5).map(h => ({title: h.title, route: h.route}));
@@ -9240,14 +9248,16 @@ async function chatSend0(q, opt = {}){
   let tools = CHAT_TOOLS; try { const L = typeof AI.sample.limits === 'function' ? await Promise.race([AI.sample.limits(), new Promise(r => setTimeout(() => r(null), 2500))]) : null; if (!L || !L.tools) tools = null; } catch (e) { tools = null; }
   const w1 = setTimeout(() => { if (bub.classList.contains('typing')) bub.innerHTML = '<span class="dots"><i></i><i></i><i></i></span> <small>חושב ובודק באתר… בפעם הראשונה Claude מבקש אישור – אם מופיעה למעלה בקשה לאשר שימוש ב-Claude, צריך לאשר אותה.</small>'; }, 12000);
   const w2 = setTimeout(() => { if (bub.classList.contains('typing')) bub.innerHTML += '<br><small>עדיין עובד… אפשר לעצור עם 🗑️ ולנסות שוב.</small>'; }, 60000);
-  const onText = ({text}) => { clearTimeout(w1); clearTimeout(w2); bub.classList.remove('typing'); bub.innerHTML = chatMd(text); log.scrollTop = 1e9; };
+  CHLOG.add('ask', 'tools=' + !!tools + ' tier=' + CHAT_MODES[mode].tier); let firstT = 0;
+  const onText = ({text}) => { clearTimeout(w1); clearTimeout(w2); if (!firstT) { firstT = 1; CHLOG.add('first-text', Math.round(performance.now() - t0) + 'ms'); } bub.classList.remove('typing'); bub.innerHTML = chatMd(text); log.scrollTop = 1e9; };
   const run = tl => AI.sample(turns, {modelTier: CHAT_MODES[mode].tier, signal: CH.ctl.signal, onText, ...(tl ? {tools: tl} : {cache: false})});
   try {
     let R; try { R = await run(tools); } catch (e) { if (e && e.code === 'tools_unavailable' && tools) R = await run(null); else throw e; }
     const ans = String(R.text || '').trim() + (R.truncated ? '\n\n(התשובה נקטעה – אפשר לבקש ״המשך״.)' : '');
+    CHLOG.add('done', ans.length + ' chars');
     H.push({role: 'assistant', content: ans}); chatSave(mode); chatPaint(); chatSay(ans);
   } catch (e) {
-    const code = (e && e.code) || 'upstream_error';
+    const code = (e && e.code) || 'upstream_error'; CHLOG.add('error', code + ' ' + ((e && e.message) || ''));
     if (code === 'cancelled') { const said = bub.innerText.trim(); bub.remove(); if (said) { H.push({role: 'assistant', content: said + ' …(נקטע)'}); chatSave(mode); chatPaint(); } }
     else { if (['not_granted', 'sampling_disabled', 'capability_disabled', 'capability_removed'].includes(code)) AI.disable(code);
       const part = e && e.text ? String(e.text) : '';
@@ -10862,6 +10872,6 @@ if (WEB && !ARTIFACT && 'serviceWorker' in navigator && location.protocol === 'h
 })();
 
 </script>
-
+<!-- voice tutor (voice-tutor.js) switched off on 2026-09-30 at Nadav's request: no talk buttons on the site for now -->
 </body>
 </html>
