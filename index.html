@@ -2328,6 +2328,20 @@ body.chatopen .vt-fab{display:none!important}
 .chatroute .chip{font-size:12.5px;padding:4px 10px}
 .chatroute .chip[disabled]{opacity:.45;cursor:not-allowed}
 
+/* ---- floating chat window (computer) ---- */
+@media (min-width:761px){
+  .chatp{top:auto;bottom:16px;left:16px;width:420px;height:min(640px,calc(100vh - 32px));resize:both;min-width:320px;min-height:380px;max-width:calc(100vw - 16px);max-height:calc(100vh - 16px)}
+  .chath{cursor:move;user-select:none;touch-action:none}
+  .chath .iconbtn{cursor:pointer}
+  .chatp.dragging{opacity:.92;box-shadow:0 40px 90px -20px rgba(0,0,0,.7);transition:none}
+  .chatp::after{content:'';position:absolute;left:4px;bottom:4px;width:12px;height:12px;border-left:2px solid var(--muted);border-bottom:2px solid var(--muted);opacity:.5;pointer-events:none;border-radius:0 0 0 4px}
+}
+body.chatwin{margin:0;background:var(--bg);overflow:hidden}
+.chatp.inwin{position:fixed;inset:0;width:auto;height:auto;border-radius:0;border:0;resize:none;animation:none;max-width:none;max-height:none}
+.chatp.inwin .chath{cursor:default}
+.chatp.inwin::after{display:none}
+@media (max-width:760px){.chpopbtn{display:none}}
+
 </style>
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="apple-touch-icon" href="icon-192.png">
@@ -9070,6 +9084,8 @@ const CHLOG = {id: 's' + Date.now().toString(36), ev: [], t: 0, db: null,
   async flush(){ if (!ARTIFACT) return; try { const db = this.db || (this.db = await claude.use('db')); if (db) await db.doc('diag/' + this.id).set({at: new Date().toISOString(), ua: navigator.userAgent.slice(0, 160), w: innerWidth, ev: this.ev}); } catch (e) {} }};
 window.addEventListener('error', e => CHLOG.add('onerror', (e.message || '') + ' @' + (e.lineno || '')));
 window.addEventListener('unhandledrejection', e => CHLOG.add('rejection', (e.reason && (e.reason.message || e.reason.code)) || e.reason));
+// the panel can live in this page or in a separate window (⧉), so every lookup goes through the panel itself
+const chP = () => CH.p || null, chq = sel => CH.p ? CH.p.querySelector(sel) : null;
 const CH = {mode: 'assist', busy: false, ctl: null, speak: false, rec: null, hist: {}};
 const chatKey = m => 'cbt.chat.' + m;
 const chatHist = m => CH.hist[m] || (CH.hist[m] = ls.get(chatKey(m), []));
@@ -9147,39 +9163,82 @@ const chatMsgHTML = m => `<div class="chatmsg ${m.role === 'user' ? 'me' : 'bot'
 /* which way each mode answers: the user picks – free (the site's own engine) or Claude (counted in the plan's usage) */
 const chatRoute = m => AI.available() ? ls.get('cbt.chat.route.' + m, 'claude') : 'free';
 function chatPaint(){
-  const p = $('#chatp'); if (!p) return; const M = CHAT_MODES[CH.mode], H = chatHist(CH.mode);
+  const p = chP(); if (!p) return; const M = CHAT_MODES[CH.mode], H = chatHist(CH.mode);
   p.dataset.mode = CH.mode; p.querySelector('.chath .ico').textContent = M.icon; p.querySelector('.chath b').textContent = M.title; p.querySelector('.chath small').textContent = M.sub + (chatRoute(CH.mode) === 'free' ? ' · 🆓 מסלול חינמי' : ' · 🤖 עם Claude');
   p.querySelectorAll('[data-chatroute]').forEach(b => { b.classList.toggle('on', b.dataset.chatroute === chatRoute(CH.mode)); if (b.dataset.chatroute === 'claude') { b.disabled = !AI.available(); b.title = AI.available() ? 'תשובה מלאה מ-Claude – נספרת במכסת המנוי' : 'זמין רק בקישור של Claude'; } });
   p.querySelectorAll('[data-chatmode]').forEach(b => b.classList.toggle('on', b.dataset.chatmode === CH.mode));
-  $('#chatlog').innerHTML = `<div class="chatmsg bot hello">${chatMd(M.hello)}${chatRoute(CH.mode) === 'claude' ? '' : `<p class="muted" style="font-size:13px">🆓 במסלול החינמי אני עונה מהמנוע המהיר של האתר – תשובה קצרה עם קישורים, בלי מכסה. ${AI.available() ? 'לשיחה מלאה – בוחרים למעלה ״🤖 עם Claude״.' : 'לשיחה מלאה – פותחים את האתר בקישור של Claude.'}</p>`}</div>${H.map(chatMsgHTML).join('')}${H.length ? '' : `<div class="chatchips">${M.chips.map(c => `<button class="chip" data-chatq="${esc(c)}">${esc(c)}</button>`).join('')}</div>`}`;
-  $('#chatlog').scrollTop = 1e9;
+  chq('#chatlog').innerHTML = `<div class="chatmsg bot hello">${chatMd(M.hello)}${chatRoute(CH.mode) === 'claude' ? '' : `<p class="muted" style="font-size:13px">🆓 במסלול החינמי אני עונה מהמנוע המהיר של האתר – תשובה קצרה עם קישורים, בלי מכסה. ${AI.available() ? 'לשיחה מלאה – בוחרים למעלה ״🤖 עם Claude״.' : 'לשיחה מלאה – פותחים את האתר בקישור של Claude.'}</p>`}</div>${H.map(chatMsgHTML).join('')}${H.length ? '' : `<div class="chatchips">${M.chips.map(c => `<button class="chip" data-chatq="${esc(c)}">${esc(c)}</button>`).join('')}</div>`}`;
+  chq('#chatlog').scrollTop = 1e9;
 
 }
 function chatOpen(mode){ CHLOG.add('open', mode + ' ai=' + AI.status);
-  if (!$('#chatp')) {
-    const p = document.createElement('div'); p.id = 'chatp'; p.className = 'chatp'; p.hidden = true;
-    p.innerHTML = `<div class="chath"><span class="ico"></span><div class="grow"><b></b><small></small></div><button class="iconbtn" id="chatnew" title="שיחה חדשה">🗑️</button><button class="iconbtn" id="chatmin" title="מזעור">➖</button></div>
+  if (!chP()) {
+    const p = CH.p = document.createElement('div'); p.id = 'chatp'; p.className = 'chatp'; p.hidden = true;
+    p.innerHTML = `<div class="chath"><span class="ico"></span><div class="grow"><b></b><small></small></div><button class="iconbtn chpopbtn" id="chatpop" title="חלון נפרד – אפשר להעביר אותו למסך אחר">⧉</button><button class="iconbtn" id="chatnew" title="שיחה חדשה">🗑️</button><button class="iconbtn" id="chatmin" title="מזעור">➖</button></div>
       <div class="chatmodes"><button class="chip" data-chatmode="assist">💬 העוזר של האתר</button><button class="chip" data-chatmode="therapist">🧑‍⚕️ מטפל וירטואלי</button></div>
       <div class="chatroute"><span>מסלול:</span><button class="chip" data-chatroute="free">🆓 חינמי – מהאתר</button><button class="chip" data-chatroute="claude">🤖 עם Claude – נספר במכסה</button></div>
       <div class="chatvoice" id="chatvoice" hidden></div><div class="chatlog" id="chatlog" aria-live="polite"></div>
       <form class="chatin" id="chatform"><textarea id="chatq" rows="1" placeholder="כתבו כאן…"></textarea><button class="btn primary" id="chatsend" type="submit">שליחה</button></form>`;
-    document.body.appendChild(p);
+    document.body.appendChild(p); chatFloat(p);
     const fab = document.createElement('button'); fab.id = 'chatfab'; fab.className = 'chatfab'; fab.hidden = true; fab.innerHTML = '💬'; fab.title = 'חזרה לשיחה'; fab.onclick = () => chatMin(false); document.body.appendChild(fab);
-    $('#chatform').onsubmit = e => { e.preventDefault(); chatSend($('#chatq').value); };
-    $('#chatq').addEventListener('keydown', e => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); chatSend($('#chatq').value); } });
-    $('#chatq').addEventListener('input', e => { e.target.style.height = 'auto'; e.target.style.height = Math.min(160, e.target.scrollHeight) + 'px'; chatDictInput(); });
-    $('#chatmin').onclick = () => chatMin(true);
-    $('#chatnew').onclick = () => { if (CH.busy && CH.ctl) CH.ctl.abort(); chatHush(); chatHist(CH.mode).length = 0; chatSave(CH.mode); chatPaint(); };
-    if ($('#chatmic')) $('#chatmic').onclick = chatListen;
+    chq('#chatform').onsubmit = e => { e.preventDefault(); chatSend(chq('#chatq').value); };
+    chq('#chatq').addEventListener('keydown', e => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); chatSend(chq('#chatq').value); } });
+    chq('#chatq').addEventListener('input', e => { e.target.style.height = 'auto'; e.target.style.height = Math.min(160, e.target.scrollHeight) + 'px'; chatDictInput(); });
+    chq('#chatmin').onclick = () => chatMin(true);
+    chq('#chatpop').onclick = () => CH.win ? chatUnpop(true) : chatPop();
+    chq('#chatnew').onclick = () => { if (CH.busy && CH.ctl) CH.ctl.abort(); chatHush(); chatHist(CH.mode).length = 0; chatSave(CH.mode); chatPaint(); };
+    if (chq('#chatmic')) chq('#chatmic').onclick = chatListen;
     p.addEventListener('click', e => { const m = e.target.closest('[data-chatmode]'); if (m) { CH.mode = m.dataset.chatmode; chatPaint(); return; }
       const rt = e.target.closest('[data-chatroute]'); if (rt && !rt.disabled) { ls.set('cbt.chat.route.' + CH.mode, rt.dataset.chatroute); chatPaint(); return; }
       const q = e.target.closest('[data-chatq]'); if (q) { chatSend(q.dataset.chatq); return; }
+      const a = e.target.closest('a[href^="#/"]'); if (a && CH.win) { e.preventDefault(); location.hash = a.getAttribute('href'); try { window.focus(); } catch (_) {} return; }   // in the separate window: open the page in the site
       if (e.target.closest('a[href^="#/"]') && chatMobile()) chatMin(true); });
   }
   if (mode) CH.mode = mode;
-  $('#chatp').hidden = false; $('#chatfab').hidden = true; document.body.classList.add('chatopen'); chatPaint(); if (!chatMobile()) $('#chatq').focus();
+  chP().hidden = false; $('#chatfab').hidden = true; if (chP()._clamp) chP()._clamp(); document.body.classList.add('chatopen'); chatPaint(); if (!chatMobile()) chq('#chatq').focus();
 }
-function chatMin(min){ const p = $('#chatp'); if (!p) return; p.hidden = min; $('#chatfab').hidden = !min; document.body.classList.toggle('chatopen', !min); if (!min) chatPaint(); }
+/* the floating window (computer only): dragged by its title bar, resized from the corner, position and size remembered in this browser */
+function chatFloat(p){
+  const K = 'cbt.chat.box', clamp = () => { if (chatMobile()) return; const r = p.getBoundingClientRect(), W = innerWidth - 12, Hh = innerHeight - 8;
+    const l = Math.min(Math.max(0, r.left), Math.max(0, W - r.width)), t = Math.min(Math.max(0, r.top), Math.max(0, Hh - r.height)); if (l !== r.left || t !== r.top) { p.style.left = l + 'px'; p.style.top = t + 'px'; } };
+  const restore = () => { if (chatMobile()) { p.style.cssText = ''; return; } const b = ls.get(K, null); if (!b) return;
+    p.style.left = b.l + 'px'; p.style.top = b.t + 'px'; p.style.bottom = 'auto'; p.style.width = b.w + 'px'; p.style.height = b.h + 'px'; clamp(); };
+  const save = () => { if (chatMobile() || p.hidden) return; const r = p.getBoundingClientRect(); ls.set(K, {l: Math.round(r.left), t: Math.round(r.top), w: Math.round(r.width), h: Math.round(r.height)}); };
+  const head = p.querySelector('.chath');
+  head.addEventListener('pointerdown', e => { if (CH.win) return; if (chatMobile() || e.button !== 0 || e.target.closest('button')) return;
+    const r = p.getBoundingClientRect(), dx = e.clientX - r.left, dy = e.clientY - r.top; p.classList.add('dragging'); head.setPointerCapture(e.pointerId);
+    const mv = ev => { p.style.left = Math.min(Math.max(0, ev.clientX - dx), Math.max(0, innerWidth - r.width)) + 'px'; p.style.top = Math.min(Math.max(0, ev.clientY - dy), Math.max(0, innerHeight - r.height)) + 'px'; p.style.bottom = 'auto'; };   // the whole window stays on screen
+    const up = () => { p.classList.remove('dragging'); head.removeEventListener('pointermove', mv); head.removeEventListener('pointerup', up); save(); };
+    head.addEventListener('pointermove', mv); head.addEventListener('pointerup', up); });
+  head.addEventListener('dblclick', e => { if (e.target.closest('button') || chatMobile()) return; ls.set(K, null); p.style.cssText = ''; });   // double-click the title bar: back to the default place
+  if ('ResizeObserver' in window) { let t; new ResizeObserver(() => { clearTimeout(t); t = setTimeout(save, 300); }).observe(p); }
+  addEventListener('resize', () => chatMobile() ? (p.style.cssText = '') : clamp());
+  restore(); p._clamp = clamp;
+}
+/* ⧉ the chat in its own browser window – so it can go to a second monitor. The panel element itself moves into the new window
+   (its listeners and the conversation keep running here); closing that window brings it back to the page. */
+function chatPop(){
+  const p = chP(); if (!p || CH.win) return;
+  const w = window.open('', 'cbtchat', 'popup,width=460,height=740');
+  if (!w) { const n = chq('#chatlog'); if (n) { n.insertAdjacentHTML('beforeend', '<div class="chatmsg bot">⚠️ הדפדפן חסם פתיחת חלון נפרד. צריך לאשר ״חלונות קופצים״ לאתר הזה (סמל בשורת הכתובת) ולנסות שוב.</div>'); n.scrollTop = 1e9; } return; }
+  const d = w.document; d.open(); d.write('<!doctype html><html lang="he" dir="rtl"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>העוזר – האתר של נדב</title></head><body class="chatwin"></body></html>'); d.close();
+  document.querySelectorAll('style, link[rel="stylesheet"]').forEach(s => d.head.appendChild(d.importNode(s, true)));
+  [...document.documentElement.attributes].forEach(a => { if (a.name !== 'dir') d.documentElement.setAttribute(a.name, a.value); });
+  CH.win = w; p.classList.add('inwin'); p.style.cssText = ''; d.body.appendChild(d.adoptNode(p)); p.hidden = false;
+  const f = $('#chatfab'); if (f) { f.hidden = false; f.innerHTML = '⧉'; f.title = 'השיחה פתוחה בחלון נפרד – לחיצה מחזירה אותה לכאן'; f.onclick = () => chatUnpop(true); }
+  document.body.classList.remove('chatopen'); chq('#chatpop').title = 'החזרת השיחה לתוך האתר';
+  w.addEventListener('pagehide', () => chatUnpop(false));
+  try { w.focus(); } catch (e) {}
+}
+function chatUnpop(closeWin){
+  const p = chP(), w = CH.win; if (!p || !w) return; CH.win = null;
+  p.classList.remove('inwin'); document.body.appendChild(document.adoptNode(p)); p.hidden = false; document.body.classList.add('chatopen');
+  const f = $('#chatfab'); if (f) { f.hidden = true; f.innerHTML = '💬'; f.title = 'חזרה לשיחה'; f.onclick = () => chatMin(false); }
+  chq('#chatpop').title = 'חלון נפרד – אפשר להעביר אותו למסך אחר'; if (p._clamp) p._clamp();
+  if (closeWin) try { w.close(); } catch (e) {}
+}
+addEventListener('pagehide', () => { if (CH.win) try { CH.win.close(); } catch (e) {} });
+function chatMin(min){ const p = chP(); if (!p) return; if (CH.win) { if (!min) try { CH.win.focus(); } catch (e) {} return; } p.hidden = min; $('#chatfab').hidden = !min; document.body.classList.toggle('chatopen', !min); if (!min) chatPaint(); }
 /* ---- voice conversation: the microphone stays open for the whole talk. When the user starts speaking while the answer is being said
    (or still being written), the voice stops at once and the new words go in as an interruption the next answer responds to. ---- */
 const chatBusyTalk = () => CH.busy || (('speechSynthesis' in window) && (speechSynthesis.speaking || speechSynthesis.pending));
@@ -9189,10 +9248,10 @@ function chatHush(){ try { speechSynthesis.cancel(); } catch (e) {} CH.saying = 
    frame the microphone is not granted to pages, so the talk goes through dictation (the phone keyboard's 🎤, or Win+H on Windows):
    the page sends by itself when the dictation pauses, and any new words stop the voice at once. */
 const chatRealMic = () => chatMic() && !ARTIFACT;
-function chatBanner(html){ const v = $('#chatvoice'); if (!v) return; v.hidden = !html; if (html) v.innerHTML = html; }
+function chatBanner(html){ const v = chq('#chatvoice'); if (!v) return; v.hidden = !html; if (html) v.innerHTML = html; }
 function chatListen(){ CHLOG.add('mic', 'real=' + chatRealMic() + ' voice=' + CH.voice);
-  const b = $('#chatmic');
-  if (CH.voice) { CH.voice = false; chatHush(); clearTimeout(CH.dictT); if (CH.rec) try { CH.rec.stop(); } catch (e) {} b.classList.remove('on'); chatBanner(''); $('#chatq').placeholder = 'כתבו כאן…'; return; }
+  const b = chq('#chatmic');
+  if (CH.voice) { CH.voice = false; chatHush(); clearTimeout(CH.dictT); if (CH.rec) try { CH.rec.stop(); } catch (e) {} b.classList.remove('on'); chatBanner(''); chq('#chatq').placeholder = 'כתבו כאן…'; return; }
   CH.voice = true; b.classList.add('on');
   if (!chatRealMic()) { chatDictate(); return; }
   const R = window.SpeechRecognition || window.webkitSpeechRecognition;
@@ -9201,7 +9260,7 @@ function chatListen(){ CHLOG.add('mic', 'real=' + chatRealMic() + ' voice=' + CH
     r.onresult = e => { let fin = '', mid = '';
       for (let i = e.resultIndex; i < e.results.length; i++) { const x = e.results[i]; if (x.isFinal) fin += x[0].transcript; else mid += x[0].transcript; }
       if (mid && chatBusyTalk() && !chatEcho(mid) && mid.trim().split(/\s+/).length >= 2) chatHush();   // he started talking – stop speaking now
-      const live = $('#chatlive'); if (live) live.textContent = mid ? '״' + mid + '״' : '';
+      const live = chq('#chatlive'); if (live) live.textContent = mid ? '״' + mid + '״' : '';
       fin = fin.trim(); if (!fin || chatEcho(fin)) return;
       const cut = chatBusyTalk(); if (cut) { chatHush(); if (CH.ctl) CH.ctl.abort(); }
       if (live) live.textContent = ''; setTimeout(() => chatSend(fin, {voice: true, interrupted: cut}), cut ? 350 : 0); };
@@ -9211,15 +9270,15 @@ function chatListen(){ CHLOG.add('mic', 'real=' + chatRealMic() + ' voice=' + CH
   start();
 }
 function chatDictate(why = ''){
-  const phone = chatMobile(), q = $('#chatq');
+  const phone = chatMobile(), q = chq('#chatq');
   chatBanner(`<span class="rec"></span><b>שיחה קולית</b> – ${why}${ARTIFACT ? 'בתוך Claude המיקרופון של הדפדפן חסום, אז מדברים דרך ההכתבה: ' : 'מדברים דרך ההכתבה: '}${phone ? 'לוחצים על 🎤 שבמקלדת ומדברים.' : 'לוחצים <b>Win+H</b> (הקלדה קולית של Windows) ומדברים.'} כשתפסיקו לדבר – אשלח לבד ואענה בקול. אפשר לקטוע אותי בכל רגע.`);
   q.placeholder = phone ? '🎤 לחצו על המיקרופון שבמקלדת ודברו…' : '🎤 Win+H ודברו…'; q.focus();
 }
 function chatDictInput(){   // dictation typing into the box: stop the voice at once, send after a pause
   if (!CH.voice || chatRealMic() && !CH.micBlocked) return;
-  const v = $('#chatq').value.trim(); if (v && chatBusyTalk() && !CH.busy) chatHush();
+  const v = chq('#chatq').value.trim(); if (v && chatBusyTalk() && !CH.busy) chatHush();
   clearTimeout(CH.dictT); if (!v) return;
-  CH.dictT = setTimeout(() => { const t = $('#chatq').value.trim(); if (t && CH.voice) chatSend(t, {voice: true, interrupted: CH.busy}); }, 1800);
+  CH.dictT = setTimeout(() => { const t = chq('#chatq').value.trim(); if (t && CH.voice) chatSend(t, {voice: true, interrupted: CH.busy}); }, 1800);
 }
 function chatSay(t, force){
   if (!(CH.speak || force || CH.voice) || !('speechSynthesis' in window)) return;
@@ -9232,14 +9291,14 @@ function chatSay(t, force){
 
 /* ---- one exchange ---- */
 async function chatSend(q, opt = {}){   // any unexpected failure is shown in the chat, never silently swallowed
-  try { await chatSend0(q, opt); } catch (e) { console.error('chat', e); CH.busy = false; const s = $('#chatsend'); if (s) s.disabled = false; const H = chatHist(CH.mode); H.push({role: 'assistant', content: '⚠️ משהו השתבש בשליחה: ' + String((e && (e.message || e.code)) || e).slice(0, 160) + '. אפשר לנסות שוב.'}); chatSave(CH.mode); chatPaint(); }
+  try { await chatSend0(q, opt); } catch (e) { console.error('chat', e); CH.busy = false; const s = chq('#chatsend'); if (s) s.disabled = false; const H = chatHist(CH.mode); H.push({role: 'assistant', content: '⚠️ משהו השתבש בשליחה: ' + String((e && (e.message || e.code)) || e).slice(0, 160) + '. אפשר לנסות שוב.'}); chatSave(CH.mode); chatPaint(); }
 }
 async function chatSend0(q, opt = {}){ CHLOG.add('send', q.length + (opt.voice ? ' voice' : '') + ' ai=' + AI.status + ' busy=' + CH.busy);
   q = String(q || '').trim(); if (!q) return; if (CH.busy) { if (!opt.interrupted) return; if (CH.ctl) CH.ctl.abort(); await new Promise(r => setTimeout(r, 300)); }
-  const mode = CH.mode, H = chatHist(mode); $('#chatq').value = ''; $('#chatq').style.height = 'auto';
+  const mode = CH.mode, H = chatHist(mode); chq('#chatq').value = ''; chq('#chatq').style.height = 'auto';
   H.push({role: 'user', content: q}); chatSave(mode); chatPaint();
   const t0 = performance.now();
-  const hits = chatSearch(q, 6), log = $('#chatlog'), bub = document.createElement('div'); bub.className = 'chatmsg bot typing'; bub.innerHTML = '<span class="dots"><i></i><i></i><i></i></span>'; log.appendChild(bub); log.scrollTop = 1e9;
+  const hits = chatSearch(q, 6), log = chq('#chatlog'), bub = document.createElement('div'); bub.className = 'chatmsg bot typing'; bub.innerHTML = '<span class="dots"><i></i><i></i><i></i></span>'; log.appendChild(bub); log.scrollTop = 1e9;
   CHLOG.add('searched', Math.round(performance.now() - t0) + 'ms hits=' + hits.length);
   if (chatRoute(mode) === 'free') {   // free: the on-device engine + the best places in the site
     let t = ''; try { const a = window.CBT_LOCAL_ANSWER(q); t = typeof a === 'string' ? a : (a && a.text) || ''; } catch (e) {}   // the engine returns {text, href}
@@ -9247,7 +9306,7 @@ async function chatSend0(q, opt = {}){ CHLOG.add('send', q.length + (opt.voice ?
     const ans = (t ? t + '\n\n' : '') + (links.length ? 'הנה המקומות באתר שהכי קשורים לשאלה:' : 'לא מצאתי באתר משהו שמתאים לשאלה – נסו לנסח אחרת, או לחפש ב״חיפוש״.');
     H.push({role: 'assistant', content: ans, links}); chatSave(mode); chatPaint(); chatSay(ans); return;
   }
-  CH.busy = true; $('#chatsend').disabled = true; CH.ctl = new AbortController();
+  CH.busy = true; chq('#chatsend').disabled = true; CH.ctl = new AbortController();
   const here = `${($('#title') || {}).textContent || ''} (${location.hash || '#/home'})`;
   const ctx = hits.length ? `\n\n(תוצאות חיפוש ראשוניות באתר לשאלה – להיעזר או לחפש עוד:\n${hits.map(h => `• ${h.title} [${h.route}] – ${h.snippet}`).join('\n')})` : '';
   const turns = [{role: 'user', content: CHAT_RULES[mode] + `\n\nהעמוד שפתוח עכשיו באתר: ${here}. אם השאלה קשורה אליו – התייחס אליו.\nהשיחה מתחילה עכשיו.`}, {role: 'assistant', content: 'הבנתי. אני כאן.'},
@@ -9269,7 +9328,7 @@ async function chatSend0(q, opt = {}){ CHLOG.add('send', q.length + (opt.voice ?
     else { if (['not_granted', 'sampling_disabled', 'capability_disabled', 'capability_removed'].includes(code)) AI.disable(code);
       const part = e && e.text ? String(e.text) : '';
       H.push({role: 'assistant', content: (part ? part + '\n\n' : '') + '⚠️ ' + (AI_ERR[code] || AI_ERR.upstream_error), links: hits.slice(0, 4).map(h => ({title: h.title, route: h.route}))}); chatSave(mode); chatPaint(); }
-  } finally { clearTimeout(w1); clearTimeout(w2); CH.busy = false; CH.ctl = null; const s = $('#chatsend'); if (s) s.disabled = false; }
+  } finally { clearTimeout(w1); clearTimeout(w2); CH.busy = false; CH.ctl = null; const s = chq('#chatsend'); if (s) s.disabled = false; }
 }
 const chatHomeHTML = () => `<div class="chathome"><button class="chatbig" data-chat="assist"><span class="cbi">💬</span><span><b>העוזר של האתר</b><small>שאלו כל שאלה – טיפולית, חינוכית, מינהלית או מקצועית – והוא יענה ויוביל לעמוד הנכון</small></span></button>
   <button class="chatbig ther" data-chat="therapist"><span class="cbi">🧑‍⚕️</span><span><b>מטפל וירטואלי</b><small>שיחה טיפולית רציפה ומקצועית על כל בעיה – המשגה ותוכנית צעד אחרי צעד</small></span></button></div>`;
