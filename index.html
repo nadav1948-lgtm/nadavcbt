@@ -2285,6 +2285,42 @@ body.pdlopen{overflow:hidden}
 .p5q summary{cursor:pointer;font-weight:700;opacity:.8}
 .p5q ul{margin:4px 0 0;padding-inline-start:18px;line-height:1.5}
 
+/* ---- 💬 assistant + 🧑‍⚕️ virtual therapist ---- */
+.chathome{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:0 0 18px}
+.chatbig{display:flex;align-items:center;gap:14px;text-align:start;border:0;cursor:pointer;padding:16px 18px;border-radius:18px;color:#fff;background:linear-gradient(120deg,#4f46e5,#7c3aed 60%,#a855f7);box-shadow:0 12px 30px -12px rgba(79,70,229,.8);transition:transform .2s;font:inherit}
+.chatbig.ther{background:linear-gradient(120deg,#0f766e,#0891b2 60%,#22d3ee);box-shadow:0 12px 30px -12px rgba(8,145,178,.8)}
+.chatbig:hover{transform:translateY(-3px)}
+.chatbig .cbi{flex:none;width:54px;height:54px;border-radius:16px;display:grid;place-items:center;font-size:28px;background:rgba(255,255,255,.2)}
+.chatbig b{display:block;font-size:18px}.chatbig small{display:block;opacity:.92;font-size:13.5px;line-height:1.45;margin-top:2px}
+.chatp{position:fixed;z-index:90;left:16px;bottom:16px;top:16px;width:min(440px,calc(100vw - 32px));display:flex;flex-direction:column;background:var(--panel);border:1px solid var(--line);border-radius:22px;box-shadow:0 30px 80px -20px rgba(0,0,0,.6);overflow:hidden;animation:rise .25s ease}
+.chatp[hidden]{display:none}
+.chath{display:flex;align-items:center;gap:10px;padding:12px 14px;background:linear-gradient(120deg,#4f46e5,#7c3aed);color:#fff}
+.chatp[data-mode="therapist"] .chath{background:linear-gradient(120deg,#0f766e,#0891b2)}
+.chath .ico{font-size:26px}.chath .grow{flex:1;min-width:0}.chath b{display:block;font-size:16px}.chath small{display:block;opacity:.9;font-size:12px}
+.chath .iconbtn{background:rgba(255,255,255,.18);border-color:rgba(255,255,255,.25);color:#fff;width:34px;height:34px}
+.chath .iconbtn.on{background:#fff;color:#111}
+.chatmodes{display:flex;gap:6px;padding:8px 12px;border-bottom:1px solid var(--line)}
+.chatmodes .chip{font-size:13px;padding:5px 12px}
+.chatlog{flex:1;overflow-y:auto;padding:14px 12px;display:flex;flex-direction:column;gap:10px;overscroll-behavior:contain}
+.chatmsg{max-width:92%;padding:10px 14px;border-radius:16px;line-height:1.7;font-size:15px;word-break:break-word}
+.chatmsg p{margin:0 0 8px}.chatmsg p:last-child{margin:0}.chatmsg ul{margin:4px 0 8px;padding-inline-start:20px}.chatmsg h4{margin:8px 0 4px}
+.chatmsg.me{align-self:flex-start;background:var(--brand);color:var(--brand-ink);border-end-start-radius:4px}
+.chatmsg.bot{align-self:flex-end;background:var(--bg2);border:1px solid var(--line);border-end-end-radius:4px}
+.chatmsg.hello{max-width:100%}
+.chatlink{display:inline-block;margin:2px 0;padding:1px 10px;border-radius:99px;background:color-mix(in srgb,var(--brand) 18%,transparent);color:var(--brand-text);text-decoration:none;font-weight:700}
+.chatlinks{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}.chatlinks .chip{font-size:13px;text-decoration:none}
+.chatchips{display:flex;flex-direction:column;gap:6px;align-items:flex-end}.chatchips .chip{font-size:13.5px;text-align:start}
+.chatin{display:flex;align-items:flex-end;gap:8px;padding:10px 12px;border-top:1px solid var(--line);background:var(--panel)}
+.chatin textarea{flex:1;resize:none;border:1px solid var(--line);background:var(--bg);color:var(--ink);border-radius:14px;padding:10px 12px;font:inherit;font-size:15px;max-height:160px;outline:none}
+.chatin textarea:focus{border-color:var(--brand-text)}
+.chatin .iconbtn.on{background:#ef4444;color:#fff;animation:mvpulse 1s infinite}
+.dots{display:inline-flex;gap:4px}.dots i{width:7px;height:7px;border-radius:50%;background:var(--muted);animation:mvbounce 1s infinite}.dots i:nth-child(2){animation-delay:.15s}.dots i:nth-child(3){animation-delay:.3s}
+.chatfab{position:fixed;z-index:89;left:18px;bottom:84px;width:58px;height:58px;border-radius:50%;border:0;font-size:26px;cursor:pointer;background:linear-gradient(135deg,#4f46e5,#7c3aed);color:#fff;box-shadow:0 12px 30px -8px rgba(79,70,229,.8)}
+.chatfab[hidden]{display:none}
+@media (max-width:760px){.chathome{grid-template-columns:1fr}.chatp{inset:0;width:auto;border-radius:0;top:0;bottom:0;left:0}.chatmsg{font-size:15.5px}.chatfab{bottom:150px}body.chatopen{overflow:hidden}}
+@media print{.chatp,.chatfab{display:none!important}}
+body.chatopen .vt-fab{display:none!important}
+
 </style>
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="apple-touch-icon" href="icon-192.png">
@@ -5799,7 +5835,7 @@ function home(){
     <div class="actions"><button class="btn" data-act="newstudent">＋ תלמיד חדש</button><a class="btn" href="#/problems">🧭 בחירת בעיה</a><a class="btn" href="#/workflow">🗺️ סדר עבודה</a><a class="btn" href="#/tools">🧰 כלים לילדים</a></div></section>`;
   if (SYNC.status === 'signedout') h += `<div class="note warn no-print">☁️ כדי לראות את התלמידים ואת הספרייה מכל מכשיר – <button class="btn primary sm" data-act="cloud-login">התחברות עם חשבון מיקרוסופט</button></div>`;
   else if (SYNC.status !== 'ok' && SYNC.status !== 'connecting') h += `<div class="note warn no-print">💾 הנתונים נשמרים כרגע רק במכשיר הזה. <a href="#/settings">להגדרת סנכרון עם OneDrive</a></div>`;
-  h += dyTodayStrip();
+  h += chatHomeHTML(); h += dyTodayStrip();
   h += `<div class="three" style="margin-top:16px"><div class="stat"><b>${act.length}</b><span>תלמידים בטיפול</span></div><div class="stat"><b>${sessMonth}</b><span>מפגשים החודש</span></div><div class="stat"><b>${PROBLEMS.length}</b><span>מפות טיפול</span></div></div>`;
   h += homeTiles();
   if (a) h += `<h2 class="sec">⭐ בעבודה עכשיו</h2><div class="grid wide">${studentCard(a)}</div>`;
@@ -6727,7 +6763,7 @@ function liteHome(){
     <p>מפות טיפול CBT לבעיות נפוצות בבית הספר היסודי, עוזר לשאלות, סדר עבודה וכלים אינטראקטיביים לילדים.</p>
     <form id="homeask" style="display:flex;gap:8px;margin-top:18px;max-width:720px"><input class="inp" id="homeq" placeholder="💬 שאלו שאלה… למשל: ילד שבוכה כל בוקר בשער" style="flex:1;height:48px;border:0;font-size:16px"><button class="btn primary" type="submit" title="מסלול חינמי">💬 תשובה</button>${claudeTrack() ? `<button class="btn" type="submit" data-claude="1" title="מסלול Claude – נספר במכסת המנוי" style="background:rgba(255,255,255,.16);border-color:rgba(255,255,255,.3);color:#fff">🤖 Claude</button>` : ""}</form>
     <div class="actions"><a class="btn" href="#/problems">🧭 בחירת בעיה</a><a class="btn" href="#/workflow">🗺️ סדר עבודה</a><a class="btn" href="#/tools">🧰 כלים לילדים</a></div></section>`;
-  h += dyTodayStrip();
+  h += chatHomeHTML(); h += dyTodayStrip();
   h += `<div class="three"><div class="stat"><b>${PROBLEMS.length}</b><span>מפות טיפול</span></div><div class="stat"><b>${sessions}</b><span>מפגשים מפורטים</span></div><div class="stat"><b>${TOOLS.length}</b><span>כלים לילדים</span></div></div>`;
   h += `<h2 class="sec">🧭 מפות טיפול <small>לפי תחום</small></h2><div class="grid">${PROBLEMS.slice(0, 8).map(problemCard).join('')}</div>
     <div style="margin-top:12px"><a class="btn" href="#/problems">לכל ${PROBLEMS.length} הבעיות ←</a></div>`;
@@ -8981,6 +9017,216 @@ APPS['pd-read'] = {hub: 'pd', hubs: ['sped'], icon: '🧾', title: 'סיכום �
   intro: 'מדביקים את טקסט האבחון (אפשר להעתיק מקובץ PDF או Word). הכלי מתרגם כל ציון לאחוזון ולטווח מילולי, מסביר כל מונח, מסדר חוזקות וקשיים לפי תחום ומסביר כל המלצה – עם ציטוט מהדוח לכל טענה. כדי לשמור על פרטיות: כותבים את שם הילד בשדה הנפרד, והוא יוחלף ב״הילד״ – וגם ת״ז, טלפונים ותאריכים מוסרים לפני הניתוח.',
   sections: [{title: '📋 האבחון', fields: [{id: 'name', label: 'שם הילד כפי שמופיע בדוח (לא נשמר בסיכום – מוחלף ב״הילד״)', ph: 'למשל: יוסי כהן'}, {id: 'text', label: 'טקסט האבחון', long: 1, rows: 16, ph: 'מדביקים כאן את הדוח – ממצאים, ציונים, סיכום והמלצות'}]}],
   build: pdBuild, deepen: pdDeepen};
+
+/* ---- 💬 the site assistant and 🧑‍⚕️ the virtual therapist ----
+   A chat panel that stays open while the site navigates underneath (a side panel on a computer, full screen on a phone).
+   Inside Claude (artifact `sample`) both talk with the whole conversation as context and use page tools: search_site (every hub, track step,
+   map, tool, application, circular, term and movie), read_page (the text behind a route), search_library (the library) and open_page.
+   The question's top search results are also sent up front, so an answer is grounded even when the view cannot run tools.
+   Without Claude (GitHub / local file) the assistant answers from the on-device engine with links. The history is kept per mode in this browser. */
+const CHAT_MODES = {
+  assist: {icon: '💬', title: 'העוזר של האתר', sub: 'ניווט, התמצאות ומענה מקצועי על כל שאלה', tier: 'default',
+    hello: 'שלום נדב 👋 אני מכיר את כל האתר – המדורים, המדריכים, מפות הטיפול, הכלים, החוזרים והספרייה. אפשר לשאול אותי כל שאלה – טיפולית, חינוכית, מינהלית או מקצועית – או לבקש ״קח אותי ל…״, ואני אנווט.',
+    chips: ['איפה אני מוצא את מפת הטיפול בחרדה חברתית?', 'מה עושים כשילד מספר על פגיעה?', 'תסביר לי מה זה אחוזון באבחון', 'איך מעבירים שיעור כישורי חיים?']},
+  therapist: {icon: '🧑‍⚕️', title: 'מטפל וירטואלי', sub: 'שיחה טיפולית רציפה, הגיונית ומקצועית', tier: 'complex',
+    hello: 'שלום נדב. אני כאן כדי לחשוב איתך טיפולית – על תלמיד, כיתה, הורים, צוות, או על משהו שמעסיק אותך. ספר לי מה קורה (בלי שמות מזהים), ונבנה יחד המשגה ותוכנית, צעד אחרי צעד.',
+    chips: ['ילד בכיתה ב׳ מסרב להיכנס לכיתה בבוקר', 'תלמיד בכיתה ה׳ מתפרץ בכעס על חברים', 'הורים שלא משתפים פעולה עם התוכנית', 'אני מרגיש שחיקה בעבודה']}
+};
+const CHAT_RULES = {
+  assist: `אתה ״העוזר של האתר״ – עוזר אישי חכם ואנושי של נדב דוד, יועץ חינוכי ומטפל CBT בבתי ספר יסודיים דתיים לבנים בישראל. אתה מכיר את כל האתר שלו (מדורים, מדריכים ומסלולים, מפות טיפול, כלים לילדים, יישומים, חוזרי מנכ״ל, מילון מונחים, סרטונים וספרייה) ובקיא בכל תחומי העבודה: טיפולי, חינוכי, מינהלי ומקצועי.
+איך עובדים:
+• לפני שעונים – מחפשים באתר (search_site; לחומרי עומק search_library) וקוראים את העמודים הרלוונטיים (read_page). התשובה נשענת קודם כל על מה שיש באתר.
+• עונים בעברית טבעית, חמה ומקצועית, כמו עמית בכיר: תשובה מלאה ומסודרת, בלי להאריך סתם. כשהשאלה לא ברורה – שואלים שאלה מבהירה אחת.
+• ניווט: כל הפניה לעמוד באתר נכתבת כקישור בפורמט [שם העמוד](#/route) עם הנתיב המדויק שהתקבל מהכלים. כשמבקשים ״קח אותי״ או ״פתח״ – משתמשים ב-open_page, ואומרים לאן נפתח.
+• מקורות: מציינים מאיזה עמוד באתר נלקח כל דבר. כל מידע שאינו מהאתר – גם משפט אחד – מסומן במפורש ״🌐 מידע מבחוץ – לא מהאתר״ (עדיף בפסקה נפרדת בסוף), עם מקור מקצועי מוכר רק כשבטוחים בו. לא ממציאים נהלים, מספרי חוזרים או סעיפים.
+• בטיחות: סימן לסכנה לילד (פגיעה, התעללות, אובדנות) – פותחים בנוהל: לא להשאיר לבד, לעדכן את המנהל, דיווח לפי החוק וחוזרי המנכ״ל – ומפנים לעמוד המתאים.
+• פרטיות: לא מבקשים פרטים מזהים של תלמידים; אם נכתבו – לא חוזרים עליהם.
+• לא כותבים טקסט לפני קריאה לכלים – רק את התשובה הסופית.
+• סגנון: אתה גבר – מדבר בגוף ראשון בלשון זכר (״אני חושב״, ״בדקתי״, ״אני ממליץ״). עברית נקייה, רהוטה וחלקה, כמו בשיחה מקצועית קולחת בין עמיתים: משפטים ברורים, בלי אנגלית, בלי קיצורים לא מוכרים ובלי רשימות ארוכות כשמספיקה פסקה.
+• שיחה אנושית: כשנדב קוטע אותך – עוצרים מיד, מתייחסים למה שאמר, ולא חוזרים על מה שכבר נאמר.`,
+  therapist: `אתה ״המטפל הווירטואלי״ – מטפל CBT ומדריך קליני בכיר לילדים ולנוער, עם ידע מעמיק בייעוץ חינוכי בבית ספר יסודי (בתי ספר דתיים לבנים בישראל). אתה משוחח עם נדב דוד, יועץ חינוכי ומטפל CBT.
+בשיחה:
+• נדב מעלה בעיה – של תלמיד, כיתה, הורים, צוות, או משהו אישי שלו. מנהלים שיחה טיפולית רציפה, הגיונית ומקצועית: מקשיבים, משקפים, ושואלים שאלה אחת או שתיים ממוקדות כשחסר מידע – בלי להציף.
+• כשיש מספיק מידע – בונים המשגה (5P, המעגל המשמר, מחשבה-רגש-התנהגות, אמונות) ומציעים מתווה טיפול שלב אחרי שלב: רציונל, טכניקות, ניסוחים לשיחה עם הילד ועם ההורים, התאמה לגיל ודרכי מדידה.
+• משתמשים בכלים search_site, read_page ו-search_library כדי לבסס את ההמלצות על מפות הטיפול, המדריכים והספרייה שבאתר, ומפנים לעמודים כקישור [שם](#/route). ידע מקצועי שאינו מהאתר מותר – אבל כל מידע כזה מסומן במפורש ״🌐 מידע מבחוץ – לא מהאתר״ (עדיף בפסקה נפרדת), ומציינים מקור מוכר רק כשבטוחים בו. לא ממציאים נהלים, מספרי חוזרים או מחקרים.
+• זוכרים את כל מה שנאמר בשיחה ומתקדמים איתו: חוזרים להשערות, מעדכנים את ההמשגה, שואלים איך הלך.
+• בטיחות קודם: חשש לפגיעה, התעללות או אובדנות – עוצרים, מפרטים את צעדי הבטיחות והדיווח לפי החוק וחוזרי המנכ״ל, ומפנים לעמוד המתאים. כשנדב עצמו מתאר מצוקה אישית – מגיבים באמפתיה ובתמיכה, ואם יש סימני סכנה מעודדים פנייה מיידית לגורם אנושי (ער״ן 1201, סה״ר, רופא או מטפל).
+• כלי עזר ולא תחליף להדרכה, לאבחון או לטיפול אישי; לא מאבחנים בוודאות – מנסחים השערות.
+• פרטיות: עובדים עם כינויים; לא מבקשים ולא חוזרים על פרטים מזהים.
+• עברית טבעית, חמה ומקצועית. לא כותבים טקסט לפני קריאה לכלים.
+• סגנון: אתה גבר – מדבר בגוף ראשון בלשון זכר (״אני שומע ש…״, ״אני חושב ש…״, ״הייתי מציע…״). עברית נקייה, רהוטה וחלקה – שיחה קולחת, אנושית ומקצועית, בקצב של מטפל: פסקאות קצרות, בלי אנגלית ובלי ז׳רגון מיותר, ובלי להציף ברשימות.
+• שיחה אנושית: כשנדב קוטע אותך – עוצרים מיד, מתייחסים למה שאמר, ולא חוזרים על מה שכבר נאמר.`
+};
+const CH = {mode: 'assist', busy: false, ctl: null, speak: false, rec: null, hist: {}};
+const chatKey = m => 'cbt.chat.' + m;
+const chatHist = m => CH.hist[m] || (CH.hist[m] = ls.get(chatKey(m), []));
+const chatSave = m => { const h = chatHist(m); if (h.length > 40) h.splice(0, h.length - 40); ls.set(chatKey(m), h); };   // in place: chatSend keeps a reference to this array
+const chatMobile = () => matchMedia('(max-width: 760px)').matches;
+const chatMic = () => !/github.io$/.test(location.hostname) && ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window);   // no microphone on the public GitHub site
+
+/* ---- the site as searchable text ---- */
+let CHAT_IDX = null;
+const chatFlat = s => { const out = [s.title, s.intro, ...(s.text || []), ...(s.points || [])];
+  (s.items || []).forEach(x => out.push(x.t, x.d, x.ex)); (s.tabs || []).forEach(x => { out.push(x.label, x.lead, ...(x.points || [])); (x.cards || []).forEach(c => out.push(c.title, c.t)); });
+  (s.cards || []).forEach(c => out.push(c.title, c.t)); (s.fields || []).forEach(f => out.push(f.label)); (s.diagrams || []).forEach(d => (d.items || []).forEach(x => out.push(x.t, x.d)));
+  if (s.a) out.push(s.a.title, ...(s.a.items || [])); if (s.b) out.push(s.b.title, ...(s.b.items || []));
+  return out.filter(Boolean).map(x => String(x).replace(/<[^>]+>/g, '')).join('\n'); };
+function chatIndex(){
+  if (CHAT_IDX && CHAT_IDX.n === TRACKS().length) return CHAT_IDX.I;
+  const I = [], add = (t, r, text, kind) => I.push({t, r, kind, text: String(text || ''), n: norm(t + ' ' + text)});
+  NAV.forEach(([k, , l]) => add(l, '#/' + k, '', 'עמוד'));
+  Object.entries(HUBS).forEach(([k, h]) => add('מדור: ' + h.title, '#/' + k, String(h.intro || '').replace(/<[^>]+>/g, ''), 'מדור'));
+  TRACKS().forEach(t => { add('מסלול: ' + t.title, '#/track/' + t.id, t.intro, 'מסלול'); t.steps.forEach((s, i) => add(t.title + ' › ' + s.title, `#/track/${t.id}/${i + 1}`, chatFlat(s), 'שלב')); });
+  PROBLEMS.forEach(p => add('מפת טיפול: ' + p.name, '#/problem/' + p.id, [p.summary, ...(p.signs || [])].join(' '), 'מפת טיפול'));
+  TOOLS.forEach(x => add('כלי לילדים: ' + x.name, '#/tool/' + x.id, [x.desc, x.sub].join(' '), 'כלי'));
+  Object.entries(allApps()).forEach(([id, a]) => add('יישום: ' + a.title, '#/app/' + id, [a.sub, String(a.intro || '').replace(/<[^>]+>/g, '')].join(' '), 'יישום'));
+  CIRC_ORDER.map(circMeta).forEach(m => add('חוזר מנכ״ל: ' + m.title, '#/circ/' + m.id, m.summary || '', 'חוזר'));
+  PD_T().forEach(x => add('מונח באבחון: ' + x.t, '#/pdterms/' + encodeURIComponent(x.t), [x.d, x.cls].join(' '), 'מונח'));
+  MOVIES().forEach(m => add('סרטון: ' + m.title, '#/movie/' + m.id, m.sub, 'סרטון'));
+  TRACKS().filter(mvGuide).forEach(t => add('סרטון הסבר: ' + t.title, '#/movie/' + t.id, '', 'סרטון'));
+  CHAT_IDX = {n: TRACKS().length, I}; return I;
+}
+const chatSnip = (text, qt, n = 260) => { const t = String(text).replace(/\s+/g, ' '), nt = norm(t); let at = -1; for (const w of qt) { const k = nt.indexOf(w); if (k >= 0 && (at < 0 || k < at)) at = k; }
+  const s = Math.max(0, at - 60); return (s ? '…' : '') + t.slice(s, s + n) + (t.length > s + n ? '…' : ''); };
+function chatSearch(q, n = 8){
+  const qt = [...new Set(toks(q))].filter(t => t.length > 1).slice(0, 10); if (!qt.length) return [];
+  const I = chatIndex(), N = I.length, df = {}; qt.forEach(t => { let c = 0; for (const x of I) if (x.n.includes(t)) c++; df[t] = c; });
+  return I.map(x => { const tn = norm(x.t); let s = 0, k = 0; qt.forEach(t => { if (x.n.includes(t)) { k++; s += Math.log(1 + N / (df[t] + 1)) * (tn.includes(t) ? 2.5 : 1); } });
+      return [x, k ? s * (0.5 + k / qt.length) : 0]; })
+    .filter(z => z[1] > 0).sort((a, b) => b[1] - a[1]).slice(0, n).map(([x]) => ({title: x.t, route: x.r, kind: x.kind, snippet: chatSnip(x.text || x.t, qt)}));
+}
+function chatRead(route){
+  const r = String(route || '').replace(/^#?\/?/, '').split('/').map(decodeURIComponent), [k, id, sub] = r, cut = (s, n = 9000) => String(s).length > n ? String(s).slice(0, n) + '…' : String(s);
+  if (k === 'track') { const t = TRACK(id); if (!t) throw new Error('אין מסלול כזה');
+    if (sub && t.steps[+sub - 1]) { const s = t.steps[+sub - 1]; return cut(`${t.title} › שלב ${sub}: ${s.title}\n${chatFlat(s)}${s.src ? '\nמקור: ' + s.src : ''}`); }
+    return cut(`${t.title}\n${t.intro || ''}\nשלבים:\n${t.steps.map((s, i) => `${i + 1}. ${s.title} (#/track/${t.id}/${i + 1})`).join('\n')}`); }
+  if (k === 'problem' && P[id]) return cut(JSON.stringify(compactMap(P[id])), 12000);
+  if (k === 'circ') { const parts = (window.CIRC_TEXT || []).filter(x => x.c === id); const m = circMeta(id); return cut(`${m.title}\n${m.summary || ''}\n${parts.map(x => (x.h ? x.h + ': ' : '') + x.t).join('\n')}`, 12000); }
+  if (k === 'app') { const a = allApps()[id]; if (!a) throw new Error('אין יישום כזה'); return `${a.title}\n${a.sub || ''}\n${String(a.intro || '').replace(/<[^>]+>/g, '')}\nשדות: ${a.sections.flatMap(s => s.fields.map(f => f.label)).join(' · ')}`; }
+  if (k === 'pdterms') { const x = PD_T().find(t => t.t === id); return x ? `${x.t}: ${x.d} ${x.cls || ''} ${x.ex || ''}` : 'מילון מונחי האבחון: ' + PD_T().length + ' מונחים'; }
+  if (k === 'tool') { const x = TOOLS.find(t => t.id === id); return x ? `${x.name}: ${x.desc || ''} ${x.sub || ''}` : 'אין כלי כזה'; }
+  if (HUBS[k]) { const h = HUBS[k]; return cut(`${h.title}\n${String(h.intro || '').replace(/<[^>]+>/g, '')}\nמסלולים:\n${TRACKS().filter(t => t[h.flag]).map(t => `• ${t.title} (#/track/${t.id})`).join('\n')}`); }
+  const n = NAV.find(x => x[0] === k); if (n) return `עמוד: ${n[2]} (#/${k})`;
+  throw new Error('לא נמצא עמוד בנתיב הזה – חפש קודם ב-search_site');
+}
+const CHAT_TOOLS = [
+  {name: 'search_site', description: 'Searches the whole site (hubs, guide tracks and their steps, treatment maps, children tools, applications, Education Ministry circulars, assessment terms, movies). Returns up to 8 results: {title, route, kind, snippet}. Use the route in links as [title](#/route).',
+    inputSchema: {type: 'object', properties: {query: {type: 'string', description: 'Hebrew search words'}}, required: ['query']}, execute: i => chatSearch(String(i.query || ''), 8)},
+  {name: 'read_page', description: 'Returns the text content behind a site route from search_site (e.g. #/track/cbt-formulation/4, #/problem/gad, #/circ/c05, #/app/pd-read). Use it before answering from a page.',
+    inputSchema: {type: 'object', properties: {route: {type: 'string'}}, required: ['route']}, execute: i => chatRead(i.route)},
+  {name: 'search_library', description: 'Searches the full text of the counselor\'s library files (books, course notes, circulars). Returns up to 5 passages {title, page, text, route}.',
+    inputSchema: {type: 'object', properties: {query: {type: 'string'}}, required: ['query']}, execute: async i => (await libSearchAsync(String(i.query || ''), 5)).map(x => ({title: x.title, page: x.page, text: String(x.text).replace(/\s+/g, ' ').slice(0, 700), route: libSrcHref(x.id, x.page, x.text)}))},
+  {name: 'open_page', description: 'Opens a site route for the user now (only when the user asks to go/open/take them somewhere). Returns "opened".',
+    inputSchema: {type: 'object', properties: {route: {type: 'string'}}, required: ['route']}, execute: i => { const r = String(i.route || ''); if (!/^#\//.test(r)) throw new Error('route must start with #/'); location.hash = r; if (chatMobile()) chatMin(true); return 'opened'; }}
+];
+
+/* ---- rendering ---- */
+const chatMd = t => { let h = esc(String(t || '')).replace(/\r/g, '');
+  h = h.replace(/\[([^\]]+)\]\((#\/[^)\s]+)\)/g, (_, a, r) => `<a class="chatlink" href="${r}">${a} ←</a>`).replace(/\*\*([^*]+)\*\*/g, '<b>$1</b>');
+  return h.split(/\n{2,}/).map(p => { const L = p.split('\n');
+    if (L.every(l => /^\s*([•\-*]|\d+[.)])\s+/.test(l))) return `<ul>${L.map(l => `<li>${l.replace(/^\s*([•\-*]|\d+[.)])\s+/, '')}</li>`).join('')}</ul>`;
+    if (/^#{1,4}\s/.test(p)) return `<h4>${p.replace(/^#{1,4}\s/, '')}</h4>`;
+    return `<p>${L.join('<br>')}</p>`; }).join(''); };
+const chatMsgHTML = m => `<div class="chatmsg ${m.role === 'user' ? 'me' : 'bot'}">${m.role === 'user' ? esc(m.content) : chatMd(m.content)}${m.links && m.links.length ? `<div class="chatlinks">${m.links.map(l => `<a class="chip" href="${l.route}">${esc(l.title)}</a>`).join('')}</div>` : ''}</div>`;
+function chatPaint(){
+  const p = $('#chatp'); if (!p) return; const M = CHAT_MODES[CH.mode], H = chatHist(CH.mode);
+  p.dataset.mode = CH.mode; p.querySelector('.chath .ico').textContent = M.icon; p.querySelector('.chath b').textContent = M.title; p.querySelector('.chath small').textContent = M.sub + (AI.available() ? '' : ' · מצב חינמי');
+  p.querySelectorAll('[data-chatmode]').forEach(b => b.classList.toggle('on', b.dataset.chatmode === CH.mode));
+  $('#chatlog').innerHTML = `<div class="chatmsg bot hello">${chatMd(M.hello)}${AI.available() ? '' : `<p class="muted" style="font-size:13px">ℹ️ כאן אין חיבור ל-Claude, ולכן אני עונה מהמנוע המהיר של האתר עם קישורים. לשיחה מלאה – פותחים את האתר בקישור של Claude.</p>`}</div>${H.map(chatMsgHTML).join('')}${H.length ? '' : `<div class="chatchips">${M.chips.map(c => `<button class="chip" data-chatq="${esc(c)}">${esc(c)}</button>`).join('')}</div>`}`;
+  $('#chatlog').scrollTop = 1e9;
+  $('#chatspk').classList.toggle('on', CH.speak);
+}
+function chatOpen(mode){
+  if (!$('#chatp')) {
+    const p = document.createElement('div'); p.id = 'chatp'; p.className = 'chatp'; p.hidden = true;
+    p.innerHTML = `<div class="chath"><span class="ico"></span><div class="grow"><b></b><small></small></div><button class="iconbtn" id="chatspk" title="הקראת התשובות בקול">🔊</button><button class="iconbtn" id="chatnew" title="שיחה חדשה">🗑️</button><button class="iconbtn" id="chatmin" title="מזעור">➖</button></div>
+      <div class="chatmodes"><button class="chip" data-chatmode="assist">💬 העוזר של האתר</button><button class="chip" data-chatmode="therapist">🧑‍⚕️ מטפל וירטואלי</button></div>
+      <div class="chatlog" id="chatlog" aria-live="polite"></div>
+      <form class="chatin" id="chatform"><textarea id="chatq" rows="1" placeholder="כתבו כאן…"></textarea>${chatMic() ? '<button type="button" class="iconbtn" id="chatmic" title="דיבור">🎤</button>' : ''}<button class="btn primary" id="chatsend" type="submit">שליחה</button></form>`;
+    document.body.appendChild(p);
+    const fab = document.createElement('button'); fab.id = 'chatfab'; fab.className = 'chatfab'; fab.hidden = true; fab.innerHTML = '💬'; fab.title = 'חזרה לשיחה'; fab.onclick = () => chatMin(false); document.body.appendChild(fab);
+    $('#chatform').onsubmit = e => { e.preventDefault(); chatSend($('#chatq').value); };
+    $('#chatq').addEventListener('keydown', e => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); chatSend($('#chatq').value); } });
+    $('#chatq').addEventListener('input', e => { e.target.style.height = 'auto'; e.target.style.height = Math.min(160, e.target.scrollHeight) + 'px'; });
+    $('#chatmin').onclick = () => chatMin(true);
+    $('#chatnew').onclick = () => { if (CH.busy && CH.ctl) CH.ctl.abort(); chatHush(); chatHist(CH.mode).length = 0; chatSave(CH.mode); chatPaint(); };
+    $('#chatspk').onclick = () => { CH.speak = !CH.speak; if (!CH.speak) try { speechSynthesis.cancel(); } catch (e) {} chatPaint(); };
+    if ($('#chatmic')) $('#chatmic').onclick = chatListen;
+    p.addEventListener('click', e => { const m = e.target.closest('[data-chatmode]'); if (m) { CH.mode = m.dataset.chatmode; chatPaint(); return; }
+      const q = e.target.closest('[data-chatq]'); if (q) { chatSend(q.dataset.chatq); return; }
+      if (e.target.closest('a[href^="#/"]') && chatMobile()) chatMin(true); });
+  }
+  if (mode) CH.mode = mode;
+  $('#chatp').hidden = false; $('#chatfab').hidden = true; document.body.classList.add('chatopen'); chatPaint(); if (!chatMobile()) $('#chatq').focus();
+}
+function chatMin(min){ const p = $('#chatp'); if (!p) return; p.hidden = min; $('#chatfab').hidden = !min; document.body.classList.toggle('chatopen', !min); if (!min) chatPaint(); }
+/* ---- voice conversation: the microphone stays open for the whole talk. When the user starts speaking while the answer is being said
+   (or still being written), the voice stops at once and the new words go in as an interruption the next answer responds to. ---- */
+const chatBusyTalk = () => CH.busy || (('speechSynthesis' in window) && (speechSynthesis.speaking || speechSynthesis.pending));
+const chatEcho = t => { const a = norm(t).trim(); return a.length < 4 || (CH.saying && norm(CH.saying).includes(a)); };   // the speakers heard by the microphone
+function chatHush(){ try { speechSynthesis.cancel(); } catch (e) {} CH.saying = ''; CH.sayQ = []; }
+function chatListen(){
+  const R = window.SpeechRecognition || window.webkitSpeechRecognition; if (!R) return;
+  const b = $('#chatmic');
+  if (CH.voice) { CH.voice = false; chatHush(); if (CH.rec) try { CH.rec.stop(); } catch (e) {} b.classList.remove('on'); $('#chatq').placeholder = 'כתבו כאן…'; return; }
+  CH.voice = true; b.classList.add('on'); $('#chatq').placeholder = '🎤 מקשיב… אפשר לדבר בכל רגע, גם באמצע התשובה';
+  const start = () => { if (!CH.voice) return; const r = CH.rec = new R(); r.lang = 'he-IL'; r.interimResults = true; r.continuous = true;
+    r.onresult = e => { let fin = '', mid = '';
+      for (let i = e.resultIndex; i < e.results.length; i++) { const x = e.results[i]; if (x.isFinal) fin += x[0].transcript; else mid += x[0].transcript; }
+      if (mid && chatBusyTalk() && !chatEcho(mid) && mid.trim().split(/\s+/).length >= 2) chatHush();   // he started talking – stop speaking now
+      if (mid) $('#chatq').value = mid;
+      fin = fin.trim(); if (!fin || chatEcho(fin)) return;
+      const cut = chatBusyTalk(); if (cut) { chatHush(); if (CH.ctl) CH.ctl.abort(); }
+      $('#chatq').value = ''; setTimeout(() => chatSend(fin, {voice: true, interrupted: cut}), cut ? 350 : 0); };
+    r.onend = () => { CH.rec = null; if (CH.voice) setTimeout(start, 250); };
+    r.onerror = e => { if (e.error === 'not-allowed' || e.error === 'service-not-allowed') { CH.voice = false; b.classList.remove('on'); } };
+    try { r.start(); } catch (e) { setTimeout(start, 500); } };
+  start();
+}
+function chatSay(t, force){
+  if (!(CH.speak || force || CH.voice) || !('speechSynthesis' in window)) return;
+  chatHush(); const v = mvVoice();
+  CH.sayQ = String(t).replace(/\[([^\]]+)\]\([^)]+\)/g, '$1').replace(/[*#•]/g, '').replace(/⚠️|🌐|ℹ️/g, '').split(/(?<=[.!?:])\s+|\n+/).map(s => s.trim()).filter(Boolean);   // sentence by sentence: long utterances get cut off in Chrome
+  const next = () => { const s = CH.sayQ.shift(); if (!s) { CH.saying = ''; return; } CH.saying = s;
+    const u = new SpeechSynthesisUtterance(mvSpeak(s)); u.lang = 'he-IL'; if (v) u.voice = v; u.pitch = mvPitch(v); u.onend = next; u.onerror = () => { CH.saying = ''; }; try { speechSynthesis.speak(u); } catch (e) {} };
+  next();
+}
+
+/* ---- one exchange ---- */
+async function chatSend(q, opt = {}){
+  q = String(q || '').trim(); if (!q) return; if (CH.busy) { if (!opt.interrupted) return; if (CH.ctl) CH.ctl.abort(); await new Promise(r => setTimeout(r, 300)); }
+  const mode = CH.mode, H = chatHist(mode); $('#chatq').value = ''; $('#chatq').style.height = 'auto';
+  H.push({role: 'user', content: q}); chatSave(mode); chatPaint();
+  const hits = chatSearch(q, 6), log = $('#chatlog'), bub = document.createElement('div'); bub.className = 'chatmsg bot typing'; bub.innerHTML = '<span class="dots"><i></i><i></i><i></i></span>'; log.appendChild(bub); log.scrollTop = 1e9;
+  if (!AI.available()) {   // free: the on-device engine + the best places in the site
+    let t = ''; try { t = window.CBT_LOCAL_ANSWER(q) || ''; } catch (e) {}
+    const links = hits.slice(0, 5).map(h => ({title: h.title, route: h.route}));
+    const ans = (t ? t + '\n\n' : '') + (links.length ? 'הנה המקומות באתר שהכי קשורים לשאלה:' : 'לא מצאתי באתר משהו שמתאים לשאלה – נסו לנסח אחרת, או לחפש ב״חיפוש״.');
+    H.push({role: 'assistant', content: ans, links}); chatSave(mode); chatPaint(); chatSay(ans); return;
+  }
+  CH.busy = true; $('#chatsend').disabled = true; CH.ctl = new AbortController();
+  const here = `${($('#title') || {}).textContent || ''} (${location.hash || '#/home'})`;
+  const ctx = hits.length ? `\n\n(תוצאות חיפוש ראשוניות באתר לשאלה – להיעזר או לחפש עוד:\n${hits.map(h => `• ${h.title} [${h.route}] – ${h.snippet}`).join('\n')})` : '';
+  const turns = [{role: 'user', content: CHAT_RULES[mode] + `\n\nהעמוד שפתוח עכשיו באתר: ${here}. אם השאלה קשורה אליו – התייחס אליו.\nהשיחה מתחילה עכשיו.`}, {role: 'assistant', content: 'הבנתי. אני כאן.'},
+    ...H.slice(-16, -1).map(m => ({role: m.role, content: String(m.content).slice(0, 4000)})), {role: 'user', content: (opt.interrupted ? '(נדב קטע אותי באמצע התשובה הקודמת. אני עוצר, מתייחס מיד למה שאמר עכשיו, ולא חוזר על מה שכבר נאמר.)\n' : '') + q + (opt.voice ? '\n(שיחה קולית: עונים בשפה מדוברת, רהוטה וקצרה – עד חמישה משפטים, בלי רשימות. קישורים לעמודים – בסוף, בשורה אחת.)' : '') + ctx}];
+  let tools = CHAT_TOOLS; try { const L = await AI.sample.limits(); if (!L || !L.tools) tools = null; } catch (e) { tools = null; }
+  const onText = ({text}) => { bub.classList.remove('typing'); bub.innerHTML = chatMd(text); log.scrollTop = 1e9; };
+  const run = tl => AI.sample(turns, {modelTier: CHAT_MODES[mode].tier, signal: CH.ctl.signal, onText, ...(tl ? {tools: tl} : {cache: false})});
+  try {
+    let R; try { R = await run(tools); } catch (e) { if (e && e.code === 'tools_unavailable' && tools) R = await run(null); else throw e; }
+    const ans = String(R.text || '').trim() + (R.truncated ? '\n\n(התשובה נקטעה – אפשר לבקש ״המשך״.)' : '');
+    H.push({role: 'assistant', content: ans}); chatSave(mode); chatPaint(); chatSay(ans);
+  } catch (e) {
+    const code = (e && e.code) || 'upstream_error';
+    if (code === 'cancelled') { const said = bub.innerText.trim(); bub.remove(); if (said) { H.push({role: 'assistant', content: said + ' …(נקטע)'}); chatSave(mode); chatPaint(); } }
+    else { if (['not_granted', 'sampling_disabled', 'capability_disabled', 'capability_removed'].includes(code)) AI.disable(code);
+      const part = e && e.text ? String(e.text) : '';
+      H.push({role: 'assistant', content: (part ? part + '\n\n' : '') + '⚠️ ' + (AI_ERR[code] || AI_ERR.upstream_error), links: hits.slice(0, 4).map(h => ({title: h.title, route: h.route}))}); chatSave(mode); chatPaint(); }
+  } finally { CH.busy = false; CH.ctl = null; const s = $('#chatsend'); if (s) s.disabled = false; }
+}
+const chatHomeHTML = () => `<div class="chathome"><button class="chatbig" data-chat="assist"><span class="cbi">💬</span><span><b>העוזר של האתר</b><small>שאלו כל שאלה – טיפולית, חינוכית, מינהלית או מקצועית – והוא יענה ויוביל לעמוד הנכון</small></span></button>
+  <button class="chatbig ther" data-chat="therapist"><span class="cbi">🧑‍⚕️</span><span><b>מטפל וירטואלי</b><small>שיחה טיפולית רציפה ומקצועית על כל בעיה – המשגה ותוכנית צעד אחרי צעד</small></span></button></div>`;
+document.addEventListener('click', e => { const b = e.target.closest('[data-chat]'); if (b) { e.preventDefault(); chatOpen(b.dataset.chat); } });
 
 /* ---- the analysis rules (shared by the CBT applications) ---- */
 const APP_EMO = {'פחד / חרדה': 'fear', 'דאגה': 'fear', 'בושה / מבוכה': 'shame', 'עצב': 'sad', 'ייאוש': 'sad', 'כעס': 'anger', 'תסכול': 'anger', 'אשמה': 'guilt', 'קנאה': 'anger', 'בדידות': 'sad'};
