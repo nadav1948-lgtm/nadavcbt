@@ -2274,6 +2274,14 @@ body,body *{overflow-wrap:normal!important;word-break:normal!important;hyphens:m
 #nav details.navg>summary .t,.nav a .t{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 #nav .navgi a .t{white-space:normal}
 
+/* ---- 📄 printable meeting letter ---- */
+.pdlwrap{position:fixed;inset:0;z-index:95;overflow:auto;background:rgba(10,12,20,.78);backdrop-filter:blur(4px);padding:0 12px 40px}
+.pdlbar{position:sticky;top:0;z-index:2;display:flex;flex-wrap:wrap;align-items:center;gap:10px;margin:0 auto 16px;max-width:210mm;padding:10px 14px;background:var(--panel);border:1px solid var(--line);border-radius:0 0 14px 14px;box-shadow:var(--shadow)}
+.pdlbar .muted{font-size:13px;margin-inline-end:auto}
+.pdletter:focus{outline:3px solid color-mix(in srgb,var(--brand) 50%,transparent);outline-offset:4px}
+body.pdlopen{overflow:hidden}
+@media print{body.pdlopen .shell,body.pdlopen .tabbar,body.pdlopen .modal,body.pdlopen .pdlbar,body.pdlopen #vt-root,body.pdlopen .vtfab{display:none!important}body.pdlopen .pdlwrap{position:static;background:#fff;padding:0;overflow:visible}body.pdlopen .pdletter{box-shadow:none;width:auto;min-height:0}}
+
 </style>
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="apple-touch-icon" href="icon-192.png">
@@ -8793,7 +8801,7 @@ function pdMeetHTML(text, A, domsLow, domsHigh, dxT){
   ].filter(Boolean);
   const qs = ['מה הצוות רואה בכיתה – האם זה תואם את ממצאי האבחון?', 'אילו התאמות כבר ניתנות היום, ומה עובד?', 'מה היעד הראשון שנמדוד עד פגישת המעקב?', 'מה חשוב להורים, ומה הם יכולים לקחת על עצמם?'];
   const recList = (t, arr) => arr.length ? `<h4>${t}</h4><ul class="clean">${arr.slice(0, 5).map(r => `<li>${cut(r.s)}</li>`).join('')}</ul>` : '';
-  return `<div class="panel pdmeet" id="pdmeet"><div class="pdmhead"><h3>📋 סיכום לקראת פגישת צוות בינמקצועי</h3><div class="actions no-print"><button class="btn sm" data-pdcopy="1">📋 העתקה</button><button class="btn sm" data-pdprint="1">🖨️ הדפסה</button></div></div>
+  return `<div class="panel pdmeet" id="pdmeet"><div class="pdmhead"><h3>📋 סיכום לקראת פגישת צוות בינמקצועי</h3><div class="actions no-print"><button class="btn sm primary" data-pdletter="1">📄 מכתב להדפסה</button><button class="btn sm" data-pdcopy="1">📋 העתקה</button><button class="btn sm" data-pdprint="1">🖨️ הדפסה</button></div></div>
     <p class="muted" style="margin-top:0">לשימוש היועץ. פרטים מזהים הוסרו – הילד מכונה ״הילד״. תאריך הפגישה: ____ · משתתפים: ____</p>
     <table class="pdmt"><tr><th>👦 הילד</th><td>${grade ? `כיתה ${esc(grade)}` : 'כיתה: ____'}${age ? ` · גיל ${esc(age)}` : ''}</td></tr>
       <tr><th>❓ סיבת ההפניה</th><td>${why ? esc(why) : '____ (לא זוהתה בדוח)'}</td></tr>
@@ -8808,7 +8816,7 @@ function pdMeetHTML(text, A, domsLow, domsHigh, dxT){
 }
 function pdMeetAI(M){
   const arr = x => Array.isArray(x) ? x.filter(Boolean) : [], li = x => `<ul class="clean">${arr(x).map(s => `<li>${esc(s)}</li>`).join('')}</ul>`;
-  return `<div class="panel pdmeet"><div class="pdmhead"><h3>📋 סיכום לקראת פגישת צוות בינמקצועי – Claude</h3><div class="actions no-print"><button class="btn sm" data-pdcopy="1">📋 העתקה</button><button class="btn sm" data-pdprint="1">🖨️ הדפסה</button></div></div>
+  return `<div class="panel pdmeet"><div class="pdmhead"><h3>📋 סיכום לקראת פגישת צוות בינמקצועי – Claude</h3><div class="actions no-print"><button class="btn sm primary" data-pdletter="1">📄 מכתב להדפסה</button><button class="btn sm" data-pdcopy="1">📋 העתקה</button><button class="btn sm" data-pdprint="1">🖨️ הדפסה</button></div></div>
     <p class="muted" style="margin-top:0">לשימוש היועץ. פרטים מזהים הוסרו. תאריך הפגישה: ____ · משתתפים: ____</p>
     <table class="pdmt"><tr><th>🎯 השורה התחתונה</th><td><b>${esc(M.bottom || '–')}</b></td></tr>${M.why ? `<tr><th>❓ סיבת ההפניה</th><td>${esc(M.why)}</td></tr>` : ''}
       <tr><th>💪 חוזקות</th><td>${esc(arr(M.strengths).join(' · ') || '–')}</td></tr><tr><th>🧩 צרכים</th><td>${esc(arr(M.needs).join(' · ') || '–')}</td></tr></table>
@@ -8816,7 +8824,58 @@ function pdMeetAI(M){
     ${arr(M.roles).length ? `<h4 class="pdmh">👥 חלוקת תפקידים מוצעת</h4><table class="pdmt">${arr(M.roles).map(r => `<tr><th>${esc(r.who || '')}</th><td>${esc(r.what || '')}<div class="pdmline">עד: ______</div></td></tr>`).join('')}</table>` : ''}
     ${arr(M.questions).length ? `<h4 class="pdmh">💬 שאלות לדיון בצוות</h4>${li(M.questions)}` : ''}</div>`;
 }
+/* ---- 📄 the meeting brief as a formal letter: editable on screen, printed or saved as a standalone HTML file (opens in any browser or in Word) ---- */
+const PD_LETTER_CSS = `.pdletter{direction:rtl;background:#fff;color:#111;width:min(210mm,100%);min-height:297mm;margin:0 auto;padding:18mm 20mm;box-sizing:border-box;font:12pt/1.65 'David','Frank Ruehl CLM','Times New Roman',serif;box-shadow:0 10px 40px rgba(0,0,0,.35)}
+.pdletter *{color:#111!important;background:none!important;box-shadow:none!important}
+.pdletter .lt-top{display:flex;justify-content:space-between;align-items:flex-start;border-bottom:2px solid #222;padding-bottom:8px;margin-bottom:14px;font-size:11pt}
+.pdletter .lt-conf{display:inline-block;border:1.5px solid #222;padding:2px 10px;font-weight:700;font-size:10.5pt;margin-bottom:10px}
+.pdletter h1{font-size:15pt;margin:10px 0 4px;text-decoration:underline}
+.pdletter h3,.pdletter h4{font-size:12.5pt;margin:14px 0 4px}
+.pdletter table{width:100%;border-collapse:collapse;margin:6px 0 10px;font-size:11pt}
+.pdletter th,.pdletter td{border:1px solid #999;padding:5px 8px;text-align:right;vertical-align:top}
+.pdletter th{width:130px;font-weight:700}
+.pdletter ul{margin:4px 0;padding-right:20px}
+.pdletter .pdmgrid{display:block}
+.pdletter .lt-sign{margin-top:28px}
+.pdletter .lt-foot{margin-top:24px;border-top:1px solid #999;padding-top:6px;font-size:9.5pt}
+@page{size:A4;margin:0}`;
+function pdLetterHTML(m){
+  const c = m.cloneNode(true); c.querySelectorAll('.no-print,.actions,.pdmhead,p.muted').forEach(x => x.remove());
+  c.querySelectorAll('.pdmline').forEach(x => x.textContent = 'משימה: ________________  עד: __________');
+  c.querySelectorAll('th,h3,h4').forEach(x => x.textContent = x.textContent.replace(/\p{Extended_Pictographic}️?\s*/gu, '').trim());   // a formal letter: headings without emoji
+  const today = new Date().toLocaleDateString('he-IL');
+  return `<div class="pdletter" contenteditable="true" spellcheck="false">
+    <div class="lt-top"><div><b>בס״ד</b><br>בית הספר: ____________________</div><div>תאריך: ${today}</div></div>
+    <div class="lt-conf">חסוי – לשימוש הצוות הבינמקצועי בלבד</div>
+    <p>לכבוד<br>חברי הצוות הבינמקצועי</p>
+    <h1>הנדון: סיכום אבחון פסיכודידקטי לקראת דיון צוות – התלמיד: ______________ , כיתה: ______</h1>
+    <p>שלום רב,</p>
+    <p>לקראת דיון הצוות שייערך בתאריך ____________ , מצורף סיכום עיקרי האבחון הפסיכודידקטי שהתקבל, ההמלצות המרכזיות והנושאים להחלטה.</p>
+    ${c.innerHTML}
+    <p>ההחלטות הסופיות יתקבלו בדיון הצוות, בשיתוף ההורים.</p>
+    <div class="lt-sign"><p>בברכה,</p><p>______________________<br>יועץ/ת בית הספר</p><p>טלפון: ______________</p></div>
+    <div class="lt-foot">הסיכום מבוסס על דוח האבחון שהתקבל ואינו מחליף אותו. האבחנה וההמלצות הן של המאבחן/ת. מסמך חסוי – אין להעבירו ללא אישור ההורים.</div></div>`;
+}
+function pdLetterOpen(m){
+  document.querySelector('.pdlwrap')?.remove();
+  const w = document.createElement('div'); w.className = 'pdlwrap';
+  w.innerHTML = `<style>${PD_LETTER_CSS}</style><div class="pdlbar no-print"><b>📄 מכתב לקראת פגישת הצוות</b><span class="muted">אפשר לערוך את הטקסט ישירות על הדף</span><button class="btn sm primary" data-pdl="print">🖨️ הדפסה</button><button class="btn sm" data-pdl="save">⬇️ הורדה כקובץ להדפסה</button><button class="btn sm" data-pdl="close">✖ סגירה</button></div>${pdLetterHTML(m)}`;
+  document.body.appendChild(w); document.body.classList.add('pdlopen');
+  w.addEventListener('click', async e => {
+    const b = e.target.closest('[data-pdl]'); if (!b) return;
+    if (b.dataset.pdl === 'close') { w.remove(); document.body.classList.remove('pdlopen'); return; }
+    if (b.dataset.pdl === 'print') { try { window.print(); } catch (_) {} return; }
+    const doc = `<!doctype html><html lang="he" dir="rtl"><head><meta charset="utf-8"><title>סיכום לקראת פגישת צוות</title><style>body{margin:0;background:#eee}${PD_LETTER_CSS}@media print{body{background:#fff}.pdletter{box-shadow:none;width:auto;min-height:0}}</style></head><body>${w.querySelector('.pdletter').outerHTML.replace(' contenteditable="true"', '')}</body></html>`;
+    const name = `סיכום לקראת פגישת צוות ${new Date().toLocaleDateString('he-IL').replace(/\./g, '-')}.html`;
+    try {
+      const dl = window.claude && window.claude.use ? await window.claude.use('downloads') : null;
+      if (dl) { await dl.save({filename: name, data: doc}); b.textContent = '✅ נשמר'; return; }
+      const a = document.createElement('a'); a.href = URL.createObjectURL(new Blob([doc], {type: 'text/html'})); a.download = name; document.body.appendChild(a); a.click(); setTimeout(() => { URL.revokeObjectURL(a.href); a.remove(); }, 1000); b.textContent = '✅ הורד';
+    } catch (err) { b.textContent = err && err.code === 'declined' ? '⬇️ הורדה כקובץ להדפסה' : '⚠️ ההורדה לא זמינה כאן'; }
+  });
+}
 document.addEventListener('click', e => {
+  const L = e.target.closest('[data-pdletter]'); if (L) { const m = L.closest('.pdmeet'); if (m) pdLetterOpen(m); return; }
   const t = e.target.closest('[data-pdtab],[data-pdprint],[data-pdcopy]'); if (!t) return;
   if (t.dataset.pdtab) { const box = t.closest('#appOut, #appAI') || document; box.querySelectorAll('[data-pdtab]').forEach(b => b.classList.toggle('on', b === t)); box.querySelectorAll('[data-pdv]').forEach(v => v.hidden = v.dataset.pdv !== t.dataset.pdtab); }
   const m = t.closest('.pdmeet');
