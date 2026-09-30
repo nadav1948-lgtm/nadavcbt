@@ -2227,6 +2227,53 @@ body,body *{overflow-wrap:normal!important;word-break:normal!important;hyphens:m
 .pdcurve{display:flex;direction:ltr;margin:4px 0 12px;border-radius:12px;overflow:hidden;font-size:12px;font-weight:700;text-align:center}
 .pdcurve span{background:color-mix(in srgb,var(--c) 30%,var(--panel));padding:8px 2px;border-inline-end:1px solid var(--panel)}
 
+/* ---- 📋 meeting brief ---- */
+.pdtabs{display:flex;gap:8px;flex-wrap:wrap;margin:0 0 14px}
+.pdtabs .chip{font-size:15px;padding:8px 16px;font-weight:600}
+.pdmeet{border:2px solid var(--brand);border-radius:16px}
+.pdmhead{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.pdmhead h3{margin:0}.pdmhead .actions{margin-inline-start:auto}
+.pdmt{width:100%;border-collapse:collapse;margin:8px 0 14px;font-size:14.5px}
+.pdmt th{width:160px;text-align:start;vertical-align:top;padding:8px 10px;background:var(--bg2);border-bottom:1px solid var(--line);font-weight:700;white-space:nowrap}
+.pdmt td{padding:8px 10px;border-bottom:1px solid var(--line);line-height:1.6}
+.pdmgrid{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+.pdmh{margin:12px 0 6px;font-size:15.5px;color:var(--brand-text)}
+.pdmcheck{list-style:none;margin:0;padding:0}.pdmcheck li{padding:6px 0;border-bottom:1px dashed var(--line)}
+.pdmline{color:var(--muted);font-size:13px;margin-top:4px}
+@media (max-width:760px){.pdmgrid{grid-template-columns:1fr}.pdmt th{width:auto;white-space:normal}}
+@media print{body.pdprint .main > *:not(#view),body.pdprint #view .page > *:not(#appOut):not(#appAI){display:none!important}body.pdprint #appOut > *:not([data-pdv]),body.pdprint #appAI > *:not([data-pdv]){display:none!important}body.pdprint [data-pdv]:not(:has(.pdprinting)){display:none!important}body.pdprint [data-pdv]:has(.pdprinting){display:block!important}body.pdprint .pdmeet{border:0;box-shadow:none}}
+
+/* ---- 🧭 sidebar, premium pass: colored icon tiles, card-like groups with a guide line, refined headers ---- */
+.side{padding:20px 14px 16px;gap:2px;background:linear-gradient(180deg,color-mix(in srgb,var(--brand) 6%,var(--glass,var(--bg))) 0%,var(--glass,var(--bg)) 40%)}
+.nav a{gap:12px;padding:5px 8px;border-radius:14px;font-size:14.5px;color:color-mix(in srgb,var(--ink) 82%,transparent);font-weight:550;line-height:1.35}
+.nav a .t{flex:1;min-width:0}
+.nav a .i{width:32px;height:32px;border-radius:10px;font-size:17px;background:linear-gradient(135deg,hsl(var(--nh,250) 80% 62% / .22),hsl(calc(var(--nh,250) + 30) 80% 55% / .12));box-shadow:inset 0 0 0 1px hsl(var(--nh,250) 70% 65% / .22)}
+.nav a:hover{background:hsl(var(--nh,250) 70% 60% / .10);color:var(--ink)}
+.nav a.on{background:linear-gradient(135deg,hsl(var(--nh,250) 72% 52%),hsl(calc(var(--nh,250) + 28) 70% 46%));color:#fff;box-shadow:0 10px 24px -12px hsl(var(--nh,250) 80% 50% / .9)}
+.nav a.on .i{background:rgba(255,255,255,.22);box-shadow:inset 0 0 0 1px rgba(255,255,255,.3)}
+.navpin{padding-bottom:10px;margin-bottom:8px;border-bottom:1px solid color-mix(in srgb,var(--line) 70%,transparent)}
+.navpin::after{content:'מדורים';display:block;margin:12px 10px 0;font-size:11.5px;font-weight:800;letter-spacing:.08em;color:var(--muted);opacity:.8}
+#nav details.navg{margin:3px 0;border-radius:16px;border:1px solid transparent;transition:background-color .2s,border-color .2s}
+#nav details.navg>summary{gap:10px;padding:7px 8px;border-radius:14px;font-weight:700;font-size:14.5px;color:var(--ink)}
+#nav details.navg>summary .i{flex:none;width:32px;height:32px;border-radius:10px;display:grid;place-items:center;font-size:16px;background:linear-gradient(135deg,hsl(var(--gh) 75% 58% / .28),hsl(calc(var(--gh) + 35) 75% 52% / .14));box-shadow:inset 0 0 0 1px hsl(var(--gh) 70% 62% / .25)}
+#nav details.navg>summary .t{flex:1;min-width:0}
+#nav details.navg>summary .n{font-size:11.5px;font-weight:700;min-width:22px;height:20px;padding:0 6px;border-radius:99px;display:grid;place-items:center;background:hsl(var(--gh) 60% 60% / .16);color:var(--muted)}
+#nav details.navg>summary::after{content:'';width:7px;height:7px;margin:0 6px 3px 4px;border-right:2px solid currentColor;border-bottom:2px solid currentColor;transform:rotate(45deg);opacity:.55;font-size:0;transition:transform .25s ease,opacity .2s}
+#nav details.navg[open]>summary::after{transform:rotate(-135deg);margin-bottom:-3px;opacity:.8}
+#nav details.navg>summary:hover{background:hsl(var(--gh) 70% 60% / .10)}
+#nav details.navg[open]{background:color-mix(in srgb,var(--panel) 70%,transparent);border-color:color-mix(in srgb,var(--line) 80%,transparent);box-shadow:0 8px 24px -18px rgba(0,0,0,.5);padding-bottom:6px}
+#nav details.navg[open]>summary{background:linear-gradient(90deg,transparent,hsl(var(--gh) 70% 60% / .08))}
+#nav .navgi{margin:2px 0 0;margin-inline-start:23px;padding-inline-start:8px;border-inline-start:2px solid hsl(var(--gh) 60% 60% / .28);display:flex;flex-direction:column;gap:1px;animation:navin .25s ease}
+#nav .navgi a{padding:4px 6px;font-size:14px}
+#nav .navgi a .i{width:28px;height:28px;font-size:15px;border-radius:9px}
+#nav details.navg>a{padding-inline-start:8px}
+@keyframes navin{from{opacity:0;transform:translateY(-4px)}to{opacity:1;transform:none}}
+.navbottom{margin-top:10px;padding-top:10px;border-top:1px solid color-mix(in srgb,var(--line) 70%,transparent)}
+@media (prefers-reduced-motion:reduce){#nav .navgi{animation:none}}
+@media (min-width:901px){.shell{grid-template-columns:276px 1fr!important}}
+#nav details.navg>summary .t,.nav a .t{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+#nav .navgi a .t{white-space:normal}
+
 </style>
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="apple-touch-icon" href="icon-192.png">
@@ -5697,8 +5744,8 @@ const navItem = k => k === 'find' ? ['find', '🔍', 'חיפוש'] : k === 'site
 const navShown = n => n && !(LITE && ['students', 'library'].includes(n[0]));
 function navGroups(){ const used = new Set([...NAV_PIN, 'settings', ...NAV_GROUPS.flatMap(g => g[2])]); const rest = NAV.filter(n => !used.has(n[0]));
   return NAV_GROUPS.map(([i, l, ks]) => [i, l, ks.map(navItem).filter(navShown)]).concat(rest.length ? [['➕', 'עוד', rest.filter(navShown)]] : []).filter(g => g[2].length); }
-function navHTML(){ const a = ([k, i, l]) => `<a href="#/${k}" data-nav="${k}"><span class="i">${i}</span>${l}</a>`;
-  return `<div class="navpin">${NAV_PIN.map(navItem).filter(navShown).map(a).join('')}</div>` + navGroups().map(([i, l, items], gi) => `<details class="navg" data-g="${gi}"><summary><span class="i">${i}</span>${esc(l)}</summary>${items.map(a).join('')}</details>`).join('') + (navItem('settings') ? `<div class="navbottom">${a(navItem('settings'))}</div>` : ''); }function moreView(){
+function navHTML(){ const hue = (k, l) => { try { return HUB_HUE[k] ?? hueOf(l); } catch (e) { return hueOf(l); } }, a = ([k, i, l]) => `<a href="#/${k}" data-nav="${k}" style="--nh:${hue(k, l)}"><span class="i">${i}</span><span class="t">${l}</span></a>`;
+  return `<div class="navpin">${NAV_PIN.map(navItem).filter(navShown).map(a).join('')}</div>` + navGroups().map(([i, l, items], gi) => `<details class="navg" data-g="${gi}" style="--gh:${(gi * 47 + 250) % 360}"><summary><span class="i">${i}</span><span class="t">${esc(l)}</span><span class="n">${items.length}</span></summary><div class="navgi">${items.map(a).join('')}</div></details>`).join('') + (navItem('settings') ? `<div class="navbottom">${a(navItem('settings'))}</div>` : ''); }function moreView(){
   const card = ([k, i, l]) => `<a class="card" href="#/${k}" style="padding:14px;gap:6px;align-items:center;text-align:center"><span style="font-size:30px">${i}</span><span class="name" style="font-size:16px">${l}</span></a>`;
   const grid = items => `<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:10px">${items.map(card).join('')}</div>`;
   return {title: 'כל האזורים', html: grid(NAV_PIN.map(navItem).filter(navShown)) + navGroups().map(([i, l, items]) => `<h2 class="sec">${i} ${esc(l)}</h2>${grid(items)}`).join('') + (navItem('settings') ? `<h2 class="sec">⚙️ הגדרות</h2>${grid([navItem('settings')])}` : '')};
@@ -8701,7 +8748,7 @@ function pdScores(text){
       const at = m.index, key = Math.round(at / 6); if (seen.has(key)) continue; seen.add(key);
       const ls = text.lastIndexOf('\n', at), le = text.indexOf('\n', at + m[0].length), line = text.slice(ls + 1, le < 0 ? undefined : le).trim();
       const ss = K.ss(v), b = pdBand(ss), pct = Math.round(pdPhi((ss - 100) / 15) * 100);
-      out.push({kind: K.name, raw: v, ss, pct: Math.max(1, Math.min(99, pct)), band: b[1], color: b[2], line: line.length > 170 ? line.slice(0, 170) + '…' : line, what: (k === 'ss' ? m[1] : '').trim(), at});
+      const ctx = text.slice(ls + 1, at + m[0].length).split(/[.;]s/).pop().trim(); out.push({ctx, kind: K.name, raw: v, ss, pct: Math.max(1, Math.min(99, pct)), band: b[1], color: b[2], line: line.length > 170 ? line.slice(0, 170) + '…' : line, what: (k === 'ss' ? m[1] : '').trim(), at});
     } });
   return out.sort((a, b) => a.at - b.at);
 }
@@ -8724,6 +8771,60 @@ function pdAnalyze(text){
   [...low.map(x => [x.dom, -1]), ...high.map(x => [x.dom, 1]), ...scores.map(x => [domOf(x.line), x.ss >= 90 ? 1 : x.ss < 85 ? -1 : 0])].forEach(([k, v]) => { const o = byDom[k] = byDom[k] || {lo: 0, hi: 0}; if (v < 0) o.lo++; if (v > 0) o.hi++; });
   return {S, terms, scores, low, high, recs, dx: [...new Set(dx)].slice(0, 6), byDom};
 }
+/* ---- 📋 the counselor's one-page brief for the multidisciplinary team meeting ---- */
+const pdTabsHTML = () => `<div class="pdtabs no-print"><button class="chip on" data-pdtab="plain">🗣️ שווה לכל נפש</button><button class="chip" data-pdtab="meet">📋 סיכום לקראת פגישה – ליועץ</button></div>`;
+const PD_ROLES = [['🧑‍🏫 המחנך', 'יישום ההתאמות בכיתה ובמבחנים, מעקב שבועי ודיווח לצוות'], ['🧩 מורת השילוב / ההוראה המתקנת', 'הוראה ממוקדת בתחומי הקושי, קביעת יעדים ומדדי התקדמות'], ['🧭 היועץ', 'ריכוז התהליך, ליווי רגשי, קשר עם ההורים והגשה לוועדות'], ['👨‍👩‍👦 ההורים', 'שותפות, תרגול קצר בבית, עדכון על טיפולים חיצוניים']];
+function pdMeetHTML(text, A, domsLow, domsHigh, dxT){
+  const find = re => { const s = A.S.find(x => re.test(x)); return s ? (s.length > 220 ? s.slice(0, 220) + '…' : s) : ''; };
+  const why = find(/(סיבת ההפני|הופנה|הופנתה|הפנייה לאבחון|פנייה לאבחון|לבקשת ההורים|בשל קשיים)/), grade = (text.match(/כית(?:ה|ת)\s+([א-ח]׳?|[א-ח]')/) || [])[1] || '', age = (text.match(/גיל\s*:?\s*(\d{1,2}(?:[.,;]\d{1,2})?)/) || [])[1] || '';
+  const lows = A.scores.filter(s => s.ss < 85).sort((a, b) => a.ss - b.ss).slice(0, 5), highs = A.scores.filter(s => s.ss >= 105).sort((a, b) => b.ss - a.ss).slice(0, 3);
+  const cut = s => esc(s.length > 120 ? s.slice(0, 120) + '…' : s);
+  const recAcc = A.recs.filter(r => /(היבחנות|בחינ|מבחנ|הארכת|הקרא|הכתב|מחשבון|דף נוסחאות|בעל.?פה|התעלמות)/.test(r.s)), recTeach = A.recs.filter(r => /(הוראה מתקנת|שיעורי|תרגול|הוראה|לימוד|קבוצה קטנה|שילוב)/.test(r.s) && !recAcc.includes(r)),
+    recRef = A.recs.filter(r => /(הפני|להפנות|טיפול|רופא|נוירולוג|קלינאית|מרפאה בעיסוק|פסיכולוג|ריפוי)/.test(r.s) && !recAcc.includes(r) && !recTeach.includes(r)), recOther = A.recs.filter(r => ![...recAcc, ...recTeach, ...recRef].includes(r));
+  const decide = [
+    recAcc.length && 'לאשר את ההתאמות בדרכי ההיבחנות (ועדת ההתאמות הבית-ספרית) ולהגדיר מי מיישם ובאילו מקצועות',
+    recTeach.length && 'לקבוע הוראה מתקנת או תמיכה לימודית: מי, כמה שעות, באיזה הרכב, ומה היעד הראשון',
+    (A.dx.length || dxT.length) && 'לבנות או לעדכן תוכנית אישית / תח״י עם יעדים מדידים לתחומי הקושי',
+    recRef.length && 'להחליט על הפניות להמשך בירור או טיפול, ומי מתאם מול ההורים',
+    /(קשב|ADHD|הפרעת קשב)/.test(text) && 'לשקול המלצה להורים לבירור קשב אצל רופא (ההחלטה הרפואית אינה של הצוות)',
+    /(חרד|דימוי עצמי|תסכול|הימנעות|רגש)/.test(text) && 'לקבוע ליווי רגשי – מי מלווה ובאיזו תדירות',
+    'לתאם שיחת משוב עם ההורים ולסכם מה ואיך מסבירים לילד',
+    'לקבוע אחראי תיק ותאריך לפגישת מעקב (בדרך כלל בעוד 6–8 שבועות)'
+  ].filter(Boolean);
+  const qs = ['מה הצוות רואה בכיתה – האם זה תואם את ממצאי האבחון?', 'אילו התאמות כבר ניתנות היום, ומה עובד?', 'מה היעד הראשון שנמדוד עד פגישת המעקב?', 'מה חשוב להורים, ומה הם יכולים לקחת על עצמם?'];
+  const recList = (t, arr) => arr.length ? `<h4>${t}</h4><ul class="clean">${arr.slice(0, 5).map(r => `<li>${cut(r.s)}</li>`).join('')}</ul>` : '';
+  return `<div class="panel pdmeet" id="pdmeet"><div class="pdmhead"><h3>📋 סיכום לקראת פגישת צוות בינמקצועי</h3><div class="actions no-print"><button class="btn sm" data-pdcopy="1">📋 העתקה</button><button class="btn sm" data-pdprint="1">🖨️ הדפסה</button></div></div>
+    <p class="muted" style="margin-top:0">לשימוש היועץ. פרטים מזהים הוסרו – הילד מכונה ״הילד״. תאריך הפגישה: ____ · משתתפים: ____</p>
+    <table class="pdmt"><tr><th>👦 הילד</th><td>${grade ? `כיתה ${esc(grade)}` : 'כיתה: ____'}${age ? ` · גיל ${esc(age)}` : ''}</td></tr>
+      <tr><th>❓ סיבת ההפניה</th><td>${why ? esc(why) : '____ (לא זוהתה בדוח)'}</td></tr>
+      <tr><th>🎯 השורה התחתונה</th><td><b>${A.dx.length ? esc(A.dx[0].length > 200 ? A.dx[0].slice(0, 200) + '…' : A.dx[0]) : dxT.length ? 'מופיעים מונחי אבחנה (' + esc(dxT.map(t => t.t).join(', ')) + ') – לבדוק בסיכום הדוח' : 'לא זוהתה אבחנה מפורשת בדוח'}</b></td></tr>
+      <tr><th>💪 חוזקות</th><td>${domsHigh.length ? esc(domsHigh.map(pdDomName).join(' · ')) : '–'}${highs.length ? `<br><small>${highs.map(s => `${cut(s.ctx)}: ${s.band} (אחוזון ~${s.pct})`).join(' · ')}</small>` : ''}</td></tr>
+      <tr><th>🧩 תחומי קושי</th><td>${domsLow.length ? esc(domsLow.map(pdDomName).join(' · ')) : '–'}${lows.length ? `<br><small>${lows.map(s => `${cut(s.ctx)}: ${s.band} (אחוזון ~${s.pct})`).join(' · ')}</small>` : ''}</td></tr></table>
+    <div class="pdmgrid"><div><h4 class="pdmh">🛠️ המלצות מרכזיות מהדוח</h4>${recList('בבחינות', recAcc)}${recList('בהוראה ובכיתה', recTeach)}${recList('הפניות וטיפולים', recRef)}${recList('נוסף', recOther)}${A.recs.length ? '' : '<p class="muted">לא זוהו המלצות בדוח.</p>'}</div>
+      <div><h4 class="pdmh">✅ החלטות לפגישה</h4><ul class="pdmcheck">${decide.map(x => `<li>☐ ${esc(x)}</li>`).join('')}</ul></div></div>
+    <h4 class="pdmh">👥 חלוקת תפקידים מוצעת</h4><table class="pdmt">${PD_ROLES.map(([w, t]) => `<tr><th>${w}</th><td>${t}<div class="pdmline">משימה: ____________ · עד: ______</div></td></tr>`).join('')}</table>
+    <h4 class="pdmh">💬 שאלות לדיון בצוות</h4><ul class="clean">${qs.map(q => `<li>${esc(q)}</li>`).join('')}</ul>
+    <p class="muted" style="font-size:13px">📄 כל הממצאים וההמלצות לקוחים מהדוח שהוזן; ההחלטות והתפקידים הם הצעה לסדר היום. מעקב: ____</p></div>`;
+}
+function pdMeetAI(M){
+  const arr = x => Array.isArray(x) ? x.filter(Boolean) : [], li = x => `<ul class="clean">${arr(x).map(s => `<li>${esc(s)}</li>`).join('')}</ul>`;
+  return `<div class="panel pdmeet"><div class="pdmhead"><h3>📋 סיכום לקראת פגישת צוות בינמקצועי – Claude</h3><div class="actions no-print"><button class="btn sm" data-pdcopy="1">📋 העתקה</button><button class="btn sm" data-pdprint="1">🖨️ הדפסה</button></div></div>
+    <p class="muted" style="margin-top:0">לשימוש היועץ. פרטים מזהים הוסרו. תאריך הפגישה: ____ · משתתפים: ____</p>
+    <table class="pdmt"><tr><th>🎯 השורה התחתונה</th><td><b>${esc(M.bottom || '–')}</b></td></tr>${M.why ? `<tr><th>❓ סיבת ההפניה</th><td>${esc(M.why)}</td></tr>` : ''}
+      <tr><th>💪 חוזקות</th><td>${esc(arr(M.strengths).join(' · ') || '–')}</td></tr><tr><th>🧩 צרכים</th><td>${esc(arr(M.needs).join(' · ') || '–')}</td></tr></table>
+    <div class="pdmgrid"><div><h4 class="pdmh">🔎 ממצאים מרכזיים</h4>${li(M.key)}<h4 class="pdmh">🛠️ המלצות מרכזיות</h4>${li(M.recs)}</div><div><h4 class="pdmh">✅ החלטות לפגישה</h4><ul class="pdmcheck">${arr(M.decide).map(x => `<li>☐ ${esc(x)}</li>`).join('')}</ul></div></div>
+    ${arr(M.roles).length ? `<h4 class="pdmh">👥 חלוקת תפקידים מוצעת</h4><table class="pdmt">${arr(M.roles).map(r => `<tr><th>${esc(r.who || '')}</th><td>${esc(r.what || '')}<div class="pdmline">עד: ______</div></td></tr>`).join('')}</table>` : ''}
+    ${arr(M.questions).length ? `<h4 class="pdmh">💬 שאלות לדיון בצוות</h4>${li(M.questions)}` : ''}</div>`;
+}
+document.addEventListener('click', e => {
+  const t = e.target.closest('[data-pdtab],[data-pdprint],[data-pdcopy]'); if (!t) return;
+  if (t.dataset.pdtab) { const box = t.closest('#appOut, #appAI') || document; box.querySelectorAll('[data-pdtab]').forEach(b => b.classList.toggle('on', b === t)); box.querySelectorAll('[data-pdv]').forEach(v => v.hidden = v.dataset.pdv !== t.dataset.pdtab); }
+  const m = t.closest('.pdmeet');
+  if (t.dataset.pdprint && m) { m.classList.add('pdprinting'); document.body.classList.add('pdprint'); const done = () => { document.body.classList.remove('pdprint'); m.classList.remove('pdprinting'); }; window.addEventListener('afterprint', done, {once: true}); try { window.print(); } catch (_) {} setTimeout(done, 60000); }
+  if (t.dataset.pdcopy && m) { const txt = m.innerText.replace(/📋 העתקה|🖨️ הדפסה/g, '').replace(/\n{3,}/g, '\n\n').trim();
+    const ok = () => { t.textContent = '✅ הועתק'; setTimeout(() => t.textContent = '📋 העתקה', 1800); };
+    (navigator.clipboard ? navigator.clipboard.writeText(txt).then(ok) : Promise.reject()).catch(() => { const r = document.createRange(); r.selectNodeContents(m); const s = getSelection(); s.removeAllRanges(); s.addRange(r); try { document.execCommand('copy'); ok(); } catch (_) { t.textContent = 'סמנו והעתיקו ידנית'; } }); }
+});
 function pdBuild(d){
   const raw = String(d.text || '').trim();
   if (raw.length < 40) return '<div class="note warn">📋 מדביקים את טקסט האבחון (או את החלקים העיקריים שלו: ממצאים, סיכום והמלצות) – ולוחצים שוב.</div>';
@@ -8746,7 +8847,7 @@ function pdBuild(d){
   const qs = ['אילו מהממצאים הם העיקריים, ואילו משניים?', 'האם הפערים בין המדדים מובהקים סטטיסטית?', 'מה מבין ההמלצות הכי דחוף ליישום בכיתה כבר עכשיו?', 'מתי מומלץ אבחון חוזר, ומה ייבדק בו?'];
   if (!A.scores.some(s => s.kind === 'אחוזון')) qs.unshift('אפשר לקבל את הציונים גם כאחוזונים, כדי להסביר להורים ולמורים?');
   if (/(קשב|ADHD|הפרעת קשב)/.test(text)) qs.push('האם הממצאים בתחום הקשב מצביעים על צורך בהפניה לרופא (נוירולוג או פסיכיאטר)?');
-  return `<div class="panel pdsum" style="border-inline-start:5px solid var(--brand)"><h3>🗣️ בשפה פשוטה – שווה לכל נפש</h3>${plain.map(p => `<p>${esc(p)}</p>`).join('')}<p class="muted" style="font-size:13px">🔒 הניתוח נעשה בדפדפן בלבד. שם, ת״ז, טלפון ותאריכים הוחלפו לפני הניתוח.</p></div>
+  return `${pdTabsHTML()}<div data-pdv="meet" hidden>${pdMeetHTML(text, A, domsLow, domsHigh, dxT)}</div><div data-pdv="plain"><div class="panel pdsum" style="border-inline-start:5px solid var(--brand)"><h3>🗣️ בשפה פשוטה – שווה לכל נפש</h3>${plain.map(p => `<p>${esc(p)}</p>`).join('')}<p class="muted" style="font-size:13px">🔒 הניתוח נעשה בדפדפן בלבד. שם, ת״ז, טלפון ותאריכים הוחלפו לפני הניתוח.</p></div>
     ${A.scores.length ? appPanel('📊 הציונים – מתורגמים לסולם אחד', `<p class="muted" style="margin-top:0">כל ציון הומר לציון תקן (ממוצע 100) ולאחוזון משוער: אחוזון 25 = טוב יותר מ-25 מכל 100 ילדים בגילו. <a href="#/pdterms/אחוזון">מה זה אחוזון?</a></p>
       <div class="pdcurve">${PD_BANDS.slice().reverse().map((b, i, a) => `<span style="--c:${b[2]};flex:${[2, 1, 1, 2, 1, 1, 2][i]}">${b[1]}</span>`).join('')}</div>
       <div style="overflow-x:auto"><table class="pdtable"><thead><tr><th>מהדוח</th><th>הציון</th><th>ציון תקן</th><th>אחוזון</th><th>הטווח</th></tr></thead><tbody>${scoreRows}</tbody></table></div>`) : ''}
@@ -8757,7 +8858,7 @@ function pdBuild(d){
     ${classTips.length ? appPanel('🏫 מה זה אומר בכיתה', `<div class="apcards">${classTips.map(t => `<div class="apcard mech"><h4>${esc(t.t)}</h4><p>${esc(t.cls)}</p><p class="aisrc">📖 מילון המונחים</p></div>`).join('')}</div>`) : ''}
     ${mainTerms.length ? appPanel('📖 המונחים שבדוח – הסבר קצר', `<div class="pdgrid">${mainTerms.map(t => `<div class="pdterm"><div class="pdth"><b>${esc(t.t)}</b><span class="pill">${esc(pdDomName(t.dom))}</span></div><p>${esc(t.d)}</p><a class="muted" href="#/pdterms/${encodeURIComponent(t.t)}">למילון ←</a></div>`).join('')}</div>`) : ''}
     ${appPanel('❓ שאלות לשאול את המאבחן/ת', ul(qs))}
-    <div class="note" style="margin-top:10px">📚 מקורות: הדוח שהוזן (כל ציטוט מסומן 📄) · <a href="#/pdterms">מילון המונחים</a> · <a href="#/track/pd-guide">המדריך ״איך קוראים אבחון פסיכודידקטי״</a>. זהו כלי עזר לקריאה – האבחנה וההמלצות הן של המאבחן/ת.</div>`;
+    <div class="note" style="margin-top:10px">📚 מקורות: הדוח שהוזן (כל ציטוט מסומן 📄) · <a href="#/pdterms">מילון המונחים</a> · <a href="#/track/pd-guide">המדריך ״איך קוראים אבחון פסיכודידקטי״</a>. זהו כלי עזר לקריאה – האבחנה וההמלצות הן של המאבחן/ת.</div></div>`;
 }
 async function pdDeepen(d){
   const box = $('#appAI'); if (!box) return;
@@ -8783,7 +8884,7 @@ ${sc || '(לא זוהו)'}
 ${gl || '(אין)'}
 
 השב אך ורק ב-JSON אחד:
-{"headline": "משפט אחד – השורה התחתונה", "plain": ["3–5 פסקאות קצרות בשפה פשוטה להורה או למורה"], "tested": ["מה נבדק – תחום וכלי, במשפט"], "profile": [{"domain": "תחום", "level": "חוזקה|תקין|קושי קל|קושי משמעותי", "evidence": "מה בדוח מראה זאת", "meaning": "מה זה אומר בפועל", "src": "ציטוט"}], "dx": {"d": "האבחנה כפי שמופיעה בדוח, או ״לא נקבעה אבחנה״", "src": ""}, "recs": [{"t": "ההמלצה", "explain": "מה זה ולמה", "who": "מי מיישם", "src": ""}], "class": ["צעד מעשי למורה בכיתה"], "parents": ["איך להסביר להורים ולילד"], "questions": ["שאלה למאבחן/ת"], "cautions": "הסתייגות חשובה אם יש (אבחון ישן, ציונים חסרים, סתירות) – או ריק", "external": [{"d": "תוספת מקצועית", "src": "מקור"}]}`;
+{"headline": "משפט אחד – השורה התחתונה", "plain": ["3–5 פסקאות קצרות בשפה פשוטה להורה או למורה"], "tested": ["מה נבדק – תחום וכלי, במשפט"], "profile": [{"domain": "תחום", "level": "חוזקה|תקין|קושי קל|קושי משמעותי", "evidence": "מה בדוח מראה זאת", "meaning": "מה זה אומר בפועל", "src": "ציטוט"}], "dx": {"d": "האבחנה כפי שמופיעה בדוח, או ״לא נקבעה אבחנה״", "src": ""}, "recs": [{"t": "ההמלצה", "explain": "מה זה ולמה", "who": "מי מיישם", "src": ""}], "class": ["צעד מעשי למורה בכיתה"], "parents": ["איך להסביר להורים ולילד"], "questions": ["שאלה למאבחן/ת"], "meeting": {"bottom": "השורה התחתונה לצוות במשפט–שניים", "why": "סיבת ההפניה כפי שמופיעה בדוח, או ריק", "key": ["ממצא מרכזי עם הציון והאחוזון (3–6)"], "strengths": ["חוזקה שאפשר להישען עליה"], "needs": ["תחום קושי שדורש מענה"], "recs": ["המלצה מרכזית מהדוח, לפי סדר עדיפות"], "decide": ["החלטה שהצוות צריך לקבל בפגישה"], "roles": [{"who": "תפקיד", "what": "משימה מוצעת"}], "questions": ["שאלה לדיון בצוות"]}, "cautions": "הסתייגות חשובה אם יש (אבחון ישן, ציונים חסרים, סתירות) – או ריק", "external": [{"d": "תוספת מקצועית", "src": "מקור"}]}`;
   box.innerHTML = `<div class="panel" style="border-inline-start:5px solid var(--brand)"><h3>🤖 Claude מסכם את האבחון…</h3><p class="muted" style="margin:0">קורא את הדוח, את הציונים ואת המילון. זה לוקח עד דקה-שתיים.</p><div class="actions" style="margin-top:10px"><button class="btn sm" data-appaistop="1">⏹ עצירה</button></div></div>`;
   $('[data-appaistop]').onclick = () => appCtl && appCtl.abort();
   box.scrollIntoView({behavior: 'smooth', block: 'start'});
@@ -8791,7 +8892,7 @@ ${gl || '(אין)'}
     const R = await AI.ask(prompt, {tier: 'complex', signal: appCtl.signal});
     if (!R || typeof R !== 'object') throw {code: 'invalid_json'};
     const arr = x => Array.isArray(x) ? x.filter(Boolean) : [], lv = {'חוזקה': 'good', 'תקין': 'good', 'קושי קל': 'info', 'קושי משמעותי': 'worse'};
-    let h = `<h2 class="sec">🤖 הסיכום של Claude <small>נספר במכסת המנוי</small></h2>`;
+    let h = `<h2 class="sec">🤖 הסיכום של Claude <small>נספר במכסת המנוי</small></h2>${pdTabsHTML()}<div data-pdv="meet" hidden>${pdMeetAI(R.meeting || {})}</div><div data-pdv="plain">`;
     if (R.cautions) h += `<div class="note danger" style="margin-bottom:12px">⚠️ ${esc(R.cautions)}</div>`;
     if (R.headline) h += appPanel('🎯 השורה התחתונה', `<p style="margin:0;font-size:16px;font-weight:700">${esc(R.headline)}</p>`);
     if (arr(R.plain).length) h += appPanel('🗣️ בשפה פשוטה', arr(R.plain).map(p => `<p style="line-height:1.8">${esc(p)}</p>`).join(''), 'border-inline-start:5px solid var(--brand)');
@@ -8803,7 +8904,7 @@ ${gl || '(אין)'}
     if (arr(R.parents).length) h += appPanel('👨‍👩‍👦 איך מסבירים להורים ולילד', ul(arr(R.parents)));
     if (arr(R.questions).length) h += appPanel('❓ שאלות למאבחן/ת', ul(arr(R.questions)));
     if (arr(R.external).filter(s => s.d).length) h += appPanel('🌐 תוספת מקצועית – לא מהדוח', `<p class="note warn" style="margin:0 0 10px;font-size:14px">מבוסס על הידע הכללי של Claude, לא על הדוח. כדאי לוודא את המקורות.</p><ol style="margin:0;padding-inline-start:22px">${arr(R.external).map(s => `<li>${esc(s.d)} ${aiSrcHTML(s)}</li>`).join('')}</ol>`);
-    box.innerHTML = h + `<p class="muted" style="font-size:13px">נכתב על ידי Claude מתוך הדוח (אחרי הסרת פרטים מזהים) ומילון המונחים. כלי עזר – האבחנה וההמלצות הן של המאבחן/ת.</p>`;
+    box.innerHTML = h + `</div><p class="muted" style="font-size:13px">נכתב על ידי Claude מתוך הדוח (אחרי הסרת פרטים מזהים) ומילון המונחים. כלי עזר – האבחנה וההמלצות הן של המאבחן/ת.</p>`;
   } catch(e){
     if (e && e.code === 'cancelled') { box.innerHTML = ''; return; }
     const code = (e && e.code) || 'upstream_error';
