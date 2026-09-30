@@ -8456,7 +8456,10 @@ function appView(R){
       save(); }));
     $('[data-appbuild]').onclick = () => build(true);
     const ai = $('[data-appai]'); if (ai) ai.onclick = () => { if (!$('#appOut .panel')) build(false); appDeepen(A, d); };
-    $('[data-appclear]').onclick = () => { if (confirm('לנקות את כל הנתונים בטופס?')) { ls.set(appKey(R.id), {}); render(); } };
+    // two taps instead of confirm(): inside Claude's frame the browser's dialogs are blocked, so confirm() silently returns false
+    const clr = $('[data-appclear]'); let armed = 0;
+    clr.onclick = () => { if (Date.now() - armed > 4000) { armed = Date.now(); clr.textContent = '⚠️ לחצו שוב לאישור הניקוי'; clr.classList.add('danger'); setTimeout(() => { if (Date.now() - armed >= 4000) { clr.textContent = '🗑️ ניקוי הטופס'; clr.classList.remove('danger'); } }, 4100); return; }
+      ls.set(appKey(R.id), {}); SYNC.schedule(); toast('🗑️ הטופס נוקה'); render(); };
     if (Object.keys(d).some(k => d[k] !== '' && !(Array.isArray(d[k]) && !d[k].length))) build(false);
   }};
 }
