@@ -2281,6 +2281,9 @@ body,body *{overflow-wrap:normal!important;word-break:normal!important;hyphens:m
 .pdletter:focus{outline:3px solid color-mix(in srgb,var(--brand) 50%,transparent);outline-offset:4px}
 body.pdlopen{overflow:hidden}
 @media print{body.pdlopen .shell,body.pdlopen .tabbar,body.pdlopen .modal,body.pdlopen .pdlbar,body.pdlopen #vt-root,body.pdlopen .vtfab{display:none!important}body.pdlopen .pdlwrap{position:static;background:#fff;padding:0;overflow:visible}body.pdlopen .pdletter{box-shadow:none;width:auto;min-height:0}}
+.p5q{font-size:13px;margin-top:4px}
+.p5q summary{cursor:pointer;font-weight:700;opacity:.8}
+.p5q ul{margin:4px 0 0;padding-inline-start:18px;line-height:1.5}
 
 </style>
 <link rel="manifest" href="manifest.webmanifest">
@@ -8236,7 +8239,7 @@ function trStepHTML0(t, s, D){
   if (s.kind === 'checklist') { const d = D[s.id] || {}, nOn = s.items.filter(it => d[it.id]).length; return intro + `<div class="trchkw"><div class="trringw ${nOn === s.items.length ? 'full' : ''}">${trRing(nOn, s.items.length)}</div><div class="trchecks">${s.items.map(it => `<label class="trcheck ${d[it.id] ? 'on' : ''}"><input type="checkbox" data-trc="${s.id}.${it.id}" ${d[it.id] ? 'checked' : ''}> ${esc(it.t)}</label>`).join('')}</div><p class="muted">סומנו <span class="trchkc">${nOn}</span> מתוך ${s.items.length}</p></div>`; }
   if (s.kind === 'scale') { const d = D[s.id] || {}, mx = s.max ?? 10, mn = s.min ?? 0, vals = s.items.map(it => d[it.id] ?? null).filter(x => x != null), avg = vals.length ? (vals.reduce((a, b) => a + +b, 0) / vals.length).toFixed(1) : '—';
     return intro + `<div class="trscale">${s.items.map(it => { const val = d[it.id] ?? Math.round((mn + mx) / 2); return `<div class="trsrow"><span>${esc(it.t)}</span><input type="range" min="${mn}" max="${mx}" value="${val}" data-trs="${s.id}.${it.id}"><b id="trs-${s.id}-${it.id}" style="color:${lvlColor(Math.round(10 * (val - mn) / (mx - mn || 1)))}">${d[it.id] ?? '·'}</b></div>`; }).join('')}<div class="trsends"><span>${esc(s.low || '')}</span><span>${esc(s.high || '')}</span></div><p><b>ממוצע: <span id="trsavg-${s.id}">${avg}</span></b></p></div>`; }
-  if (s.kind === 'fivep') { const h = s.hints || {}; const box = ([k, l, ph, c]) => `<div class="p5 p5-${k}" style="--c:${c}"><b>${l}</b><textarea class="inp" data-tr="${s.id}.${k}" placeholder="${esc(h[k] || ph)}">${v(k)}</textarea></div>`;
+  if (s.kind === 'fivep') { const h = s.hints || {}; const box = ([k, l, ph, c]) => `<div class="p5 p5-${k}" style="--c:${c}"><b>${l}</b><textarea class="inp" data-tr="${s.id}.${k}" placeholder="${esc(h[k] || ph)}">${v(k)}</textarea>${s.qs && s.qs[k] ? `<details class="p5q"><summary>❓ שאלות מנחות</summary><ul>${s.qs[k].map(q => `<li>${esc(q)}</li>`).join('')}</ul></details>` : ''}</div>`;
     return intro + `<div class="fivep">${FIVEP.map(box).join('')}<div class="p5arrow a1">⬅</div><div class="p5arrow a2">⬇</div><div class="p5arrow a3">⬆</div></div>`; }
   if (s.kind === 'cycle') { const d = D[s.id] || {};
     const c = {title: s.title, nodes: s.nodes.map((x, i) => ({k: x.k, label: x.label, t: d['n' + i] || '', ph: x.ph})), back: s.back, breaks: s.breaks};
@@ -8845,9 +8848,10 @@ function pdLetterHTML(m){
   const c = m.cloneNode(true); c.querySelectorAll('.no-print,.actions,.pdmhead,p.muted').forEach(x => x.remove());
   c.querySelectorAll('.pdmline').forEach(x => x.textContent = 'משימה: ________________  עד: __________');
   c.querySelectorAll('th,h3,h4').forEach(x => x.textContent = x.textContent.replace(/\p{Extended_Pictographic}️?\s*/gu, '').trim());   // a formal letter: headings without emoji
-  const today = new Date().toLocaleDateString('he-IL');
+  const now = new Date(), today = `${now.getDate()}.${now.getMonth() + 1}.${String(now.getFullYear()).slice(-2)} למניינם`;   // Nadav's document convention: right – בס״ד and the full Hebrew date; left – the civil date ״למניינם״
+  let hebToday = ''; try { hebToday = (window.hebDay && window.hebDay.dayInfo(now).hebDate) || ''; } catch (e) {}
   return `<div class="pdletter" contenteditable="true" spellcheck="false">
-    <div class="lt-top"><div><b>בס״ד</b></div><div>${today}</div></div>
+    <div class="lt-top"><div><b>בס״ד</b>${hebToday ? `<br>${hebToday}` : ''}</div><div>${today}</div></div>
     <div class="lt-conf">חסוי – לשימוש הצוות הבינמקצועי בלבד</div>
     <p>לכבוד<br>חברי הצוות הבינמקצועי</p>
     <h1>הנדון: סיכום אבחון פסיכודידקטי לקראת דיון צוות – התלמיד: ______________ , כיתה: ______</h1>
