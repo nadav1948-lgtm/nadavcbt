@@ -2324,6 +2324,9 @@ body.chatopen .vt-fab{display:none!important}
 .chatvoice[hidden]{display:none}
 .chatvoice .rec{display:inline-block;width:11px;height:11px;border-radius:50%;background:#ef4444;margin-inline-end:6px;vertical-align:middle;animation:mvpulse 1s infinite}
 #chatlive{display:block;margin-top:4px;font-weight:700;color:var(--brand-text)}
+.chatroute{display:flex;align-items:center;gap:6px;padding:6px 12px;border-bottom:1px solid var(--line);font-size:13px;color:var(--muted);flex-wrap:wrap}
+.chatroute .chip{font-size:12.5px;padding:4px 10px}
+.chatroute .chip[disabled]{opacity:.45;cursor:not-allowed}
 
 </style>
 <link rel="manifest" href="manifest.webmanifest">
@@ -9141,11 +9144,14 @@ const chatMd = t => { let h = esc(String(t || '')).replace(/\r/g, '');
     if (/^#{1,4}\s/.test(p)) return `<h4>${p.replace(/^#{1,4}\s/, '')}</h4>`;
     return `<p>${L.join('<br>')}</p>`; }).join(''); };
 const chatMsgHTML = m => `<div class="chatmsg ${m.role === 'user' ? 'me' : 'bot'}">${m.role === 'user' ? esc(m.content) : chatMd(m.content)}${m.links && m.links.length ? `<div class="chatlinks">${m.links.map(l => `<a class="chip" href="${l.route}">${esc(l.title)}</a>`).join('')}</div>` : ''}</div>`;
+/* which way each mode answers: the user picks – free (the site's own engine) or Claude (counted in the plan's usage) */
+const chatRoute = m => AI.available() ? ls.get('cbt.chat.route.' + m, 'claude') : 'free';
 function chatPaint(){
   const p = $('#chatp'); if (!p) return; const M = CHAT_MODES[CH.mode], H = chatHist(CH.mode);
-  p.dataset.mode = CH.mode; p.querySelector('.chath .ico').textContent = M.icon; p.querySelector('.chath b').textContent = M.title; p.querySelector('.chath small').textContent = M.sub + (AI.available() ? '' : ' · מצב חינמי');
+  p.dataset.mode = CH.mode; p.querySelector('.chath .ico').textContent = M.icon; p.querySelector('.chath b').textContent = M.title; p.querySelector('.chath small').textContent = M.sub + (chatRoute(CH.mode) === 'free' ? ' · 🆓 מסלול חינמי' : ' · 🤖 עם Claude');
+  p.querySelectorAll('[data-chatroute]').forEach(b => { b.classList.toggle('on', b.dataset.chatroute === chatRoute(CH.mode)); if (b.dataset.chatroute === 'claude') { b.disabled = !AI.available(); b.title = AI.available() ? 'תשובה מלאה מ-Claude – נספרת במכסת המנוי' : 'זמין רק בקישור של Claude'; } });
   p.querySelectorAll('[data-chatmode]').forEach(b => b.classList.toggle('on', b.dataset.chatmode === CH.mode));
-  $('#chatlog').innerHTML = `<div class="chatmsg bot hello">${chatMd(M.hello)}${AI.available() ? '' : `<p class="muted" style="font-size:13px">ℹ️ כאן אין חיבור ל-Claude, ולכן אני עונה מהמנוע המהיר של האתר עם קישורים. לשיחה מלאה – פותחים את האתר בקישור של Claude.</p>`}</div>${H.map(chatMsgHTML).join('')}${H.length ? '' : `<div class="chatchips">${M.chips.map(c => `<button class="chip" data-chatq="${esc(c)}">${esc(c)}</button>`).join('')}</div>`}`;
+  $('#chatlog').innerHTML = `<div class="chatmsg bot hello">${chatMd(M.hello)}${chatRoute(CH.mode) === 'claude' ? '' : `<p class="muted" style="font-size:13px">🆓 במסלול החינמי אני עונה מהמנוע המהיר של האתר – תשובה קצרה עם קישורים, בלי מכסה. ${AI.available() ? 'לשיחה מלאה – בוחרים למעלה ״🤖 עם Claude״.' : 'לשיחה מלאה – פותחים את האתר בקישור של Claude.'}</p>`}</div>${H.map(chatMsgHTML).join('')}${H.length ? '' : `<div class="chatchips">${M.chips.map(c => `<button class="chip" data-chatq="${esc(c)}">${esc(c)}</button>`).join('')}</div>`}`;
   $('#chatlog').scrollTop = 1e9;
 
 }
@@ -9154,6 +9160,7 @@ function chatOpen(mode){ CHLOG.add('open', mode + ' ai=' + AI.status);
     const p = document.createElement('div'); p.id = 'chatp'; p.className = 'chatp'; p.hidden = true;
     p.innerHTML = `<div class="chath"><span class="ico"></span><div class="grow"><b></b><small></small></div><button class="iconbtn" id="chatnew" title="שיחה חדשה">🗑️</button><button class="iconbtn" id="chatmin" title="מזעור">➖</button></div>
       <div class="chatmodes"><button class="chip" data-chatmode="assist">💬 העוזר של האתר</button><button class="chip" data-chatmode="therapist">🧑‍⚕️ מטפל וירטואלי</button></div>
+      <div class="chatroute"><span>מסלול:</span><button class="chip" data-chatroute="free">🆓 חינמי – מהאתר</button><button class="chip" data-chatroute="claude">🤖 עם Claude – נספר במכסה</button></div>
       <div class="chatvoice" id="chatvoice" hidden></div><div class="chatlog" id="chatlog" aria-live="polite"></div>
       <form class="chatin" id="chatform"><textarea id="chatq" rows="1" placeholder="כתבו כאן…"></textarea><button class="btn primary" id="chatsend" type="submit">שליחה</button></form>`;
     document.body.appendChild(p);
@@ -9165,6 +9172,7 @@ function chatOpen(mode){ CHLOG.add('open', mode + ' ai=' + AI.status);
     $('#chatnew').onclick = () => { if (CH.busy && CH.ctl) CH.ctl.abort(); chatHush(); chatHist(CH.mode).length = 0; chatSave(CH.mode); chatPaint(); };
     if ($('#chatmic')) $('#chatmic').onclick = chatListen;
     p.addEventListener('click', e => { const m = e.target.closest('[data-chatmode]'); if (m) { CH.mode = m.dataset.chatmode; chatPaint(); return; }
+      const rt = e.target.closest('[data-chatroute]'); if (rt && !rt.disabled) { ls.set('cbt.chat.route.' + CH.mode, rt.dataset.chatroute); chatPaint(); return; }
       const q = e.target.closest('[data-chatq]'); if (q) { chatSend(q.dataset.chatq); return; }
       if (e.target.closest('a[href^="#/"]') && chatMobile()) chatMin(true); });
   }
@@ -9233,8 +9241,8 @@ async function chatSend0(q, opt = {}){ CHLOG.add('send', q.length + (opt.voice ?
   const t0 = performance.now();
   const hits = chatSearch(q, 6), log = $('#chatlog'), bub = document.createElement('div'); bub.className = 'chatmsg bot typing'; bub.innerHTML = '<span class="dots"><i></i><i></i><i></i></span>'; log.appendChild(bub); log.scrollTop = 1e9;
   CHLOG.add('searched', Math.round(performance.now() - t0) + 'ms hits=' + hits.length);
-  if (!AI.available()) {   // free: the on-device engine + the best places in the site
-    let t = ''; try { t = window.CBT_LOCAL_ANSWER(q) || ''; } catch (e) {}
+  if (chatRoute(mode) === 'free') {   // free: the on-device engine + the best places in the site
+    let t = ''; try { const a = window.CBT_LOCAL_ANSWER(q); t = typeof a === 'string' ? a : (a && a.text) || ''; } catch (e) {}   // the engine returns {text, href}
     const links = hits.slice(0, 5).map(h => ({title: h.title, route: h.route}));
     const ans = (t ? t + '\n\n' : '') + (links.length ? 'הנה המקומות באתר שהכי קשורים לשאלה:' : 'לא מצאתי באתר משהו שמתאים לשאלה – נסו לנסח אחרת, או לחפש ב״חיפוש״.');
     H.push({role: 'assistant', content: ans, links}); chatSave(mode); chatPaint(); chatSay(ans); return;
