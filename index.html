@@ -2145,6 +2145,11 @@ body,body *{overflow-wrap:normal!important;word-break:normal!important;hyphens:m
 .mvch .chip.on{background:var(--brand);color:#fff;border-color:var(--brand)}
 @media (max-width:600px){.mvstage{border-radius:12px;font-size:2.3cqw}.mvctl .btn{padding:8px 10px;font-size:13px}}
 @media (prefers-reduced-motion:reduce){.mva.on .mvin,.mva.on .mve,.mvbg{animation:none!important}}
+.mvhome{display:flex;align-items:center;gap:16px;margin:0 0 18px;padding:16px 20px;border-radius:18px;text-decoration:none;color:#fff;background:linear-gradient(120deg,#6d28d9,#db2777 60%,#f59e0b);box-shadow:0 10px 30px rgba(109,40,217,.35);transition:transform .2s}
+.mvhome:hover{transform:translateY(-3px)}
+.mvhome b{display:block;font-size:19px}
+.mvhome small{display:block;opacity:.9;font-size:14px}
+.mvhplay{flex:none;width:56px;height:56px;border-radius:50%;display:grid;place-items:center;font-size:24px;background:rgba(255,255,255,.25);box-shadow:0 0 0 6px rgba(255,255,255,.15);animation:mvpulse 1.8s ease-in-out infinite}
 
 </style>
 <link rel="manifest" href="manifest.webmanifest">
@@ -5660,7 +5665,7 @@ function home(){
     <div class="actions"><button class="btn" data-act="newstudent">＋ תלמיד חדש</button><a class="btn" href="#/problems">🧭 בחירת בעיה</a><a class="btn" href="#/workflow">🗺️ סדר עבודה</a><a class="btn" href="#/tools">🧰 כלים לילדים</a></div></section>`;
   if (SYNC.status === 'signedout') h += `<div class="note warn no-print">☁️ כדי לראות את התלמידים ואת הספרייה מכל מכשיר – <button class="btn primary sm" data-act="cloud-login">התחברות עם חשבון מיקרוסופט</button></div>`;
   else if (SYNC.status !== 'ok' && SYNC.status !== 'connecting') h += `<div class="note warn no-print">💾 הנתונים נשמרים כרגע רק במכשיר הזה. <a href="#/settings">להגדרת סנכרון עם OneDrive</a></div>`;
-  h += dyTodayStrip();
+  h += dyTodayStrip() + homeMoviesStrip();
   h += `<div class="three" style="margin-top:16px"><div class="stat"><b>${act.length}</b><span>תלמידים בטיפול</span></div><div class="stat"><b>${sessMonth}</b><span>מפגשים החודש</span></div><div class="stat"><b>${PROBLEMS.length}</b><span>מפות טיפול</span></div></div>`;
   h += homeTiles();
   if (a) h += `<h2 class="sec">⭐ בעבודה עכשיו</h2><div class="grid wide">${studentCard(a)}</div>`;
@@ -6588,7 +6593,7 @@ function liteHome(){
     <p>מפות טיפול CBT לבעיות נפוצות בבית הספר היסודי, עוזר לשאלות, סדר עבודה וכלים אינטראקטיביים לילדים.</p>
     <form id="homeask" style="display:flex;gap:8px;margin-top:18px;max-width:720px"><input class="inp" id="homeq" placeholder="💬 שאלו שאלה… למשל: ילד שבוכה כל בוקר בשער" style="flex:1;height:48px;border:0;font-size:16px"><button class="btn primary" type="submit" title="מסלול חינמי">💬 תשובה</button>${claudeTrack() ? `<button class="btn" type="submit" data-claude="1" title="מסלול Claude – נספר במכסת המנוי" style="background:rgba(255,255,255,.16);border-color:rgba(255,255,255,.3);color:#fff">🤖 Claude</button>` : ""}</form>
     <div class="actions"><a class="btn" href="#/problems">🧭 בחירת בעיה</a><a class="btn" href="#/workflow">🗺️ סדר עבודה</a><a class="btn" href="#/tools">🧰 כלים לילדים</a></div></section>`;
-  h += dyTodayStrip();
+  h += dyTodayStrip() + homeMoviesStrip();
   h += `<div class="three"><div class="stat"><b>${PROBLEMS.length}</b><span>מפות טיפול</span></div><div class="stat"><b>${sessions}</b><span>מפגשים מפורטים</span></div><div class="stat"><b>${TOOLS.length}</b><span>כלים לילדים</span></div></div>`;
   h += `<h2 class="sec">🧭 מפות טיפול <small>לפי תחום</small></h2><div class="grid">${PROBLEMS.slice(0, 8).map(problemCard).join('')}</div>
     <div style="margin-top:12px"><a class="btn" href="#/problems">לכל ${PROBLEMS.length} הבעיות ←</a></div>`;
@@ -8297,13 +8302,17 @@ function hubAppsHTML(k){
 /* ---- 🎬 animated guide movies (tracks-zmovie.js, window.MOVIES): emoji actors appear line by line while the browser narrates in Hebrew, with captions ---- */
 const MOVIES = () => window.MOVIES || [];
 const movieFor = tid => MOVIES().find(m => m.track === tid);
+// a big "new movie" strip on the home page, so the movies are easy to find
+const homeMoviesStrip = () => MOVIES().map(m => `<a class="mvhome" href="#/movie/${m.id}"><span class="mvhplay">▶</span><span><b>🎬 ${esc(m.title)}</b><small>${esc(m.sub || '')} · לחצו לצפייה</small></span></a>`).join('');
 function hubMoviesHTML(k){
   const list = MOVIES().filter(m => m.hub === k); if (!list.length) return '';
   return `<h2 class="sec">🎬 סרטון הדרכה <small>סצנות מונפשות עם קריינות בעברית</small></h2><div class="grid" style="margin-bottom:16px">${list.map(m => `<a class="card accent mvcard" href="#/movie/${m.id}" style="--h:${hubHue(k)}"><span class="emoji">▶️</span><span class="name">${esc(m.title)}</span><span class="sub">${esc(m.sub || '')}</span></a>`).join('')}</div>`;
 }
 const MV = {m: null, sc: 0, ln: 0, playing: false, muted: false, rate: 1, timer: 0, token: 0};
 const mvStop = () => { MV.playing = false; MV.token++; clearTimeout(MV.timer); try { speechSynthesis.cancel(); } catch (e) {} };
-const mvVoice = () => { try { return speechSynthesis.getVoices().find(v => /^(he|iw)/i.test(v.lang)); } catch (e) { return null; } };
+// the most natural Hebrew voice available: Edge's online "Natural" voices (Avri, Hila), then Google, then any Hebrew voice
+const mvVoice = () => { try { const v = speechSynthesis.getVoices().filter(x => /^(he|iw)/i.test(x.lang)); return v.find(x => /natural|online/i.test(x.name)) || v.find(x => /google/i.test(x.name)) || v[0]; } catch (e) { return null; } };
+const mvTxt = l => Array.isArray(l) ? l[0] : l;   // a line is text, or [caption, spoken form with niqqud where the voice mispronounces]
 const mvActor = a => `<div class="mva${a.box ? ' isbox' : ''}" data-at="${a.at || 0}" style="${a.ltr ? 'direction:ltr;' : ''}left:${a.x}%;top:${a.y}%;--s:${a.s || 1};--d:${a.d || 0}s"><div class="mvin mv-${a.a || 'pop'}">${a.box ? `<span class="mvbox">${esc(a.box)}</span>` : a.bubble ? `<span class="mvbub solo">${esc(a.bubble)}</span>` : `${a.say ? `<span class="mvbub">${esc(a.say)}</span>` : ''}<span class="mve">${a.e}</span>${a.tag ? `<span class="mvtag">${esc(a.tag)}</span>` : ''}`}</div></div>`;
 function mvSceneHTML(S){
   const C = S.circle, kids = C ? Array.from({length: C.n}, (_, j) => { const an = Math.PI * 2 * (j + .5) / C.n + Math.PI / 2; return {e: j % 3 === 1 ? '🧒' : '👦', x: C.cx + C.rx * Math.cos(an), y: C.cy + C.ry * Math.sin(an), s: 2, a: 'pop', at: C.at, d: j * .08}; }) : [];
@@ -8313,7 +8322,7 @@ function mvPaint(){
   const m = MV.m, S = m.scenes[MV.sc], st = $('#mvstage'); if (!st) return;
   if (st.dataset.sc !== String(MV.sc)) { st.dataset.sc = MV.sc; $('#mvscene').innerHTML = mvSceneHTML(S); }
   st.querySelectorAll('.mva').forEach(el => { el.classList.toggle('on', +el.dataset.at <= MV.ln); el.classList.toggle('now', +el.dataset.at === MV.ln); });
-  $('#mvcap').textContent = MV.ln >= 0 ? S.lines[MV.ln] : '';
+  $('#mvcap').textContent = MV.ln >= 0 ? mvTxt(S.lines[MV.ln]) : '';
   const total = m.scenes.reduce((a, x) => a + x.lines.length, 0), before = m.scenes.slice(0, MV.sc).reduce((a, x) => a + x.lines.length, 0);
   $('#mvbar').style.width = Math.round(100 * (before + Math.max(0, MV.ln + 1)) / total) + '%';
   $('#mvplay').textContent = MV.playing ? '⏸ השהיה' : '▶ הפעלה';
@@ -8324,7 +8333,7 @@ function mvPaint(){
 function mvRun(){
   const tok = ++MV.token; clearTimeout(MV.timer); mvPaint();
   if (!MV.playing || MV.ln < 0) return;
-  const line = MV.m.scenes[MV.sc].lines[MV.ln], est = (1300 + line.length * 72) / MV.rate;
+  const L0 = MV.m.scenes[MV.sc].lines[MV.ln], line = Array.isArray(L0) ? L0[1] : L0, est = (1300 + line.length * 72) / MV.rate;
   let done = false;
   const fin = () => { if (done || tok !== MV.token) return; done = true; MV.timer = setTimeout(() => { if (tok === MV.token && MV.playing) mvStep(); }, 500); };
   if (!MV.muted && 'speechSynthesis' in window) {
@@ -8355,7 +8364,7 @@ function movieView(R){
         <button class="btn" id="mvmute">🔊 קריינות</button><select id="mvrate" class="btn" aria-label="מהירות">${[[0.85, 'איטי'], [1, 'רגיל'], [1.2, 'מהיר']].map(([r, l]) => `<option value="${r}"${r === MV.rate ? ' selected' : ''}>${l}</option>`).join('')}</select><button class="btn" id="mvfull" title="מסך מלא">⛶ מסך מלא</button></div>
       ${tts ? '' : '<div class="note" style="margin-top:8px">🔇 הדפדפן הזה לא תומך בהקראה – הסרטון ירוץ עם כתוביות בלבד.</div>'}
       <div class="chips mvch no-print">${m.scenes.map((S, i) => `<button class="chip" data-mvgo="${i}">${S.icon} ${esc(S.t)}</button>`).join('')}</div></div>
-    <details class="panel" style="margin-top:14px"><summary><b>📜 תמליל מלא</b> <span class="muted">– לקריאה או להדפסה</span></summary>${m.scenes.map((S, i) => `<h3>${i + 1}. ${S.icon} ${esc(S.t)}</h3><p>${S.lines.map(esc).join(' ')}</p>`).join('')}</details>
+    <details class="panel" style="margin-top:14px"><summary><b>📜 תמליל מלא</b> <span class="muted">– לקריאה או להדפסה</span></summary>${m.scenes.map((S, i) => `<h3>${i + 1}. ${S.icon} ${esc(S.t)}</h3><p>${S.lines.map(l => esc(mvTxt(l))).join(' ')}</p>`).join('')}</details>
     <div class="note" style="margin-top:10px">📚 ${trLink(esc(m.src || ''))}</div>`;
   return {title: m.title, html, after(){
     mvStop(); if (MV.m !== m) { MV.m = m; MV.sc = 0; MV.ln = -1; } else if (MV.ln < 0) MV.ln = -1;
