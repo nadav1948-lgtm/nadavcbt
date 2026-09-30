@@ -2351,6 +2351,22 @@ body.chatwin{margin:0;background:var(--bg);overflow:hidden}
 .chatmsg.hello .chatacts{display:none!important}
 @media (hover:none){.chatacts{display:flex;position:static;float:inline-start;margin:-4px 0 4px 6px;box-shadow:none;background:transparent;border:0}}
 
+/* ---- 🧩 student picture – diagnostic directions ---- */
+.dxgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(360px,100%),1fr));gap:12px;margin-bottom:12px}
+.dxcard{--c:#60a5fa;background:var(--panel);border:1px solid var(--line);border-inline-start:5px solid var(--c);border-radius:14px;padding:14px 16px;box-shadow:var(--shadow)}
+.dxcard.strong{--c:#ef4444}.dxcard.mid{--c:#f59e0b}.dxcard.weak{--c:#60a5fa}
+.dxhead{display:flex;align-items:center;gap:10px;margin-bottom:8px}
+.dxhead b{font-size:16px}.dxic{font-size:26px}
+.dxlvl{font-size:13px;font-weight:700;color:var(--c)}
+.dxbar{margin-inline-start:auto;width:80px;height:8px;border-radius:99px;background:var(--bg2);overflow:hidden;flex:none}
+.dxbar i{display:block;height:100%;background:var(--c)}
+.dxev{display:flex;flex-direction:column;gap:4px;font-size:14px;margin:6px 0}
+.dxev .pdq{display:inline;margin:0;padding:1px 6px}
+.dxnote{font-size:13px;color:var(--ok);margin:6px 0}
+.dxwho{font-size:13.5px;margin:8px 0 0;color:var(--muted)}
+.dxcard details{font-size:14px;margin-top:6px}.dxcard summary{cursor:pointer;font-weight:700}
+.dxrisk{border:2px solid var(--danger);background:color-mix(in srgb,var(--danger) 10%,var(--panel))}
+
 </style>
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="apple-touch-icon" href="icon-192.png">
@@ -5730,7 +5746,7 @@ function ui(){
 }
 
 /* ================= routing & shell ================= */
-const NAV = [['home','🏠','בית'],['diary','📅','יומן'],['ask','💬','שאל שאלה'],['problems','🧭','טיפול לפי בעיה'],['cbt','🧠','שיטת טיפול CBT'],['students','🧒','תלמידים'],['workflow','🗺️','סדר עבודה'],['crole','🎯','תפקיד היועץ'],['roles','👥','מי פונה למי'],['circ','📜','חוזרי מנכ״ל'],['aklim','⚖️','אקלים ומדרג התגובות'],['tools','🧰','כלים לילדים'],['quest','📋','שאלונים ומדדים'],['distress','🚨','סימני מצוקה'],['talk','🗣️','ראיון ושיח רגשי'],['sel','💞','למידה רגשית-חברתית'],['mafteach','🧩','כישורי חיים ומפתח הל״ב'],['sped','🧩','חינוך מיוחד והכלה'],['pd','🔎','קריאת אבחונים'],['autism','🧩','אוטיזם – ילדים על הרצף'],['tzalach','🛟','צל״ח – צוות חירום'],['develop','🌳','התפתחות הילד'],['cbtclass','🏫','יישום CBT בכיתה'],['behave','🏅','עיצוב התנהגות'],['groups','👥','הנחיית קבוצות'],['programs','🏗️','תוכניות התערבות'],['transitions','🚪','מעברים'],['newteachers','🌱','מורים חדשים'],['parents','🤝','הורים'],['reports','🎓','תעודות'],['games','🎲','משחקים טיפוליים'],['videos','🎬','סרטונים'],['library','📚','ספרייה'],['settings','⚙️','הגדרות']];
+const NAV = [['home','🏠','בית'],['diary','📅','יומן'],['ask','💬','שאל שאלה'],['problems','🧭','טיפול לפי בעיה'],['cbt','🧠','שיטת טיפול CBT'],['students','🧒','תלמידים'],['workflow','🗺️','סדר עבודה'],['crole','🎯','תפקיד היועץ'],['roles','👥','מי פונה למי'],['circ','📜','חוזרי מנכ״ל'],['aklim','⚖️','אקלים ומדרג התגובות'],['tools','🧰','כלים לילדים'],['quest','📋','שאלונים ומדדים'],['distress','🚨','סימני מצוקה'],['talk','🗣️','ראיון ושיח רגשי'],['sel','💞','למידה רגשית-חברתית'],['mafteach','🧩','כישורי חיים ומפתח הל״ב'],['sped','🧩','חינוך מיוחד והכלה'],['pd','🔎','קריאת אבחונים'],['app/student-picture','🧩','תמונת תלמיד – כיוונים אבחנתיים'],['autism','🧩','אוטיזם – ילדים על הרצף'],['tzalach','🛟','צל״ח – צוות חירום'],['develop','🌳','התפתחות הילד'],['cbtclass','🏫','יישום CBT בכיתה'],['behave','🏅','עיצוב התנהגות'],['groups','👥','הנחיית קבוצות'],['programs','🏗️','תוכניות התערבות'],['transitions','🚪','מעברים'],['newteachers','🌱','מורים חדשים'],['parents','🤝','הורים'],['reports','🎓','תעודות'],['games','🎲','משחקים טיפוליים'],['videos','🎬','סרטונים'],['library','📚','ספרייה'],['settings','⚙️','הגדרות']];
 function route(){ const h = location.hash.replace(/^#\/?/, '').split('/').map(decodeURIComponent); return {r: h[0] || 'home', id: h[1], sub: h[2], x: h[3]}; }
 let timers = [];
 function clearTimers(){ timers.forEach(t => { clearTimeout(t); clearInterval(t); }); timers = []; }
@@ -5809,7 +5825,7 @@ function mainFile(p){
 /* the side menu in 7 groups (approved by the user): pinned items on top, collapsible groups, settings at the bottom; any NAV item not listed falls into "עוד" */
 const NAV_PIN = ['home', 'diary', 'ask', 'find', 'sitemap'];
 const NAV_GROUPS = [
-  ['🧒', 'הטיפול בתלמיד', ['cbt', 'problems', 'students', 'workflow', 'talk', 'quest', 'distress', 'behave', 'develop', 'tools', 'games']],
+  ['🧒', 'הטיפול בתלמיד', ['cbt', 'problems', 'app/student-picture', 'students', 'workflow', 'talk', 'quest', 'distress', 'behave', 'develop', 'tools', 'games']],
   ['🏫', 'כיתה ובית ספר', ['cbtclass', 'behave', 'sel', 'mafteach', 'programs', 'groups', 'transitions']],
   ['🚨', 'מצבי חירום ואקלים מיטבי', ['tzalach', 'aklim']],
   ['🧩', 'אוכלוסיות מיוחדות', ['sped', 'pd', 'autism']],
@@ -9353,6 +9369,168 @@ async function chatSend0(q, opt = {}){ CHLOG.add('send', q.length + (opt.voice ?
 const chatHomeHTML = () => `<div class="chathome"><button class="chatbig" data-chat="assist"><span class="cbi">💬</span><span><b>העוזר של האתר</b><small>שאלו כל שאלה – טיפולית, חינוכית, מינהלית או מקצועית – והוא יענה ויוביל לעמוד הנכון</small></span></button>
   <button class="chatbig ther" data-chat="therapist"><span class="cbi">🧑‍⚕️</span><span><b>מטפל וירטואלי</b><small>שיחה טיפולית רציפה ומקצועית על כל בעיה – המשגה ותוכנית צעד אחרי צעד</small></span></button></div>`;
 document.addEventListener('click', e => { const b = e.target.closest('[data-chat]'); if (b) { e.preventDefault(); chatOpen(b.dataset.chat); } });
+
+/* ---- 🧩 student picture – possible diagnostic directions (APPS['student-picture']) ----
+   The counselor pours in everything known about one student (teacher, parents, assessments, observation, history, a quick sign checklist).
+   A rule engine weighs every direction by its signs – checklist items count more than free-text mentions, the same sign from two sources
+   strengthens it, assessment scores add weight – and returns: risk signs first, then ranked directions with the evidence behind each,
+   what is still missing to confirm or rule it out, who diagnoses, and the matching treatment map. It is an indication, never a diagnosis. */
+const DX_SIGNS = [
+  ['🎯 קשב', ['מתקשה להתרכז לאורך זמן', 'מוסח בקלות', 'אימפולסיבי – פועל בלי לחשוב', 'לא יושב במקום / תזזיתי', 'שוכח ומאבד חפצים', 'לא מסיים משימות']],
+  ['📖 למידה', ['קורא לאט / עם שגיאות', 'קושי בכתיבה / כתב יד', 'שגיאות כתיב רבות', 'קושי בחשבון', 'מתקשה להבין הוראות', 'פער בין יכולת להישגים', 'מתקשה כמעט בכל המקצועות']],
+  ['💬 שפה ותקשורת', ['אוצר מילים דל', 'מתקשה לבטא את עצמו', 'קושי בהבנת שפה', 'מדבר רק בבית / לא מדבר בבית הספר']],
+  ['👥 חברה', ['אין חברים / בודד', 'נדחה על ידי ילדים', 'קושי בקשר עין', 'לא מבין רמזים חברתיים', 'נוקשות ושגרה', 'תחומי עניין צרים / חזרתיים', 'נפגע מהצקות', 'פוגע באחרים']],
+  ['💛 רגש', ['דואג הרבה / חרד', 'פחדים ספציפיים', 'מסרב להגיע לבית הספר', 'עצוב / בוכה הרבה', 'אין הנאה / אין כוח', 'דימוי עצמי נמוך', 'מתבייש / נמנע מדיבור מול כולם', 'טקסים / מחשבות חוזרות', 'תלונות גופניות (בטן, ראש)', 'חרדה לפני מבחנים']],
+  ['⚡ התנהגות', ['התפרצויות כעס', 'מתריס / לא מקבל סמכות', 'אלימות פיזית', 'טיקים', 'קושי במעברים ושינויים']],
+  ['🖐️ גוף וחושים', ['רגישות לרעש / מגע', 'קושי מוטורי / מגושם', 'קשיי שינה / עייפות', 'הרטבה']],
+  ['🏠 משפחה וסביבה', ['גירושין / פרידה במשפחה', 'אבל / אובדן', 'מעבר דירה / בית ספר', 'אירוע טראומטי / מלחמה', 'לידת אח', 'מצוקה כלכלית / משפחתית']],
+  ['🚨 סימני סיכון', ['דיבור על מוות / פגיעה עצמית', 'חשד לפגיעה / הזנחה', 'סימני חבלה', 'נסיגה פתאומית וחדה']]
+];
+const DX_RISK = {kw: ['למות', 'להתאבד', 'אובדנ', 'לפגוע בעצמו', 'פוגע בעצמו', 'חותך את', 'אין טעם לחיות', 'אין לי בשביל מה', 'מכים אותו בבית', 'נגע בו', 'פגיעה מינית', 'הזנחה', 'מוזנח', 'חבלות', 'סימנים כחולים', 'רעב', 'מפחד לחזור הביתה'], chips: ['דיבור על מוות / פגיעה עצמית', 'חשד לפגיעה / הזנחה', 'סימני חבלה', 'נסיגה פתאומית וחדה']};
+const DX_H = [
+  {id: 'adhd', icon: '🎯', name: 'הפרעת קשב וריכוז (עם או בלי היפראקטיביות)', map: 'adhd-org', who: 'רופא – נוירולוג ילדים או פסיכיאטר, על סמך שאלונים מההורים ומהמורים', kw: ['קשב', 'ריכוז', 'מוסח', 'מתפזר', 'חולם', 'שוכח', 'מאבד', 'אימפולסיב', 'לא יושב', 'לא שקט', 'תזזית', 'היפראקטיב', 'ADHD', 'לא מסיים', 'קופץ'], chips: ['מתקשה להתרכז לאורך זמן', 'מוסח בקלות', 'אימפולסיבי – פועל בלי לחשוב', 'לא יושב במקום / תזזיתי', 'שוכח ומאבד חפצים', 'לא מסיים משימות'], pd: ['attn'], ask: ['האם הקושי מופיע גם בבית וגם בבית הספר, ולאורך יותר מחצי שנה?', 'מתי התחיל – לפני גיל 12?', 'איך הוא ישן? (עייפות מחקה קשב)', 'האם הקושי מופיע גם במקצועות שהוא אוהב?']},
+  {id: 'dyslexia', icon: '📖', name: 'לקות למידה בקריאה (דיסלקציה)', link: '#/pd', who: 'מאבחן דידקטי או פסיכודידקטי', kw: ['קריאה', 'קורא לאט', 'שגיאות קריאה', 'פענוח', 'דיסלקציה', 'מנחש מילים', 'מתקשה לקרוא', 'קורא בקושי'], chips: ['קורא לאט / עם שגיאות', 'פער בין יכולת להישגים'], pd: ['read', 'phon'], ask: ['האם הוא מבין טוב כשמקריאים לו?', 'האם קיבל הוראה מתקנת – והאם השתפר?', 'האם יש היסטוריה משפחתית של קושי בקריאה?']},
+  {id: 'dysgraphia', icon: '✍️', name: 'לקות בכתיבה (דיסגרפיה / קושי בכתיב)', link: '#/pd', who: 'מאבחן דידקטי; בקושי מוטורי – גם מרפאה בעיסוק', kw: ['כתב יד', 'כתיב', 'כותב לאט', 'אחיזת', 'דיסגרפ', 'גרפומוטור', 'העתקה', 'לא קריא'], chips: ['קושי בכתיבה / כתב יד', 'שגיאות כתיב רבות'], pd: ['write', 'motor'], ask: ['האם הקושי בצורת הכתב, בכתיב, או בניסוח?', 'האם בעל-פה הוא מבטא את עצמו טוב יותר?']},
+  {id: 'dyscalculia', icon: '🔢', name: 'לקות למידה בחשבון (דיסקלקוליה)', link: '#/pd', who: 'מאבחן דידקטי', kw: ['חשבון', 'מתמטיקה', 'מספרים', 'לוח הכפל', 'דיסקלקול', 'סופר באצבעות'], chips: ['קושי בחשבון'], pd: ['math'], ask: ['האם הקושי בתפיסת כמות, בעובדות יסוד או בבעיות מילוליות?', 'האם הקושי הוא רק בחשבון או בכל המקצועות?']},
+  {id: 'language', icon: '💬', name: 'קושי שפתי (לקות שפה)', who: 'קלינאית תקשורת', kw: ['אוצר מילים', 'שפה', 'להתבטא', 'הבעה', 'הבנת הוראות', 'דיבור', 'מגמגם', 'גמגום', 'הגייה', 'משפטים קצרים'], chips: ['אוצר מילים דל', 'מתקשה לבטא את עצמו', 'קושי בהבנת שפה', 'מתקשה להבין הוראות'], pd: ['lang'], ask: ['האם דיבר באיחור כפעוט?', 'האם הקושי הוא בהבנה, בהבעה או בשניהם?', 'האם יש שפה נוספת בבית?']},
+  {id: 'asd', icon: '🧩', name: 'מאפיינים של הרצף האוטיסטי', link: '#/autism', who: 'אבחון רב-מקצועי: רופא התפתחותי או פסיכיאטר, ופסיכולוג', kw: ['קשר עין', 'נוקשות', 'שגרה', 'חזרתי', 'נושא אחד', 'רגישות לרעש', 'חושי', 'רמזים חברתיים', 'ספקטרום', 'אוטיזם', 'מדבר לעצמו', 'מתקשה בשינויים', 'משחק לבד'], chips: ['קושי בקשר עין', 'לא מבין רמזים חברתיים', 'נוקשות ושגרה', 'תחומי עניין צרים / חזרתיים', 'רגישות לרעש / מגע', 'קושי במעברים ושינויים'], ask: ['האם הקושי החברתי היה קיים כבר בגן?', 'האם יש תחומי עניין מיוחדים או תנועות חוזרות?', 'איך הוא מגיב לשינויים בלתי צפויים?']},
+  {id: 'intellect', icon: '🧠', name: 'יכולת קוגניטיבית נמוכה מהממוצע (גבולית או מוגבלות שכלית)', link: '#/sped', who: 'פסיכולוג חינוכי – הערכה קוגניטיבית', kw: ['איטי בלמידה', 'מתקשה בכל המקצועות', 'משכל נמוך', 'אינטליגנציה גבולית', 'מוגבלות שכלית', 'לא מבין את החומר'], chips: ['מתקשה כמעט בכל המקצועות'], cogLow: true, ask: ['האם הקושי כללי בכל התחומים, כולל תפקוד יומיומי?', 'האם נעשתה הערכה קוגניטיבית?']},
+  {id: 'motor', icon: '🖐️', name: 'קושי מוטורי או בעיבוד חושי', who: 'מרפאה בעיסוק', kw: ['מגושם', 'מוטורי', 'נופל', 'תיאום', 'גזירה', 'רגישות למגע', 'בגדים מציקים', 'תחושתי', 'רעש מפריע לו'], chips: ['קושי מוטורי / מגושם', 'רגישות לרעש / מגע'], pd: ['motor'], ask: ['האם יש קושי בלבוש, בגזירה, בכדור?', 'האם יש רגישות לרעש, למגע או לבגדים?']},
+  {id: 'gad', icon: '😟', name: 'חרדה כללית ודאגנות', map: 'gad', who: 'פסיכולוג או מטפל – אבחנה קלינית', kw: ['דאג', 'חרד', 'לחוץ', 'מתוח', 'שואל שוב', 'מה יהיה', 'חושש', 'מפחד שיקרה'], chips: ['דואג הרבה / חרד', 'תלונות גופניות (בטן, ראש)'], ask: ['על מה הוא דואג, ובאילו מצבים?', 'האם מחפש הרגעה שוב ושוב?', 'האם יש דאגנות במשפחה?']},
+  {id: 'school-refusal', icon: '🏫', name: 'סירוב להגיע לבית הספר / חרדת פרידה', map: 'school-refusal', who: 'יועץ ופסיכולוג חינוכי; בהיעדרות ממושכת – גם רופא', kw: ['לא רוצה ללכת', 'מסרב להגיע', 'נשאר בבית', 'היעדרויות', 'נצמד', 'פרידה', 'בוכה בבוקר', 'חוזר הביתה', 'מבקש להתקשר'], chips: ['מסרב להגיע לבית הספר'], ask: ['ממה בדיוק הוא נמנע – מהפרידה או ממשהו בבית הספר?', 'מה קורה בבוקר בבית?']},
+  {id: 'social-anxiety', icon: '😳', name: 'חרדה חברתית / ביישנות קיצונית', map: 'social-anxiety', who: 'פסיכולוג או מטפל', kw: ['מתבייש', 'ביישן', 'לא מדבר מול', 'נמנע מלדבר', 'מסמיק', 'פוחד שיצחקו', 'נבוך'], chips: ['מתבייש / נמנע מדיבור מול כולם'], ask: ['האם עם חבר אחד הוא משוחרר יותר?', 'ממה הוא הכי חושש – שיצחקו, שיטעה?']},
+  {id: 'mutism', icon: '🤐', name: 'אילמות סלקטיבית', map: 'social-anxiety', who: 'פסיכולוג וקלינאית תקשורת', kw: ['לא מדבר בבית הספר', 'אילם', 'לא אומר מילה', 'מדבר רק בבית'], chips: ['מדבר רק בבית / לא מדבר בבית הספר'], ask: ['האם הוא מדבר בחופשיות בבית?', 'כמה זמן זה נמשך?']},
+  {id: 'phobias', icon: '🐕', name: 'פחד ספציפי', map: 'phobias', who: 'פסיכולוג או מטפל', kw: ['פחד מ', 'פוחד מ', 'כלבים', 'חושך', 'רעשים חזקים', 'הקאה', 'זריקות'], chips: ['פחדים ספציפיים'], ask: ['ממה בדיוק הוא מפחד, וכמה זה מגביל אותו?']},
+  {id: 'test-anxiety', icon: '📝', name: 'חרדת בחינות', map: 'test-anxiety', who: 'יועץ או מטפל', kw: ['מבחן', 'מבחנים', 'בחינה', 'נתקע במבחן', 'בלאק', 'לפני מבחן'], chips: ['חרדה לפני מבחנים'], ask: ['האם הוא יודע את החומר ונתקע רק במבחן?']},
+  {id: 'ocd', icon: '🔁', name: 'מחשבות טורדניות וטקסים (OCD)', map: 'ocd', who: 'פסיכיאטר או פסיכולוג', kw: ['טקס', 'רוחץ', 'בודק שוב', 'סדר מושלם', 'מחשבות חוזרות', 'טורדני', 'כפייתי', 'נגיעות', 'חייב שיהיה'], chips: ['טקסים / מחשבות חוזרות'], ask: ['כמה זמן ביום הטקסים לוקחים?', 'מה קורה כשמפריעים לו?']},
+  {id: 'low-mood', icon: '😔', name: 'מצב רוח ירוד / דיכאון', map: 'low-mood', who: 'פסיכולוג; בחומרה – פסיכיאטר ילדים', kw: ['עצוב', 'בוכה', 'אין כוח', 'לא נהנה', 'מסתגר', 'עייף', 'דיכאון', 'מדוכדך', 'חסר תקווה', 'תיאבון', 'אדיש'], chips: ['עצוב / בוכה הרבה', 'אין הנאה / אין כוח'], ask: ['כמה זמן זה נמשך – שבועות?', 'האם יש שינוי בשינה ובאכילה?', 'האם הוא מדבר על חוסר טעם?']},
+  {id: 'anger', icon: '🌋', name: 'קושי בוויסות כעס / התנהגות מתריסה', map: 'anger', who: 'פסיכולוג; לבירור קשב נלווה – רופא', kw: ['התפרצ', 'מתפרץ', 'כעס', 'מכה', 'צועק', 'זורק', 'מתריס', 'עקשן', 'לא מקבל סמכות', 'אלימ', 'משתולל', 'מתעצבן'], chips: ['התפרצויות כעס', 'מתריס / לא מקבל סמכות', 'אלימות פיזית'], ask: ['מה בדרך כלל מדליק את ההתפרצות?', 'מה קורה מיד אחריה – מה הוא מרוויח?', 'האם זה קורה גם בבית?']},
+  {id: 'self-esteem', icon: '🪞', name: 'דימוי עצמי נמוך', map: 'self-esteem', who: 'יועץ או מטפל', kw: ['דימוי', 'לא שווה', 'טיפש', 'לא מצליח בכלום', 'מוותר מראש', 'חוסר ביטחון', 'לא מאמין בעצמו'], chips: ['דימוי עצמי נמוך'], ask: ['במה הוא כן מצליח?', 'האם יש קושי לימודי שמזין את התחושה?']},
+  {id: 'social', icon: '👥', name: 'קושי חברתי / דחייה חברתית', map: 'social-rejection', who: 'יועץ; בקושי חברתי עמוק – בירור התפתחותי', kw: ['אין חברים', 'בודד', 'דחוי', 'לא משחקים איתו', 'לבד בהפסקה', 'לא מקבלים אותו'], chips: ['אין חברים / בודד', 'נדחה על ידי ילדים'], ask: ['האם הוא רוצה חברים ולא מצליח, או מעדיף לבד?', 'מה קורה כשהוא מנסה להצטרף?']},
+  {id: 'bullying', icon: '🛡️', name: 'בריונות – נפגע או פוגע', map: 'bullying', who: 'יועץ והנהלה – לפי נוהלי האקלים', kw: ['מציקים', 'מכים אותו', 'צוחקים עליו', 'חרם', 'בריונ', 'פוגע בילדים', 'מציק לילדים'], chips: ['נפגע מהצקות', 'פוגע באחרים'], ask: ['מי מעורב, איפה ומתי?', 'האם הוא מספר בבית?']},
+  {id: 'tics', icon: '😬', name: 'טיקים / טורט', map: 'tics', who: 'נוירולוג ילדים', kw: ['טיק', 'מצמוץ', 'תנועות לא רצוניות', 'משמיע קולות', 'טורט'], chips: ['טיקים'], ask: ['כמה זמן יש טיקים, והאם הם משתנים?', 'האם מתגברים במתח?']},
+  {id: 'trauma', icon: '⚡', name: 'תגובת דחק או טראומה', map: 'trauma', who: 'פסיכולוג חינוכי / מטפל בטראומה', kw: ['טראומה', 'אירוע קשה', 'סיוטים', 'נבהל', 'מלחמה', 'אזעקות', 'פלאשבק', 'הלם', 'נחשף ל'], chips: ['אירוע טראומטי / מלחמה'], ask: ['מתי היה האירוע, ומה השתנה מאז?', 'האם יש סיוטים, הימנעות או דריכות יתר?']},
+  {id: 'grief', icon: '🕯️', name: 'אבל ואובדן', map: 'grief', who: 'יועץ; באבל מורכב – מטפל', kw: ['נפטר', 'נפטרה', 'מוות של', 'אבל', 'אובדן', 'התייתם'], chips: ['אבל / אובדן'], ask: ['מתי היה האובדן, ומה הילד יודע?', 'מי תומך בו בבית?']},
+  {id: 'family', icon: '🏠', name: 'תגובה לשינוי במשפחה', map: 'family-change', who: 'יועץ, בשיתוף ההורים', kw: ['גירושין', 'התגרשו', 'פרידה של ההורים', 'לידת אח', 'מעבר דירה', 'עבר דירה', 'עבר בית ספר'], chips: ['גירושין / פרידה במשפחה', 'מעבר דירה / בית ספר', 'לידת אח', 'מצוקה כלכלית / משפחתית'], ask: ['מה בדיוק השתנה, ומתי?', 'האם הקושי התחיל אחרי השינוי?']},
+  {id: 'somatic', icon: '🤕', name: 'תלונות גופניות על רקע רגשי', map: 'somatic', who: 'קודם רופא ילדים – לשלול סיבה רפואית; אחר כך יועץ או מטפל', kw: ['כאב בטן', 'כאבי בטן', 'כאב ראש', 'בחילה', 'מרגיש לא טוב', 'הולך לאחות'], chips: ['תלונות גופניות (בטן, ראש)'], ask: ['האם נבדק אצל רופא?', 'האם התלונות מופיעות לפני מצבים מסוימים?']},
+  {id: 'sleep', icon: '🌙', name: 'קשיי שינה', map: 'sleep', who: 'רופא ילדים; לפי הצורך מטפל', kw: ['שינה', 'לא נרדם', 'ער בלילה', 'עייף בבוקר', 'נרדם בכיתה'], chips: ['קשיי שינה / עייפות'], ask: ['מתי הוא הולך לישון, ומה עושה לפני?', 'האם יש מסכים בלילה?']},
+  {id: 'enuresis', icon: '💧', name: 'הרטבה', map: 'enuresis', who: 'רופא ילדים', kw: ['הרטבה', 'מרטיב'], chips: ['הרטבה'], ask: ['האם נבדק אצל רופא?', 'יום, לילה או שניהם?']}
+];
+const DX_DIFF = [
+  [['adhd', 'gad'], 'קשיי קשב יכולים לנבוע גם מחרדה – ילד דואג ״לא נמצא״ בשיעור. כדאי לבחון את שניהם יחד.'],
+  [['adhd', 'sleep'], 'עייפות מחוסר שינה נראית כמו בעיית קשב. כדאי לברר את השינה לפני מסקנה.'],
+  [['adhd', 'dyslexia'], 'קשב ולקות למידה מופיעים הרבה פעמים יחד – וגם יכולים לחקות זה את זה. אבחון פסיכודידקטי עוזר להפריד.'],
+  [['asd', 'social-anxiety'], 'קושי חברתי יכול לנבוע מחרדה (רוצה ומפחד) או מהרצף (לא מבין את הכללים). השאלה ״מתי זה התחיל ואיך נראה בגן״ עוזרת להבחין.'],
+  [['anger', 'adhd'], 'התפרצויות כעס מופיעות הרבה עם קושי בקשב ובוויסות – כדאי לבדוק את שניהם.'],
+  [['low-mood', 'family'], 'שינוי משפחתי יכול להסביר ירידה במצב הרוח – אבל כשהיא נמשכת שבועות, צריך בירור נפרד.'],
+  [['school-refusal', 'social'], 'סירוב לבית הספר יכול לנבוע מקושי חברתי או מהצקות – חשוב לברר ממה בדיוק הוא נמנע.'],
+  [['intellect', 'dyslexia'], 'קושי לימודי כללי שונה מלקות ספציפית: אם הקושי בכל התחומים, צריך הערכה קוגניטיבית.']
+];
+const DX_SRC = [['teacher', '🧑‍🏫 מהמחנך'], ['parents', '👨‍👩‍👦 מההורים'], ['assess', '🧾 מאבחונים'], ['observe', '👁️ מתצפית / מהיועץ'], ['history', '📜 רקע התפתחותי ורפואי'], ['strengths', '💪 חוזקות']];
+function dxBuild(d){
+  const src = DX_SRC.filter(([k]) => k !== 'strengths').map(([k, l]) => [k, l, pdAnon(String(d[k] || ''), d.name)]).filter(x => x[2].trim()), chips = Array.isArray(d.signs) ? d.signs : [];
+  if (!src.length && !chips.length) return '<div class="note warn">📋 ממלאים לפחות מקור אחד – מה אומר המחנך, מה אומרים ההורים או מה עלה באבחון – או מסמנים סימנים ברשימה, ולוחצים שוב.</div>';
+  const sents = src.flatMap(([k, l, t]) => pdSentences(t.replace(/\n/g, '. ')).map(s => ({k, l, s}))), low = s => s.toLowerCase();
+  const hit = kws => { const ev = []; sents.forEach(x => { const w = kws.find(kw => low(x.s).includes(low(kw))); if (w) ev.push(x); }); return ev; };
+  const assess = src.find(x => x[0] === 'assess'), A = assess ? pdAnalyze(assess[2]) : null;
+  const risk = [...chips.filter(c => DX_RISK.chips.includes(c)).map(c => '☑️ ' + c), ...hit(DX_RISK.kw).map(x => `${x.l}: ״${x.s}״`)];
+  const res = DX_H.map(h => {
+    const ch = chips.filter(c => h.chips.includes(c)), ev = hit(h.kw), srcs = new Set(ev.map(x => x.k)); if (ch.length) srcs.add('signs');
+    let sc = ch.length * 2 + Math.min(ev.length, 5) * 1.5 + (srcs.size >= 2 ? 2 : 0);
+    const extra = [];
+    if (A && h.pd) { const lowDoms = Object.entries(A.byDom).filter(([k, o]) => h.pd.includes(k) && o.lo > o.hi); if (lowDoms.length) { sc += 3; extra.push(`🧾 באבחון מתואר קושי בתחום ${lowDoms.map(([k]) => pdDomName(k)).join(', ')}`); } }
+    if (A && h.cogLow) { const cl = A.scores.filter(s => s.ss < 80 && /(משכל|יכולת כללית|IQ|FSIQ|GAI)/i.test(s.ctx || s.line)); /* only a general-ability score, not a single index */ if (cl.length) { sc += 3; extra.push(`🧾 ציוני יכולת נמוכים: ${cl.slice(0, 3).map(s => s.band + ' (אחוזון ~' + s.pct + ')').join(', ')}`); } }
+    return {h, sc, ch, ev, extra, srcs: srcs.size};
+  }).filter(x => x.sc >= 1.5).sort((a, b) => b.sc - a.sc);
+  const lvl = sc => sc >= 7 ? ['strong', 'כיוון חזק – כדאי לבדוק בהקדם'] : sc >= 4 ? ['mid', 'כיוון אפשרי – כדאי לבדוק'] : ['weak', 'סימן ראשון – לשים לב ולאסוף עוד מידע'];
+  const ids = new Set(res.map(x => x.h.id)), diff = DX_DIFF.filter(([pair]) => pair.every(p => ids.has(p))).map(x => x[1]);
+  const filled = DX_SRC.filter(([k]) => String(d[k] || '').trim()).map(x => x[1]), missing = DX_SRC.filter(([k]) => !String(d[k] || '').trim() && k !== 'strengths').map(x => x[1]);
+  const card = x => { const [c, l] = lvl(x.sc), link = x.h.map ? `#/problem/${x.h.map}` : x.h.link;
+    return `<div class="dxcard ${c}"><div class="dxhead"><span class="dxic">${x.h.icon}</span><div><b>${esc(x.h.name)}</b><div class="dxlvl">${l}</div></div><div class="dxbar"><i style="width:${Math.min(100, Math.round(x.sc * 9))}%"></i></div></div>
+      <div class="dxev">${x.ch.map(c => `<div>☑️ ${esc(c)} <span class="muted">(סימנת)</span></div>`).join('')}${x.ev.slice(0, 5).map(e => `<div>${e.l}: <q class="pdq">${esc(e.s.length > 180 ? e.s.slice(0, 180) + '…' : e.s)}</q></div>`).join('')}${x.extra.map(e => `<div>${esc(e)}</div>`).join('')}</div>
+      ${x.srcs >= 2 ? '<p class="dxnote">🔗 מופיע ביותר ממקור אחד – זה מחזק את הכיוון.</p>' : ''}
+      <details><summary>❓ מה חסר כדי לחזק או לשלול</summary><ul>${x.h.ask.map(q => `<li>${esc(q)}</li>`).join('')}</ul></details>
+      <p class="dxwho">🩺 מי מאבחן: ${esc(x.h.who)}${link ? ` · <a href="${link}">${x.h.map ? '🗺️ מפת הטיפול' : '📚 למדור'}</a>` : ''}</p></div>`; };
+  return `${risk.length ? `<div class="panel dxrisk"><h3>🚨 סימני סיכון – קודם כול</h3>${risk.map(r => `<p>${esc(r)}</p>`).join('')}<p><b>מה עושים עכשיו:</b> לא נשארים לבד עם המידע – מעדכנים את המנהל ואת הפסיכולוג החינוכי היום, ופועלים לפי נוהל הדיווח. <a href="#/distress">🚨 סימני מצוקה ונהלים</a> · <a href="#/circ">📜 חוזרי מנכ״ל</a></p></div>` : ''}
+    <div class="panel pdsum" style="border-inline-start:5px solid var(--brand)"><h3>🧭 התמונה בקצרה</h3>
+      <p>${res.length ? `עלו ${res.length} כיוונים אפשריים לבירור${res.filter(x => x.sc >= 7).length ? `, מהם ${res.filter(x => x.sc >= 7).length} חזקים` : ''}. הם מסודרים מהחזק לחלש, ולכל אחד מופיע על מה הוא נשען.` : 'לא עלו כיוונים מובהקים מהנתונים שהוזנו. כדאי להוסיף מידע ממקורות נוספים או לסמן סימנים ברשימה.'}</p>
+      <p class="muted">מקורות שמולאו: ${filled.length ? filled.join(' · ') : '–'}${missing.length ? `<br>כדאי להשלים: ${missing.join(' · ')} – כיוון שמופיע ביותר ממקור אחד אמין יותר.` : ''}</p>
+      <p class="note warn" style="margin:8px 0 0">⚠️ זו אינדיקציה לכיוונים שכדאי לבדוק – לא אבחנה. אבחנה נותן רק איש המקצוע המוסמך, אחרי הערכה מלאה.</p></div>
+    ${res.length ? `<h2 class="sec">🔎 כיוונים אפשריים לבירור</h2><div class="dxgrid">${res.map(card).join('')}</div>` : ''}
+    ${diff.length ? appPanel('⚖️ חשוב להבחין', ul(diff)) : ''}
+    ${String(d.strengths || '').trim() ? appPanel('💪 חוזקות שאפשר להישען עליהן', `<p>${esc(pdAnon(d.strengths, d.name))}</p>`) : ''}
+    ${appPanel('🧭 הצעדים הבאים', ul([res[0] ? `להתחיל מהכיוון החזק ביותר: ${res[0].h.name} – ולאסוף את המידע שחסר (ראו ״מה חסר״).` : 'לאסוף מידע נוסף מהמחנך, מההורים ומתצפית.', 'להשלים שאלונים ממוקדים מהמדור ״שאלונים ומדדים״.', 'לשתף את ההורים בתמונה בעדינות, ולהמליץ על הגורם המאבחן המתאים.', 'במקביל – להתחיל בהתאמות ובתמיכה בכיתה לפי הקושי, בלי לחכות לאבחנה.']))}
+    <div class="note" style="margin-top:10px">📚 מבוסס על מפות הטיפול באתר, על מדור ״קריאת אבחונים״ ועל הנתונים שהזנת (כל ציטוט מסומן במקור שלו). <a href="#/quest">📋 שאלונים ומדדים</a> · <a href="#/pd">🔎 קריאת אבחונים</a></div>`;
+}
+async function dxDeepen(d){
+  const box = $('#appAI'); if (!box) return;
+  if (!AI.available()) { box.innerHTML = `<div class="note warn">🤖 Claude לא זמין כאן – ההעמקה פועלת בגרסת האתר בתוך Claude.</div>`; return; }
+  const data = DX_SRC.map(([k, l]) => String(d[k] || '').trim() ? `${l}:\n${pdAnon(d[k], d.name).slice(0, 6000)}` : '').filter(Boolean).join('\n\n'), signs = (Array.isArray(d.signs) ? d.signs : []).join(', ');
+  if (!data && !signs) { box.innerHTML = '<div class="note warn">📋 קודם ממלאים נתונים.</div>'; return; }
+  if (appCtl) appCtl.abort(); appCtl = new AbortController();
+  const auto = (($('#appOut') || {}).innerText || '').replace(/\n{2,}/g, '\n').slice(0, 5000);
+  const maps = DX_H.filter(h => h.map).map(h => `${h.name} → מפת טיפול #/problem/${h.map}`).join('\n');
+  const prompt = `אתה פסיכולוג חינוכי ומדריך קליני בכיר בישראל. יועץ בית ספר יסודי אסף נתונים על תלמיד (אחרי הסרת פרטים מזהים) ומבקש אינדיקציה לכיווני אבחנה אפשריים – כדי לדעת מה לבדוק ולאן להפנות.
+כללים:
+• אל תקבע אבחנה. נסח ״כיוון אפשרי לבירור״, עם רמת סבירות (גבוהה / בינונית / נמוכה) ונימוק.
+• כל כיוון נשען על הנתונים: בשדה evidence ציטוט קצר ומקור (״מהמחנך״, ״מההורים״, ״מהאבחון״ או ״סימן שסומן״). ציין גם מה מחליש את הכיוון (against) ומה חסר כדי להכריע (missing).
+• התייחס לאבחנה מבדלת: מה יכול להסביר את אותם סימנים אחרת.
+• סימן סיכון (פגיעה עצמית, פגיעה בילד, הזנחה) – פתח בו בשדה risk, עם צעד מיידי לפי הנוהל.
+• ציין מי מאבחן כל כיוון, ואם יש מפת טיפול מתאימה – ציין את הנתיב שלה מהרשימה.
+• ידע שאינו מהנתונים – רק ברשימה external, מסומן כ״מידע מבחוץ״ עם מקור מוכר; אם אינך בטוח שהמקור קיים – ״מקור כללי – לבדיקה״.
+• עברית פשוטה, מקצועית ומכבדת.
+
+הנתונים:
+${data}
+${signs ? '\nסימנים שסומנו ברשימה: ' + signs : ''}
+
+הניתוח האוטומטי של האתר:
+${auto || '(אין)'}
+
+מפות טיפול באתר:
+${maps}
+
+השב אך ורק ב-JSON אחד:
+{"headline": "משפט אחד – התמונה", "risk": "סימן סיכון וצעד מיידי – או ריק", "hypotheses": [{"name": "הכיוון", "level": "גבוהה|בינונית|נמוכה", "why": "נימוק קצר", "evidence": ["ציטוט + מקור"], "against": ["מה מחליש"], "missing": ["מה צריך לברר"], "who": "מי מאבחן", "map": "#/problem/... או ריק"}], "differential": ["הבחנה חשובה"], "next": ["צעד הבא מעשי ליועץ"], "parents": "איך לשתף את ההורים", "cautions": "הסתייגות – או ריק", "external": [{"d": "מידע מבחוץ", "src": "מקור"}]}`;
+  box.innerHTML = `<div class="panel" style="border-inline-start:5px solid var(--brand)"><h3>🤖 Claude בוחן את התמונה…</h3><p class="muted" style="margin:0">עד דקה-שתיים.</p><div class="actions" style="margin-top:10px"><button class="btn sm" data-appaistop="1">⏹ עצירה</button></div></div>`;
+  $('[data-appaistop]').onclick = () => appCtl && appCtl.abort();
+  box.scrollIntoView({behavior: 'smooth', block: 'start'});
+  try {
+    const R = await AI.ask(prompt, {tier: 'complex', signal: appCtl.signal});
+    if (!R || typeof R !== 'object') throw {code: 'invalid_json'};
+    const arr = x => Array.isArray(x) ? x.filter(Boolean) : [], lv = {'גבוהה': 'strong', 'בינונית': 'mid', 'נמוכה': 'weak'};
+    let h = `<h2 class="sec">🤖 העמקה מ-Claude <small>נספר במכסת המנוי</small></h2>`;
+    if (R.risk) h += `<div class="panel dxrisk"><h3>🚨 סיכון</h3><p>${esc(R.risk)}</p></div>`;
+    if (R.cautions) h += `<div class="note danger" style="margin-bottom:12px">⚠️ ${esc(R.cautions)}</div>`;
+    if (R.headline) h += appPanel('🎯 התמונה', `<p style="margin:0;font-size:16px;font-weight:700">${esc(R.headline)}</p>`);
+    if (arr(R.hypotheses).length) h += `<div class="dxgrid">${arr(R.hypotheses).map(x => `<div class="dxcard ${lv[x.level] || 'mid'}"><div class="dxhead"><div><b>${esc(x.name || '')}</b><div class="dxlvl">סבירות ${esc(x.level || '')}</div></div></div><p>${esc(x.why || '')}</p>
+      ${arr(x.evidence).length ? `<div class="dxev">${arr(x.evidence).map(e => `<div>📄 ${esc(e)}</div>`).join('')}</div>` : ''}${arr(x.against).length ? `<p class="muted">➖ ${arr(x.against).map(esc).join(' · ')}</p>` : ''}
+      ${arr(x.missing).length ? `<details><summary>❓ מה לברר</summary>${ul(arr(x.missing))}</details>` : ''}<p class="dxwho">🩺 ${esc(x.who || '')}${x.map && /^#\/problem\//.test(x.map) ? ` · <a href="${esc(x.map)}">🗺️ מפת הטיפול</a>` : ''}</p></div>`).join('')}</div>`;
+    if (arr(R.differential).length) h += appPanel('⚖️ אבחנה מבדלת', ul(arr(R.differential)));
+    if (arr(R.next).length) h += appPanel('🧭 הצעדים הבאים', ul(arr(R.next)));
+    if (R.parents) h += appPanel('👨‍👩‍👦 איך לשתף את ההורים', `<p>${esc(R.parents)}</p>`);
+    if (arr(R.external).filter(s => s.d).length) h += appPanel('🌐 מידע מבחוץ – לא מהנתונים', `<ol style="margin:0;padding-inline-start:22px">${arr(R.external).map(s => `<li>${esc(s.d)} ${aiSrcHTML(s)}</li>`).join('')}</ol>`);
+    box.innerHTML = h + `<p class="muted" style="font-size:13px">נכתב על ידי Claude מתוך הנתונים שהוזנו (אחרי הסרת פרטים מזהים). אינדיקציה לבירור – לא אבחנה.</p>`;
+  } catch(e){
+    if (e && e.code === 'cancelled') { box.innerHTML = ''; return; }
+    const code = (e && e.code) || 'upstream_error';
+    box.innerHTML = `<div class="note warn">🤖 ${esc(AI_ERR[code] || AI_ERR.upstream_error)}</div>`;
+  }
+}
+APPS['student-picture'] = {hub: 'workflow', hubs: ['cbt', 'sped', 'pd'], icon: '🧩', title: 'תמונת תלמיד – כיוונים אבחנתיים אפשריים', sub: 'מכניסים כל מה שידוע על התלמיד – ומקבלים כיוונים לבירור, עם הראיות ומי מאבחן', buildLabel: '🧭 הצג כיוונים אפשריים',
+  intro: 'מכניסים כמה שיותר נתונים – מהמחנך, מההורים, מאבחונים, מתצפית ומהרקע – ומסמנים סימנים ברשימה. הכלי מצליב בין המקורות ומציע כיוונים שכדאי לבדוק, מהחזק לחלש: על מה כל כיוון נשען, מה חסר כדי להכריע, ומי מאבחן. סימני סיכון מוצגים ראשונים. שם התלמיד מוחלף ב״הילד״. זו אינדיקציה לבירור – לא אבחנה.',
+  sections: [
+    {title: '👦 פרטים בסיסיים', fields: [{id: 'name', label: 'שם התלמיד (מוחלף ב״הילד״ – לא נשלח)', ph: 'למשל: יוסי'}, {id: 'grade', label: 'כיתה וגיל', ph: 'למשל: ג׳, בן 8'}]},
+    {title: '📝 מה ידוע – מכל מקור', fields: [
+      {id: 'teacher', label: '🧑‍🏫 מה מספר המחנך / הצוות', long: 1, rows: 5, ph: 'התנהגות בכיתה, בהפסקות, בלמידה, בחברה…'},
+      {id: 'parents', label: '👨‍👩‍👦 מה מספרים ההורים', long: 1, rows: 5, ph: 'בבית, שינה, אכילה, חברים, היסטוריה, מה מדאיג אותם…'},
+      {id: 'assess', label: '🧾 מה עלה באבחונים (אפשר להדביק מהדוח)', long: 1, rows: 5, ph: 'ציונים, ממצאים, אבחנות קודמות…'},
+      {id: 'observe', label: '👁️ מה ראית בתצפית / בשיחה', long: 1, rows: 4, ph: ''},
+      {id: 'history', label: '📜 רקע התפתחותי, רפואי ומשפחתי', long: 1, rows: 4, ph: 'היריון ולידה, התפתחות מוטורית ושפתית, מחלות, תרופות, אירועים במשפחה…'},
+      {id: 'strengths', label: '💪 חוזקות ותחומי עניין', long: 1, rows: 3, ph: ''}]},
+    {title: '☑️ רשימת סימנים – מסמנים מה שקיים', fields: DX_SIGNS.map(([t, opts], i) => ({id: i ? 'signs' : 'signs', label: t, type: 'chips', multi: 1, opts}))}
+  ],
+  build: dxBuild, deepen: dxDeepen};
 
 /* ---- the analysis rules (shared by the CBT applications) ---- */
 const APP_EMO = {'פחד / חרדה': 'fear', 'דאגה': 'fear', 'בושה / מבוכה': 'shame', 'עצב': 'sad', 'ייאוש': 'sad', 'כעס': 'anger', 'תסכול': 'anger', 'אשמה': 'guilt', 'קנאה': 'anger', 'בדידות': 'sad'};
