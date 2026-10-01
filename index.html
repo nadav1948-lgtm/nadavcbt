@@ -2367,6 +2367,16 @@ body.chatwin{margin:0;background:var(--bg);overflow:hidden}
 .dxcard details{font-size:14px;margin-top:6px}.dxcard summary{cursor:pointer;font-weight:700}
 .dxrisk{border:2px solid var(--danger);background:color-mix(in srgb,var(--danger) 10%,var(--panel))}
 
+/* ---- 💾 named processes bar ---- */
+.procbar{display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin:0 0 14px;padding:10px 12px;border-radius:14px;background:color-mix(in srgb,var(--brand) 10%,var(--panel));border:1px solid color-mix(in srgb,var(--brand) 35%,var(--line));position:sticky;top:70px;z-index:15;box-shadow:var(--shadow)}
+.procbar .pbname{font-size:14.5px;margin-inline-end:auto}
+.procbar .pbbtns,.procbar .pbsave{display:flex;flex-wrap:wrap;gap:6px;align-items:center}
+.procbar .pbbtns[hidden],.procbar .pbsave[hidden]{display:none}
+.procbar .pbsave .inp{width:min(280px,60vw);padding:6px 10px;font-size:14px}
+.procbar .pbopen{max-width:260px}
+.procbar .btn.danger{color:#fff;background:var(--danger);border-color:var(--danger)}
+@media (max-width:760px){.procbar{position:static}.procbar .pbname{width:100%}}
+
 </style>
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="apple-touch-icon" href="icon-192.png">
@@ -5682,9 +5692,10 @@ const LiteSync = {status: 'lite', last: 0, err: '', db: null, uid: null, sent: {
   local(){ const o = {}; Object.entries(S.tracks || {}).forEach(([k, v]) => o['t|' + k] = v);
     try { Object.keys(localStorage).filter(k => k.startsWith('cbtapp.app.')).forEach(k => o['a|' + k.slice(11)] = ls.get(k, {})); } catch(e){}
     ['assist', 'therapist'].forEach(m => { const h = ls.get('cbt.chat.' + m, null); if (h) o['c|' + m] = h.map(x => ({...x, content: String(x.content || '').slice(0, 6000)})); });   // the two chat conversations follow the user between phone and computer
+    try { Object.keys(localStorage).filter(k => k.startsWith('cbtapp.saved.')).forEach(k => { const L = ls.get(k, {}); Object.entries(L).forEach(([n, v]) => o['s|' + k.slice(13) + '|' + n] = v); }); } catch(e){}   // named processes – one entry each, tombstones included
     return o; },
-  apply(key, v){ const i = key.indexOf('|'), t = key.slice(0, i), k = key.slice(i + 1); if (t === 't') { S.tracks = S.tracks || {}; S.tracks[k] = v; } else if (t === 'c') { if (typeof chatSynced === 'function') chatSynced(k, v); else ls.set('cbt.chat.' + k, v); } else ls.set('cbtapp.app.' + k, v); },
-  docId: key => 'l_' + key.replace(/[^\w-]/g, c => '_' + c.charCodeAt(0).toString(16)),
+  apply(key, v){ const i = key.indexOf('|'), t = key.slice(0, i), k = key.slice(i + 1); if (t === 't') { S.tracks = S.tracks || {}; S.tracks[k] = v; } else if (t === 's') { const j = k.lastIndexOf('|'), lk = 'cbtapp.saved.' + k.slice(0, j), L = ls.get(lk, {}); L[k.slice(j + 1)] = v; ls.set(lk, L); } else if (t === 'c') { if (typeof chatSynced === 'function') chatSynced(k, v); else ls.set('cbt.chat.' + k, v); } else ls.set('cbtapp.app.' + k, v); },
+  docId: key => { const e = 'l_' + key.replace(/[^\w-]/g, c => '_' + c.charCodeAt(0).toString(16)); if (e.length <= 180) return e; let h = 0; for (const c of key) h = (h * 31 + c.charCodeAt(0)) >>> 0; return e.slice(0, 160) + '_h' + h.toString(36); },   // long Hebrew names: keep the id under the 200-character limit
   col(){ return this.db.collection('data/users/' + this.uid); },
   async init(){
     try {
@@ -8441,13 +8452,13 @@ function appView(R){
   const A = allApps()[R.id]; if (!A) return {title: 'יישום', html: '<div class="empty">היישום לא נמצא. <a href="#/cbt">לשיטת טיפול CBT</a></div>'};
   const d = appGet(R.id), H = HUBS[A.hub] || {};
   const html = `<a class="back no-print" href="#/${A.hub}">→ ${esc(H.title || '')}</a>
-    <div class="banner" style="--h:${hubHue(A.hub)}"><span class="emoji">${A.icon}</span><div><h1>${esc(A.title)}</h1><p>${esc(A.sub || '')}</p></div></div>
+    <div class="banner" style="--h:${hubHue(A.hub)}"><span class="emoji">${A.icon}</span><div><h1>${esc(A.title)}</h1><p>${esc(A.sub || '')}</p></div></div>${procBarHTML('a', R.id)}
     <div class="note no-print" style="margin-bottom:14px">${A.intro} <span class="muted">🔒 הנתונים נשמרים רק בדפדפן הזה${ARTIFACT || AI.available() ? '. הם נשלחים ל-Claude (בחשבון שלך) רק אם לוחצים ״העמקה עם Claude״' : ' ולא נשלחים לשום מקום'}. כותבים כינוי, לא שם מלא.</span></div>
     <div class="no-print">${A.sections.map(s => `<div class="panel"><h3>${s.title}</h3><div class="form">${s.fields.map(f => appFieldHTML(f, d[f.id])).join('')}</div></div>`).join('')}
-    <div class="actions" style="margin:14px 0 20px"><button class="btn primary" data-appbuild="1">${A.buildLabel || '🧩 בנה פורמולציה ומתווה טיפול'}</button>${ARTIFACT || AI.available() ? `<button class="btn" data-appai="1" title="נספר במכסת המנוי" style="border-color:var(--brand-text)">🤖 העמקה עם Claude</button>` : ''}<button class="btn" data-act="print">🖨️ הדפסה</button><button class="btn ghost" data-appclear="1">🗑️ ניקוי הטופס</button></div></div>
+    <div class="actions" style="margin:14px 0 20px"><button class="btn primary" data-appbuild="1">${A.buildLabel || '🧩 בנה פורמולציה ומתווה טיפול'}</button>${ARTIFACT || AI.available() ? `<button class="btn" data-appai="1" title="נספר במכסת המנוי" style="border-color:var(--brand-text)">🤖 העמקה עם Claude</button>` : ''}<button class="btn" data-act="print">🖨️ הדפסה</button></div></div>
     <div id="appOut"></div><div id="appAI"></div>`;
   return {title: A.title, html, after(){
-    const save = () => { ls.set(appKey(R.id), d); SYNC.schedule(); };
+    const save = () => { ls.set(appKey(R.id), d); SYNC.schedule(); PROC.touch('a', R.id); };
     const build = scroll => { const o = $('#appOut'); o.innerHTML = A.build(d); if (scroll) o.scrollIntoView({behavior: 'smooth', block: 'start'}); };
     document.querySelectorAll('[data-app]').forEach(el => el.addEventListener('input', () => { d[el.dataset.app] = el.dataset.num ? +el.value : el.value; const b = document.querySelector(`[data-appv="${el.dataset.app}"]`); if (b) b.textContent = el.value; save(); }));
     document.querySelectorAll('[data-appchip]').forEach(el => el.addEventListener('click', () => { const k = el.dataset.appchip, v = el.dataset.v;
@@ -8457,7 +8468,7 @@ function appView(R){
     $('[data-appbuild]').onclick = () => build(true);
     const ai = $('[data-appai]'); if (ai) ai.onclick = () => { if (!$('#appOut .panel')) build(false); appDeepen(A, d); };
     // two taps instead of confirm(): inside Claude's frame the browser's dialogs are blocked, so confirm() silently returns false
-    const clr = $('[data-appclear]'); let armed = 0;
+    const clr = $('[data-appclear]'); let armed = 0; if (clr)
     clr.onclick = () => { if (Date.now() - armed > 4000) { armed = Date.now(); clr.textContent = '⚠️ לחצו שוב לאישור הניקוי'; clr.classList.add('danger'); setTimeout(() => { if (Date.now() - armed >= 4000) { clr.textContent = '🗑️ ניקוי הטופס'; clr.classList.remove('danger'); } }, 4100); return; }
       ls.set(appKey(R.id), {}); SYNC.schedule(); toast('🗑️ הטופס נוקה'); render(); };
     if (Object.keys(d).some(k => d[k] !== '' && !(Array.isArray(d[k]) && !d[k].length))) build(false);
@@ -9772,13 +9783,59 @@ function trackView(R){
   return {title: t.title, html: `<a class="back no-print" href="#/${HUBOF(t)[0]}">→ ${HUBOF(t)[1]}</a>${sw}
     <div class="banner" style="--h:${t.hue ?? HUB_HUE[HUBOF(t)[0]] ?? hueOf(t.title)}"><span class="emoji">${t.icon || '🧭'}</span><div><div style="opacity:.85;font-size:14px">${esc(t['for'] || '')}${active() ? ' · ⭐ ' + esc(active().alias) : ''}</div><h1>${esc(t.title)}</h1></div>
       <div class="actions no-print">${P[t.id] && !sw ? `<a class="btn sm" href="#/problem/${t.id}">📖 מפת הטיפול</a>` : ''}${GAME(t.id) ? `<a class="btn sm" href="#/game/${t.id}">🎲 המשחק</a>` : ''}${mvGuide(t) ? `<a class="btn sm" href="#/movie/${t.id}">🎬 סרטון הסבר</a>` : ""}${movieFor(t.id) ? `<a class="btn sm" href="#/movie/${movieFor(t.id).id}">🎬 שיעור לדוגמה</a>` : ""}<a class="btn sm" href="#/track/${t.id}/print">🖨️ סיכום להדפסה</a></div></div>
-    ${t.intro && i === 0 ? `<p class="lead" style="text-align:start">${esc(t.intro)}</p>` : ''}
+    ${t.steps.some(x => PROC_INPUT_KINDS.includes(x.kind)) ? procBarHTML('t', t.id) : ''}${t.intro && i === 0 ? `<p class="lead" style="text-align:start">${esc(t.intro)}</p>` : ''}
     <div class="trlayout"><nav class="trsteps no-print"><div class="gprog"><i style="width:${Math.round(100 * done / t.steps.length)}%"></i></div>${t.steps.map((x, j) => `<a href="#/track/${t.id}/${j + 1}" class="${j === i ? 'on' : ''} ${trStepDone(x, D) ? 'ok' : ''}" style="--kh:${(TR_KIND[x.kind] || TR_KIND.info)[2]}" title="${(TR_KIND[x.kind] || TR_KIND.info)[1]}"><span class="n">${trStepDone(x, D) ? '✓' : j + 1}</span>${x.icon || ''} ${esc(x.title)}</a>`).join('')}</nav>
       <section class="panel trmain"><h2 class="trhead" style="--kh:${(TR_KIND[s.kind] || TR_KIND.info)[2]}"><span>${s.icon || ''} ${esc(s.title)}</span><small class="trkind">${(TR_KIND[s.kind] || TR_KIND.info)[0]} ${(TR_KIND[s.kind] || TR_KIND.info)[1]} · שלב ${i + 1} מתוך ${t.steps.length}</small></h2>${mvGuide(t) && MV_KINDS.includes(s.kind) ? `<a class="mvstepbtn no-print" href="#/movie/${t.id}/${i + 1}"><span class="mvhplay">▶</span><span><b>🎬 סרטון הסבר לשלב הזה</b><small>אנימציה עם קריינות – הסבר ודוגמה</small></span></a>` : ""}${trStepHTML(t, s, D)}
         <div class="actions" style="justify-content:space-between;margin-top:18px">${i > 0 ? `<a class="btn" href="#/track/${t.id}/${i}">→ הקודם</a>` : '<span></span>'}${i < t.steps.length - 1 ? `<a class="btn primary" href="#/track/${t.id}/${i + 2}">הבא ←</a>` : `<a class="btn primary" href="#/track/${t.id}/print">🖨️ סיכום המסלול</a>`}</div></section></div>`};
 }
 let trTimer = null;
-const trSave = () => { clearTimeout(trTimer); trTimer = setTimeout(save, 500); };
+const trSave = () => { clearTimeout(trTimer); trTimer = setTimeout(save, 500); try { PROC.touch('t', route().id); } catch (e) {} };
+/* ---- 💾 named processes: every application (k 'a') and every track with forms (k 't') can be saved under a name, reopened, cleared ----
+   A process that has a name keeps saving itself on every change. Saved processes live in this browser and follow the user
+   between devices through LiteSync (one entry per process; a deleted one leaves a tombstone so the deletion syncs too). */
+const PROC_INPUT_KINDS = ['form', 'fivep', 'cycle', 'plan', 'checklist', 'scale', 'viz', 'psy', 'sessions'];
+const PROC = {
+  key: (k, id) => 'cbtapp.saved.' + k + '.' + id,
+  curKey: (k, id) => 'cbtapp.cur.' + k + '.' + id,
+  cur(k, id){ return ls.get(this.curKey(k, id), ''); },
+  setCur(k, id, n){ ls.set(this.curKey(k, id), n || ''); },
+  all(k, id){ return ls.get(this.key(k, id), {}); },
+  list(k, id){ return Object.entries(this.all(k, id)).filter(([, v]) => v && !v.del).sort((a, b) => (b[1].at || 0) - (a[1].at || 0)); },
+  put(k, id, name, d){ const L = this.all(k, id); L[name] = {d: JSON.parse(JSON.stringify(d || {})), at: Date.now()}; ls.set(this.key(k, id), L); try { SYNC.schedule(); } catch (e) {} },
+  del(k, id, name){ const L = this.all(k, id); L[name] = {del: true, at: Date.now()}; ls.set(this.key(k, id), L); try { SYNC.schedule(); } catch (e) {} },
+  get(k, id){ return k === 'a' ? appGet(id) : JSON.parse(JSON.stringify(trData(id))); },
+  set(k, id, d){ if (k === 'a') { ls.set(appKey(id), d || {}); try { SYNC.schedule(); } catch (e) {} } else { S.tracks = S.tracks || {}; S.tracks[trKey(id)] = JSON.parse(JSON.stringify(d || {})); save(); } },
+  empty: d => !d || !Object.values(d).some(v => v != null && v !== '' && !(Array.isArray(v) && !v.length) && !(typeof v === 'object' && !Array.isArray(v) && PROC.empty(v))),
+  touch(k, id){ clearTimeout(this['t' + k + id]); this['t' + k + id] = setTimeout(() => { const n = this.cur(k, id); if (n) this.put(k, id, n, this.get(k, id)); }, 700); }
+};
+function procBarHTML(k, id){
+  const cur = PROC.cur(k, id), L = PROC.list(k, id), when = at => new Date(at).toLocaleDateString('he-IL', {day: 'numeric', month: 'numeric'});
+  return `<div class="procbar no-print" data-pk="${k}" data-pid="${esc(id)}">
+    <span class="pbname">📌 ${cur ? `<b>${esc(cur)}</b> <small class="muted">· נשמר אוטומטית</small>` : '<b>תהליך ללא שם</b> <small class="muted">· לא שמור בשם</small>'}</span>
+    <span class="pbbtns"><button class="btn sm primary" data-pb="save">💾 ${cur ? 'שמירה בשם אחר' : 'שמירה בשם'}</button>
+    <select class="btn sm pbopen" data-pb="open" aria-label="תהליכים שמורים"><option value="">📂 תהליכים שמורים (${L.length})</option>${L.map(([n, v]) => `<option value="${esc(n)}"${n === cur ? ' selected' : ''}>${esc(n)} · ${when(v.at)}</option>`).join('')}</select>
+    <button class="btn sm" data-pb="new">🧹 ניקוי – תהליך חדש</button>${cur ? `<button class="btn sm ghost" data-pb="del">✖ מחיקת ״${esc(cur)}״</button>` : ''}</span>
+    <span class="pbsave" hidden><input class="inp" maxlength="60" placeholder="שם התהליך – למשל: יוסי ג׳2, אוקטובר"><button class="btn sm primary" data-pb="ok">שמירה</button><button class="btn sm ghost" data-pb="cancel">ביטול</button></span></div>`;
+}
+const procArm = (b, label) => { if (Date.now() - (b._armed || 0) < 4000) return true; b._armed = Date.now(); b._label = b._label || b.textContent; b.textContent = label; b.classList.add('danger'); setTimeout(() => { if (Date.now() - b._armed >= 4000) { b.textContent = b._label; b.classList.remove('danger'); } }, 4100); return false; };   // two taps instead of confirm() – blocked inside Claude
+function procStash(k, id){ const d = PROC.get(k, id); if (!PROC.cur(k, id) && !PROC.empty(d)) PROC.put(k, id, 'טיוטה ' + new Date().toLocaleString('he-IL', {day: 'numeric', month: 'numeric', hour: '2-digit', minute: '2-digit'}), d); }
+document.addEventListener('click', e => {
+  const b = e.target.closest('.procbar [data-pb]'); if (!b || b.tagName === 'SELECT') return;
+  const bar = b.closest('.procbar'), k = bar.dataset.pk, id = bar.dataset.pid, act = b.dataset.pb, box = bar.querySelector('.pbsave'), inp = box.querySelector('input');
+  if (act === 'save') { box.hidden = false; bar.querySelector('.pbbtns').hidden = true; inp.value = ''; inp.focus(); return; }
+  if (act === 'cancel') { box.hidden = true; bar.querySelector('.pbbtns').hidden = false; return; }
+  if (act === 'ok') { const n = inp.value.trim().slice(0, 60); if (!n) { inp.focus(); return; } PROC.put(k, id, n, PROC.get(k, id)); PROC.setCur(k, id, n); toast('💾 נשמר בשם ״' + n + '״'); render(); return; }
+  if (act === 'new') { if (!PROC.cur(k, id) && !PROC.empty(PROC.get(k, id)) && !procArm(b, '⚠️ לחצו שוב – הטופס יתנקה')) return;
+    PROC.setCur(k, id, ''); PROC.set(k, id, {}); toast('🧹 טופס נקי – תהליך חדש'); render(); return; }
+  if (act === 'del') { const n = PROC.cur(k, id); if (!n || !procArm(b, '⚠️ לחצו שוב למחיקת ״' + n + '״')) return; PROC.del(k, id, n); PROC.setCur(k, id, ''); toast('✖ ״' + n + '״ נמחק מהשמורים'); render(); }
+});
+document.addEventListener('change', e => {
+  const s = e.target.closest('.procbar select[data-pb="open"]'); if (!s || !s.value) return;
+  const bar = s.closest('.procbar'), k = bar.dataset.pk, id = bar.dataset.pid, n = s.value, x = PROC.all(k, id)[n]; if (!x || x.del) return;
+  if (n === PROC.cur(k, id)) return;
+  procStash(k, id); PROC.set(k, id, x.d); PROC.setCur(k, id, n); toast('📂 נפתח ״' + n + '״'); render();
+});
+document.addEventListener('keydown', e => { if (e.key === 'Enter' && e.target.closest && e.target.closest('.procbar .pbsave input')) { e.preventDefault(); e.target.closest('.pbsave').querySelector('[data-pb="ok"]').click(); } });
 function trCycleRefresh(tid, sid){ const t = TRACK(tid), s = t && t.steps.find(x => x.id === sid); if (!s || s.kind !== 'cycle') return; const D = trData(tid), d = D[sid] || {}; const b = $('#trcy-' + sid); if (b) b.innerHTML = cycleHTML({title: s.title, nodes: s.nodes.map((x, i) => ({k: x.k, label: x.label, t: d['n' + i] || '', ph: x.ph})), back: s.back, breaks: s.breaks}); }
 document.addEventListener('input', e => {
   const el = e.target; if (!el.dataset) return;
