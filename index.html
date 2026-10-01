@@ -2392,6 +2392,10 @@ body.chatwin{margin:0;background:var(--bg);overflow:hidden}
 .foldrow .btn.danger,.fold .btn.danger{color:#fff;background:var(--danger);border-color:var(--danger)}
 .procbar .pbhint{flex-basis:100%}
 .fold [hidden]{display:none!important}
+.formcard{display:flex;flex-direction:column;gap:10px}
+.formcard .formlink{display:flex;flex-direction:column;gap:6px;text-decoration:none;color:inherit}
+.formcard .formfoot{display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin-top:auto}
+.fold section[hidden],.fold .card[hidden]{display:none!important}
 
 </style>
 <link rel="manifest" href="manifest.webmanifest">
@@ -5773,7 +5777,7 @@ function ui(){
 }
 
 /* ================= routing & shell ================= */
-const NAV = [['home','🏠','בית'],['folders','📁','התיקיות שלי – כל הטפסים'],['diary','📅','יומן'],['ask','💬','שאל שאלה'],['problems','🧭','טיפול לפי בעיה'],['cbt','🧠','שיטת טיפול CBT'],['students','🧒','תלמידים'],['workflow','🗺️','סדר עבודה'],['crole','🎯','תפקיד היועץ'],['roles','👥','מי פונה למי'],['circ','📜','חוזרי מנכ״ל'],['aklim','⚖️','אקלים ומדרג התגובות'],['tools','🧰','כלים לילדים'],['quest','📋','שאלונים ומדדים'],['distress','🚨','סימני מצוקה'],['talk','🗣️','ראיון ושיח רגשי'],['sel','💞','למידה רגשית-חברתית'],['mafteach','🧩','כישורי חיים ומפתח הל״ב'],['sped','🧩','חינוך מיוחד והכלה'],['pd','🔎','קריאת אבחונים'],['app/student-picture','🧩','תמונת תלמיד – כיוונים אבחנתיים'],['autism','🧩','אוטיזם – ילדים על הרצף'],['tzalach','🛟','צל״ח – צוות חירום'],['develop','🌳','התפתחות הילד'],['cbtclass','🏫','יישום CBT בכיתה'],['behave','🏅','עיצוב התנהגות'],['groups','👥','הנחיית קבוצות'],['programs','🏗️','תוכניות התערבות'],['transitions','🚪','מעברים'],['newteachers','🌱','מורים חדשים'],['parents','🤝','הורים'],['reports','🎓','תעודות'],['games','🎲','משחקים טיפוליים'],['videos','🎬','סרטונים'],['library','📚','ספרייה'],['settings','⚙️','הגדרות']];
+const NAV = [['home','🏠','בית'],['forms','📝','כל הטפסים למילוי'],['folders','📁','התיקיות שלי'],['diary','📅','יומן'],['ask','💬','שאל שאלה'],['problems','🧭','טיפול לפי בעיה'],['cbt','🧠','שיטת טיפול CBT'],['students','🧒','תלמידים'],['workflow','🗺️','סדר עבודה'],['crole','🎯','תפקיד היועץ'],['roles','👥','מי פונה למי'],['circ','📜','חוזרי מנכ״ל'],['aklim','⚖️','אקלים ומדרג התגובות'],['tools','🧰','כלים לילדים'],['quest','📋','שאלונים ומדדים'],['distress','🚨','סימני מצוקה'],['talk','🗣️','ראיון ושיח רגשי'],['sel','💞','למידה רגשית-חברתית'],['mafteach','🧩','כישורי חיים ומפתח הל״ב'],['sped','🧩','חינוך מיוחד והכלה'],['pd','🔎','קריאת אבחונים'],['app/student-picture','🧩','תמונת תלמיד – כיוונים אבחנתיים'],['autism','🧩','אוטיזם – ילדים על הרצף'],['tzalach','🛟','צל״ח – צוות חירום'],['develop','🌳','התפתחות הילד'],['cbtclass','🏫','יישום CBT בכיתה'],['behave','🏅','עיצוב התנהגות'],['groups','👥','הנחיית קבוצות'],['programs','🏗️','תוכניות התערבות'],['transitions','🚪','מעברים'],['newteachers','🌱','מורים חדשים'],['parents','🤝','הורים'],['reports','🎓','תעודות'],['games','🎲','משחקים טיפוליים'],['videos','🎬','סרטונים'],['library','📚','ספרייה'],['settings','⚙️','הגדרות']];
 function route(){ const h = location.hash.replace(/^#\/?/, '').split('/').map(decodeURIComponent); return {r: h[0] || 'home', id: h[1], sub: h[2], x: h[3]}; }
 let timers = [];
 function clearTimers(){ timers.forEach(t => { clearTimeout(t); clearInterval(t); }); timers = []; }
@@ -5796,7 +5800,7 @@ function render(){
   document.body.classList.toggle('locked', isLocked());
   if (isLocked()) { const o = lockView(); $('#title').textContent = ''; $('#view').innerHTML = `<div class="page">${o.html}</div>`; document.title = 'האתר של נדב דוד – יועץ חינוכי ומטפל CBT'; return; }
   if (WEB && !ARTIFACT && !LITE && !PROBLEMS.length) { $('#title').textContent = ''; $('#view').innerHTML = `<div class="empty" style="padding-top:120px"><span class="big">⏳</span>${Cloud.status === 'error' ? esc(Cloud.err) + ' <br><br><button class="btn primary" data-act="cloud-retry">נסו שוב</button>' : 'טוען את התוכן מ-OneDrive…'}</div>`; return; }
-  const views = LITE ? {home: liteHome, problems, problem: problemView, tools, tool: toolView, settings: liteSettings, ask, askc: R => ask(R, true), workflow, roles: rolesView, circ: circView, circsrc: circSrcView, libsrc: libSrcView, circask: circAskView, find: findView, more: moreView, games: gamesView, game: gameView, tracks: problems, track: trackView, groups: groupsView, transitions: hubView, newteachers: hubView, programs: hubView, distress: hubView, talk: hubView, parents: hubView, reports: hubView, sel: hubView, mafteach: hubView, sped: hubView, pd: hubView, autism: hubView, tzalach: hubView, aklim: hubView,develop: hubView, cbtclass: hubView, behave: hubView, cbt: hubView, cbtmaps: cbtMapsView, app: appView, movie: movieView, pdterms: pdTermsView, crole: hubView, quest: hubView, ariel: hubView, videos: videosView, diary: diaryView, sitemap: sitemapView, folders: foldersView} : {home, problems, problem: problemView, students, student: studentView, tools, tool: toolView, library, settings, ask, askc: R => ask(R, true), workflow, roles: rolesView, circ: circView, circsrc: circSrcView, libsrc: libSrcView, circask: circAskView, find: findView, more: moreView, games: gamesView, game: gameView, tracks: problems, track: trackView, groups: groupsView, transitions: hubView, newteachers: hubView, programs: hubView, distress: hubView, talk: hubView, parents: hubView, reports: hubView, sel: hubView, mafteach: hubView, sped: hubView, pd: hubView, autism: hubView, tzalach: hubView, aklim: hubView,develop: hubView, cbtclass: hubView, behave: hubView, cbt: hubView, cbtmaps: cbtMapsView, app: appView, movie: movieView, pdterms: pdTermsView, crole: hubView, quest: hubView, ariel: hubView, videos: videosView, diary: diaryView, sitemap: sitemapView, folders: foldersView};
+  const views = LITE ? {home: liteHome, problems, problem: problemView, tools, tool: toolView, settings: liteSettings, ask, askc: R => ask(R, true), workflow, roles: rolesView, circ: circView, circsrc: circSrcView, libsrc: libSrcView, circask: circAskView, find: findView, more: moreView, games: gamesView, game: gameView, tracks: problems, track: trackView, groups: groupsView, transitions: hubView, newteachers: hubView, programs: hubView, distress: hubView, talk: hubView, parents: hubView, reports: hubView, sel: hubView, mafteach: hubView, sped: hubView, pd: hubView, autism: hubView, tzalach: hubView, aklim: hubView,develop: hubView, cbtclass: hubView, behave: hubView, cbt: hubView, cbtmaps: cbtMapsView, app: appView, movie: movieView, pdterms: pdTermsView, crole: hubView, quest: hubView, ariel: hubView, videos: videosView, diary: diaryView, sitemap: sitemapView, folders: foldersView, forms: formsView} : {home, problems, problem: problemView, students, student: studentView, tools, tool: toolView, library, settings, ask, askc: R => ask(R, true), workflow, roles: rolesView, circ: circView, circsrc: circSrcView, libsrc: libSrcView, circask: circAskView, find: findView, more: moreView, games: gamesView, game: gameView, tracks: problems, track: trackView, groups: groupsView, transitions: hubView, newteachers: hubView, programs: hubView, distress: hubView, talk: hubView, parents: hubView, reports: hubView, sel: hubView, mafteach: hubView, sped: hubView, pd: hubView, autism: hubView, tzalach: hubView, aklim: hubView,develop: hubView, cbtclass: hubView, behave: hubView, cbt: hubView, cbtmaps: cbtMapsView, app: appView, movie: movieView, pdterms: pdTermsView, crole: hubView, quest: hubView, ariel: hubView, videos: videosView, diary: diaryView, sitemap: sitemapView, folders: foldersView, forms: formsView};
   const fn = views[R.r] || home;
   const out = fn(R);
   $('#title').textContent = out.title;
@@ -5850,7 +5854,7 @@ function mainFile(p){
   return at.length ? at.slice().sort((a, b) => rank(a) - rank(b))[0] : null;
 }
 /* the side menu in 7 groups (approved by the user): pinned items on top, collapsible groups, settings at the bottom; any NAV item not listed falls into "עוד" */
-const NAV_PIN = ['home', 'folders', 'diary', 'ask', 'find', 'sitemap'];
+const NAV_PIN = ['home', 'forms', 'folders', 'diary', 'ask', 'find', 'sitemap'];
 const NAV_GROUPS = [
   ['🧒', 'הטיפול בתלמיד', ['cbt', 'problems', 'app/student-picture', 'students', 'workflow', 'talk', 'quest', 'distress', 'behave', 'develop', 'tools', 'games']],
   ['🏫', 'כיתה ובית ספר', ['cbtclass', 'behave', 'sel', 'mafteach', 'programs', 'groups', 'transitions']],
@@ -9889,6 +9893,26 @@ function procRowHTML(f, opts = {}){
     <span class="ft">${opts.who ? `<a href="${procFolderHref(f.name)}" class="fwho">${PROC.isDraft(f.name) ? '📝 ' + esc(f.name) : '👤 ' + esc(f.name)}</a> · ` : ''}<b>${esc(opts.who && PROC.isDraft(f.name) ? PROC.title(f.k, f.id) : PROC.label(f))}</b> <small class="muted">· עודכן ${procWhen(f.at)}</small></span>
     <span class="fa">${opts.assign ? `<input class="inp" list="pbpeople" data-enter="1" placeholder="שיוך לשם…" maxlength="60"><button class="btn sm" data-fo="assign" ${at}>👤 שיוך</button>` : ''}<button class="btn sm primary" data-fo="open" ${at}>📂 פתיחה</button><button class="btn sm ghost" data-fo="del" ${at}>✖</button></span></div>`;
 }
+/* ---- 📝 כל הטפסים למילוי – #/forms: every fillable form of the site in one place (each one also stays where it lives) ---- */
+function formsAll(){ const A = allApps(), out = [];
+  Object.keys(A).forEach(id => out.push({k: 'a', id, icon: A[id].icon || '🧩', title: A[id].title, sub: A[id].sub || '', hub: (HUBS[A[id].hub] || {}).title || 'יישומים', hk: A[id].hub}));
+  TRACKS().forEach(t => { const st = t.steps.filter(x => PROC_INPUT_KINDS.includes(x.kind)); if (!st.length) return; const h = t.workflow ? ['workflow', 'סדר עבודה'] : HUBOF(t);
+    out.push({k: 't', id: t.id, icon: t.icon || '🧭', title: t.title, sub: 'למילוי: ' + st.map(x => x.title || '').filter(Boolean).slice(0, 4).join(' · ') + (st.length > 4 ? ' ועוד' : ''), hub: h[1], hk: h[0]}); });
+  const ni = k => { const i = NAV.findIndex(n => n[0] === k); return i < 0 ? 999 : i; };
+  out.forEach(f => { const n = NAV.find(x => x[0] === f.hk); if (n) f.hub = n[1] + " " + n[2]; });
+  return out.sort((a, b) => ni(a.hk) - ni(b.hk)); }
+function formsView(){
+  const F = formsAll(), saved = PROC.forms(), groups = [...new Set(F.map(f => f.hub))];
+  const card = f => { const n = saved.filter(s => s.k === f.k && s.id === f.id).length, cur = PROC.cur(f.k, f.id);
+    return `<div class="card formcard" data-q="${esc(f.title + ' ' + f.sub + ' ' + f.hub)}" style="--h:${hubHue(f.hk)}"><a href="${PROC.href(f.k, f.id)}" class="formlink"><span class="emoji">${f.icon}</span><span class="name">${esc(f.title)}</span><span class="sub">${esc(f.sub)}</span></a>
+      <span class="row formfoot"><a class="btn sm primary" href="${PROC.href(f.k, f.id)}">📝 ${cur ? 'המשך – ' + esc(cur) : 'מילוי'}</a><button class="btn sm" data-fo="freshform" data-k="${f.k}" data-id="${esc(f.id)}">➕ טופס חדש</button>${n ? `<span class="pill">📁 ${n} שמורים</span>` : ''}</span></div>`; };
+  return {title: 'כל הטפסים למילוי', html: `<div class="banner" style="--h:150"><span class="emoji">📝</span><div><h1>כל הטפסים למילוי</h1><p>כל טופס שאפשר למלא באתר – במקום אחד (${F.length} טפסים). כל טופס נמצא גם במקומו הרגיל באתר, והמילוי נשמר אוטומטית ב<a href="#/folders">📁 התיקיות שלי</a>.</p></div></div>
+    <div class="fold"><input class="inp fsearch" id="fsearch" placeholder="🔍 חיפוש טופס…">
+    <div class="row" style="gap:6px;flex-wrap:wrap;margin:0 0 6px">${groups.map((g, i) => `<a class="btn sm ghost" href="javascript:void 0" data-fjump="${i}">${esc(g)}</a>`).join('')}</div>
+    ${groups.map((g, i) => `<section data-q="${esc(g + ' ' + F.filter(f => f.hub === g).map(f => f.title + ' ' + f.sub).join(' '))}"><h2 class="fh" id="fg${i}">${esc(g)} <small class="muted">(${F.filter(f => f.hub === g).length})</small></h2><div class="grid wide">${F.filter(f => f.hub === g).map(card).join('')}</div></section>`).join('')}</div>`,
+    after(){ const s = $('#fsearch'); if (s) s.oninput = () => { const q = s.value.trim(); document.querySelectorAll('.fold [data-q]').forEach(x => x.hidden = !!q && !x.dataset.q.includes(q)); };
+      document.querySelectorAll('[data-fjump]').forEach(b => b.onclick = () => { const h = $('#fg' + b.dataset.fjump); if (h) h.scrollIntoView({behavior: 'smooth', block: 'start'}); }); }};
+}
 function foldersView(R){
   const F = PROC.forms(), people = PROC.people(), drafts = F.filter(f => PROC.isDraft(f.name)), search = `<input class="inp fsearch" id="fsearch" placeholder="🔍 חיפוש שם או טופס…">`;
   const head = (t, sub) => `<div class="banner" style="--h:205"><span class="emoji">📁</span><div><h1>${esc(t)}</h1><p>${sub}</p></div></div>`;
@@ -9914,6 +9938,7 @@ document.addEventListener('click', e => {
   const act = b.dataset.fo, k = b.dataset.k, id = b.dataset.id, n = b.dataset.n;
   const go = h => { if (location.hash === h) render(); else location.hash = h; };
   if (act === 'open') { PROC.open(k, id, n); go(PROC.href(k, id)); return; }
+  if (act === 'freshform') { PROC.fresh(k, id, ''); go(PROC.href(k, id)); return; }
   if (act === 'fresh') { const v = ($('#fnew') || {}).value || ''; const j = v.indexOf('|'); if (j < 0) return; PROC.fresh(v.slice(0, j), v.slice(j + 1), n); go(PROC.href(v.slice(0, j), v.slice(j + 1))); return; }
   if (act === 'del') { if (!procArm(b, '⚠️ שוב')) return; PROC.del(k, id, n); if (PROC.cur(k, id) === n) { PROC.setCur(k, id, ''); PROC.set(k, id, {}); } toast('✖ נמחק'); render(); return; }
   if (act === 'assign') { const to = PROC.clean(b.parentNode.querySelector('input').value); if (!to) return; PROC.move(k, id, n, to); toast('📁 עבר לתיקייה של ״' + to + '״'); render(); return; }
