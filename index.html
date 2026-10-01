@@ -5855,7 +5855,7 @@ function mainFile(p){
   return at.length ? at.slice().sort((a, b) => rank(a) - rank(b))[0] : null;
 }
 /* the side menu in 7 groups (approved by the user): pinned items on top, collapsible groups, settings at the bottom; any NAV item not listed falls into "עוד" */
-const NAV_PIN = ['home', 'folders', 'diary', 'ask', 'find', 'sitemap'];
+const NAV_PIN = ['home', 'diary', 'ask', 'find', 'sitemap'];
 const NAV_GROUPS = [
   ['🧒', 'הטיפול בתלמיד', ['cbt', 'problems', 'app/student-picture', 'students', 'workflow', 'talk', 'quest', 'distress', 'behave', 'develop', 'tools', 'games']],
   ['🏫', 'כיתה ובית ספר', ['cbtclass', 'behave', 'sel', 'mafteach', 'programs', 'groups', 'transitions']],
@@ -5868,10 +5868,10 @@ const NAV_GROUPS = [
 ];
 const navItem = k => k === 'find' ? ['find', '🔍', 'חיפוש'] : k === 'sitemap' ? ['sitemap', '🗺️', 'מפת האתר'] : NAV.find(n => n[0] === k);
 const navShown = n => n && !(LITE && ['students', 'library'].includes(n[0]));
-function navGroups(){ const used = new Set([...NAV_PIN, 'settings', 'forms', ...NAV_GROUPS.flatMap(g => g[2])]); const rest = NAV.filter(n => !used.has(n[0]));
+function navGroups(){ const used = new Set([...NAV_PIN, 'settings', 'forms', 'folders', ...NAV_GROUPS.flatMap(g => g[2])]); const rest = NAV.filter(n => !used.has(n[0]));
   return NAV_GROUPS.map(([i, l, ks]) => [i, l, ks.map(navItem).filter(navShown)]).concat(rest.length ? [['➕', 'עוד', rest.filter(navShown)]] : []).filter(g => g[2].length); }
 function navHTML(){ const hue = (k, l) => { try { return HUB_HUE[k] ?? hueOf(l); } catch (e) { return hueOf(l); } }, a = ([k, i, l]) => `<a href="#/${k}" data-nav="${k}" style="--nh:${hue(k, l)}"><span class="i">${i}</span><span class="t">${l}</span></a>`;
-  return `<div class="navpin">${NAV_PIN.map(navItem).filter(navShown).map(a).join('')}</div>` + navGroups().map(([i, l, items], gi) => `<details class="navg" data-g="${gi}" style="--gh:${(gi * 47 + 250) % 360}"><summary><span class="i">${i}</span><span class="t">${esc(l)}</span><span class="n">${items.length}</span></summary><div class="navgi">${items.map(a).join('')}</div></details>`).join('') + `<div class="navpin navafter">${a(navItem('forms'))}</div>` + (navItem('settings') ? `<div class="navbottom">${a(navItem('settings'))}</div>` : ''); }function moreView(){
+  return `<div class="navpin">${NAV_PIN.map(navItem).filter(navShown).map(a).join('')}</div>` + navGroups().map(([i, l, items], gi) => `<details class="navg" data-g="${gi}" style="--gh:${(gi * 47 + 250) % 360}"><summary><span class="i">${i}</span><span class="t">${esc(l)}</span><span class="n">${items.length}</span></summary><div class="navgi">${items.map(a).join('')}</div></details>`).join('') + `<div class="navpin navafter">${a(navItem('forms'))}${a(navItem('folders'))}</div>` + (navItem('settings') ? `<div class="navbottom">${a(navItem('settings'))}</div>` : ''); }function moreView(){
   const card = ([k, i, l]) => `<a class="card" href="#/${k}" style="padding:14px;gap:6px;align-items:center;text-align:center"><span style="font-size:30px">${i}</span><span class="name" style="font-size:16px">${l}</span></a>`;
   const grid = items => `<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:10px">${items.map(card).join('')}</div>`;
   return {title: 'כל האזורים', html: grid(NAV_PIN.map(navItem).filter(navShown)) + navGroups().map(([i, l, items]) => `<h2 class="sec">${i} ${esc(l)}</h2>${grid(items)}`).join('') + (navItem('settings') ? `<h2 class="sec">⚙️ הגדרות</h2>${grid([navItem('settings')])}` : '')};
