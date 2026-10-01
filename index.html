@@ -2377,6 +2377,22 @@ body.chatwin{margin:0;background:var(--bg);overflow:hidden}
 .procbar .btn.danger{color:#fff;background:var(--danger);border-color:var(--danger)}
 @media (max-width:760px){.procbar{position:static}.procbar .pbname{width:100%}}
 
+/* ---- 📁 folders ---- */
+.fold .fsearch{width:100%;max-width:420px;margin:0 0 14px}
+.fold .fh{font-size:19px;margin:18px 0 10px}
+.foldcard .ficons{font-size:18px;letter-spacing:2px}
+.foldcard.draft{border-style:dashed}
+.foldrow{display:flex;flex-wrap:wrap;align-items:center;gap:8px 10px;padding:9px 4px;border-bottom:1px solid var(--line)}
+.foldrow:last-child{border-bottom:0}
+.foldrow .fi{font-size:22px}
+.foldrow .ft{flex:1;min-width:200px}
+.foldrow .fwho{font-weight:700;text-decoration:none}
+.foldrow .fa{display:flex;flex-wrap:wrap;gap:6px;align-items:center}
+.foldrow .fa .inp{width:150px;padding:5px 9px;font-size:14px}
+.foldrow .btn.danger,.fold .btn.danger{color:#fff;background:var(--danger);border-color:var(--danger)}
+.procbar .pbhint{flex-basis:100%}
+.fold [hidden]{display:none!important}
+
 </style>
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="apple-touch-icon" href="icon-192.png">
@@ -5757,7 +5773,7 @@ function ui(){
 }
 
 /* ================= routing & shell ================= */
-const NAV = [['home','🏠','בית'],['diary','📅','יומן'],['ask','💬','שאל שאלה'],['problems','🧭','טיפול לפי בעיה'],['cbt','🧠','שיטת טיפול CBT'],['students','🧒','תלמידים'],['workflow','🗺️','סדר עבודה'],['crole','🎯','תפקיד היועץ'],['roles','👥','מי פונה למי'],['circ','📜','חוזרי מנכ״ל'],['aklim','⚖️','אקלים ומדרג התגובות'],['tools','🧰','כלים לילדים'],['quest','📋','שאלונים ומדדים'],['distress','🚨','סימני מצוקה'],['talk','🗣️','ראיון ושיח רגשי'],['sel','💞','למידה רגשית-חברתית'],['mafteach','🧩','כישורי חיים ומפתח הל״ב'],['sped','🧩','חינוך מיוחד והכלה'],['pd','🔎','קריאת אבחונים'],['app/student-picture','🧩','תמונת תלמיד – כיוונים אבחנתיים'],['autism','🧩','אוטיזם – ילדים על הרצף'],['tzalach','🛟','צל״ח – צוות חירום'],['develop','🌳','התפתחות הילד'],['cbtclass','🏫','יישום CBT בכיתה'],['behave','🏅','עיצוב התנהגות'],['groups','👥','הנחיית קבוצות'],['programs','🏗️','תוכניות התערבות'],['transitions','🚪','מעברים'],['newteachers','🌱','מורים חדשים'],['parents','🤝','הורים'],['reports','🎓','תעודות'],['games','🎲','משחקים טיפוליים'],['videos','🎬','סרטונים'],['library','📚','ספרייה'],['settings','⚙️','הגדרות']];
+const NAV = [['home','🏠','בית'],['folders','📁','התיקיות שלי – כל הטפסים'],['diary','📅','יומן'],['ask','💬','שאל שאלה'],['problems','🧭','טיפול לפי בעיה'],['cbt','🧠','שיטת טיפול CBT'],['students','🧒','תלמידים'],['workflow','🗺️','סדר עבודה'],['crole','🎯','תפקיד היועץ'],['roles','👥','מי פונה למי'],['circ','📜','חוזרי מנכ״ל'],['aklim','⚖️','אקלים ומדרג התגובות'],['tools','🧰','כלים לילדים'],['quest','📋','שאלונים ומדדים'],['distress','🚨','סימני מצוקה'],['talk','🗣️','ראיון ושיח רגשי'],['sel','💞','למידה רגשית-חברתית'],['mafteach','🧩','כישורי חיים ומפתח הל״ב'],['sped','🧩','חינוך מיוחד והכלה'],['pd','🔎','קריאת אבחונים'],['app/student-picture','🧩','תמונת תלמיד – כיוונים אבחנתיים'],['autism','🧩','אוטיזם – ילדים על הרצף'],['tzalach','🛟','צל״ח – צוות חירום'],['develop','🌳','התפתחות הילד'],['cbtclass','🏫','יישום CBT בכיתה'],['behave','🏅','עיצוב התנהגות'],['groups','👥','הנחיית קבוצות'],['programs','🏗️','תוכניות התערבות'],['transitions','🚪','מעברים'],['newteachers','🌱','מורים חדשים'],['parents','🤝','הורים'],['reports','🎓','תעודות'],['games','🎲','משחקים טיפוליים'],['videos','🎬','סרטונים'],['library','📚','ספרייה'],['settings','⚙️','הגדרות']];
 function route(){ const h = location.hash.replace(/^#\/?/, '').split('/').map(decodeURIComponent); return {r: h[0] || 'home', id: h[1], sub: h[2], x: h[3]}; }
 let timers = [];
 function clearTimers(){ timers.forEach(t => { clearTimeout(t); clearInterval(t); }); timers = []; }
@@ -5780,7 +5796,7 @@ function render(){
   document.body.classList.toggle('locked', isLocked());
   if (isLocked()) { const o = lockView(); $('#title').textContent = ''; $('#view').innerHTML = `<div class="page">${o.html}</div>`; document.title = 'האתר של נדב דוד – יועץ חינוכי ומטפל CBT'; return; }
   if (WEB && !ARTIFACT && !LITE && !PROBLEMS.length) { $('#title').textContent = ''; $('#view').innerHTML = `<div class="empty" style="padding-top:120px"><span class="big">⏳</span>${Cloud.status === 'error' ? esc(Cloud.err) + ' <br><br><button class="btn primary" data-act="cloud-retry">נסו שוב</button>' : 'טוען את התוכן מ-OneDrive…'}</div>`; return; }
-  const views = LITE ? {home: liteHome, problems, problem: problemView, tools, tool: toolView, settings: liteSettings, ask, askc: R => ask(R, true), workflow, roles: rolesView, circ: circView, circsrc: circSrcView, libsrc: libSrcView, circask: circAskView, find: findView, more: moreView, games: gamesView, game: gameView, tracks: problems, track: trackView, groups: groupsView, transitions: hubView, newteachers: hubView, programs: hubView, distress: hubView, talk: hubView, parents: hubView, reports: hubView, sel: hubView, mafteach: hubView, sped: hubView, pd: hubView, autism: hubView, tzalach: hubView, aklim: hubView,develop: hubView, cbtclass: hubView, behave: hubView, cbt: hubView, cbtmaps: cbtMapsView, app: appView, movie: movieView, pdterms: pdTermsView, crole: hubView, quest: hubView, ariel: hubView, videos: videosView, diary: diaryView, sitemap: sitemapView} : {home, problems, problem: problemView, students, student: studentView, tools, tool: toolView, library, settings, ask, askc: R => ask(R, true), workflow, roles: rolesView, circ: circView, circsrc: circSrcView, libsrc: libSrcView, circask: circAskView, find: findView, more: moreView, games: gamesView, game: gameView, tracks: problems, track: trackView, groups: groupsView, transitions: hubView, newteachers: hubView, programs: hubView, distress: hubView, talk: hubView, parents: hubView, reports: hubView, sel: hubView, mafteach: hubView, sped: hubView, pd: hubView, autism: hubView, tzalach: hubView, aklim: hubView,develop: hubView, cbtclass: hubView, behave: hubView, cbt: hubView, cbtmaps: cbtMapsView, app: appView, movie: movieView, pdterms: pdTermsView, crole: hubView, quest: hubView, ariel: hubView, videos: videosView, diary: diaryView, sitemap: sitemapView};
+  const views = LITE ? {home: liteHome, problems, problem: problemView, tools, tool: toolView, settings: liteSettings, ask, askc: R => ask(R, true), workflow, roles: rolesView, circ: circView, circsrc: circSrcView, libsrc: libSrcView, circask: circAskView, find: findView, more: moreView, games: gamesView, game: gameView, tracks: problems, track: trackView, groups: groupsView, transitions: hubView, newteachers: hubView, programs: hubView, distress: hubView, talk: hubView, parents: hubView, reports: hubView, sel: hubView, mafteach: hubView, sped: hubView, pd: hubView, autism: hubView, tzalach: hubView, aklim: hubView,develop: hubView, cbtclass: hubView, behave: hubView, cbt: hubView, cbtmaps: cbtMapsView, app: appView, movie: movieView, pdterms: pdTermsView, crole: hubView, quest: hubView, ariel: hubView, videos: videosView, diary: diaryView, sitemap: sitemapView, folders: foldersView} : {home, problems, problem: problemView, students, student: studentView, tools, tool: toolView, library, settings, ask, askc: R => ask(R, true), workflow, roles: rolesView, circ: circView, circsrc: circSrcView, libsrc: libSrcView, circask: circAskView, find: findView, more: moreView, games: gamesView, game: gameView, tracks: problems, track: trackView, groups: groupsView, transitions: hubView, newteachers: hubView, programs: hubView, distress: hubView, talk: hubView, parents: hubView, reports: hubView, sel: hubView, mafteach: hubView, sped: hubView, pd: hubView, autism: hubView, tzalach: hubView, aklim: hubView,develop: hubView, cbtclass: hubView, behave: hubView, cbt: hubView, cbtmaps: cbtMapsView, app: appView, movie: movieView, pdterms: pdTermsView, crole: hubView, quest: hubView, ariel: hubView, videos: videosView, diary: diaryView, sitemap: sitemapView, folders: foldersView};
   const fn = views[R.r] || home;
   const out = fn(R);
   $('#title').textContent = out.title;
@@ -5834,7 +5850,7 @@ function mainFile(p){
   return at.length ? at.slice().sort((a, b) => rank(a) - rank(b))[0] : null;
 }
 /* the side menu in 7 groups (approved by the user): pinned items on top, collapsible groups, settings at the bottom; any NAV item not listed falls into "עוד" */
-const NAV_PIN = ['home', 'diary', 'ask', 'find', 'sitemap'];
+const NAV_PIN = ['home', 'folders', 'diary', 'ask', 'find', 'sitemap'];
 const NAV_GROUPS = [
   ['🧒', 'הטיפול בתלמיד', ['cbt', 'problems', 'app/student-picture', 'students', 'workflow', 'talk', 'quest', 'distress', 'behave', 'develop', 'tools', 'games']],
   ['🏫', 'כיתה ובית ספר', ['cbtclass', 'behave', 'sel', 'mafteach', 'programs', 'groups', 'transitions']],
@@ -9790,9 +9806,10 @@ function trackView(R){
 }
 let trTimer = null;
 const trSave = () => { clearTimeout(trTimer); trTimer = setTimeout(save, 500); try { PROC.touch('t', route().id); } catch (e) {} };
-/* ---- 💾 named processes: every application (k 'a') and every track with forms (k 't') can be saved under a name, reopened, cleared ----
-   A process that has a name keeps saving itself on every change. Saved processes live in this browser and follow the user
-   between devices through LiteSync (one entry per process; a deleted one leaves a tombstone so the deletion syncs too). */
+/* ---- 📁 named processes + folders: every application (k 'a') and every track with forms (k 't') is saved under the name of the person it belongs to.
+   The same name in different forms = one folder (#/folders/<name>); #/folders gathers everyone. A form filled with no name is saved
+   automatically as "טיוטה N". Saved processes live in this browser and follow the user between devices through LiteSync
+   (one entry per process; a deleted one leaves a tombstone so the deletion syncs too). */
 const PROC_INPUT_KINDS = ['form', 'fivep', 'cycle', 'plan', 'checklist', 'scale', 'viz', 'psy', 'sessions'];
 const PROC = {
   key: (k, id) => 'cbtapp.saved.' + k + '.' + id,
@@ -9806,36 +9823,102 @@ const PROC = {
   get(k, id){ return k === 'a' ? appGet(id) : JSON.parse(JSON.stringify(trData(id))); },
   set(k, id, d){ if (k === 'a') { ls.set(appKey(id), d || {}); try { SYNC.schedule(); } catch (e) {} } else { S.tracks = S.tracks || {}; S.tracks[trKey(id)] = JSON.parse(JSON.stringify(d || {})); save(); } },
   empty: d => !d || !Object.values(d).some(v => v != null && v !== '' && !(Array.isArray(v) && !v.length) && !(typeof v === 'object' && !Array.isArray(v) && PROC.empty(v))),
-  touch(k, id){ clearTimeout(this['t' + k + id]); this['t' + k + id] = setTimeout(() => { const n = this.cur(k, id); if (n) this.put(k, id, n, this.get(k, id)); }, 700); }
+  isDraft: n => /^טיוטה \d+$/.test(n || ''),
+  clean: n => String(n || '').replace(/[|]/g, ' ').replace(/\s+/g, ' ').trim().slice(0, 60),
+  forms(){ const out = [];   // every saved form of everyone: {k, id, name, at}
+    try { Object.keys(localStorage).filter(x => x.startsWith('cbtapp.saved.')).forEach(x => { const r = x.slice(13), j = r.indexOf('.'), k = r.slice(0, j), id = r.slice(j + 1);
+      if (k === 'a' ? !allApps()[id] : !TRACK(id)) return;
+      Object.entries(ls.get(x, {})).forEach(([n, v]) => { if (v && !v.del) out.push({k, id, name: n, at: v.at || 0}); }); }); } catch (e) {}
+    return out.sort((a, b) => b.at - a.at); },
+  people(){ return [...new Set(this.forms().map(f => f.name).filter(n => !this.isDraft(n)))].sort((a, b) => a.localeCompare(b, 'he')); },
+  nextDraft(){ return 'טיוטה ' + (Math.max(0, ...this.forms().filter(f => this.isDraft(f.name)).map(f => +f.name.split(' ')[1])) + 1); },
+  title(k, id){ if (k === 'a') { const A = allApps()[id]; return A ? A.title : id; } const t = TRACK(id); return t ? t.title : id; },
+  icon(k, id){ const x = k === 'a' ? allApps()[id] : TRACK(id); return (x && x.icon) || '📄'; },
+  label(f){ return this.isDraft(f.name) ? f.name + ' - ' + this.title(f.k, f.id) : this.title(f.k, f.id); },
+  href(k, id){ if (k === 'a') return '#/app/' + id; const t = TRACK(id), i = t ? t.steps.findIndex(x => PROC_INPUT_KINDS.includes(x.kind)) : 0; return '#/track/' + id + '/' + (Math.max(0, i) + 1); },
+  flush(k, id){ clearTimeout(this['t' + k + id]); const c = this.cur(k, id), d = this.get(k, id); if (c) this.put(k, id, c, d); else if (!this.empty(d)) this.put(k, id, this.nextDraft(), d); },
+  open(k, id, name){ this.flush(k, id); const x = this.all(k, id)[name]; this.set(k, id, x && !x.del ? x.d : {}); this.setCur(k, id, name); },
+  fresh(k, id, name){ this.flush(k, id); this.set(k, id, {}); this.setCur(k, id, name || ''); },   // a clean form, already belonging to <name>
+  move(k, id, from, to){ const L = this.all(k, id), x = L[from]; if (!x || x.del || from === to) return; L[to] = {d: x.d, at: Date.now()}; L[from] = {del: true, at: Date.now()}; ls.set(this.key(k, id), L); if (this.cur(k, id) === from) this.setCur(k, id, to); try { SYNC.schedule(); } catch (e) {} },
+  rename(from, to){ this.forms().filter(f => f.name === from).forEach(f => this.move(f.k, f.id, from, to)); },
+  touch(k, id){ clearTimeout(this['t' + k + id]); this['t' + k + id] = setTimeout(() => { const d = this.get(k, id); let n = this.cur(k, id);
+    if (!n) { if (this.empty(d)) return; n = this.nextDraft(); this.setCur(k, id, n); this.put(k, id, n, d); procBarRefresh(k, id); return; }
+    this.put(k, id, n, d); }, 700); }
 };
+const procWhen = at => new Date(at).toLocaleDateString('he-IL', {day: 'numeric', month: 'numeric', year: '2-digit'});
+const procPeopleList = () => `<datalist id="pbpeople">${PROC.people().map(n => `<option value="${esc(n)}">`).join('')}</datalist>`;
+const procFolderHref = n => '#/folders/' + encodeURIComponent(PROC.isDraft(n) ? '~drafts' : n);
 function procBarHTML(k, id){
-  const cur = PROC.cur(k, id), L = PROC.list(k, id), when = at => new Date(at).toLocaleDateString('he-IL', {day: 'numeric', month: 'numeric'});
+  const cur = PROC.cur(k, id), dr = PROC.isDraft(cur), L = PROC.list(k, id), nf = cur && !dr ? PROC.forms().filter(f => f.name === cur).length : 0;
   return `<div class="procbar no-print" data-pk="${k}" data-pid="${esc(id)}">
-    <span class="pbname">📌 ${cur ? `<b>${esc(cur)}</b> <small class="muted">· נשמר אוטומטית</small>` : '<b>תהליך ללא שם</b> <small class="muted">· לא שמור בשם</small>'}</span>
-    <span class="pbbtns"><button class="btn sm primary" data-pb="save">💾 ${cur ? 'שמירה בשם אחר' : 'שמירה בשם'}</button>
-    <select class="btn sm pbopen" data-pb="open" aria-label="תהליכים שמורים"><option value="">📂 תהליכים שמורים (${L.length})</option>${L.map(([n, v]) => `<option value="${esc(n)}"${n === cur ? ' selected' : ''}>${esc(n)} · ${when(v.at)}</option>`).join('')}</select>
-    <button class="btn sm" data-pb="new">🧹 ניקוי – תהליך חדש</button>${cur ? `<button class="btn sm ghost" data-pb="del">✖ מחיקת ״${esc(cur)}״</button>` : ''}</span>
-    <span class="pbsave" hidden><input class="inp" maxlength="60" placeholder="שם התהליך – למשל: יוסי ג׳2, אוקטובר"><button class="btn sm primary" data-pb="ok">שמירה</button><button class="btn sm ghost" data-pb="cancel">ביטול</button></span></div>`;
+    <span class="pbname">${!cur ? '📄 <b>טופס חדש</b> <small class="muted">· יישמר אוטומטית ברגע שמתחילים למלא</small>' : dr ? `📝 <b>${esc(cur)} - ${esc(PROC.title(k, id))}</b> <small class="muted">· נשמר אוטומטית בטיוטות – אפשר לשייך לתלמיד</small>` : `👤 <b>${esc(cur)}</b> <small class="muted">· נשמר אוטומטית בתיקייה שלו</small>`}</span>
+    <span class="pbbtns"><button class="btn sm primary" data-pb="save">👤 ${cur && !dr ? 'שמירה גם לאדם אחר' : 'שיוך לתלמיד / שם'}</button>
+    ${cur ? `<a class="btn sm" href="${procFolderHref(cur)}">📁 ${dr ? 'הטיוטות' : 'התיקייה של ' + esc(cur) + ' (' + nf + ')'}</a>` : `<a class="btn sm" href="#/folders">📁 התיקיות שלי</a>`}
+    <select class="btn sm pbopen" data-pb="open" aria-label="טפסים שמורים"><option value="">📂 שמורים בטופס הזה (${L.length})</option>${L.map(([n, v]) => `<option value="${esc(n)}"${n === cur ? ' selected' : ''}>${esc(n)} · ${procWhen(v.at)}</option>`).join('')}</select>
+    <button class="btn sm" data-pb="new">🧹 ניקוי – טופס חדש</button>${cur ? `<button class="btn sm ghost" data-pb="del">✖ מחיקה</button>` : ''}</span>
+    <span class="pbsave" hidden><input class="inp" maxlength="60" list="pbpeople" placeholder="שם התלמיד (כינוי) – למשל: יוסי ג׳2">${procPeopleList()}<button class="btn sm primary" data-pb="ok">שמירה</button><button class="btn sm ghost" data-pb="cancel">ביטול</button>
+      <small class="muted pbhint">אותו שם בכמה טפסים = תיקייה אחת של אותו אדם</small></span></div>`;
 }
+function procBarRefresh(k, id){ const b = document.querySelector(`.procbar[data-pk="${k}"][data-pid="${CSS.escape(id)}"]`); if (b && b.querySelector('.pbsave').hidden) b.outerHTML = procBarHTML(k, id); }
 const procArm = (b, label) => { if (Date.now() - (b._armed || 0) < 4000) return true; b._armed = Date.now(); b._label = b._label || b.textContent; b.textContent = label; b.classList.add('danger'); setTimeout(() => { if (Date.now() - b._armed >= 4000) { b.textContent = b._label; b.classList.remove('danger'); } }, 4100); return false; };   // two taps instead of confirm() – blocked inside Claude
-function procStash(k, id){ const d = PROC.get(k, id); if (!PROC.cur(k, id) && !PROC.empty(d)) PROC.put(k, id, 'טיוטה ' + new Date().toLocaleString('he-IL', {day: 'numeric', month: 'numeric', hour: '2-digit', minute: '2-digit'}), d); }
 document.addEventListener('click', e => {
   const b = e.target.closest('.procbar [data-pb]'); if (!b || b.tagName === 'SELECT') return;
   const bar = b.closest('.procbar'), k = bar.dataset.pk, id = bar.dataset.pid, act = b.dataset.pb, box = bar.querySelector('.pbsave'), inp = box.querySelector('input');
   if (act === 'save') { box.hidden = false; bar.querySelector('.pbbtns').hidden = true; inp.value = ''; inp.focus(); return; }
   if (act === 'cancel') { box.hidden = true; bar.querySelector('.pbbtns').hidden = false; return; }
-  if (act === 'ok') { const n = inp.value.trim().slice(0, 60); if (!n) { inp.focus(); return; } PROC.put(k, id, n, PROC.get(k, id)); PROC.setCur(k, id, n); toast('💾 נשמר בשם ״' + n + '״'); render(); return; }
-  if (act === 'new') { if (!PROC.cur(k, id) && !PROC.empty(PROC.get(k, id)) && !procArm(b, '⚠️ לחצו שוב – הטופס יתנקה')) return;
-    PROC.setCur(k, id, ''); PROC.set(k, id, {}); toast('🧹 טופס נקי – תהליך חדש'); render(); return; }
-  if (act === 'del') { const n = PROC.cur(k, id); if (!n || !procArm(b, '⚠️ לחצו שוב למחיקת ״' + n + '״')) return; PROC.del(k, id, n); PROC.setCur(k, id, ''); toast('✖ ״' + n + '״ נמחק מהשמורים'); render(); }
+  if (act === 'ok') { const n = PROC.clean(inp.value); if (!n) { inp.focus(); return; } const cur = PROC.cur(k, id);
+    clearTimeout(PROC['t' + k + id]);
+    if (PROC.isDraft(cur)) { PROC.put(k, id, cur, PROC.get(k, id)); PROC.move(k, id, cur, n); } else { PROC.put(k, id, n, PROC.get(k, id)); PROC.setCur(k, id, n); }
+    toast('📁 נשמר בתיקייה של ״' + n + '״'); render(); return; }
+  if (act === 'new') { PROC.fresh(k, id, ''); toast('🧹 טופס נקי – הקודם נשמר בתיקיות'); render(); return; }
+  if (act === 'del') { const n = PROC.cur(k, id); if (!n || !procArm(b, '⚠️ לחצו שוב למחיקה')) return; clearTimeout(PROC['t' + k + id]); PROC.del(k, id, n); PROC.setCur(k, id, ''); PROC.set(k, id, {}); toast('✖ ״' + n + '״ נמחק מהטופס הזה'); render(); }
 });
 document.addEventListener('change', e => {
   const s = e.target.closest('.procbar select[data-pb="open"]'); if (!s || !s.value) return;
-  const bar = s.closest('.procbar'), k = bar.dataset.pk, id = bar.dataset.pid, n = s.value, x = PROC.all(k, id)[n]; if (!x || x.del) return;
-  if (n === PROC.cur(k, id)) return;
-  procStash(k, id); PROC.set(k, id, x.d); PROC.setCur(k, id, n); toast('📂 נפתח ״' + n + '״'); render();
+  const bar = s.closest('.procbar'), k = bar.dataset.pk, id = bar.dataset.pid, n = s.value; if (n === PROC.cur(k, id)) return;
+  PROC.open(k, id, n); toast('📂 נפתח ״' + n + '״'); render();
 });
-document.addEventListener('keydown', e => { if (e.key === 'Enter' && e.target.closest && e.target.closest('.procbar .pbsave input')) { e.preventDefault(); e.target.closest('.pbsave').querySelector('[data-pb="ok"]').click(); } });
+document.addEventListener('keydown', e => { if (e.key !== 'Enter' || !e.target.closest) return; const i = e.target.closest('.procbar .pbsave input, .fold [data-enter]'); if (!i) return; e.preventDefault(); (i.closest('.pbsave, .foldrow, .foldact') || document).querySelector('[data-pb="ok"], [data-fo="assign"], [data-fo="rename"]').click(); });
+
+/* ---- 📁 התיקיות שלי – #/folders (everyone), #/folders/<name> (one person), #/folders/~drafts ---- */
+function procFormOptions(){ const A = allApps(), T = TRACKS().filter(t => t.steps.some(x => PROC_INPUT_KINDS.includes(x.kind)));
+  return `<optgroup label="יישומים">${Object.keys(A).map(id => `<option value="a|${esc(id)}">${A[id].icon || '🧩'} ${esc(A[id].title)}</option>`).join('')}</optgroup><optgroup label="מסלולים ודפי הדרכה עם טפסים">${T.map(t => `<option value="t|${esc(t.id)}">${t.icon || '🧭'} ${esc(t.title)}</option>`).join('')}</optgroup>`; }
+function procRowHTML(f, opts = {}){
+  const at = `data-k="${f.k}" data-id="${esc(f.id)}" data-n="${esc(f.name)}"`;
+  return `<div class="foldrow" data-q="${esc(f.name + ' ' + PROC.label(f))}"><span class="fi">${PROC.icon(f.k, f.id)}</span>
+    <span class="ft">${opts.who ? `<a href="${procFolderHref(f.name)}" class="fwho">${PROC.isDraft(f.name) ? '📝 ' + esc(f.name) : '👤 ' + esc(f.name)}</a> · ` : ''}<b>${esc(opts.who && PROC.isDraft(f.name) ? PROC.title(f.k, f.id) : PROC.label(f))}</b> <small class="muted">· עודכן ${procWhen(f.at)}</small></span>
+    <span class="fa">${opts.assign ? `<input class="inp" list="pbpeople" data-enter="1" placeholder="שיוך לשם…" maxlength="60"><button class="btn sm" data-fo="assign" ${at}>👤 שיוך</button>` : ''}<button class="btn sm primary" data-fo="open" ${at}>📂 פתיחה</button><button class="btn sm ghost" data-fo="del" ${at}>✖</button></span></div>`;
+}
+function foldersView(R){
+  const F = PROC.forms(), people = PROC.people(), drafts = F.filter(f => PROC.isDraft(f.name)), search = `<input class="inp fsearch" id="fsearch" placeholder="🔍 חיפוש שם או טופס…">`;
+  const head = (t, sub) => `<div class="banner" style="--h:205"><span class="emoji">📁</span><div><h1>${esc(t)}</h1><p>${sub}</p></div></div>`;
+  if (R.id === '~drafts') return {title: 'טיוטות', html: `<a class="back" href="#/folders">→ התיקיות שלי</a>${head('טיוטות', 'טפסים שמולאו בלי שם. משייכים לתלמיד – והטופס עובר לתיקייה שלו.')}<div class="fold">${procPeopleList()}
+    ${drafts.length ? `<div class="panel">${drafts.map(f => procRowHTML(f, {assign: true})).join('')}</div>` : '<div class="empty">אין טיוטות 🙂</div>'}</div>`};
+  if (R.id) { const name = R.id, mine = F.filter(f => f.name === name);
+    return {title: name, html: `<a class="back" href="#/folders">→ התיקיות שלי</a>${head(name, `כל הטפסים של ${esc(name)} במקום אחד · ${mine.length} טפסים`)}<div class="fold">${procPeopleList()}
+      <div class="panel foldact"><h3>➕ טופס חדש עבור ${esc(name)}</h3><div class="row" style="gap:8px;flex-wrap:wrap"><select class="inp" id="fnew" style="flex:1;min-width:220px">${procFormOptions()}</select><button class="btn primary" data-fo="fresh" data-n="${esc(name)}">פתיחת טופס חדש</button></div>
+        <p class="muted" style="margin:8px 0 0;font-size:13px">הטופס נפתח נקי ונשמר אוטומטית בתיקייה הזו.</p></div>
+      ${mine.length ? `<div class="panel"><h3>📄 הטפסים של ${esc(name)}</h3>${mine.map(f => procRowHTML(f)).join('')}</div>` : '<div class="empty">אין עדיין טפסים בתיקייה הזו.</div>'}
+      <div class="panel foldact"><h3>✏️ שינוי השם של התיקייה</h3><div class="row" style="gap:8px;flex-wrap:wrap"><input class="inp" data-enter="1" id="fren" value="${esc(name)}" maxlength="60" style="flex:1;min-width:200px"><button class="btn" data-fo="rename" data-n="${esc(name)}">שינוי בכל הטפסים</button></div></div></div>`}; }
+  const card = n => { const m = F.filter(f => f.name === n); return `<a class="card foldcard" href="${procFolderHref(n)}" data-q="${esc(n + ' ' + m.map(f => PROC.title(f.k, f.id)).join(' '))}"><span class="emoji">👤</span><span class="name">${esc(n)}</span><span class="sub">${m.length} טפסים · עודכן ${procWhen(m[0].at)}</span><span class="ficons">${[...new Set(m.map(f => PROC.icon(f.k, f.id)))].slice(0, 8).join(' ')}</span></a>`; };
+  return {title: 'התיקיות שלי', html: `${head('התיקיות שלי', 'כל טופס שממלאים באתר נשמר כאן – בתיקייה על שם האדם. אותו שם בכמה טפסים = תיקייה אחת.')}<div class="fold">
+    ${search}
+    <h2 class="fh">👤 תיקיות לפי אדם (${people.length})</h2>
+    ${people.length || drafts.length ? `<div class="grid">${people.map(card).join('')}${drafts.length ? `<a class="card foldcard draft" href="#/folders/~drafts" data-q="טיוטה טיוטות ${esc(drafts.map(f => PROC.label(f)).join(' '))}"><span class="emoji">📝</span><span class="name">טיוטות</span><span class="sub">${drafts.length} טפסים בלי שם</span></a>` : ''}</div>`
+      : '<div class="empty">עדיין אין טפסים שמורים. ממלאים טופס כלשהו באתר – והוא מופיע כאן.</div>'}
+    ${F.length ? `<h2 class="fh">🗂️ כל הטפסים של כולם (${F.length})</h2><div class="panel">${F.map(f => procRowHTML(f, {who: true})).join('')}</div>` : ''}</div>`,
+    after(){ const s = $('#fsearch'); if (s) s.oninput = () => { const q = s.value.trim(); document.querySelectorAll('.fold [data-q]').forEach(x => x.hidden = !!q && !x.dataset.q.includes(q)); }; }};
+}
+document.addEventListener('click', e => {
+  const b = e.target.closest('[data-fo]'); if (!b) return;
+  const act = b.dataset.fo, k = b.dataset.k, id = b.dataset.id, n = b.dataset.n;
+  const go = h => { if (location.hash === h) render(); else location.hash = h; };
+  if (act === 'open') { PROC.open(k, id, n); go(PROC.href(k, id)); return; }
+  if (act === 'fresh') { const v = ($('#fnew') || {}).value || ''; const j = v.indexOf('|'); if (j < 0) return; PROC.fresh(v.slice(0, j), v.slice(j + 1), n); go(PROC.href(v.slice(0, j), v.slice(j + 1))); return; }
+  if (act === 'del') { if (!procArm(b, '⚠️ שוב')) return; PROC.del(k, id, n); if (PROC.cur(k, id) === n) { PROC.setCur(k, id, ''); PROC.set(k, id, {}); } toast('✖ נמחק'); render(); return; }
+  if (act === 'assign') { const to = PROC.clean(b.parentNode.querySelector('input').value); if (!to) return; PROC.move(k, id, n, to); toast('📁 עבר לתיקייה של ״' + to + '״'); render(); return; }
+  if (act === 'rename') { const to = PROC.clean(($('#fren') || {}).value); if (!to || to === n) return; PROC.rename(n, to); toast('✏️ התיקייה נקראת עכשיו ״' + to + '״'); go(procFolderHref(to)); }
+});
 function trCycleRefresh(tid, sid){ const t = TRACK(tid), s = t && t.steps.find(x => x.id === sid); if (!s || s.kind !== 'cycle') return; const D = trData(tid), d = D[sid] || {}; const b = $('#trcy-' + sid); if (b) b.innerHTML = cycleHTML({title: s.title, nodes: s.nodes.map((x, i) => ({k: x.k, label: x.label, t: d['n' + i] || '', ph: x.ph})), back: s.back, breaks: s.breaks}); }
 document.addEventListener('input', e => {
   const el = e.target; if (!el.dataset) return;
