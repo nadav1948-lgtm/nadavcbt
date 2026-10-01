@@ -2398,6 +2398,12 @@ body.chatwin{margin:0;background:var(--bg);overflow:hidden}
 .fold section[hidden],.fold .card[hidden]{display:none!important}
 .navpin.navafter{margin-top:8px;padding-top:8px;border-top:1px solid var(--line)}
 
+/* ---- 📤 send a form out / 📥 take it back ---- */
+.sfmodal{position:fixed;inset:0;z-index:200;background:#0008;display:flex;align-items:center;justify-content:center;padding:16px}
+.sfbox{position:relative;background:var(--panel);color:var(--text);border:1px solid var(--line);border-radius:18px;padding:18px 20px;width:min(560px,100%);max-height:90vh;overflow:auto;box-shadow:var(--shadow)}
+.sfbox h3{margin:0 0 8px}.sfbox .sfx{position:absolute;top:10px;inset-inline-end:12px;border:0;background:none;font-size:18px;cursor:pointer;color:var(--muted)}
+.sfrow{display:flex;flex-wrap:wrap;gap:8px 12px;align-items:center;margin:0 0 14px}
+
 </style>
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="apple-touch-icon" href="icon-192.png">
@@ -9860,7 +9866,7 @@ function procBarHTML(k, id){
     <span class="pbbtns"><button class="btn sm primary" data-pb="save">👤 ${cur && !dr ? 'שמירה גם לאדם אחר' : 'שיוך לתלמיד / שם'}</button>
     ${cur ? `<a class="btn sm" href="${procFolderHref(cur)}">📁 ${dr ? 'הטיוטות' : 'התיקייה של ' + esc(cur) + ' (' + nf + ')'}</a>` : `<a class="btn sm" href="#/folders">📁 התיקיות שלי</a>`}
     <select class="btn sm pbopen" data-pb="open" aria-label="טפסים שמורים"><option value="">📂 שמורים בטופס הזה (${L.length})</option>${L.map(([n, v]) => `<option value="${esc(n)}"${n === cur ? ' selected' : ''}>${esc(n)} · ${procWhen(v.at)}</option>`).join('')}</select>
-    <button class="btn sm" data-pb="new">🧹 ניקוי – טופס חדש</button>${cur ? `<button class="btn sm ghost" data-pb="del">✖ מחיקה</button>` : ''}</span>
+    <button class="btn sm" data-pb="new">🧹 ניקוי – טופס חדש</button><button class="btn sm" data-sfsend="1" title="קובץ אחד למילוי – בלי להיכנס לאתר">📤 שליחה למילוי</button><button class="btn sm" data-sfimport="1">📥 קליטת טופס שחזר</button>${cur ? `<button class="btn sm ghost" data-pb="del">✖ מחיקה</button>` : ''}</span>
     <span class="pbsave" hidden><input class="inp" maxlength="60" list="pbpeople" placeholder="שם התלמיד (כינוי) – למשל: יוסי ג׳2">${procPeopleList()}<button class="btn sm primary" data-pb="ok">שמירה</button><button class="btn sm ghost" data-pb="cancel">ביטול</button>
       <small class="muted pbhint">אותו שם בכמה טפסים = תיקייה אחת של אותו אדם</small></span></div>`;
 }
@@ -9894,6 +9900,133 @@ function procRowHTML(f, opts = {}){
     <span class="ft">${opts.who ? `<a href="${procFolderHref(f.name)}" class="fwho">${PROC.isDraft(f.name) ? '📝 ' + esc(f.name) : '👤 ' + esc(f.name)}</a> · ` : ''}<b>${esc(opts.who && PROC.isDraft(f.name) ? PROC.title(f.k, f.id) : PROC.label(f))}</b> <small class="muted">· עודכן ${procWhen(f.at)}</small></span>
     <span class="fa">${opts.assign ? `<input class="inp" list="pbpeople" data-enter="1" placeholder="שיוך לשם…" maxlength="60"><button class="btn sm" data-fo="assign" ${at}>👤 שיוך</button>` : ''}<button class="btn sm primary" data-fo="open" ${at}>📂 פתיחה</button><button class="btn sm ghost" data-fo="del" ${at}>✖</button></span></div>`;
 }
+/* ---- 📤 a form sent out for filling: one self-contained HTML file (no site, no login). The filler saves it (a new copy of the file
+   with the answers inside, or a short code for WhatsApp); back here, "📥 קליטת טופס שחזר" puts the answers into the person's folder. ---- */
+function sfSchema(k, id){
+  if (k === 'a') { const A = allApps()[id]; if (!A) return null;
+    return {title: A.title, icon: A.icon || '🧩', intro: A.sub || '', secs: A.sections.map(s => ({title: s.title, fields: s.fields.map(f => ({p: f.id, l: f.label, ph: f.ph || '',
+      t: f.type === 'range' ? 'range' : f.type === 'chips' ? (f.multi ? 'multi' : 'one') : f.long ? 'long' : 'text', min: f.min ?? 0, max: f.max ?? 10, o: f.type === 'chips' ? (f.optsFn ? f.optsFn() : f.opts) : undefined}))}))}; }
+  const t = TRACK(id); if (!t) return null; const secs = [];
+  t.steps.forEach((s, i) => { const F = [], P = x => s.id + '.' + x;
+    if (s.kind === 'form') s.fields.forEach(f => F.push({p: P(f.id), l: f.label, ph: f.ph || '', t: f.long ? 'long' : 'text'}));
+    else if (s.kind === 'checklist') s.items.forEach(it => F.push({p: P(it.id), l: it.t, t: 'check'}));
+    else if (s.kind === 'scale') s.items.forEach(it => F.push({p: P(it.id), l: it.t, t: 'range', min: s.min ?? 0, max: s.max ?? 10}));
+    else if (s.kind === 'fivep') FIVEP.forEach(([key, l, ph]) => F.push({p: P(key), l, ph: (s.hints || {})[key] || ph, t: 'long'}));
+    else if (s.kind === 'cycle') s.nodes.forEach((x, j) => F.push({p: P('n' + j), l: x.label, ph: x.ph || '', t: 'text'}));
+    else if (s.kind === 'sessions') s.sessions.forEach((x, j) => { F.push({p: P('done' + j), l: (j + 1) + '. ' + x.title + ' – המפגש התקיים', t: 'check'}); F.push({p: P('note' + j), l: 'הערות מהמפגש', t: 'long'}); });
+    else if (s.kind === 'plan') DAYS.forEach(day => F.push({p: P('days.' + day), l: 'יום ' + day + ' – פעילות בכל שורה', t: 'lines'}));
+    if (F.length) secs.push({title: (i + 1) + '. ' + (s.icon ? s.icon + ' ' : '') + s.title, intro: s.intro || '', fields: F}); });
+  return secs.length ? {title: t.title, icon: t.icon || '🧭', intro: t.intro || '', secs} : null;
+}
+const sfGet = (o, p) => p.split('.').reduce((x, k) => x == null ? undefined : x[k], o);
+const sfSet = (o, p, v) => { const k = p.split('.'), last = k.pop(); let x = o; k.forEach(s => { if (!x[s] || typeof x[s] !== 'object') x[s] = {}; x = x[s]; }); x[last] = v; };
+function sfFlat(S, d){ const o = {}; S.secs.forEach(s => s.fields.forEach(f => { let v = sfGet(d, f.p); if (f.t === 'lines') v = Array.isArray(v) ? v.map(a => a.t).join('\n') : ''; if (v != null && v !== '') o[f.p] = v; })); return o; }
+function sfApply(S, d, flat){ S.secs.forEach(s => s.fields.forEach(f => { if (!(f.p in flat)) return; let v = flat[f.p];
+  if (f.t === 'lines') v = String(v || '').split('\n').map(x => x.trim()).filter(Boolean).map(t => ({t}));
+  if (f.t === 'range') v = v === '' || v == null ? undefined : +v;
+  if (v === undefined) return; sfSet(d, f.p, v); })); return d; }
+/* the filler's page – runs alone inside the downloaded file, so it must not touch anything outside itself */
+function sfRuntime(){
+  var J = document.getElementById('cbtform'), P = JSON.parse(J.textContent), LK = 'cbtform.' + P.uid, box = document.getElementById('f'), st = document.getElementById('st');
+  try { var L = JSON.parse(localStorage.getItem(LK) || 'null'); if (L && L.at > (P.filledAt || 0)) { P.data = L.data; P.filler = L.filler; } } catch (e) {}
+  function esc(s){ return String(s == null ? '' : s).replace(/[&<>"]/g, function(c){ return {'&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;'}[c]; }); }
+  function field(f){ var v = P.data[f.p], id = 'x' + Math.random().toString(36).slice(2), h = '';
+    if (f.t === 'check') return '<label class="ck"><input type="checkbox" data-p="' + esc(f.p) + '" data-t="check"' + (v ? ' checked' : '') + '> ' + esc(f.l) + '</label>';
+    if (f.t === 'range') { for (var i = f.min; i <= f.max; i++) h += '<option' + (String(v) === String(i) ? ' selected' : '') + '>' + i + '</option>'; return '<label class="fl"><span>' + esc(f.l) + '</span><select data-p="' + esc(f.p) + '" data-t="range"><option value="">– בחירה –</option>' + h + '</select></label>'; }
+    if (f.t === 'multi' || f.t === 'one') { var on = [].concat(v == null ? [] : v); (f.o || []).forEach(function(o){ h += '<label class="op"><input type="' + (f.t === 'multi' ? 'checkbox' : 'radio') + '" name="' + id + '" value="' + esc(o) + '"' + (on.indexOf(o) >= 0 ? ' checked' : '') + '> ' + esc(o) + '</label>'; });
+      return '<div class="fl"><span>' + esc(f.l) + '</span><div class="ops" data-p="' + esc(f.p) + '" data-t="' + f.t + '">' + h + '</div></div>'; }
+    if (f.t === 'long' || f.t === 'lines') return '<label class="fl"><span>' + esc(f.l) + '</span><textarea data-p="' + esc(f.p) + '" data-t="' + f.t + '" placeholder="' + esc(f.ph) + '">' + esc(v) + '</textarea></label>';
+    return '<label class="fl"><span>' + esc(f.l) + '</span><input data-p="' + esc(f.p) + '" data-t="text" placeholder="' + esc(f.ph) + '" value="' + esc(v) + '"></label>'; }
+  box.innerHTML = '<label class="fl who"><span>שם הממלא/ת ותפקיד</span><input id="filler" placeholder="למשל: המחנכת של כיתה ג׳2" value="' + esc(P.filler) + '"></label>' +
+    P.schema.secs.map(function(s){ return '<section><h2>' + esc(s.title) + '</h2>' + (s.intro ? '<p class="in">' + esc(s.intro) + '</p>' : '') + s.fields.map(field).join('') + '</section>'; }).join('');
+  function collect(){ var o = {}; box.querySelectorAll('[data-p]').forEach(function(el){ var t = el.dataset.t, p = el.dataset.p, v;
+      if (t === 'check') v = el.checked; else if (t === 'multi') v = [].map.call(el.querySelectorAll('input:checked'), function(i){ return i.value; });
+      else if (t === 'one') { var c = el.querySelector('input:checked'); v = c ? c.value : ''; } else v = el.value;
+      if (v !== '' && !(Array.isArray(v) && !v.length) && v !== false) o[p] = v; else if (t === 'check') o[p] = false; });
+    return o; }
+  var tm; box.addEventListener('input', function(){ clearTimeout(tm); tm = setTimeout(function(){ try { localStorage.setItem(LK, JSON.stringify({at: Date.now(), data: collect(), filler: document.getElementById('filler').value})); st.textContent = '✓ נשמר בינתיים בדפדפן הזה. בסיום – לוחצים ״שמירת הטופס המלא״ ושולחים את הקובץ.'; } catch (e) {} }, 400); });
+  function pack(){ P.data = collect(); P.filler = document.getElementById('filler').value.trim(); P.filledAt = Date.now(); }
+  document.getElementById('save').onclick = function(){ pack(); J.textContent = JSON.stringify(P).replace(/</g, '\\u003c');
+    var html = '<!doctype html>\n' + document.documentElement.outerHTML, a = document.createElement('a');
+    a.href = URL.createObjectURL(new Blob([html], {type: 'text/html'})); a.download = P.title.replace(/[\\/:*?"<>|]/g, ' ') + ' - מלא' + (P.filler ? ' - ' + P.filler.replace(/[\\/:*?"<>|]/g, ' ') : '') + '.html';
+    document.body.appendChild(a); a.click(); setTimeout(function(){ a.remove(); }, 1000);
+    st.textContent = '✅ הקובץ המלא נשמר בהורדות. שולחים אותו בחזרה (מייל / וואטסאפ – כקובץ).'; };
+  document.getElementById('code').onclick = function(){ pack(); var c = 'CBTFORM1:' + btoa(unescape(encodeURIComponent(JSON.stringify({v: 1, uid: P.uid, k: P.k, id: P.id, who: P.who, data: P.data, filler: P.filler, filledAt: P.filledAt}))));
+    var done = function(){ st.textContent = '✅ הקוד הועתק. מדביקים אותו בהודעה (וואטסאפ / מייל) ושולחים.'; };
+    if (navigator.clipboard) navigator.clipboard.writeText(c).then(done, function(){ prompt('העתיקו את הקוד:', c); }); else prompt('העתיקו את הקוד:', c); };
+  document.getElementById('print').onclick = function(){ window.print(); };
+}
+function sfFileHTML(k, id, who, withData){
+  const S = sfSchema(k, id); if (!S) return null;
+  const now = new Date(); let heb = ''; try { heb = (window.hebDay && window.hebDay.dayInfo(now).hebDate) || ''; } catch (e) {}
+  const P = {v: 1, uid: uid(), k, id, title: S.title, who: who || '', sentAt: Date.now(), schema: S, data: withData ? sfFlat(S, PROC.get(k, id)) : {}, filler: ''};
+  return `<!doctype html><html lang="he" dir="rtl"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>${esc(S.title)}${who ? ' – ' + esc(who) : ''}</title>
+<style>body{margin:0;background:#f3f1ec;font:16px/1.6 system-ui,'Segoe UI',Arial,sans-serif;color:#1f2430}.pg{max-width:820px;margin:0 auto;padding:18px 16px 60px}
+.top{display:flex;justify-content:space-between;font-size:14px;color:#444;margin-bottom:10px}h1{font-size:24px;margin:6px 0}.lead{color:#555;margin:0 0 6px}
+.note{background:#fff8e1;border:1px solid #f0d58a;border-radius:12px;padding:10px 14px;font-size:14.5px;margin:12px 0}
+section{background:#fff;border:1px solid #e3ded3;border-radius:14px;padding:12px 16px;margin:14px 0}h2{font-size:18px;margin:4px 0 8px;color:#3a3f8f}.in{color:#666;font-size:14px;margin:0 0 8px}
+.fl{display:block;margin:10px 0}.fl>span{display:block;font-weight:600;font-size:14.5px;margin-bottom:4px}
+input:not([type=checkbox]):not([type=radio]),textarea,select{width:100%;box-sizing:border-box;font:inherit;padding:8px 10px;border:1px solid #cfc8ba;border-radius:10px;background:#fff}
+textarea{min-height:5.5em;resize:vertical}.ck,.op{display:flex;gap:8px;align-items:flex-start;margin:6px 0;font-size:15px}.ops{display:flex;flex-wrap:wrap;gap:4px 16px}
+.who{background:#eef0ff;border-radius:12px;padding:10px 12px}.bar{position:sticky;bottom:0;background:#fffffff2;border-top:1px solid #ddd;padding:10px 16px;display:flex;flex-wrap:wrap;gap:8px;justify-content:center}
+.bar button{font:inherit;font-weight:600;border:0;border-radius:12px;padding:10px 16px;cursor:pointer;background:#e7e4dc}.bar #save{background:#3a3f8f;color:#fff}#st{text-align:center;font-size:14px;color:#2e7d32;min-height:1.4em;margin:8px 0}
+@media print{.bar,.note,#st{display:none}body{background:#fff}section{border:0;padding:0}}</style></head><body>
+<div class="pg"><div class="top"><div><b>בס״ד</b>${heb ? '<br>' + esc(heb) : ''}</div><div>${now.getDate()}.${now.getMonth() + 1}.${String(now.getFullYear()).slice(-2)} למניינם</div></div>
+<h1>${esc(S.icon)} ${esc(S.title)}</h1>${who ? `<p class="lead">עבור: <b>${esc(who)}</b></p>` : ''}${S.intro ? `<p class="lead">${esc(S.intro)}</p>` : ''}
+<div class="note">📝 ממלאים כאן ישירות – אין צורך באינטרנט או בהתחברות. בסיום לוחצים <b>״💾 שמירת הטופס המלא״</b> – נשמר קובץ חדש עם התשובות – ושולחים אותו בחזרה ליועץ. אפשר גם <b>״📋 העתקת קוד התשובות״</b> ולהדביק בהודעת וואטסאפ.</div>
+<div id="f"></div><div id="st"></div></div>
+<div class="bar"><button id="save">💾 שמירת הטופס המלא</button><button id="code">📋 העתקת קוד התשובות</button><button id="print">🖨️ הדפסה</button></div>
+<script type="application/json" id="cbtform">${JSON.stringify(P).replace(/</g, '\\u003c')}<\/script>
+<script>(${sfRuntime.toString()})();<\/script></body></html>`;
+}
+async function sfDownload(name, doc, btn){
+  try { const dl = window.claude && window.claude.use ? await window.claude.use('downloads') : null;
+    if (dl) { await dl.save({filename: name, data: doc}); if (btn) btn.textContent = '✅ נשמר'; return true; }
+    const a = document.createElement('a'); a.href = URL.createObjectURL(new Blob([doc], {type: 'text/html'})); a.download = name; document.body.appendChild(a); a.click(); setTimeout(() => { URL.revokeObjectURL(a.href); a.remove(); }, 1000); if (btn) btn.textContent = '✅ הורד'; return true;
+  } catch (err) { if (btn) btn.textContent = err && err.code === 'declined' ? '⬇️ הורדה' : '⚠️ ההורדה לא זמינה כאן'; return false; }
+}
+function sfParse(txt){
+  txt = String(txt || ''); let P = null;
+  const m = txt.match(/<script type="application\/json" id="cbtform">([\s\S]*?)<\/script>/);
+  try { if (m) P = JSON.parse(m[1]); else { const c = txt.match(/CBTFORM1:([A-Za-z0-9+/=\s]+)/); if (c) P = JSON.parse(decodeURIComponent(escape(atob(c[1].replace(/\s+/g, ''))))); } } catch (e) { P = null; }
+  return P && (P.k === 'a' || P.k === 't') && P.id && P.data ? P : null;
+}
+function sfImport(P){
+  const S = sfSchema(P.k, P.id); if (!S) { toast('⚠️ הטופס הזה לא נמצא באתר'); return; }
+  const name = PROC.clean(P.who) || PROC.nextDraft();
+  PROC.open(P.k, P.id, name);
+  const d = sfApply(S, PROC.get(P.k, P.id), P.data);
+  PROC.set(P.k, P.id, d); PROC.put(P.k, P.id, name, d);
+  sfClose(); toast('📥 התקבל' + (P.filler ? ' מ' + P.filler : '') + ' – נשמר ב' + (PROC.isDraft(name) ? '״' + name + '״' : 'תיקייה של ״' + name + '״'));
+  const h = PROC.href(P.k, P.id); if (location.hash === h) render(); else location.hash = h;
+}
+function sfClose(){ document.querySelector('.sfmodal')?.remove(); }
+function sfModal(html){ sfClose(); const w = document.createElement('div'); w.className = 'sfmodal'; w.innerHTML = `<div class="sfbox" role="dialog"><button class="sfx" data-sf="close" aria-label="סגירה">✕</button>${html}</div>`; document.body.appendChild(w); w.addEventListener('click', e => { if (e.target === w) sfClose(); }); return w; }
+function sfSendOpen(k, id){
+  const cur = PROC.cur(k, id), who = cur && !PROC.isDraft(cur) ? cur : '', has = !PROC.empty(PROC.get(k, id));
+  sfModal(`<h3>📤 שליחת הטופס למילוי</h3><p class="muted" style="margin:0 0 10px">יורד קובץ אחד. שולחים אותו למורה (מייל / וואטסאפ). המורה פותח אותו בדפדפן, ממלא ולוחץ ״שמירת הטופס המלא״ – בלי להיכנס לאתר. כשהקובץ חוזר – לוחצים כאן ״📥 קליטת טופס שחזר״.</p>
+    <label class="f">עבור מי הטופס (כינוי – כך הוא ייכנס לתיקייה כשיחזור)<input class="inp" id="sfwho" list="pbpeople" maxlength="60" value="${esc(who)}" placeholder="למשל: יוסי ג׳2">${procPeopleList()}</label>
+    ${has ? `<label class="trcheck" style="margin:8px 0"><input type="checkbox" id="sfdata" checked> לצרף את מה שכבר מילאתי (המורה ימשיך משם)</label>` : ''}
+    <p class="muted" style="font-size:13px;margin:6px 0 12px">🔒 הקובץ יוצא מהאתר – כותבים כינוי ולא שם מלא, ומצרפים רק מה שמתאים שהמורה יראה.</p>
+    <div class="actions"><button class="btn primary" data-sf="send" data-k="${k}" data-id="${esc(id)}">⬇️ הורדת הטופס למילוי</button><button class="btn ghost" data-sf="close">ביטול</button></div>`);
+}
+function sfImportOpen(){
+  sfModal(`<h3>📥 קליטת טופס שחזר מלא</h3><p class="muted" style="margin:0 0 10px">בוחרים את הקובץ שהמורה החזיר – או מדביקים את קוד התשובות ששלח בהודעה. הטופס נכנס לתיקייה של התלמיד, נפתח, ואפשר להמשיך לעבוד ממנו.</p>
+    <div class="actions" style="margin-bottom:10px"><label class="btn primary" style="cursor:pointer">📂 בחירת הקובץ שחזר<input type="file" accept=".html,.htm,text/html,.txt" id="sffile" hidden></label></div>
+    <label class="f">או הדבקת קוד התשובות (מתחיל ב-CBTFORM1)<textarea class="inp" id="sfcode" style="min-height:5em" placeholder="CBTFORM1:…"></textarea></label>
+    <div class="actions"><button class="btn" data-sf="paste">📥 קליטה מהקוד</button><button class="btn ghost" data-sf="close">ביטול</button></div><p id="sferr" class="note danger" hidden></p>`);
+  $('#sffile').onchange = e => { const f = e.target.files[0]; if (!f) return; const r = new FileReader(); r.onload = () => sfTry(r.result); r.readAsText(f, 'utf-8'); };
+}
+function sfTry(txt){ const P = sfParse(txt); if (P) return sfImport(P); const e = $('#sferr'); if (e) { e.hidden = false; e.textContent = 'לא נמצא כאן טופס מלא. בוחרים את הקובץ שהמורה החזיר (קובץ ״… - מלא.html״) או מדביקים את כל הקוד.'; } }
+document.addEventListener('click', async e => {
+  const o = e.target.closest('[data-sfsend],[data-sfimport]'); if (o) { if (o.dataset.sfimport != null) sfImportOpen(); else { const bar = o.closest('.procbar'); sfSendOpen(bar.dataset.pk, bar.dataset.pid); } return; }
+  const b = e.target.closest('.sfmodal [data-sf]'); if (!b) return;
+  if (b.dataset.sf === 'close') return sfClose();
+  if (b.dataset.sf === 'paste') return sfTry(($('#sfcode') || {}).value);
+  if (b.dataset.sf === 'send') { const k = b.dataset.k, id = b.dataset.id, who = PROC.clean(($('#sfwho') || {}).value), wd = !!($('#sfdata') || {}).checked;
+    const doc = sfFileHTML(k, id, who, wd); if (!doc) return toast('⚠️ אי אפשר לייצא את הטופס הזה');
+    if (await sfDownload(PROC.title(k, id).replace(/[\\/:*?"<>|]/g, ' ') + (who ? ' - ' + who : '') + ' - למילוי.html', doc, b)) setTimeout(sfClose, 900); }
+});
 /* ---- 📝 כל הטפסים למילוי – #/forms: every fillable form of the site in one place (each one also stays where it lives) ---- */
 function formsAll(){ const A = allApps(), out = [];
   Object.keys(A).forEach(id => out.push({k: 'a', id, icon: A[id].icon || '🧩', title: A[id].title, sub: A[id].sub || '', hub: (HUBS[A[id].hub] || {}).title || 'יישומים', hk: A[id].hub}));
@@ -9908,7 +10041,7 @@ function formsView(){
     return `<div class="card formcard" data-q="${esc(f.title + ' ' + f.sub + ' ' + f.hub)}" style="--h:${hubHue(f.hk)}"><a href="${PROC.href(f.k, f.id)}" class="formlink"><span class="emoji">${f.icon}</span><span class="name">${esc(f.title)}</span><span class="sub">${esc(f.sub)}</span></a>
       <span class="row formfoot"><a class="btn sm primary" href="${PROC.href(f.k, f.id)}">📝 ${cur ? 'המשך – ' + esc(cur) : 'מילוי'}</a><button class="btn sm" data-fo="freshform" data-k="${f.k}" data-id="${esc(f.id)}">➕ טופס חדש</button>${n ? `<span class="pill">📁 ${n} שמורים</span>` : ''}</span></div>`; };
   return {title: 'כל הטפסים למילוי', html: `<div class="banner" style="--h:150"><span class="emoji">📝</span><div><h1>כל הטפסים למילוי</h1><p>כל טופס שאפשר למלא באתר – במקום אחד (${F.length} טפסים). כל טופס נמצא גם במקומו הרגיל באתר, והמילוי נשמר אוטומטית ב<a href="#/folders">📁 התיקיות שלי</a>.</p></div></div>
-    <div class="fold"><input class="inp fsearch" id="fsearch" placeholder="🔍 חיפוש טופס…">
+    <div class="fold"><div class="sfrow"><button class="btn primary" data-sfimport="1">📥 קליטת טופס שחזר מלא</button><span class="muted">טופס ששלחתם למילוי (📤 בכל טופס) וחזר – נכנס לתיקייה של התלמיד</span></div><input class="inp fsearch" id="fsearch" placeholder="🔍 חיפוש טופס…">
     <div class="row" style="gap:6px;flex-wrap:wrap;margin:0 0 6px">${groups.map((g, i) => `<a class="btn sm ghost" href="javascript:void 0" data-fjump="${i}">${esc(g)}</a>`).join('')}</div>
     ${groups.map((g, i) => `<section data-q="${esc(g + ' ' + F.filter(f => f.hub === g).map(f => f.title + ' ' + f.sub).join(' '))}"><h2 class="fh" id="fg${i}">${esc(g)} <small class="muted">(${F.filter(f => f.hub === g).length})</small></h2><div class="grid wide">${F.filter(f => f.hub === g).map(card).join('')}</div></section>`).join('')}</div>`,
     after(){ const s = $('#fsearch'); if (s) s.oninput = () => { const q = s.value.trim(); document.querySelectorAll('.fold [data-q]').forEach(x => x.hidden = !!q && !x.dataset.q.includes(q)); };
@@ -9927,7 +10060,7 @@ function foldersView(R){
       <div class="panel foldact"><h3>✏️ שינוי השם של התיקייה</h3><div class="row" style="gap:8px;flex-wrap:wrap"><input class="inp" data-enter="1" id="fren" value="${esc(name)}" maxlength="60" style="flex:1;min-width:200px"><button class="btn" data-fo="rename" data-n="${esc(name)}">שינוי בכל הטפסים</button></div></div></div>`}; }
   const card = n => { const m = F.filter(f => f.name === n); return `<a class="card foldcard" href="${procFolderHref(n)}" data-q="${esc(n + ' ' + m.map(f => PROC.title(f.k, f.id)).join(' '))}"><span class="emoji">👤</span><span class="name">${esc(n)}</span><span class="sub">${m.length} טפסים · עודכן ${procWhen(m[0].at)}</span><span class="ficons">${[...new Set(m.map(f => PROC.icon(f.k, f.id)))].slice(0, 8).join(' ')}</span></a>`; };
   return {title: 'התיקיות שלי', html: `${head('התיקיות שלי', 'כל טופס שממלאים באתר נשמר כאן – בתיקייה על שם האדם. אותו שם בכמה טפסים = תיקייה אחת.')}<div class="fold">
-    ${search}
+    <div class="sfrow"><button class="btn primary" data-sfimport="1">📥 קליטת טופס שחזר מלא</button><span class="muted">טופס ששלחתם למילוי (📤 בכל טופס) וחזר – נכנס לתיקייה של התלמיד</span></div>${search}
     <h2 class="fh">👤 תיקיות לפי אדם (${people.length})</h2>
     ${people.length || drafts.length ? `<div class="grid">${people.map(card).join('')}${drafts.length ? `<a class="card foldcard draft" href="#/folders/~drafts" data-q="טיוטה טיוטות ${esc(drafts.map(f => PROC.label(f)).join(' '))}"><span class="emoji">📝</span><span class="name">טיוטות</span><span class="sub">${drafts.length} טפסים בלי שם</span></a>` : ''}</div>`
       : '<div class="empty">עדיין אין טפסים שמורים. ממלאים טופס כלשהו באתר – והוא מופיע כאן.</div>'}
