@@ -2423,6 +2423,11 @@ body.chatwin{margin:0;background:var(--bg);overflow:hidden}
 .qatext{line-height:1.7}
 .qaacts{margin-top:12px}
 .toastlink{text-decoration:none;cursor:pointer;color:inherit;font-weight:600}
+/* home ask box: a sticky route selector – Enter sends by it */
+.askroute{display:inline-flex;border-radius:12px;overflow:hidden;border:1px solid rgba(255,255,255,.35);flex:none}
+.askroute button{font:inherit;font-size:14px;font-weight:600;padding:0 12px;border:0;background:rgba(255,255,255,.1);color:#fff;cursor:pointer;min-height:48px}
+.askroute button.on{background:#fff;color:var(--brand-text,#2f2a6b)}
+@media (max-width:560px){#homeask{flex-wrap:wrap}#homeask .inp{flex-basis:100%}}
 
 </style>
 <link rel="manifest" href="manifest.webmanifest">
@@ -5960,7 +5965,7 @@ function home(){
   const a = active();
   let h = `<section class="hero withkid"><div class="heromascot" aria-hidden="true"><div class="hsay">שלום! בוא נתחיל 😊</div>${kidMini('שמחה', 6, 'wave')}</div><h1>שלום! במה נטפל היום? 👋</h1>
     <p>מפות טיפול CBT לבעיות נפוצות בבית הספר היסודי, מתכנן מפגשים, כלים אינטראקטיביים לילדים ותיק לכל תלמיד – יחד עם כל החומרים מהספרייה שלך.</p>
-    <form id="homeask" style="display:flex;gap:8px;margin-top:18px;max-width:720px"><input class="inp" id="homeq" placeholder="💬 שאלו שאלה… למשל: ילד שבוכה כל בוקר בשער" style="flex:1;height:48px;border:0;font-size:16px"><button class="btn primary" type="submit" title="מסלול חינמי">💬 תשובה</button>${claudeTrack() ? `<button class="btn" type="submit" data-claude="1" title="מסלול Claude – נספר במכסת המנוי" style="background:rgba(255,255,255,.16);border-color:rgba(255,255,255,.3);color:#fff">🤖 Claude</button>` : ""}</form>
+    <form id="homeask" style="display:flex;gap:8px;margin-top:18px;max-width:720px"><input class="inp" id="homeq" placeholder="💬 שאלו שאלה… למשל: ילד שבוכה כל בוקר בשער" style="flex:1;height:48px;border:0;font-size:16px">${claudeTrack() ? `<span class="askroute" role="radiogroup" aria-label="מסלול"><button type="button" class="${askRoute() === 'ask' ? 'on' : ''}" data-route="ask" title="מסלול חינמי – מתוך האתר">💬 חינמי</button><button type="button" class="${askRoute() === 'askc' ? 'on' : ''}" data-route="askc" title="מסלול Claude – נספר במכסת המנוי">🤖 Claude</button></span>` : ''}<button class="btn primary" type="submit">שליחה ←</button></form>
     <div class="actions"><button class="btn" data-act="newstudent">＋ תלמיד חדש</button><a class="btn" href="#/problems">🧭 בחירת בעיה</a><a class="btn" href="#/workflow">🗺️ סדר עבודה</a><a class="btn" href="#/tools">🧰 כלים לילדים</a></div></section>`;
   if (SYNC.status === 'signedout') h += `<div class="note warn no-print">☁️ כדי לראות את התלמידים ואת הספרייה מכל מכשיר – <button class="btn primary sm" data-act="cloud-login">התחברות עם חשבון מיקרוסופט</button></div>`;
   else if (SYNC.status !== 'ok' && SYNC.status !== 'connecting') h += `<div class="note warn no-print">💾 הנתונים נשמרים כרגע רק במכשיר הזה. <a href="#/settings">להגדרת סנכרון עם OneDrive</a></div>`;
@@ -5973,7 +5978,7 @@ function home(){
   h += `<h2 class="sec">🧭 מפות טיפול <small>לפי תחום</small></h2><div class="grid">${PROBLEMS.slice(0, 8).map(problemCard).join('')}</div>
     <div style="margin-top:12px"><a class="btn" href="#/problems">לכל ${PROBLEMS.length} הבעיות ←</a></div>`;
   h += `<h2 class="sec">🧰 כלים לשימוש בחדר</h2><div class="grid">${TOOLS.slice(0, 4).map(toolCard).join('')}</div>`;
-  return {title:'בית', html:h, after(){ const f = $('#homeask'); f.onsubmit = e => { e.preventDefault(); const v = $('#homeq').value.trim(); if (v) { const hist = ls.get('cbtapp.asks', []); ls.set('cbtapp.asks', [v, ...hist.filter(x => x !== v)].slice(0, 15)); location.hash = '#/' + askRoute(e.submitter) + '/' + encodeURIComponent(v); } }; }};
+  return {title:'בית', html:h, after(){ const f = $('#homeask'); f.onsubmit = e => { e.preventDefault(); const v = $('#homeq').value.trim(); if (v) { const hist = ls.get('cbtapp.asks', []); ls.set('cbtapp.asks', [v, ...hist.filter(x => x !== v)].slice(0, 15)); location.hash = '#/' + askRoute() + '/' + encodeURIComponent(v); } }; }};
 }
 
 let areaFilter = 'הכל', probQuery = '';
@@ -6783,11 +6788,12 @@ function refineAfter(){
 /* "שאל שאלה" has two tracks the user picks up front: #/ask – the free on-device engine, #/askc – a full Claude answer (spends the plan's usage) */
 const claudeTrack = () => ARTIFACT || !!(window.CBT_AI_CONFIG && window.CBT_AI_CONFIG.anthropicKey);
 // which ״שאל שאלה״ route a question goes to: the button pressed, or (Enter) the route chosen last – Claude by default where it is available
-function askRoute(b){ if (b) { const r = b.dataset.claude ? 'askc' : 'ask'; ls.set('cbtapp.askroute', r); return r; } const r = ls.get('cbtapp.askroute', ''); return r === 'ask' || !claudeTrack() ? 'ask' : 'askc'; }
+document.addEventListener('click', e => { const b = e.target.closest('.askroute [data-route], .tabs a[data-route]'); if (!b) return; askRoute(b); if (b.tagName === 'A') return; b.parentNode.querySelectorAll('[data-route]').forEach(x => x.classList.toggle('on', x === b)); const i = document.getElementById('homeq'); if (i) i.focus(); });
+function askRoute(b){ if (b && b.dataset && b.dataset.route) { ls.set('cbtapp.askroute', b.dataset.route); return b.dataset.route; } const r = ls.get('cbtapp.askroute', ''); return r === 'ask' || !claudeTrack() ? 'ask' : 'askc'; }
 function ask(R, viaClaude = false){
   const q = R.id ? R.id : (viaClaude ? '' : lastAsk);
   const hist = ls.get('cbtapp.asks', []);
-  const tabs = claudeTrack() ? `<div class="tabs" style="margin:0 0 14px"><a href="#/ask" class="${viaClaude ? '' : 'on'}">💬 מסלול חינמי – שאל באתר</a><a href="#/askc" class="${viaClaude ? 'on' : ''}">🤖 מסלול Claude – תשובה מקיפה</a></div>` : '';
+  const tabs = claudeTrack() ? `<div class="tabs" style="margin:0 0 14px"><a href="#/ask${q ? '/' + encodeURIComponent(q) : ''}" data-route="ask" class="${viaClaude ? '' : 'on'}">💬 מסלול חינמי – שאל באתר</a><a href="#/askc${q ? '/' + encodeURIComponent(q) : ''}" data-route="askc" class="${viaClaude ? 'on' : ''}">🤖 מסלול Claude – תשובה מקיפה</a></div>` : '';
   const about = viaClaude
     ? `🤖 <b>מסלול Claude:</b> Claude כותב תשובה מקיפה ומוסברת מתוך ${PROBLEMS.length} מפות הטיפול, חוזרי המנכ״ל והספרייה שבאתר, עם מקור לכל פריט. ידע מקצועי מבחוץ מופיע רק בחלק נפרד ומסומן 🌐. לוקח עד דקה-שתיים, ונספר במכסת המנוי.`
     : `💬 <b>מסלול חינמי:</b> התשובות נבנות מתוך ${PROBLEMS.length} מפות הטיפול, חוזרי המנכ״ל והספרייה שלך – תמיד בהפרדה בין המענה הטיפולי למענה המשמעתי / מסגרתי / מנהלי. מתאים לשאלה על נושא אחד. בלי עלות.`;
@@ -6893,14 +6899,14 @@ function liteHome(){
   const sessions = PROBLEMS.reduce((n, p) => n + p.sessions.length, 0);
   let h = `<section class="hero withkid"><div class="heromascot" aria-hidden="true"><div class="hsay">שלום! בוא נתחיל 😊</div>${kidMini('שמחה', 6, 'wave')}</div><h1>שלום! במה נטפל היום? 👋</h1>
     <p>מפות טיפול CBT לבעיות נפוצות בבית הספר היסודי, עוזר לשאלות, סדר עבודה וכלים אינטראקטיביים לילדים.</p>
-    <form id="homeask" style="display:flex;gap:8px;margin-top:18px;max-width:720px"><input class="inp" id="homeq" placeholder="💬 שאלו שאלה… למשל: ילד שבוכה כל בוקר בשער" style="flex:1;height:48px;border:0;font-size:16px"><button class="btn primary" type="submit" title="מסלול חינמי">💬 תשובה</button>${claudeTrack() ? `<button class="btn" type="submit" data-claude="1" title="מסלול Claude – נספר במכסת המנוי" style="background:rgba(255,255,255,.16);border-color:rgba(255,255,255,.3);color:#fff">🤖 Claude</button>` : ""}</form>
+    <form id="homeask" style="display:flex;gap:8px;margin-top:18px;max-width:720px"><input class="inp" id="homeq" placeholder="💬 שאלו שאלה… למשל: ילד שבוכה כל בוקר בשער" style="flex:1;height:48px;border:0;font-size:16px">${claudeTrack() ? `<span class="askroute" role="radiogroup" aria-label="מסלול"><button type="button" class="${askRoute() === 'ask' ? 'on' : ''}" data-route="ask" title="מסלול חינמי – מתוך האתר">💬 חינמי</button><button type="button" class="${askRoute() === 'askc' ? 'on' : ''}" data-route="askc" title="מסלול Claude – נספר במכסת המנוי">🤖 Claude</button></span>` : ''}<button class="btn primary" type="submit">שליחה ←</button></form>
     <div class="actions"><a class="btn" href="#/problems">🧭 בחירת בעיה</a><a class="btn" href="#/workflow">🗺️ סדר עבודה</a><a class="btn" href="#/tools">🧰 כלים לילדים</a></div></section>`;
   h += chatHomeHTML(); h += dyTodayStrip();
   h += `<div class="three"><div class="stat"><b>${PROBLEMS.length}</b><span>מפות טיפול</span></div><div class="stat"><b>${sessions}</b><span>מפגשים מפורטים</span></div><div class="stat"><b>${TOOLS.length}</b><span>כלים לילדים</span></div></div>`;
   h += `<h2 class="sec">🧭 מפות טיפול <small>לפי תחום</small></h2><div class="grid">${PROBLEMS.slice(0, 8).map(problemCard).join('')}</div>
     <div style="margin-top:12px"><a class="btn" href="#/problems">לכל ${PROBLEMS.length} הבעיות ←</a></div>`;
   h += `<h2 class="sec">🧰 כלים לשימוש בחדר</h2><div class="grid">${TOOLS.slice(0, 4).map(toolCard).join('')}</div>`;
-  return {title:'בית', html:h, after(){ $('#homeask').onsubmit = e => { e.preventDefault(); const v = $('#homeq').value.trim(); if (v) { const hist = ls.get('cbtapp.asks', []); ls.set('cbtapp.asks', [v, ...hist.filter(x => x !== v)].slice(0, 15)); location.hash = '#/' + askRoute(e.submitter) + '/' + encodeURIComponent(v); } }; }};
+  return {title:'בית', html:h, after(){ $('#homeask').onsubmit = e => { e.preventDefault(); const v = $('#homeq').value.trim(); if (v) { const hist = ls.get('cbtapp.asks', []); ls.set('cbtapp.asks', [v, ...hist.filter(x => x !== v)].slice(0, 15)); location.hash = '#/' + askRoute() + '/' + encodeURIComponent(v); } }; }};
 }
 function liteSettings(){
   return {title:'אודות', html:`<div class="panel"><h3>ℹ️ על הגרסה הזו</h3><p style="margin:0">${PROBLEMS.length} מפות טיפול · ${TOOLS.length} כלים לילדים · עוזר לשאלות · סדר עבודה.</p>
