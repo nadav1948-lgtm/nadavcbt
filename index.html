@@ -5742,16 +5742,17 @@ const QLOG = {
   all(){ return ls.get(this.key, {}); },
   list(){ return Object.entries(this.all()).filter(([, v]) => v && !v.del && v.q).map(([id, v]) => ({id, ...v})).sort((a, b) => (b.at || 0) - (a.at || 0)); },
   put(id, v){ const L = this.all(); L[id] = v; ls.set(this.key, L); try { SYNC.schedule(); } catch (e) {} },
-  add(q, src){ q = String(q || '').trim().slice(0, 3000); if (!q) return ''; const L = this.all(), hit = Object.entries(L).find(([, v]) => v && !v.del && v.q === q && v.src === src);
+  add(q, src, r){ q = String(q || '').trim().slice(0, 3000); if (!q) return ''; const L = this.all(), hit = Object.entries(L).find(([, v]) => v && !v.del && v.q === q && v.src === src && (v.r || '') === (r || ''));
     if (hit) { hit[1].at = Date.now(); ls.set(this.key, L); try { SYNC.schedule(); } catch (e) {} return hit[0]; }
-    const id = uid(); this.put(id, {q, src, at: Date.now()}); return id; },
+    const id = uid(); this.put(id, r ? {q, src, r, at: Date.now()} : {q, src, at: Date.now()}); return id; },
   answer(id, a, f){ const L = this.all(); if (!id || !L[id] || L[id].del) return; L[id].a = String(a || '').slice(0, 60000); L[id].f = f || 'text'; ls.set(this.key, L); try { SYNC.schedule(); } catch (e) {} },
   del(id){ const v = this.all()[id]; if (!v) return; this.put(id, {del: true, at: Date.now()});
     try { if (v.src === 'ask' || v.src === 'askc') ls.set('cbtapp.asks', ls.get('cbtapp.asks', []).filter(x => x !== v.q));
       else if (v.src === 'assist' || v.src === 'therapist') { const H = chatHist(v.src), i = H.findIndex(m => m.role === 'user' && m.content === v.q);
         if (i >= 0) { let j = i + 1; while (j < H.length && H[j].role !== 'user') j++; H.splice(i, j - i); chatSave(v.src); } } } catch (e) {} },   // the question goes away everywhere it is shown, not only from the archive
-  seed(){ if (ls.get('cbtapp.qlog.seeded', 0)) return; const L = this.all(), t0 = Date.now() - 864e5;   // once: what was asked before the archive existed
-    ls.get('cbtapp.asks', []).forEach((q, i) => { if (typeof q === 'string' && q.trim()) L['seed-a' + i] = L['seed-a' + i] || {q: q.trim(), src: 'ask', at: t0 - i * 6e4}; });
+  seed(){ if (!ls.get('cbtapp.qlog.mig1', 0)) { const M = this.all(); Object.entries(M).forEach(([id, v]) => { if (/^seed-a\d/.test(id) && v && !v.del && v.src === 'ask') v.src = 'askq'; }); ls.set(this.key, M); ls.set('cbtapp.qlog.mig1', 1); }   // questions from before the archive: the route they were asked in is not known
+    if (ls.get('cbtapp.qlog.seeded', 0)) return; const L = this.all(), t0 = Date.now() - 864e5;   // once: what was asked before the archive existed
+    ls.get('cbtapp.asks', []).forEach((q, i) => { if (typeof q === 'string' && q.trim()) L['seed-a' + i] = L['seed-a' + i] || {q: q.trim(), src: 'askq', at: t0 - i * 6e4}; });
     ['assist', 'therapist'].forEach(m => { const H = ls.get('cbt.chat.' + m, []); H.forEach((x, i) => { if (x.role !== 'user' || !x.content) return; const nx = H[i + 1];
       L['seed-' + m + i] = L['seed-' + m + i] || {q: String(x.content), src: m, at: t0 - (H.length - i) * 6e4, a: nx && nx.role === 'assistant' ? String(nx.content || '') : '', f: 'text'}; }); });
     ls.set(this.key, L); ls.set('cbtapp.qlog.seeded', 1); }
@@ -5971,7 +5972,7 @@ function home(){
   h += `<h2 class="sec">🧭 מפות טיפול <small>לפי תחום</small></h2><div class="grid">${PROBLEMS.slice(0, 8).map(problemCard).join('')}</div>
     <div style="margin-top:12px"><a class="btn" href="#/problems">לכל ${PROBLEMS.length} הבעיות ←</a></div>`;
   h += `<h2 class="sec">🧰 כלים לשימוש בחדר</h2><div class="grid">${TOOLS.slice(0, 4).map(toolCard).join('')}</div>`;
-  return {title:'בית', html:h, after(){ const f = $('#homeask'); f.onsubmit = e => { e.preventDefault(); const v = $('#homeq').value.trim(); if (v) { const hist = ls.get('cbtapp.asks', []); ls.set('cbtapp.asks', [v, ...hist.filter(x => x !== v)].slice(0, 15)); location.hash = '#/' + (e.submitter && e.submitter.dataset.claude ? 'askc' : 'ask') + '/' + encodeURIComponent(v); } }; }};
+  return {title:'בית', html:h, after(){ const f = $('#homeask'); f.onsubmit = e => { e.preventDefault(); const v = $('#homeq').value.trim(); if (v) { const hist = ls.get('cbtapp.asks', []); ls.set('cbtapp.asks', [v, ...hist.filter(x => x !== v)].slice(0, 15)); location.hash = '#/' + askRoute(e.submitter) + '/' + encodeURIComponent(v); } }; }};
 }
 
 let areaFilter = 'הכל', probQuery = '';
@@ -6780,6 +6781,8 @@ function refineAfter(){
 }
 /* "שאל שאלה" has two tracks the user picks up front: #/ask – the free on-device engine, #/askc – a full Claude answer (spends the plan's usage) */
 const claudeTrack = () => ARTIFACT || !!(window.CBT_AI_CONFIG && window.CBT_AI_CONFIG.anthropicKey);
+// which ״שאל שאלה״ route a question goes to: the button pressed, or (Enter) the route chosen last – Claude by default where it is available
+function askRoute(b){ if (b) { const r = b.dataset.claude ? 'askc' : 'ask'; ls.set('cbtapp.askroute', r); return r; } const r = ls.get('cbtapp.askroute', ''); return r === 'ask' || !claudeTrack() ? 'ask' : 'askc'; }
 function ask(R, viaClaude = false){
   const q = R.id ? R.id : (viaClaude ? '' : lastAsk);
   const hist = ls.get('cbtapp.asks', []);
@@ -6799,7 +6802,7 @@ function ask(R, viaClaude = false){
     return {title: 'שאל שאלה', html: h, after(){
       const f = $('#askform'), i = $('#askq');
       i.addEventListener('keydown', e => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); f.requestSubmit(); } });
-      f.onsubmit = e => { e.preventDefault(); const v = i.value.trim(); if (!v) return; ls.set('cbtapp.asks', [v, ...hist.filter(x => x !== v)].slice(0, 15)); location.hash = '#/askc/' + encodeURIComponent(v); };
+      f.onsubmit = e => { e.preventDefault(); const v = i.value.trim(); if (!v) return; ls.set('cbtapp.askroute', 'askc'); ls.set('cbtapp.asks', [v, ...hist.filter(x => x !== v)].slice(0, 15)); location.hash = '#/askc/' + encodeURIComponent(v); };
       if (!q) i.focus();
       refineAfter();
       if (q && $('#aiPanel')) aiAnswerRun(q);
@@ -6819,7 +6822,7 @@ function ask(R, viaClaude = false){
   return {title:'שאל שאלה', html:h, after(){
     const f = $('#askform'), i = $('#askq');
     i.addEventListener('keydown', e => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); f.requestSubmit(); } });
-    f.onsubmit = e => { e.preventDefault(); const v = i.value.trim(); if (!v) return; lastAsk = v; ls.set('cbtapp.asks', [v, ...hist.filter(x => x !== v)].slice(0, 15)); location.hash = '#/ask/' + encodeURIComponent(v); };
+    f.onsubmit = e => { e.preventDefault(); const v = i.value.trim(); if (!v) return; ls.set('cbtapp.askroute', 'ask'); lastAsk = v; ls.set('cbtapp.asks', [v, ...hist.filter(x => x !== v)].slice(0, 15)); location.hash = '#/ask/' + encodeURIComponent(v); };
     if (!q) i.focus();
     refineAfter();
     if (q && $('#aiPanel')) aiAnswerRun(q);
@@ -6896,7 +6899,7 @@ function liteHome(){
   h += `<h2 class="sec">🧭 מפות טיפול <small>לפי תחום</small></h2><div class="grid">${PROBLEMS.slice(0, 8).map(problemCard).join('')}</div>
     <div style="margin-top:12px"><a class="btn" href="#/problems">לכל ${PROBLEMS.length} הבעיות ←</a></div>`;
   h += `<h2 class="sec">🧰 כלים לשימוש בחדר</h2><div class="grid">${TOOLS.slice(0, 4).map(toolCard).join('')}</div>`;
-  return {title:'בית', html:h, after(){ $('#homeask').onsubmit = e => { e.preventDefault(); const v = $('#homeq').value.trim(); if (v) { const hist = ls.get('cbtapp.asks', []); ls.set('cbtapp.asks', [v, ...hist.filter(x => x !== v)].slice(0, 15)); location.hash = '#/' + (e.submitter && e.submitter.dataset.claude ? 'askc' : 'ask') + '/' + encodeURIComponent(v); } }; }};
+  return {title:'בית', html:h, after(){ $('#homeask').onsubmit = e => { e.preventDefault(); const v = $('#homeq').value.trim(); if (v) { const hist = ls.get('cbtapp.asks', []); ls.set('cbtapp.asks', [v, ...hist.filter(x => x !== v)].slice(0, 15)); location.hash = '#/' + askRoute(e.submitter) + '/' + encodeURIComponent(v); } }; }};
 }
 function liteSettings(){
   return {title:'אודות', html:`<div class="panel"><h3>ℹ️ על הגרסה הזו</h3><p style="margin:0">${PROBLEMS.length} מפות טיפול · ${TOOLS.length} כלים לילדים · עוזר לשאלות · סדר עבודה.</p>
@@ -9419,7 +9422,7 @@ async function chatSend0(q, opt = {}){ CHLOG.add('send', q.length + (opt.voice ?
   q = String(q || '').trim(); if (!q) return; if (CH.busy) { if (!opt.interrupted) return; if (CH.ctl) CH.ctl.abort(); await new Promise(r => setTimeout(r, 300)); }
   const mode = CH.mode, H = chatHist(mode); chq('#chatq').value = ''; chq('#chatq').style.height = 'auto';
   H.push({role: 'user', content: q}); chatSave(mode); chatPaint();
-  try { CH.qid = QLOG.add(q, mode); } catch (e) {}
+  try { CH.qid = QLOG.add(q, mode, chatRoute(mode) === 'free' ? 'free' : 'claude'); } catch (e) {}
   const t0 = performance.now();
   const hits = chatSearch(q, 6), log = chq('#chatlog'), bub = document.createElement('div'); bub.className = 'chatmsg bot typing'; bub.innerHTML = '<span class="dots"><i></i><i></i><i></i></span>'; log.appendChild(bub); log.scrollTop = 1e9;
   CHLOG.add('searched', Math.round(performance.now() - t0) + 'ms hits=' + hits.length);
@@ -10074,7 +10077,7 @@ document.addEventListener('click', async e => {
     if (await sfDownload(PROC.title(k, id).replace(/[\\/:*?"<>|]/g, ' ') + (who ? ' - ' + who : '') + ' - למילוי.html', doc, b)) setTimeout(sfClose, 900); }
 });
 /* ---- ❓ השאלות שלי – #/questions[/<src>]: every question asked on the site with its answer; open, search, copy, delete ---- */
-const QSRC = {ask: ['💬', 'שאל שאלה – מסלול חינמי'], askc: ['🤖', 'שאל שאלה – Claude'], assist: ['🧭', 'עוזר האתר'], therapist: ['🧑‍⚕️', 'המטפל הווירטואלי']};
+const QSRC = {ask: ['💬', 'שאל שאלה – מסלול חינמי'], askc: ['🤖', 'שאל שאלה – Claude'], askq: ['💬', 'שאל שאלה – לפני הארכיון (המסלול לא נשמר)'], assist: ['🧭', 'עוזר האתר'], therapist: ['🧑‍⚕️', 'המטפל הווירטואלי']};
 function questionsView(R){
   const L = QLOG.list(), f = QSRC[R.id] ? R.id : '', shown = f ? L.filter(x => x.src === f) : L;
   const when = at => new Date(at).toLocaleString('he-IL', {day: 'numeric', month: 'numeric', year: '2-digit', hour: '2-digit', minute: '2-digit'});
@@ -10082,7 +10085,7 @@ function questionsView(R){
   const ans = x => !x.a ? '<p class="muted">התשובה לא נשמרה – השאלה נשאלה לפני שנוצר הארכיון. אפשר לשאול אותה שוב.</p>' : x.f === 'html' ? `<div class="qaans">${x.a}</div>` : `<div class="qaans qatext">${chatMd(x.a)}</div>`;
   const again = x => x.src === 'ask' ? `<a class="btn sm" href="#/ask/${encodeURIComponent(x.q)}">🔁 לשאול שוב</a>` : x.src === 'askc' ? `<a class="btn sm" href="#/askc/${encodeURIComponent(x.q)}">🔁 לשאול שוב את Claude</a>` : '';
   const item = x => `<div class="qarow" data-q="${esc((x.q + ' ' + plain(x)).slice(0, 4000).toLowerCase())}"><input type="checkbox" class="qasel" data-id="${esc(x.id)}" aria-label="סימון">
-    <details class="qaitem"><summary><span class="qasrc">${(QSRC[x.src] || ['❓'])[0]} ${esc((QSRC[x.src] || ['', ''])[1])}</span><b class="qaq">${esc(x.q.length > 160 ? x.q.slice(0, 160) + '…' : x.q)}</b><small class="muted">${when(x.at)}</small></summary>
+    <details class="qaitem"><summary><span class="qasrc">${(QSRC[x.src] || ['❓'])[0]} ${esc((QSRC[x.src] || ['', ''])[1])}${x.r ? (x.r === 'claude' ? ' · 🤖 Claude' : ' · 🆓 חינמי') : ''}</span><b class="qaq">${esc(x.q.length > 160 ? x.q.slice(0, 160) + '…' : x.q)}</b><small class="muted">${when(x.at)}</small></summary>
       <div class="qabody"><div class="qafull">❓ ${esc(x.q)}</div>${ans(x)}
       <div class="actions qaacts">${again(x)}<button class="btn sm" data-qa="copy" data-id="${esc(x.id)}">📋 העתקה</button><button class="btn sm ghost" data-qa="del" data-id="${esc(x.id)}">🗑️ מחיקה</button></div></div></details></div>`;
   const chip = (k, l) => `<a class="chip ${f === k ? 'on' : ''}" href="#/questions${k ? '/' + k : ''}">${l} (${k ? L.filter(x => x.src === k).length : L.length})</a>`;
