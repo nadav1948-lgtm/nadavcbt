@@ -6778,7 +6778,8 @@ function answerHTML(A){
   return h;
 }
 const ASK_EXAMPLES = ['ילד בכיתה ב׳ בוכה כל בוקר בשער ולא מוכן להיפרד מאמא','מה אומרים למחנכת על ילד שמתפרץ ומכה בהפסקות','ילד עם כאבי בטן לפני מבחנים והולכת לאחות','איך מתחילים מפגש ראשון עם ילד שיש לו טיקים','תלמיד שמחרימים אותו בקבוצת הוואטסאפ של הכיתה','ילד שאבא שלו נהרג – מה עושים בבית הספר','אילו שאלונים יש לחרדה','מתי להפנות ילד עם הרטבה לרופא','תלמיד קילל מורה באמצע השיעור – מה עושים?','מתי מותר להשעות תלמיד ומי מחליט','אבא גרוש מבקש לקבל את התעודה','ילד כתב במחברת שהוא רוצה למות – מה חובה לעשות'];
-let lastAsk = '', aiFast = true;   // free engine first everywhere; Claude only on a click (it spends the plan's usage)
+let lastAsk = '', askDraft = '', aiFast = true;   // askDraft: what was typed but not sent – it survives switching between the free and the Claude route
+   // free engine first everywhere; Claude only on a click (it spends the plan's usage)
 /* follow-up: add a detail to the question already answered instead of starting over (keyword engine, no tokens) */
 const REFINE_SEP = ' · ';
 const REFINE_CHIPS = ['מה תפקיד המחנך?', 'מה תפקיד היועץ?', 'מה אומרים להורים?', 'ומה אם זה חוזר על עצמו?', 'מה חובת הדיווח?'];
@@ -6804,7 +6805,9 @@ function refineAfter(){
 /* "שאל שאלה" has two tracks the user picks up front: #/ask – the free on-device engine, #/askc – a full Claude answer (spends the plan's usage) */
 const claudeTrack = () => ARTIFACT || !!(window.CBT_AI_CONFIG && window.CBT_AI_CONFIG.anthropicKey);
 // which ״שאל שאלה״ route a question goes to: the button pressed, or (Enter) the route chosen last – Claude by default where it is available
-document.addEventListener('click', e => { const b = e.target.closest('.askroute [data-route], .tabs a[data-route]'); if (!b) return; askRoute(b); if (b.tagName === 'A') return; b.parentNode.querySelectorAll('[data-route]').forEach(x => x.classList.toggle('on', x === b)); const i = document.getElementById('homeq'); if (i) i.focus(); });
+document.addEventListener('input', e => { if (e.target && e.target.id === 'askq') askDraft = e.target.value; });
+window.addEventListener('hashchange', () => { const R = route(); if (R.id && (R.r === 'ask' || R.r === 'askc')) askDraft = ''; });   // a question that was sent is no longer a draft
+document.addEventListener('click', e => { const b = e.target.closest('.askroute [data-route], .tabs a[data-route]'); if (!b) return; askRoute(b); if (b.tagName === 'A') { const t = document.getElementById('askq'), v = t ? t.value.trim() : ''; if (v && v !== (route().id || '')) { e.preventDefault(); askDraft = t.value; location.hash = '#/' + b.dataset.route; } return; } /* typed but not sent: switch the route and keep the text – nothing is sent until Enter */ b.parentNode.querySelectorAll('[data-route]').forEach(x => x.classList.toggle('on', x === b)); const i = document.getElementById('homeq'); if (i) i.focus(); });
 function askRoute(b){ if (b && b.dataset && b.dataset.route) { ls.set('cbtapp.askroute', b.dataset.route); return b.dataset.route; } const r = ls.get('cbtapp.askroute', ''); return r === 'ask' || !claudeTrack() ? 'ask' : 'askc'; }
 function ask(R, viaClaude = false){
   const q = R.id ? R.id : (viaClaude ? '' : lastAsk);
@@ -6814,7 +6817,7 @@ function ask(R, viaClaude = false){
     ? `🤖 <b>מסלול Claude:</b> Claude כותב תשובה מקיפה ומוסברת מתוך ${PROBLEMS.length} מפות הטיפול, חוזרי המנכ״ל והספרייה שבאתר, עם מקור לכל פריט. ידע מקצועי מבחוץ מופיע רק בחלק נפרד ומסומן 🌐. לוקח עד דקה-שתיים, ונספר במכסת המנוי.`
     : `💬 <b>מסלול חינמי:</b> התשובות נבנות מתוך ${PROBLEMS.length} מפות הטיפול, חוזרי המנכ״ל והספרייה שלך – תמיד בהפרדה בין המענה הטיפולי למענה המשמעתי / מסגרתי / מנהלי. מתאים לשאלה על נושא אחד. בלי עלות.`;
   let h = tabs + `<div class="panel" style="margin-top:4px"><h3>${viaClaude ? '🤖' : '💬'} מה השאלה?</h3>${askerChips()}
-    <form id="askform" style="display:flex;gap:8px;flex-wrap:wrap"><textarea class="inp" id="askq" rows="2" style="flex:1;min-width:240px;min-height:52px" placeholder="מתארים את המצב במילים שלך – מה רואים, איפה ומתי">${esc(q || '')}</textarea><button class="btn primary" type="submit" style="align-self:stretch">${viaClaude ? '🤖 תשובה מ-Claude' : '🔎 קבלת תשובה'}</button></form>
+    <form id="askform" style="display:flex;gap:8px;flex-wrap:wrap"><textarea class="inp" id="askq" rows="2" style="flex:1;min-width:240px;min-height:52px" placeholder="מתארים את המצב במילים שלך – מה רואים, איפה ומתי">${esc(askDraft || q || '')}</textarea><button class="btn primary" type="submit" style="align-self:stretch">${viaClaude ? '🤖 תשובה מ-Claude' : '🔎 קבלת תשובה'}</button></form>
     <p class="muted" style="margin:10px 0 0;font-size:13.5px">${about}</p></div>`;
   if (viaClaude) {
     if (q && AI.available()) h += '<div id="aiPanel"></div>';
@@ -6825,7 +6828,7 @@ function ask(R, viaClaude = false){
     return {title: 'שאל שאלה', html: h, after(){
       const f = $('#askform'), i = $('#askq');
       i.addEventListener('keydown', e => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); f.requestSubmit(); } });
-      f.onsubmit = e => { e.preventDefault(); const v = i.value.trim(); if (!v) return; ls.set('cbtapp.askroute', 'askc'); ls.set('cbtapp.asks', [v, ...hist.filter(x => x !== v)].slice(0, 15)); location.hash = '#/askc/' + encodeURIComponent(v); };
+      f.onsubmit = e => { e.preventDefault(); const v = i.value.trim(); if (!v) return; askDraft = ''; ls.set('cbtapp.askroute', 'askc'); ls.set('cbtapp.asks', [v, ...hist.filter(x => x !== v)].slice(0, 15)); location.hash = '#/askc/' + encodeURIComponent(v); };
       if (!q) i.focus();
       refineAfter();
       if (q && $('#aiPanel')) aiAnswerRun(q);
@@ -6845,7 +6848,7 @@ function ask(R, viaClaude = false){
   return {title:'שאל שאלה', html:h, after(){
     const f = $('#askform'), i = $('#askq');
     i.addEventListener('keydown', e => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); f.requestSubmit(); } });
-    f.onsubmit = e => { e.preventDefault(); const v = i.value.trim(); if (!v) return; ls.set('cbtapp.askroute', 'ask'); lastAsk = v; ls.set('cbtapp.asks', [v, ...hist.filter(x => x !== v)].slice(0, 15)); location.hash = '#/ask/' + encodeURIComponent(v); };
+    f.onsubmit = e => { e.preventDefault(); const v = i.value.trim(); if (!v) return; askDraft = ''; ls.set('cbtapp.askroute', 'ask'); lastAsk = v; ls.set('cbtapp.asks', [v, ...hist.filter(x => x !== v)].slice(0, 15)); location.hash = '#/ask/' + encodeURIComponent(v); };
     if (!q) i.focus();
     refineAfter();
     if (q && $('#aiPanel')) aiAnswerRun(q);
