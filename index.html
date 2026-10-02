@@ -2428,6 +2428,13 @@ body.chatwin{margin:0;background:var(--bg);overflow:hidden}
 .askroute button{font:inherit;font-size:14px;font-weight:600;padding:0 12px;border:0;background:rgba(255,255,255,.1);color:#fff;cursor:pointer;min-height:48px}
 .askroute button.on{background:#fff;color:var(--brand-text,#2f2a6b)}
 @media (max-width:560px){#homeask{flex-wrap:wrap}#homeask .inp{flex-basis:100%}}
+/* ⏳ the site is thinking */
+.aithink{display:flex;gap:12px;align-items:center;margin:4px 0 0}
+.hg{display:inline-block;font-size:30px;animation:hgflip 2s ease-in-out infinite}
+.chsec{display:inline-block;font-size:13px;color:var(--muted);margin-inline-end:6px}
+.chsec::first-letter{display:inline-block}
+@keyframes hgflip{0%,40%{transform:rotate(0)}50%,90%{transform:rotate(180deg)}100%{transform:rotate(360deg)}}
+@media (prefers-reduced-motion:reduce){.hg{animation:none}}
 
 </style>
 <link rel="manifest" href="manifest.webmanifest">
@@ -7073,11 +7080,12 @@ async function aiCircMaterial(q, maps, rolesQ, cids, local, noLib){
 /* 🤖 a Claude answer is a background job: the question goes into ״השאלות שלי״ the moment it is sent, the answer keeps coming while the
    user wanders around the site, and coming back to the question (or to ״השאלות שלי״) shows it from where it is. Only ⏹ stops it. */
 const AIJOBS = {};
-const aiBusyHTML = t => `<div class="panel" style="border-inline-start:5px solid var(--brand)"><h3>🤖 Claude עונה מתוך מפות הטיפול</h3><p class="muted" style="margin:0">${esc(t)}</p><p class="muted" style="margin:8px 0 0;font-size:13px">💡 אפשר להמשיך לשוטט באתר – התשובה ממשיכה להיכתב, תופיע כאן כשתחזרו לשאלה, וגם ב״❓ השאלות שלי״.</p><div class="actions" style="margin-top:10px"><button class="btn sm" data-act="ai-stop">⏹ עצירה</button></div></div>`;
-function aiJobPaint(q){ const J = AIJOBS[q], R = route(), box = $('#aiPanel'); if (!J || !box || R.r !== 'askc' || R.id !== q) return false; box.innerHTML = J.st === 'run' ? aiBusyHTML(J.msg) : J.html; return true; }
+const aiBusyHTML = (t, J) => `<div class="panel" style="border-inline-start:5px solid var(--brand)"><h3>🤖 Claude עונה מתוך מפות הטיפול</h3><div class="aithink"><span class="hg" aria-hidden="true">⏳</span><span><b>${esc(t)}</b><br><small class="muted">${J ? `עברו ${Math.round((Date.now() - J.t0) / 1000)} שניות${J.chars ? ` · נכתבו כבר ${J.chars} תווים` : ''}` : ''}</small></span></div><p class="muted" style="margin:8px 0 0;font-size:13px">💡 אפשר להמשיך לשוטט באתר – התשובה ממשיכה להיכתב, תופיע כאן כשתחזרו לשאלה, וגם ב״❓ השאלות שלי״.</p><div class="actions" style="margin-top:10px"><button class="btn sm" data-act="ai-stop">⏹ עצירה</button></div></div>`;
+function aiJobPaint(q){ const J = AIJOBS[q], R = route(), box = $('#aiPanel'); if (!J || !box || R.r !== 'askc' || R.id !== q) return false; box.innerHTML = J.st === 'run' ? aiBusyHTML(J.msg, J) : J.html; return true; }
 function aiJob(q){
   if (AIJOBS[q] && AIJOBS[q].st !== 'err' && AIJOBS[q].st !== 'stop') return AIJOBS[q];
-  const J = AIJOBS[q] = {st: 'run', msg: 'קורא את השאלה ובוחר מפה מתאימה…', html: '', ctl: new AbortController()}; J.ctl.bg = true;
+  const J = AIJOBS[q] = {st: 'run', msg: 'קורא את השאלה ובוחר מפה מתאימה…', html: '', ctl: new AbortController(), t0: Date.now(), chars: 0}; J.ctl.bg = true;
+  const tick = setInterval(() => { if (J.st !== 'run') return clearInterval(tick); aiJobPaint(q); }, 1000);   // the hourglass counts the seconds while Claude thinks
   let qid = ''; try { qid = QLOG.add(q, 'askc'); } catch (e) {}
   const step = t => { J.msg = t; aiJobPaint(q); };
   const finish = (st, html) => { J.st = st; J.html = html; if (st !== 'stop') try { QLOG.answer(qid, html, 'html'); } catch (e) {}
@@ -7097,7 +7105,11 @@ function aiJob(q){
       const maps = ids.map(id => P[id]);
       step(`מצאתי: ${[...maps.map(p => p.icon + ' ' + p.name), ...cids.map(id => '📜 ' + circItem(id).title)].join(' · ') || 'מדריך התפקידים'}. כותב תשובה מקיפה ל${askerOf().label} – זה לוקח עד דקה או שתיים…`);
       const circMat = await aiCircMaterial(q, maps, rolesQ, cids, local);
-      const ans = await AI.ask(aiAnswerPrompt(q, maps, rolesQ, circMat), {tier: 'complex', signal: J.ctl.signal});
+      const prompt = aiAnswerPrompt(q, maps, rolesQ, circMat), onText = x => { J.chars = (x && x.text || '').length; };
+      let ans; try { ans = await AI.ask(prompt, {tier: 'complex', signal: J.ctl.signal, onText}); }
+      catch (e1) { if (!e1 || !['upstream_error', 'empty_completion', 'invalid_json'].includes(e1.code) && e1.code) throw e1;   // the long, deep answer dropped – one more try on the everyday model
+        CHLOG.add('askc-retry', (e1 && e1.code) + ' ' + ((e1 && e1.message) || '').slice(0, 160) + ' len=' + prompt.length); J.chars = 0; step('החיבור נקטע באמצע – מנסה שוב, עם תשובה ממוקדת יותר…');
+        ans = await AI.ask(prompt, {tier: 'default', signal: J.ctl.signal, onText}); }
       if (ans && typeof ans === 'object' && c && c.safety) ans.safety = true;
       if (ans && typeof ans === 'object') ans._cids = cids;
       finish('done', aiAnswerHTML(q, ans, maps, rolesQ || !!(c && c.safety) || !!(ans && ans.safety)));
@@ -7106,7 +7118,7 @@ function aiJob(q){
       const code = (e && e.code) || 'upstream_error'; CHLOG.add('error', code + ' ' + ((e && e.message) || ''));
       if (['not_granted', 'sampling_disabled', 'not_declared', 'capability_disabled', 'capability_removed'].includes(code)) AI.disable(code);
       const msg = AI_ERR[code] || AI_ERR.upstream_error;
-      finish('err', `<div class="note warn" style="margin-bottom:12px">🤖 ${esc(msg)}${AI.available() ? ` <button class="btn sm" data-act="ai-retry">נסו שוב</button>` : ''}</div>` + (AI.available() ? '' : answerHTML(answer(q))));
+      finish('err', `<div class="note warn" style="margin-bottom:12px">🤖 ${esc(msg)}<small class="muted"> (קוד: ${esc(code)})</small>${AI.available() ? ` <button class="btn sm" data-act="ai-retry">נסו שוב</button>` : ''}</div>` + (AI.available() ? '' : answerHTML(answer(q))));
     }
   })();
   return J;
@@ -9443,6 +9455,7 @@ async function chatSend0(q, opt = {}){ CHLOG.add('send', q.length + (opt.voice ?
   try { CH.qid = QLOG.add(q, mode, chatRoute(mode) === 'free' ? 'free' : 'claude'); } catch (e) {}
   const t0 = performance.now();
   const hits = chatSearch(q, 6), log = chq('#chatlog'), bub = document.createElement('div'); bub.className = 'chatmsg bot typing'; bub.innerHTML = '<span class="dots"><i></i><i></i><i></i></span>'; log.appendChild(bub); log.scrollTop = 1e9;
+  const t0c = Date.now(), tkc = setInterval(() => { if (!bub.isConnected || !bub.classList.contains('typing')) return clearInterval(tkc); let s = bub.querySelector('.chsec'); if (!s) { s = document.createElement('span'); s.className = 'chsec'; bub.prepend(s); } s.textContent = '⏳ ' + Math.round((Date.now() - t0c) / 1000) + ' שנ׳ '; }, 1000);   // hourglass + seconds while the answer is on its way
   CHLOG.add('searched', Math.round(performance.now() - t0) + 'ms hits=' + hits.length);
   if (chatRoute(mode) === 'free') {   // free: the on-device engine + the best places in the site
     let t = ''; try { const a = window.CBT_LOCAL_ANSWER(q); t = typeof a === 'string' ? a : (a && a.text) || ''; } catch (e) {}   // the engine returns {text, href}
