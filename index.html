@@ -2439,6 +2439,10 @@ body.chatwin{margin:0;background:var(--bg);overflow:hidden}
 .qath{margin:14px 0 0;padding:10px 12px;border-inline-start:3px solid var(--brand);background:color-mix(in srgb,var(--brand) 6%,transparent);border-radius:10px}
 .qafu{display:flex;gap:8px;align-items:flex-end;flex-wrap:wrap;margin:14px 0 0}
 .qafu .inp{flex:1;min-width:220px;min-height:48px}
+.qathh{margin:18px 0 0;font-weight:700;font-size:14.5px;color:var(--brand-text,var(--brand))}
+.qath{margin-inline-start:18px}
+.qathn{font-size:12.5px;font-weight:700;color:var(--muted);margin:0 0 2px}
+.qathb{font-size:12.5px;padding:2px 8px;border-radius:999px;background:color-mix(in srgb,var(--brand) 22%,transparent);white-space:nowrap}
 
 </style>
 <link rel="manifest" href="manifest.webmanifest">
@@ -10172,7 +10176,7 @@ document.addEventListener('click', async e => {
 const FUJOBS = {};
 const qaHtmlText = h => { const d = document.createElement('div'); d.innerHTML = h || ''; return d.textContent.replace(/\s+\n/g, '\n').replace(/\n{3,}/g, '\n\n').trim(); };
 function qaThreadHTML(x){ const th = x.th || [], J = FUJOBS[x.id];
-  return th.map((t, i) => `<div class="qath"><div class="qafull">↩️ ${esc(t.q)}</div>${t.a ? (t.f === 'html' ? `<div class="qaans">${t.a}</div>` : `<div class="qaans qatext">${chatMd(t.a)}</div>`)
+  return (th.length ? `<div class="qathh">↩️ שאלות המשך לשאלה הזו (${th.length})</div>` : '') + th.map((t, i) => `<div class="qath"><div class="qathn">שאלת המשך ${i + 1}</div><div class="qafull">${esc(t.q)}</div>${t.a ? (t.f === 'html' ? `<div class="qaans">${t.a}</div>` : `<div class="qaans qatext">${chatMd(t.a)}</div>`)
     : J && J.st === 'run' && i === th.length - 1 ? `<div class="aithink"><span class="hg" aria-hidden="true">⏳</span><span><b>Claude חושב על שאלת ההמשך…</b><br><small class="muted">עברו ${Math.round((Date.now() - J.t0) / 1000)} שניות${J.chars ? ` · נכתבו ${J.chars} תווים` : ''} · אפשר להמשיך לשוטט באתר</small></span></div>` : '<p class="muted">התשובה לא הגיעה. אפשר לשאול שוב.</p>'}</div>`).join(''); }
 function fuPaint(id){ const box = document.querySelector(`.qathread[data-th="${CSS.escape(id)}"]`), x = QLOG.all()[id]; if (!box || !x) return false; box.innerHTML = qaThreadHTML({...x, id}); return true; }
 function fuRun(id, q2){
@@ -10214,7 +10218,7 @@ function questionsView(R){
   const ans = x => !x.a ? (x.src === 'askc' && AIJOBS[x.q] && AIJOBS[x.q].st === 'run' ? `<p class="note">⏳ Claude עדיין כותב את התשובה – <a href="#/askc/${encodeURIComponent(x.q)}">לצפייה בהתקדמות</a>.</p>` : x.src === 'askc' || x.src === 'ask' ? '<p class="muted">התשובה לא נשמרה (נעצרה, נקטעה, או שהשאלה נשאלה לפני שנוצר הארכיון). אפשר לשאול אותה שוב.</p>' : '<p class="muted">התשובה לא נשמרה – השאלה נשאלה לפני שנוצר הארכיון.</p>') : x.f === 'html' ? `<div class="qaans">${x.a}</div>` : `<div class="qaans qatext">${chatMd(x.a)}</div>`;
   const again = x => x.src === 'ask' ? `<a class="btn sm" href="#/ask/${encodeURIComponent(x.q)}">🔁 לשאול שוב</a>` : x.src === 'askc' ? `<a class="btn sm" href="#/askc/${encodeURIComponent(x.q)}">🔁 לשאול שוב את Claude</a>` : '';
   const item = x => `<div class="qarow" data-q="${esc((x.q + ' ' + plain(x) + ' ' + (x.th || []).map(t => t.q + ' ' + (t.a || '')).join(' ')).slice(0, 4000).toLowerCase())}"><input type="checkbox" class="qasel" data-id="${esc(x.id)}" aria-label="סימון">
-    <details class="qaitem"${R.sub === x.id ? ' open' : ''}><summary><span class="qasrc">${(QSRC[x.src] || ['❓'])[0]} ${esc((QSRC[x.src] || ['', ''])[1])}${x.r ? (x.r === 'claude' ? ' · 🤖 Claude' : ' · 🆓 חינמי') : ''}</span><b class="qaq">${esc(x.q.length > 160 ? x.q.slice(0, 160) + '…' : x.q)}</b><small class="muted">${when(x.at)}</small></summary>
+    <details class="qaitem"${R.sub === x.id ? ' open' : ''}><summary><span class="qasrc">${(QSRC[x.src] || ['❓'])[0]} ${esc((QSRC[x.src] || ['', ''])[1])}${x.r ? (x.r === 'claude' ? ' · 🤖 Claude' : ' · 🆓 חינמי') : ''}</span><b class="qaq">${esc(x.q.length > 160 ? x.q.slice(0, 160) + '…' : x.q)}</b>${(x.th || []).length ? `<span class="qathb">↩️ ${x.th.length} שאלות המשך</span>` : ''}<small class="muted">${when(x.at)}</small></summary>
       <div class="qabody"><div class="qafull">❓ ${esc(x.q)}</div>${ans(x)}<div class="qathread" data-th="${esc(x.id)}">${qaThreadHTML(x)}</div>
       <div class="qafu"><textarea class="inp" data-fuq="${esc(x.id)}" rows="2" placeholder="↩️ שאלת המשך – רוצה לברר עוד משהו על התשובה?"></textarea><button class="btn sm primary" data-qa="fu" data-id="${esc(x.id)}">${AI.available() ? '🤖 שליחה ל-Claude' : '💬 שליחה'}</button></div>
       <div class="actions qaacts">${again(x)}<button class="btn sm" data-qa="copy" data-id="${esc(x.id)}">📋 העתקה</button><button class="btn sm ghost" data-qa="del" data-id="${esc(x.id)}">🗑️ מחיקה</button></div></div></details></div>`;
