@@ -2422,6 +2422,7 @@ body.chatwin{margin:0;background:var(--bg);overflow:hidden}
 .qaans{max-height:none;overflow:auto}
 .qatext{line-height:1.7}
 .qaacts{margin-top:12px}
+.toastlink{text-decoration:none;cursor:pointer;color:inherit;font-weight:600}
 
 </style>
 <link rel="manifest" href="manifest.webmanifest">
@@ -5864,7 +5865,7 @@ function render(){
   if (out.after) out.after();
   ui();
 }
-window.addEventListener('hashchange', () => { aiFast = true; if (aiCtl) aiCtl.abort(); render(); window.scrollTo({top:0}); });
+window.addEventListener('hashchange', () => { aiFast = true; if (aiCtl && !aiCtl.bg) aiCtl.abort(); render(); window.scrollTo({top:0}); });
 
 /* ================= shared pieces ================= */
 function problemCard(p, i){
@@ -7063,38 +7064,49 @@ async function aiCircMaterial(q, maps, rolesQ, cids, local, noLib){
   }
   return mat;
 }
-async function aiAnswerRun(q){
-  const box = $('#aiPanel'); if (!box) return;
-  aiCtl = new AbortController();
-  const busy = t => { box.innerHTML = `<div class="panel" style="border-inline-start:5px solid var(--brand)"><h3>🤖 Claude עונה מתוך מפות הטיפול</h3><p class="muted" style="margin:0">${esc(t)}</p><div class="actions" style="margin-top:10px"><button class="btn sm" data-act="ai-stop">⏹ עצירה</button></div></div>`; };
-  busy('קורא את השאלה ובוחר מפה מתאימה…');
-  try {
-    // choosing the right maps decides the whole answer, so it runs on the everyday model, not the quick one
-    const c = await AI.ask(aiClassifyPrompt(q), {signal: aiCtl.signal});
-    let ids = Array.isArray(c && c.mapIds) ? c.mapIds.map(String).filter(id => P[id]).slice(0, 3) : [];
-    const rolesQ = !!(c && c.roles);
-    const local = circGuide().length ? circSearch(q, {nGuide: 4, nText: 10}) : {guide: [], text: [], qt: []};
-    let cids = Array.isArray(c && c.circIds) ? c.circIds.map(String).filter(circItem).slice(0, 4) : [];
-    if (!cids.length && local.strong) cids = local.guide.slice(0, 2).map(x => x.g.id);
-    let libHit = false; if (!ids.length && !rolesQ && !cids.length) { try { libHit = !!(await libTextLoad()) && (await libSearchAsync(q, 1)).length > 0; } catch(e){} }
-    if (!ids.length && !rolesQ && !cids.length && !libHit) { box.innerHTML = aiNotFoundHTML(q, !!(c && c.safety)); try { QLOG.answer(QLOG.add(q, 'askc'), box.innerHTML, 'html'); } catch (e) {} return; }
-    if (cids.length && ids.length > 2) ids = ids.slice(0, 2);
-    const maps = ids.map(id => P[id]);
-    busy(`מצאתי: ${[...maps.map(p => p.icon + ' ' + p.name), ...cids.map(id => '📜 ' + circItem(id).title)].join(' · ') || 'מדריך התפקידים'}. כותב תשובה מקיפה ל${askerOf().label} – זה לוקח עד דקה או שתיים…`);
-    const circMat = await aiCircMaterial(q, maps, rolesQ, cids, local);
-    const ans = await AI.ask(aiAnswerPrompt(q, maps, rolesQ, circMat), {tier: 'complex', signal: aiCtl.signal});
-    if (ans && typeof ans === 'object' && c && c.safety) ans.safety = true;
-    if (ans && typeof ans === 'object') ans._cids = cids;
-    box.innerHTML = aiAnswerHTML(q, ans, maps, rolesQ || !!(c && c.safety) || !!(ans && ans.safety));
-    try { QLOG.answer(QLOG.add(q, 'askc'), box.innerHTML, 'html'); } catch (e) {}
-  } catch(e){
-    if (e && e.code === 'cancelled') { box.innerHTML = ''; return; }
-    const code = (e && e.code) || 'upstream_error'; CHLOG.add('error', code + ' ' + ((e && e.message) || ''));
-    if (['not_granted', 'sampling_disabled', 'not_declared', 'capability_disabled', 'capability_removed'].includes(code)) AI.disable(code);
-    const msg = AI_ERR[code] || AI_ERR.upstream_error;
-    box.innerHTML = `<div class="note warn" style="margin-bottom:12px">🤖 ${esc(msg)}${AI.available() ? ` <button class="btn sm" data-act="ai-retry">נסו שוב</button>` : ''}</div>` + (AI.available() ? '' : answerHTML(answer(q)));
-  }
+/* 🤖 a Claude answer is a background job: the question goes into ״השאלות שלי״ the moment it is sent, the answer keeps coming while the
+   user wanders around the site, and coming back to the question (or to ״השאלות שלי״) shows it from where it is. Only ⏹ stops it. */
+const AIJOBS = {};
+const aiBusyHTML = t => `<div class="panel" style="border-inline-start:5px solid var(--brand)"><h3>🤖 Claude עונה מתוך מפות הטיפול</h3><p class="muted" style="margin:0">${esc(t)}</p><p class="muted" style="margin:8px 0 0;font-size:13px">💡 אפשר להמשיך לשוטט באתר – התשובה ממשיכה להיכתב, תופיע כאן כשתחזרו לשאלה, וגם ב״❓ השאלות שלי״.</p><div class="actions" style="margin-top:10px"><button class="btn sm" data-act="ai-stop">⏹ עצירה</button></div></div>`;
+function aiJobPaint(q){ const J = AIJOBS[q], R = route(), box = $('#aiPanel'); if (!J || !box || R.r !== 'askc' || R.id !== q) return false; box.innerHTML = J.st === 'run' ? aiBusyHTML(J.msg) : J.html; return true; }
+function aiJob(q){
+  if (AIJOBS[q] && AIJOBS[q].st !== 'err' && AIJOBS[q].st !== 'stop') return AIJOBS[q];
+  const J = AIJOBS[q] = {st: 'run', msg: 'קורא את השאלה ובוחר מפה מתאימה…', html: '', ctl: new AbortController()}; J.ctl.bg = true;
+  let qid = ''; try { qid = QLOG.add(q, 'askc'); } catch (e) {}
+  const step = t => { J.msg = t; aiJobPaint(q); };
+  const finish = (st, html) => { J.st = st; J.html = html; if (st !== 'stop') try { QLOG.answer(qid, html, 'html'); } catch (e) {}
+    if (!aiJobPaint(q) && st === 'done') toastLink('🤖 התשובה של Claude מוכנה', '#/askc/' + encodeURIComponent(q)); };
+  (async () => {
+    try {
+      // choosing the right maps decides the whole answer, so it runs on the everyday model, not the quick one
+      const c = await AI.ask(aiClassifyPrompt(q), {signal: J.ctl.signal});
+      let ids = Array.isArray(c && c.mapIds) ? c.mapIds.map(String).filter(id => P[id]).slice(0, 3) : [];
+      const rolesQ = !!(c && c.roles);
+      const local = circGuide().length ? circSearch(q, {nGuide: 4, nText: 10}) : {guide: [], text: [], qt: []};
+      let cids = Array.isArray(c && c.circIds) ? c.circIds.map(String).filter(circItem).slice(0, 4) : [];
+      if (!cids.length && local.strong) cids = local.guide.slice(0, 2).map(x => x.g.id);
+      let libHit = false; if (!ids.length && !rolesQ && !cids.length) { try { libHit = !!(await libTextLoad()) && (await libSearchAsync(q, 1)).length > 0; } catch(e){} }
+      if (!ids.length && !rolesQ && !cids.length && !libHit) return finish('done', aiNotFoundHTML(q, !!(c && c.safety)));
+      if (cids.length && ids.length > 2) ids = ids.slice(0, 2);
+      const maps = ids.map(id => P[id]);
+      step(`מצאתי: ${[...maps.map(p => p.icon + ' ' + p.name), ...cids.map(id => '📜 ' + circItem(id).title)].join(' · ') || 'מדריך התפקידים'}. כותב תשובה מקיפה ל${askerOf().label} – זה לוקח עד דקה או שתיים…`);
+      const circMat = await aiCircMaterial(q, maps, rolesQ, cids, local);
+      const ans = await AI.ask(aiAnswerPrompt(q, maps, rolesQ, circMat), {tier: 'complex', signal: J.ctl.signal});
+      if (ans && typeof ans === 'object' && c && c.safety) ans.safety = true;
+      if (ans && typeof ans === 'object') ans._cids = cids;
+      finish('done', aiAnswerHTML(q, ans, maps, rolesQ || !!(c && c.safety) || !!(ans && ans.safety)));
+    } catch(e){
+      if (e && e.code === 'cancelled') return finish('stop', '<div class="note">⏹ נעצר. <button class="btn sm" data-act="ai-retry">לשאול שוב</button></div>');
+      const code = (e && e.code) || 'upstream_error'; CHLOG.add('error', code + ' ' + ((e && e.message) || ''));
+      if (['not_granted', 'sampling_disabled', 'not_declared', 'capability_disabled', 'capability_removed'].includes(code)) AI.disable(code);
+      const msg = AI_ERR[code] || AI_ERR.upstream_error;
+      finish('err', `<div class="note warn" style="margin-bottom:12px">🤖 ${esc(msg)}${AI.available() ? ` <button class="btn sm" data-act="ai-retry">נסו שוב</button>` : ''}</div>` + (AI.available() ? '' : answerHTML(answer(q))));
+    }
+  })();
+  return J;
 }
+function aiAnswerRun(q){ const J = aiJob(q); aiCtl = J.ctl; aiJobPaint(q); }
+function toastLink(msg, href){ const t = document.createElement('a'); t.className = 'toast toastlink'; t.href = href; t.textContent = msg + ' – לחצו לחזרה ←'; t.onclick = () => t.remove(); document.body.appendChild(t); setTimeout(() => t.remove(), 15000); }
 /* ---- when the user's materials don't cover a question: ask before going to general knowledge ---- */
 function aiGeneralOfferHTML(q, full){
   if (!AI.available()) return '';
@@ -10004,8 +10016,20 @@ function sfRuntime(){
     var done = function(){ st.textContent = '✅ הקוד הועתק. מדביקים אותו בהודעה (וואטסאפ / מייל) ושולחים.'; };
     if (navigator.clipboard) navigator.clipboard.writeText(c).then(done, function(){ prompt('העתיקו את הקוד:', c); }); else prompt('העתיקו את הקוד:', c); };
   document.getElementById('print').onclick = function(){ window.print(); };
+  /* 🔳 return code: the answers, compressed, as one or more QR codes the counselor photographs in the site (nothing leaves this file otherwise) */
+  var qb = document.getElementById('qr'); if (qb) qb.onclick = function(){ pack(); qrShow(); };
+  function b64(u8){ var s = ''; for (var i = 0; i < u8.length; i += 8192) s += String.fromCharCode.apply(null, u8.subarray(i, i + 8192)); return btoa(s); }
+  function qrShow(){ var raw = new TextEncoder().encode(JSON.stringify({v: 1, uid: P.uid, k: P.k, id: P.id, who: P.who, data: P.data, filler: P.filler, filledAt: P.filledAt}));
+    var go = function(z, u8){ var s = b64(u8), N = 800, n = Math.max(1, Math.ceil(s.length / N)), parts = []; for (var i = 0; i < n; i++) parts.push('CBTQ1|' + P.uid + '|' + (i + 1) + '/' + n + '|' + z + '|' + s.slice(i * N, (i + 1) * N)); qrModal(parts); };
+    if (window.CompressionStream) new Response(new Blob([raw]).stream().pipeThrough(new CompressionStream('deflate-raw'))).arrayBuffer().then(function(b){ go('z', new Uint8Array(b)); }, function(){ go('u', raw); }); else go('u', raw); }
+  function qrModal(parts){ var i = 0, m = document.createElement('div'); m.className = 'qrm'; document.body.appendChild(m);
+    function draw(){ var q = qrcode(0, 'L'); q.addData(parts[i], 'Byte'); q.make();
+      m.innerHTML = '<div class="qrb"><h3>🔳 קוד להחזרה' + (parts.length > 1 ? ' – ' + (i + 1) + ' מתוך ' + parts.length : '') + '</h3><p>מראים את המסך ליועץ – והוא מצלם את הקוד באתר שלו' + (parts.length > 1 ? ', קוד אחרי קוד' : '') + '.</p><div class="qri">' + q.createSvgTag({cellSize: 6, margin: 4, scalable: true}) + '</div><div class="qrn">' +
+        (parts.length > 1 ? '<button data-q="p"' + (i ? '' : ' disabled') + '>→ הקודם</button><button data-q="n"' + (i < parts.length - 1 ? '' : ' disabled') + '>הבא ←</button>' : '') + '<button data-q="x">סגירה</button></div></div>'; }
+    draw(); m.onclick = function(e){ var b = e.target.closest('[data-q]'); if (!b) return; if (b.dataset.q === 'x') m.remove(); else if (b.dataset.q === 'n' && i < parts.length - 1) { i++; draw(); } else if (b.dataset.q === 'p' && i) { i--; draw(); } }; }
 }
-function sfFileHTML(k, id, who, withData){
+function sfFileHTML(k, id, who, withData, withQR){
+  withQR = withQR && !!window.QRGEN_SRC;
   const S = sfSchema(k, id); if (!S) return null;
   const now = new Date(); let heb = ''; try { heb = (window.hebDay && window.hebDay.dayInfo(now).hebDate) || ''; } catch (e) {}
   const P = {v: 1, uid: uid(), k, id, title: S.title, who: who || '', sentAt: Date.now(), schema: S, data: withData ? sfFlat(S, PROC.get(k, id)) : {}, filler: ''};
@@ -10019,13 +10043,17 @@ input:not([type=checkbox]):not([type=radio]),textarea,select{width:100%;box-sizi
 textarea{min-height:5.5em;resize:vertical}.ck,.op{display:flex;gap:8px;align-items:flex-start;margin:6px 0;font-size:15px}.ops{display:flex;flex-wrap:wrap;gap:4px 16px}
 .who{background:#eef0ff;border-radius:12px;padding:10px 12px}.bar{position:sticky;bottom:0;background:#fffffff2;border-top:1px solid #ddd;padding:10px 16px;display:flex;flex-wrap:wrap;gap:8px;justify-content:center}
 .bar button{font:inherit;font-weight:600;border:0;border-radius:12px;padding:10px 16px;cursor:pointer;background:#e7e4dc}.bar #save{background:#3a3f8f;color:#fff}#st{text-align:center;font-size:14px;color:#2e7d32;min-height:1.4em;margin:8px 0}
-@media print{.bar,.note,#st{display:none}body{background:#fff}section{border:0;padding:0}}</style></head><body>
+.bar #qr{background:#1f7a4d;color:#fff}.qrm{position:fixed;inset:0;background:#000b;display:flex;align-items:center;justify-content:center;padding:12px;z-index:9}
+.qrb{background:#fff;border-radius:16px;padding:14px 16px;width:min(520px,100%);text-align:center}.qrb h3{margin:0 0 4px}.qrb p{margin:0 0 8px;color:#555;font-size:14px}.qri svg{width:min(88vw,440px);height:auto;display:block;margin:0 auto}
+.qrn{display:flex;gap:8px;justify-content:center;margin-top:10px}.qrn button{font:inherit;font-weight:600;border:0;border-radius:12px;padding:10px 16px;background:#e7e4dc;cursor:pointer}.qrn button:disabled{opacity:.4}
+@media print{.bar,.note,#st,.qrm{display:none}body{background:#fff}section{border:0;padding:0}}</style></head><body>
 <div class="pg"><div class="top"><div><b>בס״ד</b>${heb ? '<br>' + esc(heb) : ''}</div><div>${now.getDate()}.${now.getMonth() + 1}.${String(now.getFullYear()).slice(-2)} למניינם</div></div>
 <h1>${esc(S.icon)} ${esc(S.title)}</h1>${who ? `<p class="lead">עבור: <b>${esc(who)}</b></p>` : ''}${S.intro ? `<p class="lead">${esc(S.intro)}</p>` : ''}
-<div class="note">📝 ממלאים כאן ישירות – אין צורך באינטרנט או בהתחברות. בסיום לוחצים <b>״💾 שמירת הטופס המלא״</b> – נשמר קובץ חדש עם התשובות – ושולחים אותו בחזרה ליועץ. אפשר גם <b>״📋 העתקת קוד התשובות״</b> ולהדביק בהודעת וואטסאפ.</div>
+<div class="note">📝 ממלאים כאן ישירות – אין צורך באינטרנט או בהתחברות. בסיום לוחצים <b>״💾 שמירת הטופס המלא״</b> – נשמר קובץ חדש עם התשובות – ושולחים אותו בחזרה ליועץ. אפשר גם <b>״📋 העתקת קוד התשובות״</b> ולהדביק בהודעת וואטסאפ.${withQR ? ' או – כשנפגשים – <b>״🔳 סיימתי – קוד להחזרה״</b>: מראים את המסך ליועץ והוא מצלם את הקוד.' : ''}</div>
 <div id="f"></div><div id="st"></div></div>
-<div class="bar"><button id="save">💾 שמירת הטופס המלא</button><button id="code">📋 העתקת קוד התשובות</button><button id="print">🖨️ הדפסה</button></div>
+<div class="bar">${withQR ? '<button id="qr">🔳 סיימתי – קוד להחזרה</button>' : ''}<button id="save">💾 שמירת הטופס המלא</button><button id="code">📋 העתקת קוד התשובות</button><button id="print">🖨️ הדפסה</button></div>
 <script type="application/json" id="cbtform">${JSON.stringify(P).replace(/</g, '\\u003c')}<\/script>
+${withQR ? `<script>${String(window.QRGEN_SRC).replace(/<\/script/gi, '<\\/script')}<\/script>` : ''}
 <script>(${sfRuntime.toString()})();<\/script></body></html>`;
 }
 async function sfDownload(name, doc, btn){
@@ -10057,14 +10085,43 @@ function sfSendOpen(k, id){
     <label class="f">עבור מי הטופס (כינוי – כך הוא ייכנס לתיקייה כשיחזור)<input class="inp" id="sfwho" list="pbpeople" maxlength="60" value="${esc(who)}" placeholder="למשל: יוסי ג׳2">${procPeopleList()}</label>
     ${has ? `<label class="trcheck" style="margin:8px 0"><input type="checkbox" id="sfdata" checked> לצרף את מה שכבר מילאתי (המורה ימשיך משם)</label>` : ''}
     <p class="muted" style="font-size:13px;margin:6px 0 12px">🔒 הקובץ יוצא מהאתר – כותבים כינוי ולא שם מלא, ומצרפים רק מה שמתאים שהמורה יראה.</p>
-    <div class="actions"><button class="btn primary" data-sf="send" data-k="${k}" data-id="${esc(id)}">⬇️ הורדת הטופס למילוי</button><button class="btn ghost" data-sf="close">ביטול</button></div>`);
+    <div class="actions"><button class="btn" data-sf="send" data-k="${k}" data-id="${esc(id)}">⬇️ הורדה רגילה</button>${window.QRGEN_SRC ? `<button class="btn primary" data-sf="sendqr" data-k="${k}" data-id="${esc(id)}">🔳 הורדה עם קוד החזרה</button>` : ''}<button class="btn ghost" data-sf="close">ביטול</button></div>
+    ${window.QRGEN_SRC ? '<p class="muted" style="font-size:13px;margin:10px 0 0">🔳 <b>עם קוד החזרה:</b> בסוף המילוי המורה לוחץ ״סיימתי – קוד להחזרה״ ומראה לך את המסך; אתה מצלם את הקוד ב״📥 קליטת טופס שחזר״ – והטופס נכנס לתיקייה. הכול נשאר בין המכשירים שלכם, בלי שום שרת.</p>' : ''}`);
 }
 function sfImportOpen(){
-  sfModal(`<h3>📥 קליטת טופס שחזר מלא</h3><p class="muted" style="margin:0 0 10px">בוחרים את הקובץ שהמורה החזיר – או מדביקים את קוד התשובות ששלח בהודעה. הטופס נכנס לתיקייה של התלמיד, נפתח, ואפשר להמשיך לעבוד ממנו.</p>
-    <div class="actions" style="margin-bottom:10px"><label class="btn primary" style="cursor:pointer">📂 בחירת הקובץ שחזר<input type="file" accept=".html,.htm,text/html,.txt" id="sffile" hidden></label></div>
+  sfModal(`<h3>📥 קליטת טופס שחזר מלא</h3><p class="muted" style="margin:0 0 10px">מצלמים את קוד ההחזרה שעל המסך של המורה, בוחרים את הקובץ שהחזיר – או מדביקים את קוד התשובות ששלח בהודעה. הטופס נכנס לתיקייה של התלמיד, נפתח, ואפשר להמשיך לעבוד ממנו.</p>
+    <div class="actions" style="margin-bottom:6px">${window.jsQR ? '<label class="btn primary" style="cursor:pointer">📷 סריקת קוד החזרה<input type="file" accept="image/*" capture="environment" multiple id="sqfile" hidden></label>' : ''}<label class="btn" style="cursor:pointer">📂 בחירת הקובץ שחזר<input type="file" accept=".html,.htm,text/html,.txt" id="sffile" hidden></label></div>
+    ${window.jsQR ? '<p class="muted" style="font-size:13px;margin:0 0 10px">📷 בטלפון נפתחת המצלמה; במחשב – בוחרים צילום של הקוד. כשיש כמה קודים – מצלמים אותם אחד אחרי השני (אפשר גם לבחור כמה תמונות יחד).</p><div id="sqstat" class="note" hidden></div>' : ''}
     <label class="f">או הדבקת קוד התשובות (מתחיל ב-CBTFORM1)<textarea class="inp" id="sfcode" style="min-height:5em" placeholder="CBTFORM1:…"></textarea></label>
     <div class="actions"><button class="btn" data-sf="paste">📥 קליטה מהקוד</button><button class="btn ghost" data-sf="close">ביטול</button></div><p id="sferr" class="note danger" hidden></p>`);
   $('#sffile').onchange = e => { const f = e.target.files[0]; if (!f) return; const r = new FileReader(); r.onload = () => sfTry(r.result); r.readAsText(f, 'utf-8'); };
+  const sq = $('#sqfile'); if (sq) sq.onchange = async e => { const st = $('#sqstat'), say = t => { if (st) { st.hidden = false; st.textContent = t; } };
+    for (const f of [...e.target.files]) { say('🔎 קורא את הקוד…'); let t = null; try { t = await sqDecode(f); } catch (err) {}
+      if (!t) { say('⚠️ לא זוהה קוד בתמונה. מצלמים שוב – קרוב, ישר ובלי השתקפות.'); continue; }
+      let r; try { r = await sqTake(t); } catch (err) { r = 'bad'; }
+      if (r === 'done') return; if (r === 'bad') { say('⚠️ זה לא קוד החזרה של טופס מהאתר.'); continue; }
+      say(`✅ התקבל קוד ${r.got} מתוך ${r.n}. ${r.left.length ? 'מצלמים עכשיו את קוד ' + r.left.join(', ') + '.' : ''}`); }
+    sq.value = ''; };
+}
+/* 📷 reading a return code: jsQR on a photo (the artifact has no live camera, but a file input opens the phone's camera); a long form comes in several codes */
+const SQ = {};
+async function sqDecode(file){
+  const img = await createImageBitmap(file);
+  for (const mx of [1400, 900, 2200]) { const s = Math.min(1, mx / Math.max(img.width, img.height)), w = Math.round(img.width * s), h = Math.round(img.height * s), c = document.createElement('canvas'); c.width = w; c.height = h;
+    const x = c.getContext('2d'); x.drawImage(img, 0, 0, w, h); const r = window.jsQR && window.jsQR(x.getImageData(0, 0, w, h).data, w, h, {inversionAttempts: 'attemptBoth'}); if (r && r.data) return r.data; }
+  if ('BarcodeDetector' in window) { try { const r = await new window.BarcodeDetector({formats: ['qr_code']}).detect(img); if (r[0]) return r[0].rawValue; } catch (e) {} }
+  return null;
+}
+async function sqTake(t){
+  const m = /^CBTQ1\|([^|]+)\|(\d+)\/(\d+)\|([uz])\|([\s\S]*)$/.exec(t || '');
+  if (!m) { if (/CBTFORM1:/.test(t)) { sfTry(t); return 'done'; } return 'bad'; }
+  const [, id, i, n, z, s] = m, o = SQ[id] = SQ[id] || {n: +n, z, p: {}}; o.p[i] = s;
+  const left = []; for (let j = 1; j <= o.n; j++) if (!o.p[j]) left.push(j);
+  if (left.length) return {got: o.n - left.length, n: o.n, left};
+  let b = ''; for (let j = 1; j <= o.n; j++) b += o.p[j]; const bin = atob(b), u8 = new Uint8Array(bin.length); for (let j = 0; j < bin.length; j++) u8[j] = bin.charCodeAt(j);
+  const txt = z === 'z' ? await new Response(new Blob([u8]).stream().pipeThrough(new DecompressionStream('deflate-raw'))).text() : new TextDecoder().decode(u8);
+  const P = JSON.parse(txt); delete SQ[id]; if (!(P && (P.k === 'a' || P.k === 't') && P.id && P.data)) return 'bad';
+  sfImport(P); return 'done';
 }
 function sfTry(txt){ const P = sfParse(txt); if (P) return sfImport(P); const e = $('#sferr'); if (e) { e.hidden = false; e.textContent = 'לא נמצא כאן טופס מלא. בוחרים את הקובץ שהמורה החזיר (קובץ ״… - מלא.html״) או מדביקים את כל הקוד.'; } }
 document.addEventListener('click', async e => {
@@ -10072,9 +10129,9 @@ document.addEventListener('click', async e => {
   const b = e.target.closest('.sfmodal [data-sf]'); if (!b) return;
   if (b.dataset.sf === 'close') return sfClose();
   if (b.dataset.sf === 'paste') return sfTry(($('#sfcode') || {}).value);
-  if (b.dataset.sf === 'send') { const k = b.dataset.k, id = b.dataset.id, who = PROC.clean(($('#sfwho') || {}).value), wd = !!($('#sfdata') || {}).checked;
-    const doc = sfFileHTML(k, id, who, wd); if (!doc) return toast('⚠️ אי אפשר לייצא את הטופס הזה');
-    if (await sfDownload(PROC.title(k, id).replace(/[\\/:*?"<>|]/g, ' ') + (who ? ' - ' + who : '') + ' - למילוי.html', doc, b)) setTimeout(sfClose, 900); }
+  if (b.dataset.sf === 'send' || b.dataset.sf === 'sendqr') { const k = b.dataset.k, id = b.dataset.id, who = PROC.clean(($('#sfwho') || {}).value), wd = !!($('#sfdata') || {}).checked, wq = b.dataset.sf === 'sendqr';
+    const doc = sfFileHTML(k, id, who, wd, wq); if (!doc) return toast('⚠️ אי אפשר לייצא את הטופס הזה');
+    if (await sfDownload(PROC.title(k, id).replace(/[\\/:*?"<>|]/g, ' ') + (who ? ' - ' + who : '') + (wq ? ' - למילוי עם קוד.html' : ' - למילוי.html'), doc, b)) setTimeout(sfClose, 900); }
 });
 /* ---- ❓ השאלות שלי – #/questions[/<src>]: every question asked on the site with its answer; open, search, copy, delete ---- */
 const QSRC = {ask: ['💬', 'שאל שאלה – מסלול חינמי'], askc: ['🤖', 'שאל שאלה – Claude'], askq: ['💬', 'שאל שאלה – לפני הארכיון (המסלול לא נשמר)'], assist: ['🧭', 'עוזר האתר'], therapist: ['🧑‍⚕️', 'המטפל הווירטואלי']};
@@ -10082,7 +10139,7 @@ function questionsView(R){
   const L = QLOG.list(), f = QSRC[R.id] ? R.id : '', shown = f ? L.filter(x => x.src === f) : L;
   const when = at => new Date(at).toLocaleString('he-IL', {day: 'numeric', month: 'numeric', year: '2-digit', hour: '2-digit', minute: '2-digit'});
   const plain = x => x.a ? (x.f === 'html' ? (d => { d.innerHTML = x.a; return d.textContent; })(document.createElement('div')) : x.a) : '';
-  const ans = x => !x.a ? '<p class="muted">התשובה לא נשמרה – השאלה נשאלה לפני שנוצר הארכיון. אפשר לשאול אותה שוב.</p>' : x.f === 'html' ? `<div class="qaans">${x.a}</div>` : `<div class="qaans qatext">${chatMd(x.a)}</div>`;
+  const ans = x => !x.a ? (x.src === 'askc' && AIJOBS[x.q] && AIJOBS[x.q].st === 'run' ? `<p class="note">⏳ Claude עדיין כותב את התשובה – <a href="#/askc/${encodeURIComponent(x.q)}">לצפייה בהתקדמות</a>.</p>` : x.src === 'askc' || x.src === 'ask' ? '<p class="muted">התשובה לא נשמרה (נעצרה, נקטעה, או שהשאלה נשאלה לפני שנוצר הארכיון). אפשר לשאול אותה שוב.</p>' : '<p class="muted">התשובה לא נשמרה – השאלה נשאלה לפני שנוצר הארכיון.</p>') : x.f === 'html' ? `<div class="qaans">${x.a}</div>` : `<div class="qaans qatext">${chatMd(x.a)}</div>`;
   const again = x => x.src === 'ask' ? `<a class="btn sm" href="#/ask/${encodeURIComponent(x.q)}">🔁 לשאול שוב</a>` : x.src === 'askc' ? `<a class="btn sm" href="#/askc/${encodeURIComponent(x.q)}">🔁 לשאול שוב את Claude</a>` : '';
   const item = x => `<div class="qarow" data-q="${esc((x.q + ' ' + plain(x)).slice(0, 4000).toLowerCase())}"><input type="checkbox" class="qasel" data-id="${esc(x.id)}" aria-label="סימון">
     <details class="qaitem"><summary><span class="qasrc">${(QSRC[x.src] || ['❓'])[0]} ${esc((QSRC[x.src] || ['', ''])[1])}${x.r ? (x.r === 'claude' ? ' · 🤖 Claude' : ' · 🆓 חינמי') : ''}</span><b class="qaq">${esc(x.q.length > 160 ? x.q.slice(0, 160) + '…' : x.q)}</b><small class="muted">${when(x.at)}</small></summary>
