@@ -2435,6 +2435,10 @@ body.chatwin{margin:0;background:var(--bg);overflow:hidden}
 .chsec::first-letter{display:inline-block}
 @keyframes hgflip{0%,40%{transform:rotate(0)}50%,90%{transform:rotate(180deg)}100%{transform:rotate(360deg)}}
 @media (prefers-reduced-motion:reduce){.hg{animation:none}}
+/* ↩️ follow-up questions inside ״השאלות שלי״ */
+.qath{margin:14px 0 0;padding:10px 12px;border-inline-start:3px solid var(--brand);background:color-mix(in srgb,var(--brand) 6%,transparent);border-radius:10px}
+.qafu{display:flex;gap:8px;align-items:flex-end;flex-wrap:wrap;margin:14px 0 0}
+.qafu .inp{flex:1;min-width:220px;min-height:48px}
 
 </style>
 <link rel="manifest" href="manifest.webmanifest">
@@ -5759,6 +5763,7 @@ const QLOG = {
     if (hit) { hit[1].at = Date.now(); ls.set(this.key, L); try { SYNC.schedule(); } catch (e) {} return hit[0]; }
     const id = uid(); this.put(id, r ? {q, src, r, at: Date.now()} : {q, src, at: Date.now()}); return id; },
   answer(id, a, f){ const L = this.all(); if (!id || !L[id] || L[id].del) return; L[id].a = String(a || '').slice(0, 60000); L[id].f = f || 'text'; ls.set(this.key, L); try { SYNC.schedule(); } catch (e) {} },
+  update(id, patch){ const L = this.all(); if (!L[id] || L[id].del) return; Object.assign(L[id], patch); ls.set(this.key, L); try { SYNC.schedule(); } catch (e) {} },
   del(id){ const v = this.all()[id]; if (!v) return; this.put(id, {del: true, at: Date.now()});
     try { if (v.src === 'ask' || v.src === 'askc') ls.set('cbtapp.asks', ls.get('cbtapp.asks', []).filter(x => x !== v.q));
       else if (v.src === 'assist' || v.src === 'therapist') { const H = chatHist(v.src), i = H.findIndex(m => m.role === 'user' && m.content === v.q);
@@ -6951,6 +6956,16 @@ const AI = {
       const text = (j.content || []).filter(x => x.type === 'text').map(x => x.text).join('');
       return parseJsonLoose(text);
     }
+    throw {code: 'not_granted', message: 'no backend'};
+  }
+,
+  // plain text (not JSON) – follow-up questions in ״השאלות שלי״
+  async text(prompt, {tier, signal, onText} = {}){
+    if (this.backend === 'sample') return (await this.sample(prompt, {modelTier: tier || 'default', signal, onText, cache: false})).text;
+    if (this.backend === 'api') { const c = window.CBT_AI_CONFIG;
+      const r = await fetch('https://api.anthropic.com/v1/messages', {method: 'POST', signal, headers: {'content-type': 'application/json', 'x-api-key': c.anthropicKey, 'anthropic-version': '2023-06-01', 'anthropic-dangerous-direct-browser-access': 'true'}, body: JSON.stringify({model: c.model || 'claude-opus-5', max_tokens: 3000, messages: [{role: 'user', content: prompt}]})});
+      if (!r.ok) throw {code: r.status === 429 ? 'rate_limited' : 'upstream_error', message: 'API ' + r.status};
+      const j = await r.json(); return (j.content || []).filter(x => x.type === 'text').map(x => x.text).join(''); }
     throw {code: 'not_granted', message: 'no backend'};
   }
 };
@@ -10152,6 +10167,44 @@ document.addEventListener('click', async e => {
     const doc = sfFileHTML(k, id, who, wd, wq); if (!doc) return toast('⚠️ אי אפשר לייצא את הטופס הזה');
     if (await sfDownload(PROC.title(k, id).replace(/[\\/:*?"<>|]/g, ' ') + (who ? ' - ' + who : '') + (wq ? ' - למילוי עם קוד.html' : ' - למילוי.html'), doc, b)) setTimeout(sfClose, 900); }
 });
+/* ↩️ a follow-up question on an answer in ״השאלות שלי״: Claude gets the original question, the answer and earlier follow-ups, plus the
+   best places in the site; the thread lives in the same archive entry (th: [{q, a, f, at}]) and runs in the background like any Claude answer. */
+const FUJOBS = {};
+const qaHtmlText = h => { const d = document.createElement('div'); d.innerHTML = h || ''; return d.textContent.replace(/\s+\n/g, '\n').replace(/\n{3,}/g, '\n\n').trim(); };
+function qaThreadHTML(x){ const th = x.th || [], J = FUJOBS[x.id];
+  return th.map((t, i) => `<div class="qath"><div class="qafull">↩️ ${esc(t.q)}</div>${t.a ? (t.f === 'html' ? `<div class="qaans">${t.a}</div>` : `<div class="qaans qatext">${chatMd(t.a)}</div>`)
+    : J && J.st === 'run' && i === th.length - 1 ? `<div class="aithink"><span class="hg" aria-hidden="true">⏳</span><span><b>Claude חושב על שאלת ההמשך…</b><br><small class="muted">עברו ${Math.round((Date.now() - J.t0) / 1000)} שניות${J.chars ? ` · נכתבו ${J.chars} תווים` : ''} · אפשר להמשיך לשוטט באתר</small></span></div>` : '<p class="muted">התשובה לא הגיעה. אפשר לשאול שוב.</p>'}</div>`).join(''); }
+function fuPaint(id){ const box = document.querySelector(`.qathread[data-th="${CSS.escape(id)}"]`), x = QLOG.all()[id]; if (!box || !x) return false; box.innerHTML = qaThreadHTML({...x, id}); return true; }
+function fuRun(id, q2){
+  const x = QLOG.all()[id]; if (!x || !q2) return;
+  QLOG.update(id, {th: (x.th || []).concat([{q: q2, at: Date.now()}]), at: Date.now()});
+  const J = FUJOBS[id] = {st: 'run', t0: Date.now(), chars: 0}; fuPaint(id);
+  const tick = setInterval(() => { if (J.st !== 'run') return clearInterval(tick); fuPaint(id); }, 1000);
+  const done = (a, f) => { J.st = 'done'; const L = QLOG.all()[id]; if (!L) return; const t = (L.th || []).slice();
+    for (let i = t.length - 1; i >= 0; i--) if (t[i].q === q2 && !t[i].a) { t[i] = {...t[i], a, f}; break; }
+    QLOG.update(id, {th: t}); if (!fuPaint(id)) toastLink('🤖 התשובה לשאלת ההמשך מוכנה', '#/questions/all/' + encodeURIComponent(id)); };
+  if (!AI.available()) { done(answerHTML(answer(q2)), 'html'); return; }
+  let hits = ''; try { hits = chatSearch(q2 + ' ' + x.q, 6).map(h => `• ${h.title} (${h.route})${h.snippet ? ': ' + String(h.snippet).slice(0, 400) : ''}`).join('\n'); } catch (e) {}
+  const prevA = x.f === 'html' ? qaHtmlText(x.a) : String(x.a || '');
+  const earlier = (x.th || []).filter(t => t.a).map(t => `שאלת המשך: ${t.q}\nתשובה: ${(t.f === 'html' ? qaHtmlText(t.a) : t.a).slice(0, 3000)}`).join('\n\n');
+  const prompt = `אתה העוזר המקצועי של נדב דוד – יועץ חינוכי ומטפל CBT בבתי ספר יסודיים דתיים לבנים. נדב קרא תשובה קודמת באתר שלו ושואל שאלת המשך.
+כללים: עברית רהוטה ונקייה, בגוף ראשון בלשון זכר. ענה ממוקד על שאלת ההמשך (בדרך כלל עד כ-300 מילים). הסתמך קודם על התשובה הקודמת ועל חומרי האתר שלמטה, וציין מאיפה (שם המפה או הדף). כל מידע שאינו מהם – סמן במפורש ״🌐 מידע מבחוץ״. אל תמציא מספרי חוזרים, סעיפים, מחקרים או מקורות. עבוד עם כינויים בלבד. מותר כותרות קצרות ותבליטים (Markdown).
+
+השאלה המקורית: ${x.q}
+
+התשובה שניתנה:
+${prevA.slice(0, 14000) || '(התשובה לא נשמרה)'}
+${earlier ? '\n' + earlier.slice(0, 12000) + '\n' : ''}
+חומרים מהאתר שעשויים להיות רלוונטיים:
+${hits || '(לא נמצאו)'}
+
+שאלת ההמשך של נדב: ${q2}`;
+  CHLOG.add('fu', 'len=' + prompt.length);
+  AI.text(prompt, {onText: t => { J.chars = (t && t.text || '').length; }}).then(a => done(String(a || '').trim() || '⚠️ לא התקבלה תשובה. אפשר לשאול שוב.', 'text'),
+    e => { const code = (e && e.code) || 'upstream_error'; CHLOG.add('fu-error', code + ' ' + ((e && e.message) || '').slice(0, 160)); J.st = 'err';
+      done(`⚠️ ${AI_ERR[code] || AI_ERR.upstream_error} (קוד: ${code})${e && e.text ? '\n\n' + e.text : ''}`, 'text'); });
+}
+document.addEventListener('keydown', e => { const ta = e.target.closest && e.target.closest('[data-fuq]'); if (!ta || e.key !== 'Enter' || e.shiftKey) return; e.preventDefault(); const b = document.querySelector(`[data-qa="fu"][data-id="${CSS.escape(ta.dataset.fuq)}"]`); if (b) b.click(); });
 /* ---- ❓ השאלות שלי – #/questions[/<src>]: every question asked on the site with its answer; open, search, copy, delete ---- */
 const QSRC = {ask: ['💬', 'שאל שאלה – מסלול חינמי'], askc: ['🤖', 'שאל שאלה – Claude'], askq: ['💬', 'שאל שאלה – לפני הארכיון (המסלול לא נשמר)'], assist: ['🧭', 'עוזר האתר'], therapist: ['🧑‍⚕️', 'המטפל הווירטואלי']};
 function questionsView(R){
@@ -10160,9 +10213,10 @@ function questionsView(R){
   const plain = x => x.a ? (x.f === 'html' ? (d => { d.innerHTML = x.a; return d.textContent; })(document.createElement('div')) : x.a) : '';
   const ans = x => !x.a ? (x.src === 'askc' && AIJOBS[x.q] && AIJOBS[x.q].st === 'run' ? `<p class="note">⏳ Claude עדיין כותב את התשובה – <a href="#/askc/${encodeURIComponent(x.q)}">לצפייה בהתקדמות</a>.</p>` : x.src === 'askc' || x.src === 'ask' ? '<p class="muted">התשובה לא נשמרה (נעצרה, נקטעה, או שהשאלה נשאלה לפני שנוצר הארכיון). אפשר לשאול אותה שוב.</p>' : '<p class="muted">התשובה לא נשמרה – השאלה נשאלה לפני שנוצר הארכיון.</p>') : x.f === 'html' ? `<div class="qaans">${x.a}</div>` : `<div class="qaans qatext">${chatMd(x.a)}</div>`;
   const again = x => x.src === 'ask' ? `<a class="btn sm" href="#/ask/${encodeURIComponent(x.q)}">🔁 לשאול שוב</a>` : x.src === 'askc' ? `<a class="btn sm" href="#/askc/${encodeURIComponent(x.q)}">🔁 לשאול שוב את Claude</a>` : '';
-  const item = x => `<div class="qarow" data-q="${esc((x.q + ' ' + plain(x)).slice(0, 4000).toLowerCase())}"><input type="checkbox" class="qasel" data-id="${esc(x.id)}" aria-label="סימון">
-    <details class="qaitem"><summary><span class="qasrc">${(QSRC[x.src] || ['❓'])[0]} ${esc((QSRC[x.src] || ['', ''])[1])}${x.r ? (x.r === 'claude' ? ' · 🤖 Claude' : ' · 🆓 חינמי') : ''}</span><b class="qaq">${esc(x.q.length > 160 ? x.q.slice(0, 160) + '…' : x.q)}</b><small class="muted">${when(x.at)}</small></summary>
-      <div class="qabody"><div class="qafull">❓ ${esc(x.q)}</div>${ans(x)}
+  const item = x => `<div class="qarow" data-q="${esc((x.q + ' ' + plain(x) + ' ' + (x.th || []).map(t => t.q + ' ' + (t.a || '')).join(' ')).slice(0, 4000).toLowerCase())}"><input type="checkbox" class="qasel" data-id="${esc(x.id)}" aria-label="סימון">
+    <details class="qaitem"${R.sub === x.id ? ' open' : ''}><summary><span class="qasrc">${(QSRC[x.src] || ['❓'])[0]} ${esc((QSRC[x.src] || ['', ''])[1])}${x.r ? (x.r === 'claude' ? ' · 🤖 Claude' : ' · 🆓 חינמי') : ''}</span><b class="qaq">${esc(x.q.length > 160 ? x.q.slice(0, 160) + '…' : x.q)}</b><small class="muted">${when(x.at)}</small></summary>
+      <div class="qabody"><div class="qafull">❓ ${esc(x.q)}</div>${ans(x)}<div class="qathread" data-th="${esc(x.id)}">${qaThreadHTML(x)}</div>
+      <div class="qafu"><textarea class="inp" data-fuq="${esc(x.id)}" rows="2" placeholder="↩️ שאלת המשך – רוצה לברר עוד משהו על התשובה?"></textarea><button class="btn sm primary" data-qa="fu" data-id="${esc(x.id)}">${AI.available() ? '🤖 שליחה ל-Claude' : '💬 שליחה'}</button></div>
       <div class="actions qaacts">${again(x)}<button class="btn sm" data-qa="copy" data-id="${esc(x.id)}">📋 העתקה</button><button class="btn sm ghost" data-qa="del" data-id="${esc(x.id)}">🗑️ מחיקה</button></div></div></details></div>`;
   const chip = (k, l) => `<a class="chip ${f === k ? 'on' : ''}" href="#/questions${k ? '/' + k : ''}">${l} (${k ? L.filter(x => x.src === k).length : L.length})</a>`;
   return {title: 'השאלות שלי', html: `<div class="banner" style="--h:40"><span class="emoji">❓</span><div><h1>השאלות שלי</h1><p>כל מה ששאלת באתר – ב״שאל שאלה״, בעוזר האתר ובמטפל הווירטואלי – יחד עם התשובות. אפשר לחפש, להעתיק ולמחוק. נשמר בחשבון שלך ועובר בין המחשב לטלפון.</p></div></div>
@@ -10183,6 +10237,7 @@ function questionsView(R){
 document.addEventListener('click', e => {
   const b = e.target.closest('[data-qa]'); if (!b) return;
   const act = b.dataset.qa, id = b.dataset.id;
+  if (act === 'fu') { const ta = document.querySelector(`[data-fuq="${CSS.escape(id)}"]`), q2 = ta ? ta.value.trim() : ''; if (!q2) { if (ta) ta.focus(); return; } ta.value = ''; fuRun(id, q2); return; }
   if (act === 'copy') { const x = QLOG.all()[id]; if (!x) return; const body = b.closest('.qabody'), txt = '❓ ' + x.q + '\n\n' + ((body && body.querySelector('.qaans')) ? body.querySelector('.qaans').innerText : '');
     const ok = () => { b.textContent = '✅ הועתק'; setTimeout(() => b.textContent = '📋 העתקה', 1800); };
     (navigator.clipboard ? navigator.clipboard.writeText(txt).then(ok) : Promise.reject()).catch(() => { const r = document.createRange(); r.selectNodeContents(body); const s = getSelection(); s.removeAllRanges(); s.addRange(r); try { document.execCommand('copy'); ok(); } catch (_) { b.textContent = 'סמנו והעתיקו ידנית'; } }); return; }
