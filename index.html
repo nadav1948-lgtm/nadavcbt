@@ -2404,6 +2404,25 @@ body.chatwin{margin:0;background:var(--bg);overflow:hidden}
 .sfbox h3{margin:0 0 8px}.sfbox .sfx{position:absolute;top:10px;inset-inline-end:12px;border:0;background:none;font-size:18px;cursor:pointer;color:var(--muted)}
 .sfrow{display:flex;flex-wrap:wrap;gap:8px 12px;align-items:center;margin:0 0 14px}
 
+/* ---- ❓ השאלות שלי ---- */
+.qa .fsearch{width:100%;max-width:440px;margin:0 0 12px}
+.qabar{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin:0 0 10px}
+.qaall{display:flex;gap:6px;align-items:center;font-size:14px}
+.qarow{display:flex;gap:10px;align-items:flex-start;margin:0 0 8px}
+.qarow[hidden]{display:none}
+.qasel{margin-top:16px;width:18px;height:18px;flex:none}
+.qaitem{flex:1;min-width:0;background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:0 14px}
+.qaitem>summary{cursor:pointer;display:flex;flex-wrap:wrap;gap:4px 10px;align-items:baseline;padding:11px 0;list-style:none}
+.qaitem>summary::-webkit-details-marker{display:none}
+.qaitem[open]>summary{border-bottom:1px solid var(--line)}
+.qasrc{font-size:12.5px;padding:2px 8px;border-radius:999px;background:color-mix(in srgb,var(--brand) 14%,transparent);white-space:nowrap}
+.qaq{flex:1;min-width:200px}
+.qabody{padding:12px 0}
+.qafull{font-weight:700;margin:0 0 10px;white-space:pre-wrap}
+.qaans{max-height:none;overflow:auto}
+.qatext{line-height:1.7}
+.qaacts{margin-top:12px}
+
 </style>
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="apple-touch-icon" href="icon-192.png">
@@ -5715,13 +5734,36 @@ const LITE = !!window.CBT_LITE;
 /* the claude.ai artifact (LITE): browser storage inside claude.ai is not reliable between visits, so every track form and every
    application is also kept in the viewer's private artifact db (data/users/<id>), one document per entry {k, j: JSON, u: time} –
    the newer side wins per entry. Without a db (not declared, signed out) it stays browser-only, as before. */
+/* ❓ every question asked on the site, with its answer: ״שאל שאלה״ (ask – free, askc – Claude) and the two chat helpers (assist, therapist).
+   One entry per question {q, a, f: 'html'|'text', src, at}; the same question from the same place updates its entry. A deleted entry
+   leaves a tombstone so the deletion follows the user to the other devices (LiteSync 'q|<id>'). */
+const QLOG = {
+  key: 'cbtapp.qlog',
+  all(){ return ls.get(this.key, {}); },
+  list(){ return Object.entries(this.all()).filter(([, v]) => v && !v.del && v.q).map(([id, v]) => ({id, ...v})).sort((a, b) => (b.at || 0) - (a.at || 0)); },
+  put(id, v){ const L = this.all(); L[id] = v; ls.set(this.key, L); try { SYNC.schedule(); } catch (e) {} },
+  add(q, src){ q = String(q || '').trim().slice(0, 3000); if (!q) return ''; const L = this.all(), hit = Object.entries(L).find(([, v]) => v && !v.del && v.q === q && v.src === src);
+    if (hit) { hit[1].at = Date.now(); ls.set(this.key, L); try { SYNC.schedule(); } catch (e) {} return hit[0]; }
+    const id = uid(); this.put(id, {q, src, at: Date.now()}); return id; },
+  answer(id, a, f){ const L = this.all(); if (!id || !L[id] || L[id].del) return; L[id].a = String(a || '').slice(0, 60000); L[id].f = f || 'text'; ls.set(this.key, L); try { SYNC.schedule(); } catch (e) {} },
+  del(id){ const v = this.all()[id]; if (!v) return; this.put(id, {del: true, at: Date.now()});
+    try { if (v.src === 'ask' || v.src === 'askc') ls.set('cbtapp.asks', ls.get('cbtapp.asks', []).filter(x => x !== v.q));
+      else if (v.src === 'assist' || v.src === 'therapist') { const H = chatHist(v.src), i = H.findIndex(m => m.role === 'user' && m.content === v.q);
+        if (i >= 0) { let j = i + 1; while (j < H.length && H[j].role !== 'user') j++; H.splice(i, j - i); chatSave(v.src); } } } catch (e) {} },   // the question goes away everywhere it is shown, not only from the archive
+  seed(){ if (ls.get('cbtapp.qlog.seeded', 0)) return; const L = this.all(), t0 = Date.now() - 864e5;   // once: what was asked before the archive existed
+    ls.get('cbtapp.asks', []).forEach((q, i) => { if (typeof q === 'string' && q.trim()) L['seed-a' + i] = L['seed-a' + i] || {q: q.trim(), src: 'ask', at: t0 - i * 6e4}; });
+    ['assist', 'therapist'].forEach(m => { const H = ls.get('cbt.chat.' + m, []); H.forEach((x, i) => { if (x.role !== 'user' || !x.content) return; const nx = H[i + 1];
+      L['seed-' + m + i] = L['seed-' + m + i] || {q: String(x.content), src: m, at: t0 - (H.length - i) * 6e4, a: nx && nx.role === 'assistant' ? String(nx.content || '') : '', f: 'text'}; }); });
+    ls.set(this.key, L); ls.set('cbtapp.qlog.seeded', 1); }
+};
 const LiteSync = {status: 'lite', last: 0, err: '', db: null, uid: null, sent: {}, timer: null, busy: false, stamps: ls.get('cbtapp.lite.stamps', {}),
   local(){ const o = {}; Object.entries(S.tracks || {}).forEach(([k, v]) => o['t|' + k] = v);
     try { Object.keys(localStorage).filter(k => k.startsWith('cbtapp.app.')).forEach(k => o['a|' + k.slice(11)] = ls.get(k, {})); } catch(e){}
     ['assist', 'therapist'].forEach(m => { const h = ls.get('cbt.chat.' + m, null); if (h) o['c|' + m] = h.map(x => ({...x, content: String(x.content || '').slice(0, 6000)})); });   // the two chat conversations follow the user between phone and computer
     try { Object.keys(localStorage).filter(k => k.startsWith('cbtapp.saved.')).forEach(k => { const L = ls.get(k, {}); Object.entries(L).forEach(([n, v]) => o['s|' + k.slice(13) + '|' + n] = v); }); } catch(e){}   // named processes – one entry each, tombstones included
+    try { QLOG.seed(); Object.entries(QLOG.all()).forEach(([id, v]) => o['q|' + id] = v); } catch(e){}   // the questions archive – one entry per question
     return o; },
-  apply(key, v){ const i = key.indexOf('|'), t = key.slice(0, i), k = key.slice(i + 1); if (t === 't') { S.tracks = S.tracks || {}; S.tracks[k] = v; } else if (t === 's') { const j = k.lastIndexOf('|'), lk = 'cbtapp.saved.' + k.slice(0, j), L = ls.get(lk, {}); L[k.slice(j + 1)] = v; ls.set(lk, L); } else if (t === 'c') { if (typeof chatSynced === 'function') chatSynced(k, v); else ls.set('cbt.chat.' + k, v); } else ls.set('cbtapp.app.' + k, v); },
+  apply(key, v){ const i = key.indexOf('|'), t = key.slice(0, i), k = key.slice(i + 1); if (t === 't') { S.tracks = S.tracks || {}; S.tracks[k] = v; } else if (t === 'q') { const L = QLOG.all(); L[k] = v; ls.set(QLOG.key, L); } else if (t === 's') { const j = k.lastIndexOf('|'), lk = 'cbtapp.saved.' + k.slice(0, j), L = ls.get(lk, {}); L[k.slice(j + 1)] = v; ls.set(lk, L); } else if (t === 'c') { if (typeof chatSynced === 'function') chatSynced(k, v); else ls.set('cbt.chat.' + k, v); } else ls.set('cbtapp.app.' + k, v); },
   docId: key => { const e = 'l_' + key.replace(/[^\w-]/g, c => '_' + c.charCodeAt(0).toString(16)); if (e.length <= 180) return e; let h = 0; for (const c of key) h = (h * 31 + c.charCodeAt(0)) >>> 0; return e.slice(0, 160) + '_h' + h.toString(36); },   // long Hebrew names: keep the id under the 200-character limit
   col(){ return this.db.collection('data/users/' + this.uid); },
   async init(){
@@ -5784,7 +5826,7 @@ function ui(){
 }
 
 /* ================= routing & shell ================= */
-const NAV = [['home','🏠','בית'],['forms','📝','כל הטפסים למילוי'],['folders','📁','התיקיות שלי'],['diary','📅','יומן'],['ask','💬','שאל שאלה'],['problems','🧭','טיפול לפי בעיה'],['ocd','🔁','OCD – מחשבות טורדניות וטקסים'],['cbt','🧠','שיטת טיפול CBT'],['students','🧒','תלמידים'],['workflow','🗺️','סדר עבודה'],['crole','🎯','תפקיד היועץ'],['roles','👥','מי פונה למי'],['circ','📜','חוזרי מנכ״ל'],['aklim','⚖️','אקלים ומדרג התגובות'],['tools','🧰','כלים לילדים'],['quest','📋','שאלונים ומדדים'],['distress','🚨','סימני מצוקה'],['talk','🗣️','ראיון ושיח רגשי'],['sel','💞','למידה רגשית-חברתית'],['mafteach','🧩','כישורי חיים ומפתח הל״ב'],['sped','🧩','חינוך מיוחד והכלה'],['pd','🔎','קריאת אבחונים'],['app/student-picture','🧩','תמונת תלמיד – כיוונים אבחנתיים'],['autism','🧩','אוטיזם – ילדים על הרצף'],['tzalach','🛟','צל״ח – צוות חירום'],['develop','🌳','התפתחות הילד'],['cbtclass','🏫','יישום CBT בכיתה'],['behave','🏅','עיצוב התנהגות'],['groups','👥','הנחיית קבוצות'],['programs','🏗️','תוכניות התערבות'],['transitions','🚪','מעברים'],['newteachers','🌱','מורים חדשים'],['parents','🤝','הורים'],['reports','🎓','תעודות'],['games','🎲','משחקים טיפוליים'],['videos','🎬','סרטונים'],['library','📚','ספרייה'],['settings','⚙️','הגדרות']];
+const NAV = [['home','🏠','בית'],['forms','📝','כל הטפסים למילוי'],['questions','❓','השאלות שלי – שאלות ותשובות'],['folders','📁','התיקיות שלי'],['diary','📅','יומן'],['ask','💬','שאל שאלה'],['problems','🧭','טיפול לפי בעיה'],['ocd','🔁','OCD – מחשבות טורדניות וטקסים'],['cbt','🧠','שיטת טיפול CBT'],['students','🧒','תלמידים'],['workflow','🗺️','סדר עבודה'],['crole','🎯','תפקיד היועץ'],['roles','👥','מי פונה למי'],['circ','📜','חוזרי מנכ״ל'],['aklim','⚖️','אקלים ומדרג התגובות'],['tools','🧰','כלים לילדים'],['quest','📋','שאלונים ומדדים'],['distress','🚨','סימני מצוקה'],['talk','🗣️','ראיון ושיח רגשי'],['sel','💞','למידה רגשית-חברתית'],['mafteach','🧩','כישורי חיים ומפתח הל״ב'],['sped','🧩','חינוך מיוחד והכלה'],['pd','🔎','קריאת אבחונים'],['app/student-picture','🧩','תמונת תלמיד – כיוונים אבחנתיים'],['autism','🧩','אוטיזם – ילדים על הרצף'],['tzalach','🛟','צל״ח – צוות חירום'],['develop','🌳','התפתחות הילד'],['cbtclass','🏫','יישום CBT בכיתה'],['behave','🏅','עיצוב התנהגות'],['groups','👥','הנחיית קבוצות'],['programs','🏗️','תוכניות התערבות'],['transitions','🚪','מעברים'],['newteachers','🌱','מורים חדשים'],['parents','🤝','הורים'],['reports','🎓','תעודות'],['games','🎲','משחקים טיפוליים'],['videos','🎬','סרטונים'],['library','📚','ספרייה'],['settings','⚙️','הגדרות']];
 function route(){ const h = location.hash.replace(/^#\/?/, '').split('/').map(decodeURIComponent); return {r: h[0] || 'home', id: h[1], sub: h[2], x: h[3]}; }
 let timers = [];
 function clearTimers(){ timers.forEach(t => { clearTimeout(t); clearInterval(t); }); timers = []; }
@@ -5807,7 +5849,7 @@ function render(){
   document.body.classList.toggle('locked', isLocked());
   if (isLocked()) { const o = lockView(); $('#title').textContent = ''; $('#view').innerHTML = `<div class="page">${o.html}</div>`; document.title = 'האתר של נדב דוד – יועץ חינוכי ומטפל CBT'; return; }
   if (WEB && !ARTIFACT && !LITE && !PROBLEMS.length) { $('#title').textContent = ''; $('#view').innerHTML = `<div class="empty" style="padding-top:120px"><span class="big">⏳</span>${Cloud.status === 'error' ? esc(Cloud.err) + ' <br><br><button class="btn primary" data-act="cloud-retry">נסו שוב</button>' : 'טוען את התוכן מ-OneDrive…'}</div>`; return; }
-  const views = LITE ? {home: liteHome, problems, problem: problemView, tools, tool: toolView, settings: liteSettings, ask, askc: R => ask(R, true), workflow, roles: rolesView, circ: circView, circsrc: circSrcView, libsrc: libSrcView, circask: circAskView, find: findView, more: moreView, games: gamesView, game: gameView, tracks: problems, track: trackView, groups: groupsView, transitions: hubView, newteachers: hubView, programs: hubView, distress: hubView, talk: hubView, parents: hubView, reports: hubView, sel: hubView, mafteach: hubView, sped: hubView, pd: hubView, ocd: hubView, autism: hubView, tzalach: hubView, aklim: hubView,develop: hubView, cbtclass: hubView, behave: hubView, cbt: hubView, cbtmaps: cbtMapsView, app: appView, movie: movieView, pdterms: pdTermsView, crole: hubView, quest: hubView, ariel: hubView, videos: videosView, diary: diaryView, sitemap: sitemapView, folders: foldersView, forms: formsView} : {home, problems, problem: problemView, students, student: studentView, tools, tool: toolView, library, settings, ask, askc: R => ask(R, true), workflow, roles: rolesView, circ: circView, circsrc: circSrcView, libsrc: libSrcView, circask: circAskView, find: findView, more: moreView, games: gamesView, game: gameView, tracks: problems, track: trackView, groups: groupsView, transitions: hubView, newteachers: hubView, programs: hubView, distress: hubView, talk: hubView, parents: hubView, reports: hubView, sel: hubView, mafteach: hubView, sped: hubView, pd: hubView, ocd: hubView, autism: hubView, tzalach: hubView, aklim: hubView,develop: hubView, cbtclass: hubView, behave: hubView, cbt: hubView, cbtmaps: cbtMapsView, app: appView, movie: movieView, pdterms: pdTermsView, crole: hubView, quest: hubView, ariel: hubView, videos: videosView, diary: diaryView, sitemap: sitemapView, folders: foldersView, forms: formsView};
+  const views = LITE ? {home: liteHome, problems, problem: problemView, tools, tool: toolView, settings: liteSettings, ask, askc: R => ask(R, true), workflow, roles: rolesView, circ: circView, circsrc: circSrcView, libsrc: libSrcView, circask: circAskView, find: findView, more: moreView, games: gamesView, game: gameView, tracks: problems, track: trackView, groups: groupsView, transitions: hubView, newteachers: hubView, programs: hubView, distress: hubView, talk: hubView, parents: hubView, reports: hubView, sel: hubView, mafteach: hubView, sped: hubView, pd: hubView, ocd: hubView, autism: hubView, tzalach: hubView, aklim: hubView,develop: hubView, cbtclass: hubView, behave: hubView, cbt: hubView, cbtmaps: cbtMapsView, app: appView, movie: movieView, pdterms: pdTermsView, crole: hubView, quest: hubView, ariel: hubView, videos: videosView, diary: diaryView, sitemap: sitemapView, folders: foldersView, forms: formsView, questions: questionsView} : {home, problems, problem: problemView, students, student: studentView, tools, tool: toolView, library, settings, ask, askc: R => ask(R, true), workflow, roles: rolesView, circ: circView, circsrc: circSrcView, libsrc: libSrcView, circask: circAskView, find: findView, more: moreView, games: gamesView, game: gameView, tracks: problems, track: trackView, groups: groupsView, transitions: hubView, newteachers: hubView, programs: hubView, distress: hubView, talk: hubView, parents: hubView, reports: hubView, sel: hubView, mafteach: hubView, sped: hubView, pd: hubView, ocd: hubView, autism: hubView, tzalach: hubView, aklim: hubView,develop: hubView, cbtclass: hubView, behave: hubView, cbt: hubView, cbtmaps: cbtMapsView, app: appView, movie: movieView, pdterms: pdTermsView, crole: hubView, quest: hubView, ariel: hubView, videos: videosView, diary: diaryView, sitemap: sitemapView, folders: foldersView, forms: formsView, questions: questionsView};
   const fn = views[R.r] || home;
   const out = fn(R);
   $('#title').textContent = out.title;
@@ -5874,10 +5916,10 @@ const NAV_GROUPS = [
 ];
 const navItem = k => k === 'find' ? ['find', '🔍', 'חיפוש'] : k === 'sitemap' ? ['sitemap', '🗺️', 'מפת האתר'] : NAV.find(n => n[0] === k);
 const navShown = n => n && !(LITE && ['students', 'library'].includes(n[0]));
-function navGroups(){ const used = new Set([...NAV_PIN, 'settings', 'forms', 'folders', ...NAV_GROUPS.flatMap(g => g[2])]); const rest = NAV.filter(n => !used.has(n[0]));
+function navGroups(){ const used = new Set([...NAV_PIN, 'settings', 'forms', 'folders', 'questions', ...NAV_GROUPS.flatMap(g => g[2])]); const rest = NAV.filter(n => !used.has(n[0]));
   return NAV_GROUPS.map(([i, l, ks]) => [i, l, ks.map(navItem).filter(navShown)]).concat(rest.length ? [['➕', 'עוד', rest.filter(navShown)]] : []).filter(g => g[2].length); }
 function navHTML(){ const hue = (k, l) => { try { return HUB_HUE[k] ?? hueOf(l); } catch (e) { return hueOf(l); } }, a = ([k, i, l]) => `<a href="#/${k}" data-nav="${k}" style="--nh:${hue(k, l)}"><span class="i">${i}</span><span class="t">${l}</span></a>`;
-  return `<div class="navpin">${NAV_PIN.map(navItem).filter(navShown).map(a).join('')}</div>` + navGroups().map(([i, l, items], gi) => `<details class="navg" data-g="${gi}" style="--gh:${(gi * 47 + 250) % 360}"><summary><span class="i">${i}</span><span class="t">${esc(l)}</span><span class="n">${items.length}</span></summary><div class="navgi">${items.map(a).join('')}</div></details>`).join('') + `<div class="navpin navafter">${a(navItem('forms'))}${a(navItem('folders'))}</div>` + (navItem('settings') ? `<div class="navbottom">${a(navItem('settings'))}</div>` : ''); }function moreView(){
+  return `<div class="navpin">${NAV_PIN.map(navItem).filter(navShown).map(a).join('')}</div>` + navGroups().map(([i, l, items], gi) => `<details class="navg" data-g="${gi}" style="--gh:${(gi * 47 + 250) % 360}"><summary><span class="i">${i}</span><span class="t">${esc(l)}</span><span class="n">${items.length}</span></summary><div class="navgi">${items.map(a).join('')}</div></details>`).join('') + `<div class="navpin navafter">${a(navItem('forms'))}${a(navItem('folders'))}${a(navItem('questions'))}</div>` + (navItem('settings') ? `<div class="navbottom">${a(navItem('settings'))}</div>` : ''); }function moreView(){
   const card = ([k, i, l]) => `<a class="card" href="#/${k}" style="padding:14px;gap:6px;align-items:center;text-align:center"><span style="font-size:30px">${i}</span><span class="name" style="font-size:16px">${l}</span></a>`;
   const grid = items => `<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:10px">${items.map(card).join('')}</div>`;
   return {title: 'כל האזורים', html: grid(NAV_PIN.map(navItem).filter(navShown)) + navGroups().map(([i, l, items]) => `<h2 class="sec">${i} ${esc(l)}</h2>${grid(items)}`).join('') + (navItem('settings') ? `<h2 class="sec">⚙️ הגדרות</h2>${grid([navItem('settings')])}` : '')};
@@ -6753,7 +6795,7 @@ function ask(R, viaClaude = false){
     else if (q) h += `<div class="note warn">🤖 ${esc(AI.status === 'off' && AI.err ? (AI_ERR[AI.err] || 'Claude לא זמין כרגע.') : 'Claude מתחבר… אם זה לא עובר, טענו את הדף מחדש.')} <a href="#/ask/${encodeURIComponent(q)}">לתשובה מהמסלול החינמי</a></div>`;
     else h += `<h2 class="sec">💡 דוגמאות לשאלות מורכבות</h2><div class="actions">${ASK_EXAMPLES.map(e => `<button class="chip" data-act="askfill" data-v="${esc(e)}">${esc(e)}</button>`).join('')}</div>`;
     if (q) h += refineHTML(q);
-    if (hist.length) h += `<h2 class="sec">🕘 שאלות אחרונות <small>לחיצה מעתיקה לתיבה – השליחה ל-Claude רק בכפתור</small></h2><div class="actions">${hist.slice(0, 10).map(e => `<button class="chip" data-act="askfill" data-v="${esc(e)}">${esc(e)}</button>`).join('')}</div>`;
+    if (hist.length) h += `<h2 class="sec">🕘 שאלות אחרונות <a href="#/questions" style="font-size:14px;font-weight:600">📚 כל השאלות והתשובות שלי ←</a> <small>לחיצה מעתיקה לתיבה – השליחה ל-Claude רק בכפתור</small></h2><div class="actions">${hist.slice(0, 10).map(e => `<button class="chip" data-act="askfill" data-v="${esc(e)}">${esc(e)}</button>`).join('')}</div>`;
     return {title: 'שאל שאלה', html: h, after(){
       const f = $('#askform'), i = $('#askq');
       i.addEventListener('keydown', e => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); f.requestSubmit(); } });
@@ -6767,13 +6809,13 @@ function ask(R, viaClaude = false){
   let claudeBox = '';
   if (q && !claudeTrack()) claudeBox += `<div class="note" style="margin-bottom:12px;display:flex;gap:10px;align-items:center;flex-wrap:wrap"><span>🤖 התשובה לא מספיקה? אפשר לשאול את Claude בפרויקט ״ייעוץ חינוכי״.</span><a class="btn primary sm" href="https://claude.ai/code/project/chan_01CFpYoDVdzGd2AtMmFxgTNk" target="_blank" rel="noopener" data-act="copyq" data-v="${esc(q)}">שאל את Claude בפרויקט</a><span class="muted" style="font-size:13px">השאלה מועתקת. בפרויקט שנפתח מדביקים אותה בתיבת השאלה ושולחים. נספר במנוי.</span></div>`;
   if (q && !useAI && semAvailable() && !SEM_Q[q]) h += '<p id="semNote" class="muted" style="font-size:13px;margin:0 0 10px"></p>';
-  if (q && !useAI) h += answerHTML(answer(q));
+  if (q && !useAI) h += `<div id="askAns">${answerHTML(answer(q))}</div>`;
   else if (!q) h += `<h2 class="sec">💡 דוגמאות לשאלות</h2><div class="actions">${ASK_EXAMPLES.map(e => `<button class="chip" data-act="askex" data-v="${esc(e)}">${esc(e)}</button>`).join('')}</div>`;
   if (q) h += '<div id="libPanel"></div>';
   if (q) h += refineHTML(q);
   if (claudeBox) h += claudeBox;
   if (q && claudeTrack()) h += `<p class="muted" style="font-size:13.5px">🤖 שאלה מורכבת? <a href="#/askc/${encodeURIComponent(q)}">לשאול אותה במסלול Claude</a> (נספר במכסת המנוי)</p>`;
-  if (hist.length) h += `<h2 class="sec">🕘 שאלות אחרונות</h2><div class="actions">${hist.slice(0, 10).map(e => `<button class="chip" data-act="askex" data-v="${esc(e)}">${esc(e)}</button>`).join('')}</div>`;
+  if (hist.length) h += `<h2 class="sec">🕘 שאלות אחרונות <a href="#/questions" style="font-size:14px;font-weight:600">📚 כל השאלות והתשובות שלי ←</a></h2><div class="actions">${hist.slice(0, 10).map(e => `<button class="chip" data-act="askex" data-v="${esc(e)}">${esc(e)}</button>`).join('')}</div>`;
   return {title:'שאל שאלה', html:h, after(){
     const f = $('#askform'), i = $('#askq');
     i.addEventListener('keydown', e => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); f.requestSubmit(); } });
@@ -6783,6 +6825,7 @@ function ask(R, viaClaude = false){
     if (q && $('#aiPanel')) aiAnswerRun(q);
     if (q) libFill(q);
     if (q && !useAI) semRefine(q);
+    if (q) { const qid = QLOG.add(q, 'ask'); setTimeout(() => { const el = $('#askAns'); if (el) QLOG.answer(qid, el.innerHTML, 'html'); }, 1500); }   // ❓ the archive keeps the question and the answer as shown
   }};
 }
 
@@ -7031,7 +7074,7 @@ async function aiAnswerRun(q){
     let cids = Array.isArray(c && c.circIds) ? c.circIds.map(String).filter(circItem).slice(0, 4) : [];
     if (!cids.length && local.strong) cids = local.guide.slice(0, 2).map(x => x.g.id);
     let libHit = false; if (!ids.length && !rolesQ && !cids.length) { try { libHit = !!(await libTextLoad()) && (await libSearchAsync(q, 1)).length > 0; } catch(e){} }
-    if (!ids.length && !rolesQ && !cids.length && !libHit) { box.innerHTML = aiNotFoundHTML(q, !!(c && c.safety)); return; }
+    if (!ids.length && !rolesQ && !cids.length && !libHit) { box.innerHTML = aiNotFoundHTML(q, !!(c && c.safety)); try { QLOG.answer(QLOG.add(q, 'askc'), box.innerHTML, 'html'); } catch (e) {} return; }
     if (cids.length && ids.length > 2) ids = ids.slice(0, 2);
     const maps = ids.map(id => P[id]);
     busy(`מצאתי: ${[...maps.map(p => p.icon + ' ' + p.name), ...cids.map(id => '📜 ' + circItem(id).title)].join(' · ') || 'מדריך התפקידים'}. כותב תשובה מקיפה ל${askerOf().label} – זה לוקח עד דקה או שתיים…`);
@@ -7040,6 +7083,7 @@ async function aiAnswerRun(q){
     if (ans && typeof ans === 'object' && c && c.safety) ans.safety = true;
     if (ans && typeof ans === 'object') ans._cids = cids;
     box.innerHTML = aiAnswerHTML(q, ans, maps, rolesQ || !!(c && c.safety) || !!(ans && ans.safety));
+    try { QLOG.answer(QLOG.add(q, 'askc'), box.innerHTML, 'html'); } catch (e) {}
   } catch(e){
     if (e && e.code === 'cancelled') { box.innerHTML = ''; return; }
     const code = (e && e.code) || 'upstream_error'; CHLOG.add('error', code + ' ' + ((e && e.message) || ''));
@@ -9375,6 +9419,7 @@ async function chatSend0(q, opt = {}){ CHLOG.add('send', q.length + (opt.voice ?
   q = String(q || '').trim(); if (!q) return; if (CH.busy) { if (!opt.interrupted) return; if (CH.ctl) CH.ctl.abort(); await new Promise(r => setTimeout(r, 300)); }
   const mode = CH.mode, H = chatHist(mode); chq('#chatq').value = ''; chq('#chatq').style.height = 'auto';
   H.push({role: 'user', content: q}); chatSave(mode); chatPaint();
+  try { CH.qid = QLOG.add(q, mode); } catch (e) {}
   const t0 = performance.now();
   const hits = chatSearch(q, 6), log = chq('#chatlog'), bub = document.createElement('div'); bub.className = 'chatmsg bot typing'; bub.innerHTML = '<span class="dots"><i></i><i></i><i></i></span>'; log.appendChild(bub); log.scrollTop = 1e9;
   CHLOG.add('searched', Math.round(performance.now() - t0) + 'ms hits=' + hits.length);
@@ -9382,7 +9427,7 @@ async function chatSend0(q, opt = {}){ CHLOG.add('send', q.length + (opt.voice ?
     let t = ''; try { const a = window.CBT_LOCAL_ANSWER(q); t = typeof a === 'string' ? a : (a && a.text) || ''; } catch (e) {}   // the engine returns {text, href}
     const links = hits.slice(0, 5).map(h => ({title: h.title, route: h.route}));
     const ans = (t ? t + '\n\n' : '') + (links.length ? 'הנה המקומות באתר שהכי קשורים לשאלה:' : 'לא מצאתי באתר משהו שמתאים לשאלה – נסו לנסח אחרת, או לחפש ב״חיפוש״.');
-    H.push({role: 'assistant', content: ans, links}); chatSave(mode); chatPaint(); chatSay(ans); return;
+    H.push({role: 'assistant', content: ans, links}); chatSave(mode); try { QLOG.answer(CH.qid, ans, 'text'); } catch (e) {} chatPaint(); chatSay(ans); return;
   }
   CH.busy = true; chq('#chatsend').disabled = true; CH.ctl = new AbortController();
   const here = `${($('#title') || {}).textContent || ''} (${location.hash || '#/home'})`;
@@ -9399,7 +9444,7 @@ async function chatSend0(q, opt = {}){ CHLOG.add('send', q.length + (opt.voice ?
     let R; try { R = await run(tools); } catch (e) { if (e && e.code === 'tools_unavailable' && tools) R = await run(null); else throw e; }
     const ans = String(R.text || '').trim() + (R.truncated ? '\n\n(התשובה נקטעה – אפשר לבקש ״המשך״.)' : '');
     CHLOG.add('done', ans.length + ' chars');
-    H.push({role: 'assistant', content: ans}); chatSave(mode); chatPaint(); chatSay(ans);
+    H.push({role: 'assistant', content: ans}); chatSave(mode); try { QLOG.answer(CH.qid, ans, 'text'); } catch (e) {} chatPaint(); chatSay(ans);
   } catch (e) {
     const code = (e && e.code) || 'upstream_error'; CHLOG.add('error', code + ' ' + ((e && e.message) || ''));
     if (code === 'cancelled') { const said = bub.innerText.trim(); bub.remove(); if (said) { H.push({role: 'assistant', content: said + ' …(נקטע)'}); chatSave(mode); chatPaint(); } }
@@ -10027,6 +10072,43 @@ document.addEventListener('click', async e => {
   if (b.dataset.sf === 'send') { const k = b.dataset.k, id = b.dataset.id, who = PROC.clean(($('#sfwho') || {}).value), wd = !!($('#sfdata') || {}).checked;
     const doc = sfFileHTML(k, id, who, wd); if (!doc) return toast('⚠️ אי אפשר לייצא את הטופס הזה');
     if (await sfDownload(PROC.title(k, id).replace(/[\\/:*?"<>|]/g, ' ') + (who ? ' - ' + who : '') + ' - למילוי.html', doc, b)) setTimeout(sfClose, 900); }
+});
+/* ---- ❓ השאלות שלי – #/questions[/<src>]: every question asked on the site with its answer; open, search, copy, delete ---- */
+const QSRC = {ask: ['💬', 'שאל שאלה – מסלול חינמי'], askc: ['🤖', 'שאל שאלה – Claude'], assist: ['🧭', 'עוזר האתר'], therapist: ['🧑‍⚕️', 'המטפל הווירטואלי']};
+function questionsView(R){
+  const L = QLOG.list(), f = QSRC[R.id] ? R.id : '', shown = f ? L.filter(x => x.src === f) : L;
+  const when = at => new Date(at).toLocaleString('he-IL', {day: 'numeric', month: 'numeric', year: '2-digit', hour: '2-digit', minute: '2-digit'});
+  const plain = x => x.a ? (x.f === 'html' ? (d => { d.innerHTML = x.a; return d.textContent; })(document.createElement('div')) : x.a) : '';
+  const ans = x => !x.a ? '<p class="muted">התשובה לא נשמרה – השאלה נשאלה לפני שנוצר הארכיון. אפשר לשאול אותה שוב.</p>' : x.f === 'html' ? `<div class="qaans">${x.a}</div>` : `<div class="qaans qatext">${chatMd(x.a)}</div>`;
+  const again = x => x.src === 'ask' ? `<a class="btn sm" href="#/ask/${encodeURIComponent(x.q)}">🔁 לשאול שוב</a>` : x.src === 'askc' ? `<a class="btn sm" href="#/askc/${encodeURIComponent(x.q)}">🔁 לשאול שוב את Claude</a>` : '';
+  const item = x => `<div class="qarow" data-q="${esc((x.q + ' ' + plain(x)).slice(0, 4000).toLowerCase())}"><input type="checkbox" class="qasel" data-id="${esc(x.id)}" aria-label="סימון">
+    <details class="qaitem"><summary><span class="qasrc">${(QSRC[x.src] || ['❓'])[0]} ${esc((QSRC[x.src] || ['', ''])[1])}</span><b class="qaq">${esc(x.q.length > 160 ? x.q.slice(0, 160) + '…' : x.q)}</b><small class="muted">${when(x.at)}</small></summary>
+      <div class="qabody"><div class="qafull">❓ ${esc(x.q)}</div>${ans(x)}
+      <div class="actions qaacts">${again(x)}<button class="btn sm" data-qa="copy" data-id="${esc(x.id)}">📋 העתקה</button><button class="btn sm ghost" data-qa="del" data-id="${esc(x.id)}">🗑️ מחיקה</button></div></div></details></div>`;
+  const chip = (k, l) => `<a class="chip ${f === k ? 'on' : ''}" href="#/questions${k ? '/' + k : ''}">${l} (${k ? L.filter(x => x.src === k).length : L.length})</a>`;
+  return {title: 'השאלות שלי', html: `<div class="banner" style="--h:40"><span class="emoji">❓</span><div><h1>השאלות שלי</h1><p>כל מה ששאלת באתר – ב״שאל שאלה״, בעוזר האתר ובמטפל הווירטואלי – יחד עם התשובות. אפשר לחפש, להעתיק ולמחוק. נשמר בחשבון שלך ועובר בין המחשב לטלפון.</p></div></div>
+    <div class="qa">
+      <div class="chips" style="margin:0 0 10px">${chip('', '📚 הכול')}${Object.entries(QSRC).map(([k, [i, l]]) => chip(k, i + ' ' + l)).join('')}</div>
+      <input class="inp fsearch" id="qasearch" placeholder="🔍 חיפוש בשאלות ובתשובות…">
+      ${shown.length ? `<div class="qabar"><label class="qaall"><input type="checkbox" id="qaall"> בחירת הכול</label><button class="btn sm" data-qa="delsel" disabled>🗑️ מחיקת המסומנות</button><span class="muted" id="qacount">${shown.length} שאלות</span></div>
+      <div class="qalist">${shown.map(item).join('')}</div>` : `<div class="empty">${L.length ? 'אין שאלות מהמקור הזה.' : 'עדיין לא נשאלו שאלות. אפשר להתחיל ב<a href="#/ask">💬 שאל שאלה</a>.'}</div>`}
+    </div>`,
+    after(){
+      const s = $('#qasearch'), rows = () => [...document.querySelectorAll('.qarow')], sel = () => rows().filter(r => !r.hidden && r.querySelector('.qasel').checked);
+      const upd = () => { const n = sel().length, b = document.querySelector('[data-qa="delsel"]'); if (b) { b.disabled = !n; b.textContent = n ? `🗑️ מחיקת המסומנות (${n})` : '🗑️ מחיקת המסומנות'; } };
+      if (s) s.oninput = () => { const q = s.value.trim().toLowerCase(); let n = 0; rows().forEach(r => { r.hidden = !!q && !r.dataset.q.includes(q); if (!r.hidden) n++; }); const c = $('#qacount'); if (c) c.textContent = n + ' שאלות'; upd(); };
+      document.querySelectorAll('.qasel').forEach(c => c.onchange = upd);
+      const all = $('#qaall'); if (all) all.onchange = () => { rows().filter(r => !r.hidden).forEach(r => r.querySelector('.qasel').checked = all.checked); upd(); };
+    }};
+}
+document.addEventListener('click', e => {
+  const b = e.target.closest('[data-qa]'); if (!b) return;
+  const act = b.dataset.qa, id = b.dataset.id;
+  if (act === 'copy') { const x = QLOG.all()[id]; if (!x) return; const body = b.closest('.qabody'), txt = '❓ ' + x.q + '\n\n' + ((body && body.querySelector('.qaans')) ? body.querySelector('.qaans').innerText : '');
+    const ok = () => { b.textContent = '✅ הועתק'; setTimeout(() => b.textContent = '📋 העתקה', 1800); };
+    (navigator.clipboard ? navigator.clipboard.writeText(txt).then(ok) : Promise.reject()).catch(() => { const r = document.createRange(); r.selectNodeContents(body); const s = getSelection(); s.removeAllRanges(); s.addRange(r); try { document.execCommand('copy'); ok(); } catch (_) { b.textContent = 'סמנו והעתיקו ידנית'; } }); return; }
+  if (act === 'del') { if (!procArm(b, '⚠️ לחצו שוב למחיקה')) return; QLOG.del(id); toast('🗑️ השאלה נמחקה'); render(); return; }
+  if (act === 'delsel') { const ids = [...document.querySelectorAll('.qarow:not([hidden]) .qasel:checked')].map(c => c.dataset.id); if (!ids.length || !procArm(b, `⚠️ לחצו שוב – ${ids.length} שאלות יימחקו`)) return; ids.forEach(i => QLOG.del(i)); toast(`🗑️ נמחקו ${ids.length} שאלות`); render(); }
 });
 /* ---- 📝 כל הטפסים למילוי – #/forms: every fillable form of the site in one place (each one also stays where it lives) ---- */
 function formsAll(){ const A = allApps(), out = [];
